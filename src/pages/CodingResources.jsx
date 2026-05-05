@@ -9,16 +9,16 @@ import { useViewport } from '../lib/viewport.js';
 import { useSEO } from '../lib/seo.js';
 
 const CODES = [
-  { code: 'L1832', cat: 'Orthotics · Knee', desc: 'Knee orthosis (KO), adjustable knee joints, positional orthosis, off-the-shelf.', billable: true, pdac: true, ours: 'UM-ORTH-0412' },
-  { code: 'L4361', cat: 'Orthotics · Ankle', desc: 'Walking boot, pneumatic, with or without joints.', billable: true, pdac: true, ours: 'UM-ORTH-0556' },
-  { code: 'L3908', cat: 'Orthotics · Wrist', desc: 'Wrist hand orthosis, includes one or more nontorsion joints.', billable: true, pdac: true, ours: 'UM-ORTH-0701' },
-  { code: 'L0180', cat: 'Orthotics · Cervical', desc: 'Cervical, multiple post collar, occipital/mandibular supports, adjustable.', billable: true, pdac: false, ours: 'UM-ORTH-0892' },
-  { code: 'A4927', cat: 'Supplies', desc: 'Gloves, non-sterile, per 100.', billable: true, pdac: false, ours: 'UM-PPE-1108' },
-  { code: 'A4928', cat: 'Supplies', desc: 'Surgical mask, per 20.', billable: true, pdac: false, ours: 'UM-PPE-1209' },
-  { code: 'A6234', cat: 'Wound Care', desc: 'Hydrocolloid dressing, wound cover, sterile, pad size 16 sq. in. or less.', billable: true, pdac: false, ours: 'UM-WND-0231' },
-  { code: 'A6212', cat: 'Wound Care', desc: 'Foam dressing, wound cover, sterile, pad size more than 16 sq. in. but less than 48.', billable: true, pdac: false, ours: 'UM-WND-0455' },
-  { code: 'E0445', cat: 'Equipment', desc: 'Oximeter device for measuring blood oxygen levels non-invasively.', billable: true, pdac: false, ours: 'UM-CAP-9901' },
-  { code: 'E1399', cat: 'Equipment', desc: 'Durable medical equipment, miscellaneous.', billable: true, pdac: false, ours: 'UM-CAP-7720' },
+  { code: 'L1832', cat: 'Orthotics · Knee',     desc: 'Knee orthosis (KO), adjustable knee joints, positional orthosis, off-the-shelf.',                       billable: true,  pdac: true,  ours: 'KO3233' },
+  { code: 'L4361', cat: 'Orthotics · Ankle',    desc: 'Walking boot, pneumatic, with or without joints.',                                                          billable: true,  pdac: true,  ours: 'VA1S50S' },
+  { code: 'L3908', cat: 'Orthotics · Wrist',    desc: 'Wrist hand orthosis, includes one or more nontorsion joints.',                                              billable: true,  pdac: true,  ours: 'WHO1615-SM' },
+  { code: 'L0180', cat: 'Orthotics · Cervical', desc: 'Cervical, multiple post collar, occipital/mandibular supports, adjustable.',                                billable: true,  pdac: false, ours: 'CC180' },
+  { code: 'A4927', cat: 'Supplies',             desc: 'Gloves, non-sterile, per 100.',                                                                              billable: true,  pdac: false, ours: 'APN-3001-C' },
+  { code: 'A4928', cat: 'Supplies',             desc: 'Surgical mask, per 20.',                                                                                      billable: true,  pdac: false, ours: '7678383' },
+  { code: 'A6234', cat: 'Wound Care',           desc: 'Hydrocolloid dressing, wound cover, sterile, pad size 16 sq. in. or less.',                                  billable: true,  pdac: false, ours: '—' },
+  { code: 'A6212', cat: 'Wound Care',           desc: 'Foam dressing, wound cover, sterile, pad size more than 16 sq. in. but less than 48.',                       billable: true,  pdac: false, ours: '—' },
+  { code: 'E0445', cat: 'Equipment',            desc: 'Oximeter device for measuring blood oxygen levels non-invasively.',                                          billable: true,  pdac: false, ours: '—' },
+  { code: 'E1399', cat: 'Equipment',            desc: 'Durable medical equipment, miscellaneous.',                                                                  billable: true,  pdac: false, ours: '—' },
 ];
 
 export function CodingResources() {

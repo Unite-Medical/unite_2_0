@@ -39,14 +39,35 @@ export const cartStore = {
     return db.list('cart_items', { where: { cart_id: activeCartId } });
   },
 
-  add(sku, qty = 1) {
-    const product = db.get('products', sku);
+  /**
+   * Add a product (or product variant) to the cart.
+   * @param {string} productId    The product's primary id (== product.sku)
+   * @param {number} qty          Quantity to add (default 1)
+   * @param {object} [variant]    Optional selected variant
+   * @param {string} variant.sku  Variant SKU (used as the cart line key)
+   * @param {string} variant.title  Variant display title (e.g. "Case (450 Tests)")
+   * @param {number} variant.price  Variant unit price
+   */
+  add(productId, qty = 1, variant) {
+    const product = db.get('products', productId);
     if (!product) return;
-    const existing = db.list('cart_items', { where: { cart_id: activeCartId, sku } })[0];
+    const lineSku = variant?.sku || product.sku;
+    const lineName = variant?.title ? `${product.name} · ${variant.title}` : product.name;
+    const lineUnit = variant?.price ?? product.price;
+    const existing = db.list('cart_items', { where: { cart_id: activeCartId, sku: lineSku } })[0];
     if (existing) {
       db.update('cart_items', existing.id, { qty: existing.qty + qty });
     } else {
-      db.insert('cart_items', { id: uid('ci'), cart_id: activeCartId, sku, qty, unit_price: product.price, name: product.name });
+      db.insert('cart_items', {
+        id: uid('ci'),
+        cart_id: activeCartId,
+        sku: lineSku,
+        product_id: product.id,
+        variant_title: variant?.title || null,
+        qty,
+        unit_price: lineUnit,
+        name: lineName,
+      });
     }
     notify();
   },

@@ -2,37 +2,78 @@
    Designed to match the brief's table shapes (Section 7) closely enough
    that a future migration to Supabase is mostly mechanical.            */
 
+import { REAL_PRODUCTS, REAL_CATEGORIES, REAL_COLLECTIONS } from '../data/realCatalog.js';
+
 const isoDaysAgo = (d) => new Date(Date.now() - d * 86400000).toISOString();
 
-const STATIC_PRODUCTS = [
-  { sku: 'UM-ORTH-0412', name: 'PDAC-Approved Knee Brace · L-1832', cat: 'Orthotics', packSize: '1 ea', price: 89.40, tier: 'Bracing', hcpcs: 'L1832', moq: 1, stock: 482, img: 'knee brace, side view', cogs: 31.30 },
-  { sku: 'UM-DIAG-0077', name: 'COVID · Flu A/B · RSV · 3-in-1 Test', cat: 'Diagnostics', packSize: '25 ct', price: 142.00, tier: 'POC', hcpcs: '—', moq: 10, stock: 3120, img: 'test cassette on tray', cogs: 49.00 },
-  { sku: 'UM-PPE-1108', name: 'Nitrile Exam Gloves · Chemo-Rated', cat: 'PPE', packSize: '100 ct', price: 11.25, tier: 'Consumable', hcpcs: 'A4927', moq: 20, stock: 18430, img: 'gloves, open box', cogs: 4.10 },
-  { sku: 'UM-WND-0231', name: 'Hydrocolloid Dressing · 4×4', cat: 'Wound Care', packSize: '10 ct', price: 24.80, tier: 'Consumable', hcpcs: 'A6234', moq: 1, stock: 940, img: 'wound dressing packet', cogs: 8.60 },
-  { sku: 'UM-IV-5510', name: '0.9% Sodium Chloride · 1000mL', cat: 'Pharmaceuticals', packSize: '12 ct', price: 58.00, tier: 'Pharma', hcpcs: '—', moq: 2, stock: 612, img: 'iv saline bags', cogs: 21.00 },
-  { sku: 'UM-ORTH-0556', name: 'Walker Boot · Pneumatic · Tall', cat: 'Orthotics', packSize: '1 ea', price: 72.50, tier: 'Bracing', hcpcs: 'L4361', moq: 1, stock: 288, img: 'walker boot, 3/4', cogs: 25.00 },
-  { sku: 'UM-DIAG-0240', name: 'Multi-Drug Surface Test · 12-panel', cat: 'Diagnostics', packSize: '50 ct', price: 340.00, tier: 'POC', hcpcs: '—', moq: 5, stock: 820, img: 'test strip panel', cogs: 118.00 },
-  { sku: 'UM-CAP-9901', name: 'Pulse Oximeter · Clinical Grade', cat: 'Equipment', packSize: '1 ea', price: 58.00, tier: 'Equipment', hcpcs: 'E0445', moq: 1, stock: 212, img: 'pulse ox on finger', cogs: 19.20 },
-  { sku: 'UM-ORTH-0701', name: 'Wrist-Hand Orthosis · Universal', cat: 'Orthotics', packSize: '1 ea', price: 62.40, tier: 'Bracing', hcpcs: 'L3908', moq: 1, stock: 392, img: 'wrist orthosis', cogs: 22.10 },
-  { sku: 'UM-PPE-1209', name: 'Surgical Mask · Level 3 · Tie-On', cat: 'PPE', packSize: '50 ct', price: 9.20, tier: 'Consumable', hcpcs: 'A4928', moq: 12, stock: 24800, img: 'surgical mask box', cogs: 3.40 },
-  { sku: 'UM-WND-0455', name: 'Silicone Foam Border · 6×6', cat: 'Wound Care', packSize: '10 ct', price: 64.00, tier: 'Consumable', hcpcs: 'A6212', moq: 1, stock: 612, img: 'silicone foam bordered', cogs: 22.40 },
-  { sku: 'UM-CAP-7720', name: 'Tabletop Autoclave · 12L', cat: 'Equipment', packSize: '1 ea', price: 1840.00, tier: 'Equipment', hcpcs: 'E1399', moq: 1, stock: 18, img: 'tabletop autoclave', cogs: 720.00 },
-  { sku: 'UM-IV-5621', name: 'Lactated Ringer\'s · 1000mL', cat: 'Pharmaceuticals', packSize: '12 ct', price: 64.00, tier: 'Pharma', hcpcs: '—', moq: 2, stock: 408, img: 'lactated ringers bag', cogs: 24.00 },
-  { sku: 'UM-DIAG-0341', name: 'A1c Hemoglobin Test · POC', cat: 'Diagnostics', packSize: '20 ct', price: 184.00, tier: 'POC', hcpcs: '—', moq: 4, stock: 226, img: 'a1c reader strip', cogs: 64.50 },
-  { sku: 'UM-ORTH-0892', name: 'Cervical Collar · Adjustable', cat: 'Orthotics', packSize: '1 ea', price: 31.20, tier: 'Bracing', hcpcs: 'L0180', moq: 1, stock: 540, img: 'cervical collar foam', cogs: 11.20 },
-  { sku: 'UM-PPE-1350', name: 'Isolation Gown · AAMI Level 3', cat: 'PPE', packSize: '10 ct', price: 38.00, tier: 'Consumable', hcpcs: '—', moq: 4, stock: 1680, img: 'isolation gown packed', cogs: 13.50 },
-];
+/* The legacy seed used a tiny 16-row STATIC_PRODUCTS array. The real catalog
+   (87 products / 280 variants) now lives in src/data/realCatalog.js, generated
+   by scripts/import_catalog.py from the live Shopify store CSVs. We project
+   each real product onto the database row shape the rest of the app expects. */
 
-const STATIC_CATEGORIES = [
-  { slug: 'orthotics', name: 'Orthotics', parent: null, count: 412 },
-  { slug: 'diagnostics', name: 'Diagnostics', parent: null, count: 318 },
-  { slug: 'ppe', name: 'PPE', parent: null, count: 612 },
-  { slug: 'wound-care', name: 'Wound Care', parent: null, count: 244 },
-  { slug: 'equipment', name: 'Equipment', parent: null, count: 188 },
-  { slug: 'pharmaceuticals', name: 'Pharmaceuticals', parent: null, count: 96 },
-  { slug: 'capital-equipment', name: 'Capital Equipment', parent: null, count: 42 },
-  { slug: 'supplements', name: 'Supplements', parent: null, count: 124 },
-];
+// Hash the SKU into a deterministic stock count so reorders / "low stock"
+// states stay stable across reloads without us tracking real inventory yet.
+function deterministicStock(sku) {
+  let h = 0;
+  for (let i = 0; i < sku.length; i++) h = (h * 31 + sku.charCodeAt(i)) >>> 0;
+  // Range ~100 .. ~26000 (skewed toward consumables having more stock).
+  return 80 + (h % 25920);
+}
+
+function legacyTier(category) {
+  switch (category) {
+    case 'Orthotics':    return 'Bracing';
+    case 'Diagnostics':  return 'POC';
+    case 'PPE':          return 'Consumable';
+    case 'Surgical':     return 'Surgical';
+    case 'Supplements':  return 'Wellness';
+    default:             return 'Consumable';
+  }
+}
+
+const STATIC_PRODUCTS = REAL_PRODUCTS.map((p) => {
+  const stock = deterministicStock(p.sku);
+  const cogs  = +(p.price * 0.42).toFixed(2);
+  return {
+    sku:      p.sku,
+    handle:   p.handle,
+    name:     p.name,
+    cat:      p.category,
+    packSize: p.pack_size || '1 ea',
+    price:    p.price,
+    cogs,
+    tier:     p.tier || legacyTier(p.category),
+    hcpcs:    p.hcpcs || '—',
+    moq:      p.moq || 1,
+    stock,
+    img:      p.img || p.summary || p.name,
+    vendor:   p.vendor,
+    summary:  p.summary,
+    description: p.description,
+    images:   p.images,
+    hero_image: p.hero_image,
+    variants: p.variants,
+    tags:     p.tags,
+    collections: p.collections,
+    price_min: p.price_min,
+    price_max: p.price_max,
+    product_type: p.product_type,
+    fda_registered:    p.fda_registered,
+    pdac_approved:     p.pdac_approved,
+    taa_compliant:     p.taa_compliant,
+    berry_compliant:   p.berry_compliant,
+    mspv_listed:       p.mspv_listed,
+    latex_free:        p.latex_free,
+    country_of_origin: p.country_of_origin,
+  };
+});
+
+const STATIC_CATEGORIES = REAL_CATEGORIES.map((c) => ({
+  slug: c.slug,
+  name: c.name,
+  parent: null,
+  count: c.count,
+}));
 
 const STATIC_WAREHOUSES = [
   { id: 'wh_atl', code: 'ATL', name: 'Atlanta, GA · main', city: 'Atlanta', state: 'GA', utilization: 0.74, capacity_units: 1_400_000, lat: 33.749, lng: -84.388 },
@@ -220,25 +261,40 @@ export function seed(db) {
   STATIC_CATEGORIES.forEach((c) => db.categories.push({ id: c.slug, ...c }));
 
   STATIC_PRODUCTS.forEach((p) => {
+    const charCodes = (p.sku || '').padEnd(10, 'X');
     db.products.push({
       id: p.sku,
       sku: p.sku,
+      handle: p.handle,
       name: p.name,
+      vendor: p.vendor,
       category: p.cat,
+      product_type: p.product_type,
       pack_size: p.packSize,
       price: p.price,
+      price_min: p.price_min,
+      price_max: p.price_max,
       cogs: p.cogs,
       tier: p.tier,
       hcpcs: p.hcpcs,
       moq: p.moq,
       img: p.img,
-      country_of_origin: p.cat === 'Pharmaceuticals' ? 'US' : 'CN',
-      taa_compliant: ['Orthotics', 'Equipment'].includes(p.cat),
-      berry_compliant: p.cat === 'PPE',
-      pdac_approved: p.hcpcs && p.hcpcs !== '—',
-      mspv_listed: ['PPE', 'Wound Care', 'Pharmaceuticals'].includes(p.cat),
-      fda_product_code: ['FRO', 'IMI', 'NHM', 'KGN'][Math.abs(p.sku.charCodeAt(8)) % 4],
-      hts_code: ['9021.10', '3822.19', '4015.19', '3005.10', '3004.90'][Math.abs(p.sku.charCodeAt(7)) % 5],
+      summary: p.summary,
+      description: p.description,
+      images: p.images,
+      hero_image: p.hero_image,
+      tags: p.tags,
+      collections: p.collections,
+      variants: p.variants,
+      country_of_origin: p.country_of_origin || 'CN',
+      fda_registered: p.fda_registered ?? true,
+      taa_compliant: p.taa_compliant ?? false,
+      berry_compliant: p.berry_compliant ?? false,
+      pdac_approved: p.pdac_approved ?? false,
+      mspv_listed: p.mspv_listed ?? false,
+      latex_free: p.latex_free ?? false,
+      fda_product_code: ['FRO', 'IMI', 'NHM', 'KGN'][Math.abs(charCodes.charCodeAt(8)) % 4],
+      hts_code: ['9021.10', '3822.19', '4015.19', '3005.10', '3004.90'][Math.abs(charCodes.charCodeAt(7)) % 5],
     });
 
     db.inventory.push({ id: `inv_atl_${p.sku}`, sku: p.sku, warehouse_id: 'wh_atl', on_hand: p.stock, reorder_at: Math.floor(p.stock * 0.2), reorder_qty: Math.floor(p.stock * 0.5) });
@@ -248,6 +304,37 @@ export function seed(db) {
     db.pricing.push({ id: `prc_${p.sku}_1`, sku: p.sku, tier: 1, min_qty: 1, unit_price: p.price });
     db.pricing.push({ id: `prc_${p.sku}_2`, sku: p.sku, tier: 2, min_qty: 50, unit_price: +(p.price * 0.93).toFixed(2) });
     db.pricing.push({ id: `prc_${p.sku}_3`, sku: p.sku, tier: 3, min_qty: 250, unit_price: +(p.price * 0.86).toFixed(2) });
+
+    (p.variants || []).forEach((v) => {
+      db.product_variants.push({
+        id:        v.variant_id || `${p.sku}_${v.title}`,
+        product_id: p.sku,
+        sku:       v.sku || p.sku,
+        title:     v.title,
+        price:     v.price,
+        compare_at_price: v.compare_at_price ?? null,
+        available: v.available,
+        weight_grams: v.weight_grams,
+        options:   v.options || {},
+        image:     v.image || '',
+      });
+    });
+  });
+
+  // Group products into Shopify-style collections so the catalog can show
+  // them under the same store-side navigation the live unitemedical.net uses.
+  REAL_COLLECTIONS.forEach((c) => {
+    db.cms_pages.push({
+      id: `collection_${c.slug}`,
+      slug: `/catalog/${c.slug}`,
+      title: c.name,
+      published: true,
+      views: 0,
+      kind: 'collection',
+      handles: c.handles,
+      category: c.category,
+      updated_at: new Date().toISOString(),
+    });
   });
 
   const o = buildSampleOrders();
@@ -300,11 +387,25 @@ export function seed(db) {
   db.vendors.push({ id: 'vnd_taipei', name: 'Taipei Diagnostic Group', country: 'TW', status: 'pending', fda_registered: true, gs1_validated: false, last_audit: null });
   db.vendors.push({ id: 'vnd_atlpharma', name: 'Atlanta Pharma Co.', country: 'US', status: 'approved', fda_registered: true, gs1_validated: true, last_audit: isoDaysAgo(15) });
 
-  // pre-seed a sample cart on the demo customer so the Cart page is interesting
+  // pre-seed a sample cart on the demo customer so the Cart page is interesting.
+  // Pick the first product from each of three different categories to show
+  // realistic variety in the cart UI.
   const demoCart = { id: 'cart_demo', customer_id: 'usr_demo', org_id: 'org_atlsurgical', updated_at: new Date().toISOString(), created_at: new Date().toISOString() };
   db.carts.push(demoCart);
-  [['UM-ORTH-0412', 12], ['UM-PPE-1108', 40], ['UM-DIAG-0077', 20]].forEach(([sku, qty], i) => {
-    const p = STATIC_PRODUCTS.find((x) => x.sku === sku);
-    db.cart_items.push({ id: `ci_${i}`, cart_id: 'cart_demo', sku, qty, unit_price: p.price, name: p.name });
-  });
+  const demoQty = [4, 12, 20];
+  const demoCats = ['Orthotics', 'PPE', 'Diagnostics'];
+  let i = 0;
+  for (const cat of demoCats) {
+    const p = STATIC_PRODUCTS.find((x) => x.cat === cat);
+    if (!p) continue;
+    db.cart_items.push({
+      id: `ci_${i}`,
+      cart_id: 'cart_demo',
+      sku: p.sku,
+      qty: demoQty[i] || 1,
+      unit_price: p.price,
+      name: p.name,
+    });
+    i++;
+  }
 }

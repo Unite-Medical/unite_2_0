@@ -22,6 +22,11 @@ const CATEGORY_TONES = {
     fit: 'Universal-fit construction with comfortable, low-bulk profile. Latex-free across all components.',
     billing: 'Standard supply line item; not separately billable. Stocked in unit cases for routine ASC and clinic restock cycles.',
   },
+  Surgical: {
+    intro: 'A surgical-grade consumable manufactured to AAMI / ASTM specifications for use in OR, procedural, and field-medic environments. FDA-registered with documented country-of-origin per case.',
+    fit: 'Single-use, ready-to-deploy, packaged in clinically appropriate quantities. Compatible with standard sterilization workflows where applicable.',
+    billing: 'Standard supply line item. Available under MSPV BPA for federal customers; no MOQs for commercial buyers.',
+  },
   'Wound Care': {
     intro: 'A wound-management consumable intended to maintain a moist healing environment, manage exudate, and protect the wound bed during healing.',
     fit: 'Sterile, single-use, ready to apply. Compatible with standard adhesive removers; gentle on intact peri-wound skin.',
@@ -36,6 +41,11 @@ const CATEGORY_TONES = {
     intro: 'Capital-grade clinical equipment built for daily ASC and clinic use. Engineered for predictable maintenance windows and a multi-year service life.',
     fit: 'Tabletop form factor; standard 120V US plug. Operating manual and user-training video included.',
     billing: 'Capital purchase; depreciable. Eligible for service-contract coverage under our standard 3-year plan.',
+  },
+  Supplements: {
+    intro: 'A practitioner-grade dietary supplement formulated to support targeted clinical outcomes. Manufactured in an FDA-registered, GMP-certified facility with full third-party potency testing.',
+    fit: 'Supplied in compliance with FDA dietary-supplement labeling requirements. Lot- and expiration-traceable; certificates of analysis available on request.',
+    billing: 'Cash-pay, FSA, and HSA eligible at point of sale. Not separately reimbursable; sold through the pharmacy and direct-to-consumer channels.',
   },
 };
 
@@ -76,6 +86,18 @@ const HIGHLIGHT_LIBRARY = {
     { title: '3-year service plan', body: 'Optional extended coverage with on-site or depot service. Ask your rep for quote.' },
     { title: 'Includes training', body: 'Free 30-minute virtual onboarding session with each unit; recorded for ongoing reference.' },
   ],
+  Surgical: [
+    { title: 'Sterile-field ready', body: 'Packaged for direct delivery to the sterile field; no double-wrap repackaging required.' },
+    { title: 'No MOQs', body: 'Order by the case or the each. Buy what fits the procedure schedule, not a vendor minimum.' },
+    { title: 'MSPV BPA available', body: 'Federal buyers can pull this SKU directly under our active BPA without a fresh contract.' },
+    { title: 'Same-day shipping', body: 'Ships from Atlanta if ordered by 3 PM ET; median delivery to a Southeast ASC: 48 hours.' },
+  ],
+  Supplements: [
+    { title: 'Practitioner-grade', body: 'Formulated for clinically meaningful doses, not the consumer-aisle compromise.' },
+    { title: 'Third-party tested', body: 'Every lot independently assayed for potency, identity, and contaminants.' },
+    { title: 'FSA / HSA eligible', body: 'Eligible for purchase with FSA and HSA cards at point of sale.' },
+    { title: 'Pharmacy-channel ready', body: 'Drop-ship and counter-display SKUs available for retail pharmacy programs.' },
+  ],
 };
 
 const REVIEW_LIBRARY = {
@@ -107,23 +129,65 @@ const REVIEW_LIBRARY = {
     { rating: 5, name: 'Tina Alvarez', role: 'Operations Lead · Cobb Surgical Group', body: 'Ordered Friday, on the counter Tuesday. The included training video meant we skipped a vendor visit.' },
     { rating: 4, name: 'Dr. Aaron Patel', role: 'ASC Medical Director', body: 'Quiet, fast cycle, holds calibration. We bought a second one within a month.' },
   ],
+  Surgical: [
+    { rating: 5, name: 'Meredith Cole', role: 'OR Manager · Piedmont Surgery Center', body: 'Pack quantities match how we actually consume; no half-cases stranded on the dock. Fill rate has been clean since we switched.' },
+    { rating: 5, name: 'Major (Ret.) D. Vasquez', role: 'Procurement · Regional VHA', body: 'MSPV pull-through worked first try. Country-of-origin documentation per case shows up exactly where my system expects it.' },
+    { rating: 4, name: 'Aidan Park', role: 'Procurement · MedOne Distributors', body: 'We private-label this through three regional accounts. Lot consistency has been steady across every shipment.' },
+  ],
+  Supplements: [
+    { rating: 5, name: 'Kareem Holloway, PharmD', role: 'Owner · Holloway Apothecary, Macon GA', body: 'Sells through every week. The wellness shelf has become my best-margin square footage and this line is the reason.' },
+    { rating: 5, name: 'Dr. Lin Cooper, ND', role: 'Functional Medicine · Atlanta', body: 'Practitioner-grade potency that holds up to my labs. Patients notice the difference inside two weeks.' },
+    { rating: 4, name: 'Marcus Williams', role: 'Owner · Williams Family Pharmacy', body: 'Offered as a counter pickup AND drop-ship. That flexibility lets me pitch it to both walk-ins and my telehealth referrals.' },
+  ],
 };
 
 /**
  * Returns 2-3 paragraphs of marketing-grade description for the product.
+ *
+ * Real catalog products carry the original manufacturer copy in
+ * `product.description` (long-form, often 4–8 sentences). We split that
+ * into a small number of paragraphs and append a category-specific billing
+ * note when relevant. If no real description is present, we fall back to
+ * the boilerplate tone.
  */
 export function productDescription(product) {
   const tone = CATEGORY_TONES[product.category] || CATEGORY_TONES.Orthotics;
+  const real = (product.description || '').trim();
+  if (real) {
+    const paras = splitIntoParagraphs(real, 2);
+    if (product.hcpcs && product.hcpcs !== '—') paras.push(tone.billing);
+    return paras;
+  }
   const paras = [tone.intro, tone.fit];
   if (product.hcpcs && product.hcpcs !== '—') paras.push(tone.billing);
   return paras;
+}
+
+function splitIntoParagraphs(text, maxParas = 2) {
+  // Split on sentence boundaries and group sentences into roughly equal
+  // paragraphs of 2-4 sentences each.
+  const sentences = text
+    .replace(/\s+/g, ' ')
+    .split(/(?<=[.!?])\s+(?=[A-Z0-9•])/)
+    .filter(Boolean);
+  if (sentences.length <= 3) return [text];
+  const target = Math.min(maxParas, Math.ceil(sentences.length / 3));
+  const perPara = Math.ceil(sentences.length / target);
+  const paras = [];
+  for (let i = 0; i < sentences.length; i += perPara) {
+    paras.push(sentences.slice(i, i + perPara).join(' '));
+  }
+  return paras.slice(0, maxParas);
 }
 
 /**
  * Returns 4 highlight items for the "key features" section.
  */
 export function productHighlights(product) {
-  return HIGHLIGHT_LIBRARY[product.category] || HIGHLIGHT_LIBRARY.Orthotics;
+  return (
+    HIGHLIGHT_LIBRARY[product.category]
+    || HIGHLIGHT_LIBRARY.PPE
+  );
 }
 
 /**
@@ -164,7 +228,7 @@ export function productDocuments(product) {
  * same product always shows the same quotes.
  */
 export function productReviews(product) {
-  const pool = REVIEW_LIBRARY[product.category] || REVIEW_LIBRARY.Orthotics;
+  const pool = REVIEW_LIBRARY[product.category] || REVIEW_LIBRARY.PPE;
   // Deterministic pick: take all available, but rotate based on SKU char sum.
   const sum = product.sku.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
   const start = sum % pool.length;

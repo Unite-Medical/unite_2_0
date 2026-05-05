@@ -45,27 +45,44 @@ export function ProductDetail() {
   const inv = db.useTable('inventory', { where: { sku: id } });
   const stock = inv.reduce((a, b) => a + b.on_hand, 0);
   const tiers = useMemo(() => db.list('pricing', { where: { sku: id }, orderBy: 'min_qty' }), [id]);
+  const variants = useMemo(() => (product?.variants || []), [product?.variants]);
+  const hasMultiVariants = variants.length > 1;
+  const [variantIdx, setVariantIdx] = useState(0);
+  const selectedVariant = hasMultiVariants ? variants[variantIdx] : null;
   const [qty, setQty] = useState(1);
   const [lightboxIdx, setLightboxIdx] = useState(-1);
   const tierLabel = tierForQty(qty);
   const activeTier = tiers.slice().reverse().find((t) => qty >= t.min_qty) || tiers[0];
 
   const gallery = useMemo(() => {
+    if (!product) return [];
+    const items = [];
+    const realImages = product.images || [];
+    if (realImages.length > 0) {
+      realImages.forEach((src, i) => {
+        items.push({
+          src,
+          alt: `${product.name || ''} — image ${i + 1}`,
+          label: i === 0 ? 'Hero' : `View ${i + 1}`,
+        });
+      });
+      return items;
+    }
+    // Fallback for legacy/marketing-only products with no real photos.
     const heroSrc = PRODUCT_IMG[id];
     const thumbs = productThumbs(id);
-    const items = [];
-    if (heroSrc) items.push({ src: heroSrc, alt: product?.name || '', label: 'Hero' });
+    if (heroSrc) items.push({ src: heroSrc, alt: product.name || '', label: 'Hero' });
     if (thumbs) {
       ['front', 'back', 'detail', 'packaging'].forEach((angle) => {
         items.push({
           src: thumbs[angle],
-          alt: `${product?.name || ''} — ${angle}`,
+          alt: `${product.name || ''} — ${angle}`,
           label: angle,
         });
       });
     }
     return items;
-  }, [id, product?.name]);
+  }, [id, product]);
 
   const description = useMemo(() => (product ? productDescription(product) : []), [product]);
 
@@ -103,7 +120,8 @@ export function ProductDetail() {
     );
   }
 
-  const price = activeTier?.unit_price ?? product.price;
+  const variantPrice = selectedVariant?.price ?? product.price;
+  const price = hasMultiVariants ? variantPrice : (activeTier?.unit_price ?? product.price);
   const savingsPct = product.price && price < product.price ? Math.round(((product.price - price) / product.price) * 100) : 0;
 
   return (
@@ -161,19 +179,58 @@ export function ProductDetail() {
                 </div>
               </div>
               <div style={{ marginTop: 20 }}>
-                <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3, marginBottom: 10 }}>VOLUME TIER</div>
-                <div style={{ display: 'flex', gap: 6 }}>
-                  {tiers.map((t) => {
-                    const isActive = activeTier?.id === t.id;
-                    const range = t.min_qty >= 250 ? '250+' : t.min_qty >= 50 ? '50-249' : t.min_qty >= 10 ? '10-49' : '1-9';
-                    return (
-                      <button key={t.id} onClick={() => setQty(t.min_qty)} style={{ flex: 1, padding: '12px 8px', borderRadius: 10, background: isActive ? D.plum : D.paper, color: isActive ? D.paper : D.ink, border: `1px solid ${isActive ? D.plum : D.line}`, cursor: 'pointer', fontFamily: D.sans }}>
-                        <div style={{ fontSize: 12, opacity: .7 }}>{range}</div>
-                        <div style={{ fontSize: 15, fontWeight: 600, marginTop: 2 }}>{fmt.money(t.unit_price)}</div>
-                      </button>
-                    );
-                  })}
-                </div>
+                {hasMultiVariants ? (
+                  <>
+                    <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3, marginBottom: 10 }}>
+                      {Object.keys(variants[0]?.options || {})[0]?.toUpperCase() || 'OPTION'}
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: variants.length === 2 ? '1fr 1fr' : variants.length === 3 ? 'repeat(3, 1fr)' : 'repeat(2, 1fr)', gap: 6 }}>
+                      {variants.map((v, i) => {
+                        const isActive = i === variantIdx;
+                        return (
+                          <button
+                            key={v.variant_id || v.sku || i}
+                            onClick={() => setVariantIdx(i)}
+                            disabled={!v.available}
+                            style={{
+                              padding: '12px 10px',
+                              borderRadius: 10,
+                              background: isActive ? D.plum : D.paper,
+                              color: isActive ? D.paper : v.available ? D.ink : D.ink3,
+                              border: `1px solid ${isActive ? D.plum : D.line}`,
+                              cursor: v.available ? 'pointer' : 'not-allowed',
+                              fontFamily: D.sans,
+                              textAlign: 'left',
+                              opacity: v.available ? 1 : 0.55,
+                            }}
+                            aria-pressed={isActive}
+                          >
+                            <div style={{ fontSize: 13, fontWeight: 600, lineHeight: 1.2 }}>{v.title}</div>
+                            <div style={{ fontSize: 12, opacity: 0.85, marginTop: 4 }}>
+                              {fmt.money(v.price)} {!v.available && '· out of stock'}
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3, marginBottom: 10 }}>VOLUME TIER</div>
+                    <div style={{ display: 'flex', gap: 6 }}>
+                      {tiers.map((t) => {
+                        const isActive = activeTier?.id === t.id;
+                        const range = t.min_qty >= 250 ? '250+' : t.min_qty >= 50 ? '50-249' : t.min_qty >= 10 ? '10-49' : '1-9';
+                        return (
+                          <button key={t.id} onClick={() => setQty(t.min_qty)} style={{ flex: 1, padding: '12px 8px', borderRadius: 10, background: isActive ? D.plum : D.paper, color: isActive ? D.paper : D.ink, border: `1px solid ${isActive ? D.plum : D.line}`, cursor: 'pointer', fontFamily: D.sans }}>
+                            <div style={{ fontSize: 12, opacity: .7 }}>{range}</div>
+                            <div style={{ fontSize: 15, fontWeight: 600, marginTop: 2 }}>{fmt.money(t.unit_price)}</div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </>
+                )}
               </div>
               <div style={{ display: 'flex', gap: 10, marginTop: 22, alignItems: 'center', flexWrap: 'wrap' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 2, border: `1px solid ${D.line}`, borderRadius: 999, padding: 4 }}>
@@ -181,7 +238,21 @@ export function ProductDetail() {
                   <div style={{ minWidth: 40, textAlign: 'center', fontWeight: 600 }}>{qty}</div>
                   <button aria-label="Increase quantity" onClick={() => setQty(qty + 1)} style={{ background: 'none', border: 'none', padding: 8, cursor: 'pointer' }}><Icon.plus /></button>
                 </div>
-                <button onClick={() => { cartStore.add(product.sku, qty); navigate('/cart'); }} style={{ flex: '1 1 160px', background: D.ink, color: D.paper, border: 'none', padding: '14px', borderRadius: 999, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>Add to cart</button>
+                <button
+                  onClick={() => {
+                    cartStore.add(
+                      product.sku,
+                      qty,
+                      selectedVariant
+                        ? { sku: selectedVariant.sku, title: selectedVariant.title, price: selectedVariant.price }
+                        : undefined,
+                    );
+                    navigate('/cart');
+                  }}
+                  style={{ flex: '1 1 160px', background: D.ink, color: D.paper, border: 'none', padding: '14px', borderRadius: 999, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}
+                >
+                  Add to cart
+                </button>
                 <button onClick={() => navigate('/quote')} style={{ background: 'transparent', color: D.ink, border: `1.5px solid ${D.ink}`, padding: '13px 18px', borderRadius: 999, cursor: 'pointer', fontSize: 14, flex: isMobile ? '1 1 160px' : '0 0 auto' }}>Request quote</button>
               </div>
               <div style={{ marginTop: 14, fontSize: 12, color: D.ink3, fontFamily: D.mono, letterSpacing: 0.6 }}>
