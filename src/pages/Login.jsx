@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { D } from '../tokens.js';
 import { UMLogo } from '../components/shared/Logo.jsx';
 import { Grad } from '../components/shared/Grad.jsx';
@@ -9,6 +9,8 @@ import { useSEO } from '../lib/seo.js';
 
 export function Login() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const next = searchParams.get('next');
   const { isMobile } = useViewport();
   useSEO({ title: 'Sign in', description: 'Sign in to your Unite Medical B2B account.', canonical: '/login', noindex: true });
   const [email, setEmail] = useState('sarah@atlanta-surgical.com');
@@ -16,12 +18,32 @@ export function Login() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
 
+  function destinationFor(session) {
+    if (next && next.startsWith('/')) return next;
+    return session.role === 'admin' ? '/admin' : '/dashboard';
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
     setError(null); setSubmitting(true);
     try {
       const session = await auth.login(email, password);
-      navigate(session.role === 'admin' ? '/admin' : '/dashboard');
+      navigate(destinationFor(session));
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  async function handleDemoAdmin() {
+    setError(null); setSubmitting(true);
+    setEmail('damon@unitemedical.com');
+    setPassword('admin');
+    try {
+      const session = await auth.login('damon@unitemedical.com', 'admin');
+      navigate(next && next.startsWith('/') ? next : '/admin');
+      void session;
     } catch (err) {
       setError(err.message);
     } finally {
@@ -65,6 +87,14 @@ export function Login() {
             {error && <div style={{ marginTop: 12, padding: 10, borderRadius: 8, background: '#fbe9e1', color: '#7a2d10', fontSize: 13 }}>{error}</div>}
             <button type="submit" disabled={submitting} style={{ marginTop: 18, width: '100%', background: D.plum, color: D.paper, border: 'none', padding: 14, borderRadius: 999, fontSize: 14, fontWeight: 600, cursor: submitting ? 'wait' : 'pointer', opacity: submitting ? 0.7 : 1 }}>
               {submitting ? 'Signing in…' : 'Sign in'}
+            </button>
+            <button
+              type="button"
+              onClick={handleDemoAdmin}
+              disabled={submitting}
+              style={{ marginTop: 10, width: '100%', background: D.ink, color: D.paper, border: 'none', padding: 13, borderRadius: 999, fontSize: 13, fontWeight: 600, cursor: submitting ? 'wait' : 'pointer', opacity: submitting ? 0.7 : 1, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
+            >
+              Open admin console <span aria-hidden="true">→</span>
             </button>
             <div style={{ marginTop: 14, padding: 12, background: D.paperAlt, border: `1px dashed ${D.line}`, borderRadius: 10, fontSize: 12, color: D.ink2, lineHeight: 1.6 }}>
               <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.plum }}>DEMO ACCOUNTS</div>

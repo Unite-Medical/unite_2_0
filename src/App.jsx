@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ScrollToTop } from './components/layout/ScrollToTop.jsx';
 import { PageLoader } from './components/layout/PageLoader.jsx';
 import { Bootstrap } from './components/layout/Bootstrap.jsx';
+import { RequireAdmin } from './components/layout/RequireAdmin.jsx';
 
 const Homepage = lazy(() => import('./pages/Homepage.jsx').then((m) => ({ default: m.Homepage })));
 const Catalog = lazy(() => import('./pages/Catalog.jsx').then((m) => ({ default: m.Catalog })));
@@ -55,6 +56,9 @@ const AdminCMS = lazy(() => import('./pages/admin/AdminCMS.jsx').then((m) => ({ 
 const AdminVendorApproval = lazy(() => import('./pages/admin/AdminVendorApproval.jsx').then((m) => ({ default: m.AdminVendorApproval })));
 const AdminQuotes = lazy(() => import('./pages/admin/AdminQuotes.jsx').then((m) => ({ default: m.AdminQuotes })));
 const AdminCustomers = lazy(() => import('./pages/admin/AdminCustomers.jsx').then((m) => ({ default: m.AdminCustomers })));
+const AdminProducts = lazy(() => import('./pages/admin/AdminProducts.jsx').then((m) => ({ default: m.AdminProducts })));
+const AdminProductEdit = lazy(() => import('./pages/admin/AdminProductEdit.jsx').then((m) => ({ default: m.AdminProductEdit })));
+const AdminSettings = lazy(() => import('./pages/admin/AdminSettings.jsx').then((m) => ({ default: m.AdminSettings })));
 
 export default function App() {
   return (
@@ -120,15 +124,19 @@ export default function App() {
           <Route path="/account/settings" element={<AccountSettings />} />
           <Route path="/account/invoices" element={<Invoices />} />
 
-          <Route path="/admin" element={<AdminOverview />} />
-          <Route path="/admin/analytics" element={<AdminAnalytics />} />
-          <Route path="/admin/inventory" element={<AdminInventory />} />
-          <Route path="/admin/crm" element={<AdminCRM />} />
-          <Route path="/admin/customers" element={<AdminCustomers />} />
-          <Route path="/admin/quotes" element={<AdminQuotes />} />
-          <Route path="/admin/orders" element={<AdminOrders />} />
-          <Route path="/admin/cms" element={<AdminCMS />} />
-          <Route path="/admin/vendors" element={<AdminVendorApproval />} />
+          <Route path="/admin"           element={<RequireAdmin><AdminOverview /></RequireAdmin>} />
+          <Route path="/admin/analytics" element={<RequireAdmin><AdminAnalytics /></RequireAdmin>} />
+          <Route path="/admin/inventory" element={<RequireAdmin><AdminInventory /></RequireAdmin>} />
+          <Route path="/admin/crm"       element={<RequireAdmin><AdminCRM /></RequireAdmin>} />
+          <Route path="/admin/customers" element={<RequireAdmin><AdminCustomers /></RequireAdmin>} />
+          <Route path="/admin/quotes"    element={<RequireAdmin><AdminQuotes /></RequireAdmin>} />
+          <Route path="/admin/orders"    element={<RequireAdmin><AdminOrders /></RequireAdmin>} />
+          <Route path="/admin/cms"       element={<RequireAdmin><AdminCMS /></RequireAdmin>} />
+          <Route path="/admin/vendors"   element={<RequireAdmin><AdminVendorApproval /></RequireAdmin>} />
+          <Route path="/admin/products"  element={<RequireAdmin><AdminProducts /></RequireAdmin>} />
+          <Route path="/admin/products/new" element={<RequireAdmin><AdminProductEdit /></RequireAdmin>} />
+          <Route path="/admin/products/edit/:sku" element={<RequireAdmin><AdminProductEdit /></RequireAdmin>} />
+          <Route path="/admin/settings"  element={<RequireAdmin><AdminSettings /></RequireAdmin>} />
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

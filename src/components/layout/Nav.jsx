@@ -51,6 +51,14 @@ export function Nav() {
             <span style={{ opacity: .4 }}>/</span>
             <span>Veteran-Owned · Lithia Springs, GA</span>
             <span style={{ flex: 1 }} />
+            <Link
+              to="/admin"
+              style={{ opacity: 0.85, color: 'inherit', background: 'rgba(255,255,255,.08)', padding: '2px 9px', borderRadius: 999, letterSpacing: 1 }}
+              title="Open admin console"
+            >
+              ADMIN
+            </Link>
+            <span style={{ opacity: .4 }}>/</span>
             <a href="tel:+16785550142" style={{ opacity: .7, color: 'inherit' }}>Sales · (678) 555-0142</a>
           </div>
         </div>
@@ -154,6 +162,7 @@ export function Nav() {
                 ['/blog', 'Field notes'],
                 ['/compliance', 'Compliance'],
                 ['/portfolio', 'Portfolio'],
+                ['/admin', 'Admin Console'],
               ].map(([path, label]) => (
                 <Link key={path} to={path} style={{
                   display: 'block', padding: '10px 14px',

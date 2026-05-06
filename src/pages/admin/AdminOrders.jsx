@@ -7,7 +7,10 @@ import { shipstation, cin7 } from '../../lib/services.js';
 import { useViewport } from '../../lib/viewport.js';
 
 const FILTERS = ['All', 'net30', 'net60', 'card', 'mspv', 'wire'];
-const STATUS_COLOR = { picked: '#b8502c', label_created: '#5e2963', in_transit: '#2d6a4f', shipped: '#2d6a4f', delivered: '#8f8490', out_for_delivery: '#2d6a4f' };
+const STATUS_COLOR = { picked: '#b8502c', label_created: '#5e2963', in_transit: '#2d6a4f', shipped: '#2d6a4f', delivered: '#8f8490', out_for_delivery: '#2d6a4f', pending: '#b8502c', processing: '#b8502c', cancelled: '#b8502c' };
+const ORDER_STATUSES = ['pending', 'processing', 'shipped', 'in_transit', 'delivered', 'cancelled'];
+const PAYMENT_STATUSES = ['pending', 'invoiced', 'paid', 'refunded'];
+const CARRIERS = ['fedex_ground', 'ups_ground', 'usps_priority', 'fedex_2day', 'ups_2day'];
 
 export function AdminOrders() {
   const { isMobile } = useViewport();
@@ -31,6 +34,39 @@ export function AdminOrders() {
     setSyncing(true);
     await Promise.all([cin7.syncInventory('wh_atl'), shipstation.getRates({ weight_lbs: 12 })]);
     setSyncing(false);
+  }
+
+  function updateOrderStatus(status) {
+    if (!selected) return;
+    db.update('orders', selected.id, { status });
+    if (selectedShipment && (status === 'shipped' || status === 'in_transit' || status === 'delivered')) {
+      db.update('shipments', selectedShipment.id, {
+        status: status === 'delivered' ? 'delivered' : status === 'in_transit' ? 'in_transit' : 'label_created',
+      });
+    }
+  }
+
+  function updatePaymentStatus(payment_status) {
+    if (!selected) return;
+    db.update('orders', selected.id, { payment_status });
+  }
+
+  function updateTracking(tracking_number) {
+    if (!selected) return;
+    db.update('orders', selected.id, { tracking_number });
+    if (selectedShipment) db.update('shipments', selectedShipment.id, { tracking_number });
+  }
+
+  function updateCarrier(carrier) {
+    if (!selected) return;
+    db.update('orders', selected.id, { carrier });
+    if (selectedShipment) db.update('shipments', selectedShipment.id, { carrier });
+  }
+
+  function cancelOrder() {
+    if (!selected) return;
+    if (!window.confirm(`Cancel order ${selected.id}? This is reversible by changing the status back.`)) return;
+    db.update('orders', selected.id, { status: 'cancelled', payment_status: 'refunded' });
   }
 
   return (
@@ -128,6 +164,46 @@ export function AdminOrders() {
                 </div>
               </>
             )}
+
+            <div style={{ marginTop: 18, fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3, marginBottom: 8 }}>EDIT</div>
+            <div style={{ padding: 14, background: D.paper, borderRadius: 8, border: `1px solid ${D.line}`, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+              <label style={{ display: 'block' }}>
+                <div style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, color: D.ink3, marginBottom: 4 }}>STATUS</div>
+                <select value={selected.status || ''} onChange={(e) => updateOrderStatus(e.target.value)} style={editSelect}>
+                  {ORDER_STATUSES.map((s) => <option key={s} value={s}>{s.replace('_', ' ')}</option>)}
+                </select>
+              </label>
+              <label style={{ display: 'block' }}>
+                <div style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, color: D.ink3, marginBottom: 4 }}>PAYMENT</div>
+                <select value={selected.payment_status || ''} onChange={(e) => updatePaymentStatus(e.target.value)} style={editSelect}>
+                  {PAYMENT_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
+                </select>
+              </label>
+              <label style={{ display: 'block' }}>
+                <div style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, color: D.ink3, marginBottom: 4 }}>CARRIER</div>
+                <select value={selected.carrier || ''} onChange={(e) => updateCarrier(e.target.value)} style={editSelect}>
+                  <option value="">—</option>
+                  {CARRIERS.map((c) => <option key={c} value={c}>{c.replace('_', ' ')}</option>)}
+                </select>
+              </label>
+              <label style={{ display: 'block' }}>
+                <div style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, color: D.ink3, marginBottom: 4 }}>TRACKING #</div>
+                <input
+                  defaultValue={selected.tracking_number || ''}
+                  onBlur={(e) => updateTracking(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === 'Enter') e.currentTarget.blur(); }}
+                  style={{ ...editSelect, fontFamily: D.mono }}
+                  placeholder="1Z..."
+                />
+              </label>
+            </div>
+            <button
+              onClick={cancelOrder}
+              disabled={selected.status === 'cancelled'}
+              style={{ marginTop: 12, width: '100%', background: 'transparent', color: D.terra, border: `1px solid ${D.terra}`, padding: '10px 16px', borderRadius: 999, fontSize: 12, fontWeight: 600, cursor: selected.status === 'cancelled' ? 'not-allowed' : 'pointer', opacity: selected.status === 'cancelled' ? 0.5 : 1, fontFamily: 'inherit' }}
+            >
+              {selected.status === 'cancelled' ? 'Order cancelled' : 'Cancel this order'}
+            </button>
             <div style={{ marginTop: 18, fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3, marginBottom: 8 }}>ACTIVITY · {auditLog.length} EVENTS</div>
             {auditLog.slice(0, 6).map((e, i) => (
               <div key={e.id} style={{ padding: '10px 0', borderTop: i === 0 ? 'none' : `1px solid ${D.line}`, display: 'grid', gridTemplateColumns: '90px 1fr 120px', gap: 10, fontSize: 12 }}>
@@ -142,3 +218,5 @@ export function AdminOrders() {
     </AdminShell>
   );
 }
+
+const editSelect = { width: '100%', padding: '8px 10px', background: D.paperAlt, border: `1px solid ${D.line}`, borderRadius: 6, fontSize: 12, color: D.ink, outline: 'none', fontFamily: 'inherit', boxSizing: 'border-box' };

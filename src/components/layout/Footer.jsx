@@ -173,6 +173,13 @@ export function Footer() {
             <Link to="/privacy" style={{ color: D.plumSoft }}>Privacy</Link>
             <Link to="/terms" style={{ color: D.plumSoft }}>Terms</Link>
             <Link to="/support" style={{ color: D.plumSoft }}>Support</Link>
+            <Link
+              to="/admin"
+              style={{ color: D.paper, background: 'rgba(255,255,255,.12)', padding: '3px 10px', borderRadius: 999, letterSpacing: 1.1 }}
+              title="Admin Console"
+            >
+              ADMIN
+            </Link>
           </div>
         </div>
       </div>
