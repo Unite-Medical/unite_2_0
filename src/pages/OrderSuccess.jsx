@@ -9,7 +9,7 @@ import { fmt } from '../lib/format.js';
 import { useViewport } from '../lib/viewport.js';
 import { useSEO } from '../lib/seo.js';
 
-const FALLBACK_REP = { name: 'Miguel Vasquez', phone: '(678) 555-0180', email: 'miguel@unitemedical.com' };
+const FALLBACK_REP = { name: 'Miguel Vasquez', phone: '833.868.6483', email: 'sales@unitemedical.net' };
 
 export function OrderSuccess() {
   const navigate = useNavigate();
@@ -55,7 +55,7 @@ export function OrderSuccess() {
           </div>
         </div>
         <p style={{ fontSize: 17, color: D.ink2, marginTop: 22, maxWidth: 720, lineHeight: 1.55 }}>
-          We&apos;ve picked at the {db.get('warehouses', order.ship_from_warehouse)?.name || 'Atlanta DC'} and ShipStation has issued tracking. QuickBooks invoice {invoice?.id} is in the customer&apos;s queue.
+          We&apos;ve picked at the {db.get('warehouses', order.ship_from_warehouse)?.name || 'Atlanta DC'} and our WMS has issued tracking. our billing system invoice {invoice?.id} is in the customer&apos;s queue.
         </p>
 
         <div style={{ marginTop: isMobile ? 28 : 40, display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.3fr 1fr', gap: isMobile ? 18 : 24 }}>

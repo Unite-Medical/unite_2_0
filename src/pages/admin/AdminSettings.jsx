@@ -29,15 +29,15 @@ const DEFAULTS = {
   company_name: 'Unite Medical Supply',
   company_address: '1487 Trae Lane, Lithia Springs, GA 30122',
   fda_registration: '3015727296',
-  mspv_bpa: '36C24123A0077',
+  bpa: '36F79725D0203',
   cage: '8MK70',
   duns: '117553945',
-  sales_phone: '(678) 555-0142',
-  sales_email: 'sales@unitemedical.com',
+  sales_phone: '833.868.6483',
+  sales_email: 'sales@unitemedical.net',
   default_margin: 0.6,
   freight_per_unit: 0.42,
   free_freight_threshold: 500,
-  median_ship_label: '48 hr',
+  median_ship_label: 'Same-day',
   feature_quote_engine: true,
   feature_telehealth: false,
   feature_clyne: false,
@@ -123,7 +123,7 @@ export function AdminSettings() {
           <Card title="Compliance & registrations">
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
               <Field label="FDA registration"><input value={settings.fda_registration} onChange={(e) => patch({ fda_registration: e.target.value })} style={inputStyle} /></Field>
-              <Field label="MSPV BPA"><input value={settings.mspv_bpa} onChange={(e) => patch({ mspv_bpa: e.target.value })} style={inputStyle} /></Field>
+              <Field label="BPA"><input value={settings.bpa} onChange={(e) => patch({ bpa: e.target.value })} style={inputStyle} /></Field>
               <Field label="CAGE code"><input value={settings.cage} onChange={(e) => patch({ cage: e.target.value })} style={inputStyle} /></Field>
               <Field label="DUNS"><input value={settings.duns} onChange={(e) => patch({ duns: e.target.value })} style={inputStyle} /></Field>
             </div>

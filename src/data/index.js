@@ -46,14 +46,16 @@ export const PRODUCTS = [...featured, ...fallback];
 
 export const SEGMENTS = [
   { id: 'asc', title: 'Ambulatory Surgery Centers', line: 'Procedure-specific bundles. No MOQs.', tam: '$45.6B', stat: '21% growth · 2029' },
-  { id: 'gov', title: 'Government & VA', line: 'MSPV BPA · Veteran-owned · Berry compliant.', tam: '$5–10B', stat: 'CAGE 8MK70' },
+  { id: 'gov', title: 'Government & VA', line: 'BPA · Veteran-owned · Berry compliant.', tam: '$5–10B', stat: 'CAGE 8MK70' },
   { id: 'pharma', title: 'Independent Pharmacies', line: 'Private-label diagnostics + Clyne telehealth.', tam: '$15–20B', stat: 'Drop-ship ready' },
   { id: 'dist', title: 'Regional Distributors', line: 'FDA-registered import. White-label. Drop-ship.', tam: '$10–15B', stat: 'FDA #3015727296' },
 ];
 
+// "By the numbers" tiles per spec §4a. BPA value + Same-day label updated;
+// the no-longer-trustworthy "median ship to ASC" reframed.
 export const TRUST_METRICS = [
-  { big: '500M+', small: 'items distributed' },
-  { big: '36C24123A0077', small: 'MSPV BPA (VA)' },
-  { big: '3015727296', small: 'FDA registration' },
-  { big: '48 hr', small: 'median ship to ASC' },
+  { big: '500M+', small: 'Units Distributed' },
+  { big: '36F79725D0203', small: 'BPA' },
+  { big: '3015727296', small: 'FDA Registration' },
+  { big: 'Same-day', small: 'Shipping · Before 2pm EST' },
 ];

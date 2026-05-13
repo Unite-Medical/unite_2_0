@@ -53,7 +53,7 @@ export function Privacy() {
         { title: 'What we collect', body: 'Account information you give us (name, work email, organization, address), the orders and quotes you create, and basic device telemetry. We do not collect protected health information (PHI) without a signed Business Associate Agreement.' },
         { title: 'Why we collect it', body: 'To process your orders, generate invoices, ship goods, support compliance audits, and improve the platform. We do not sell your data to third parties — full stop.' },
         { title: 'Where it lives', body: 'Customer records and order history are stored in SOC 2 Type II environments hosted in the United States. Backups are encrypted at rest with AES-256.' },
-        { title: 'Sharing', body: 'We share order, payment, and shipping data with the third-party processors that move your goods (ShipStation, FedEx, UPS, your bank, QuickBooks Online, Stripe) under contractual obligations to keep it confidential.' },
+        { title: 'Sharing', body: 'We share order, payment, and shipping data with the third-party processors that move your goods (our WMS, FedEx, UPS, your bank, our billing system Online, Stripe) under contractual obligations to keep it confidential.' },
         { title: 'Your rights', body: 'You may request a copy of the personal data we hold about you, request corrections, or request deletion. Email privacy@unitemedical.com and we will respond within 30 days.' },
         { title: 'Children', body: 'The platform is intended for business use only and is not directed at anyone under 16.' },
         { title: 'Contact', body: 'Privacy Officer · privacy@unitemedical.com · 1487 Trae Lane, Lithia Springs GA 30122.' },
@@ -105,7 +105,7 @@ export function Returns() {
           'Drop the package at any FedEx or UPS location.',
         ] },
         { title: 'Refunds', body: 'Refunds are issued to the original payment method (or as a credit memo on Net-30 accounts) within 5 business days of receipt at our DC.' },
-        { title: 'Damaged or wrong items', body: 'If anything arrives damaged or incorrect, email support@unitemedical.com within 72 hours and we\'ll replace it at no charge — no return needed.' },
+        { title: 'Damaged or wrong items', body: 'If anything arrives damaged or incorrect, email support@unitemedical.net within 72 hours and we\'ll replace it at no charge — no return needed.' },
       ]}
     />
   );
@@ -122,7 +122,7 @@ export function Shipping() {
       eyebrow="POLICIES · SHIPPING"
       title={<>Shipping <Grad>policy</Grad>.</>}
       sections={[
-        { title: 'Standard ground', body: 'Free on orders above $500. Ships from the closest of our four DCs (Atlanta, Reno, Dallas, Lithia Springs). Median delivery: 4 business days.' },
+        { title: 'Standard ground', body: 'Free on orders above $500. Ships from the closest of our four DCs (Georgia & Nevada, Lithia Springs). Median delivery: 4 business days.' },
         { title: 'Expedited & overnight', body: 'Expedited 2-day from $38; standard overnight from $95. Cut-off is 2:00 PM local DC time for same-day pick.' },
         { title: 'Same-day (Atlanta metro)', body: 'Available for stocked items inside the Atlanta metro perimeter. $95 flat. Delivered by 6 PM if ordered by 2 PM.' },
         { title: 'Drop-ship', body: 'For dealers and pharmacies, we drop-ship to your patient or store with your packing slip and your branding.' },

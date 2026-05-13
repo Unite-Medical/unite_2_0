@@ -88,7 +88,7 @@ export function ProductDetail() {
 
   useSEO(product ? {
     title: product.name,
-    description: `${product.name} — ${product.category}, ${product.pack_size}.${product.hcpcs && product.hcpcs !== '—' ? ` HCPCS ${product.hcpcs}.` : ''} ${stock.toLocaleString()} units in stock, 48-hour median ship.`,
+    description: `${product.name} — ${product.category}, ${product.pack_size}.${product.hcpcs && product.hcpcs !== '—' ? ` HCPCS ${product.hcpcs}.` : ''} ${stock.toLocaleString()} units in stock, Same-day shipping on orders before 2pm EST.`,
     canonical: `/products/${product.sku}`,
     type: 'product',
     ogImage: PRODUCT_IMG[product.sku],

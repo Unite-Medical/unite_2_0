@@ -45,14 +45,14 @@ export function AdminOverview() {
         <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 12 }}>OPERATIONS · OVERVIEW</div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: isMobile ? 'flex-start' : 'end', marginBottom: 22, flexDirection: isMobile ? 'column' : 'row', gap: 8 }}>
           <h1 style={{ fontFamily: D.display, fontSize: 'clamp(34px, 5.6vw, 56px)', fontWeight: 400, letterSpacing: -1.3, lineHeight: 1.02, margin: 0 }}>Operations overview.</h1>
-          <div style={{ fontFamily: D.mono, fontSize: isMobile ? 10 : 11, letterSpacing: 1, color: D.ink3 }}>QBO · SHIPSTATION · STRIPE</div>
+          <div style={{ fontFamily: D.mono, fontSize: isMobile ? 10 : 11, letterSpacing: 1, color: D.ink3 }}>our billing system · SHIPSTATION · STRIPE</div>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(4,1fr)', gap: 12, marginBottom: 18 }}>
           {[
             [fmt.short(revenueMTD), 'Revenue MTD', `${monthOrders.length} orders`],
             [String(orders.length), 'Orders all-time', `${orders.filter((o) => o.status === 'in_transit').length} in transit`],
             [fmt.number(products.length), 'SKUs live', `${lowStock} below reorder`],
-            [fmt.pct(fillRate), 'Fill rate', '48-hr median ship'],
+            [fmt.pct(fillRate), 'Fill rate', 'Same-day shipping (orders by 2pm EST)'],
           ].map(([b, s, sub]) => (
             <div key={s} style={{ padding: isMobile ? 16 : 22, background: D.card, borderRadius: 14, border: `1px solid ${D.line}` }}>
               <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>{s.toUpperCase()}</div>

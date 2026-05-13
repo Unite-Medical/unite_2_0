@@ -145,11 +145,10 @@ export function AccountSettings() {
             {tab === 'Integrations' && (
               <Card title="Connected systems">
                 {[
-                  ['QuickBooks Online', 'connected', 'Last sync 4 min ago'],
-                  ['ShipStation', 'connected', 'Tracking auto-populates orders'],
+                  ['Billing system', 'connected', 'Last sync 4 min ago'],
+                  ['Order management', 'connected', 'Tracking auto-populates orders'],
                   ['Stripe', 'connected', 'Card-on-file supported'],
-                  ['Coupa Punch-Out', 'available', 'Reach out to enable'],
-                  ['Ariba cXML', 'available', 'Reach out to enable'],
+                  ['EDI (850 / 810 / 856)', 'available', 'Contact us to enable'],
                 ].map(([n, st, sub], i) => (
                   <div key={n} style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 16, padding: '14px 0', borderTop: i === 0 ? 'none' : `1px solid ${D.line}`, alignItems: 'center' }}>
                     <div>

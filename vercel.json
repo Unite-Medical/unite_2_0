@@ -2,6 +2,21 @@
   "rewrites": [
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ],
+  "redirects": [
+    { "source": "/pages/pdac-consulting", "destination": "/services/pdac", "permanent": true },
+    { "source": "/pages/about-us", "destination": "/about", "permanent": true },
+    { "source": "/pages/contact-us", "destination": "/contact", "permanent": true },
+    { "source": "/pages/dealer-program", "destination": "/services/distributors", "permanent": true },
+    { "source": "/pages/private-labeling", "destination": "/services/private-label", "permanent": true },
+    { "source": "/pages/pdac-approval-letters", "destination": "/services/pdac", "permanent": true },
+    { "source": "/blogs/orthopedic-insights", "destination": "/blog", "permanent": true },
+    { "source": "/collections/:slug*", "destination": "/catalog", "permanent": true },
+    { "source": "/solutions", "destination": "/services", "permanent": true },
+    { "source": "/services/education", "destination": "/blog", "permanent": true },
+    { "source": "/services/dealer", "destination": "/services/distributors", "permanent": true },
+    { "source": "/about/veteran-owned", "destination": "/procurement", "permanent": true },
+    { "source": "/segments/gov", "destination": "/government", "permanent": true }
+  ],
   "headers": [
     {
       "source": "/assets/(.*)",

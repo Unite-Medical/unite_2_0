@@ -78,7 +78,7 @@ const STATIC_CATEGORIES = REAL_CATEGORIES.map((c) => ({
 const STATIC_WAREHOUSES = [
   { id: 'wh_atl', code: 'ATL', name: 'Atlanta, GA · main', city: 'Atlanta', state: 'GA', utilization: 0.74, capacity_units: 1_400_000, lat: 33.749, lng: -84.388 },
   { id: 'wh_reno', code: 'RNO', name: 'Reno, NV', city: 'Reno', state: 'NV', utilization: 0.52, capacity_units: 820_000, lat: 39.529, lng: -119.813 },
-  { id: 'wh_dal', code: 'DAL', name: 'Dallas, TX', city: 'Dallas', state: 'TX', utilization: 0.61, capacity_units: 720_000, lat: 32.776, lng: -96.797 },
+  { id: 'wh_dal', code: 'DAL', name: 'Reno, NV', city: 'Dallas', state: 'TX', utilization: 0.61, capacity_units: 720_000, lat: 32.776, lng: -96.797 },
   { id: 'wh_lit', code: 'LIT', name: 'Lithia Springs · overflow', city: 'Lithia Springs', state: 'GA', utilization: 0.88, capacity_units: 280_000, lat: 33.794, lng: -84.665 },
 ];
 
@@ -120,55 +120,24 @@ const SAMPLE_LEAD_NAMES = [
   ['Sunrise Outpatient', 'asc', 64000, 'hot', 'referral'],
 ];
 
+// Placeholder articles removed per Unite_CTO_Site_Document.md §4o.
+// Real content is being coordinated with Jill; the blog page renders empty
+// (category filters and JSON-LD still work) until real posts land.
 const SAMPLE_BLOG_POSTS = [
-  {
-    slug: 'mckesson-medsurg-spinoff',
-    title: 'McKesson is spinning off Med-Surg. What it means for ASCs.',
-    excerpt: 'McKesson\'s May 2025 announcement opens a 12-24 month window. Here\'s how to use it without paying a switching tax.',
-    author: 'Damon Reed',
-    category: 'Procurement',
-    cover: 'warehouse, dawn shift',
-    body: `# McKesson's spinoff is your renegotiation window\n\nMcKesson announced intent to separate its Medical-Surgical Solutions business in May 2025. For the typical 4-OR ASC, that means a vendor change conversation that won't be punished by a contract renewal cycle...\n\nWe ran the numbers on 22 ASC accounts that switched in Q4 2025. The median fill-rate uplift was 6.4 points and the median price reduction was 11%.`,
-    published: true,
-    views: 3120,
-    posted_at: isoDaysAgo(7),
-  },
-  {
-    slug: 'asc-procedure-bundles-101',
-    title: 'Procedure bundles 101: how to build a case cart that actually saves time',
-    excerpt: 'A practical primer on bundling SKUs by CPT code, with examples from total knee, cataract, and shoulder arthroscopy.',
-    author: 'Meredith Cole',
-    category: 'ASCs',
-    cover: 'OR turnover, late afternoon',
-    body: `# Procedure bundles 101\n\nA case cart isn't a list — it's a workflow.\n\nWe build bundles around three principles:\n\n1. **Code-first**: Start with the CPT, work back to consumables.\n2. **MOQ-aware**: Don't bundle a 100-pack into a 6-OR center.\n3. **Surgeon-tunable**: Let the picker swap brands without breaking the bundle.\n\nThe rest is mostly logistics.`,
-    published: true,
-    views: 1880,
-    posted_at: isoDaysAgo(14),
-  },
-  {
-    slug: 'va-mspv-bpa-explained',
-    title: 'The MSPV BPA, in plain English (no acronyms left behind)',
-    excerpt: 'A reference for non-government buyers trying to understand how Unite ships to 170 VA medical centers.',
-    author: 'Damon Reed',
-    category: 'Government',
-    cover: 'pallet of MSPV-tagged goods',
-    body: `# The MSPV BPA explained\n\nMSPV stands for Medical Surgical Prime Vendor. The "BPA" is a Blanket Purchase Agreement — basically, a pre-negotiated catalog the VA can pull from without a fresh contract for every order...`,
-    published: true,
-    views: 920,
-    posted_at: isoDaysAgo(28),
-  },
-  {
-    slug: 'tariff-volatility-q2-2026',
-    title: 'Tariff volatility, Q2 2026: a buyer\'s pricing memo',
-    excerpt: 'Reciprocal duties on Section 301 categories shifted again in March. Here\'s what changed and how we\'re absorbing it.',
-    author: 'Damon Reed',
-    category: 'Procurement',
-    cover: 'container yard at dawn',
-    body: `# Tariff volatility, Q2 2026\n\nThe USITC dataset moved on March 18. For PPE under HTS 6307.90 the duty rate climbed 1.4 points; for orthotic devices the line was flat...`,
-    published: true,
-    views: 612,
-    posted_at: isoDaysAgo(3),
-  },
+  // Intentionally empty.
+  // Format reminder (uncomment when real posts arrive):
+  // {
+  //   slug: 'real-article-slug',
+  //   title: 'Real article title',
+  //   excerpt: 'One- or two-sentence excerpt.',
+  //   author: 'Author Name',
+  //   category: 'Category',
+  //   cover: 'Image caption',
+  //   body: '...markdown body...',
+  //   published: true,
+  //   views: 0,
+  //   posted_at: isoDaysAgo(3),
+  // },
 ];
 
 function buildSampleOrders() {
@@ -231,7 +200,7 @@ function buildSampleOrders() {
         eta: order.eta,
         warehouse_id: order.ship_from_warehouse,
         events: [
-          { ts: placedAt, label: 'Label created (ShipStation)' },
+          { ts: placedAt, label: 'Label created (our WMS)' },
           { ts: isoDaysAgo(Math.max(0, i - 1)), label: 'Picked up by carrier' },
           ...(status === 'delivered' ? [{ ts: isoDaysAgo(Math.max(0, i - 2)), label: 'Out for delivery' }, { ts: isoDaysAgo(Math.max(0, i - 2)), label: 'Delivered' }] : []),
         ],
@@ -381,9 +350,10 @@ export function seed(db) {
   db.cms_pages.push({ id: 'pg_solutions', slug: '/solutions', title: 'Solutions', published: true, views: 4280, updated_at: isoDaysAgo(2) });
   db.cms_pages.push({ id: 'pg_compliance', slug: '/compliance', title: 'Compliance', published: true, views: 1620, updated_at: isoDaysAgo(2) });
 
-  db.banners.push({ id: 'bn_1', placement: 'homepage_top', headline: 'McKesson Med-Surg switching window now open', cta_label: 'See our pitch', cta_url: '/blog/mckesson-medsurg-spinoff', active: true, starts_at: isoDaysAgo(7), ends_at: new Date(Date.now() + 60 * 86400000).toISOString(), clicks: 184 });
+  // Homepage banners disabled until real campaign assets land — placeholder
+  // pitch was removed with the placeholder articles per spec §4o.
 
-  db.vendors.push({ id: 'vnd_shanghai', name: 'Shanghai MedTech Co.', country: 'CN', status: 'approved', fda_registered: true, gs1_validated: true, last_audit: isoDaysAgo(45) });
+  db.vendors.push({ id: 'vnd_intl_a', name: 'Vetted Manufacturer A', country: 'CN', status: 'approved', fda_registered: true, gs1_validated: true, last_audit: isoDaysAgo(45) });
   db.vendors.push({ id: 'vnd_taipei', name: 'Taipei Diagnostic Group', country: 'TW', status: 'pending', fda_registered: true, gs1_validated: false, last_audit: null });
   db.vendors.push({ id: 'vnd_atlpharma', name: 'Atlanta Pharma Co.', country: 'US', status: 'approved', fda_registered: true, gs1_validated: true, last_audit: isoDaysAgo(15) });
 

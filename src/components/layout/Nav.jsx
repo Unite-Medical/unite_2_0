@@ -7,12 +7,13 @@ import { useCart } from '../../store/cart.js';
 import { useViewport } from '../../lib/viewport.js';
 import { auth } from '../../lib/auth.js';
 
+// Primary nav per Unite_CTO_Site_Document.md §2.1 — five items, no Solutions.
 const LINKS = [
-  ['/catalog', 'Catalog'],
-  ['/solutions', 'Solutions'],
+  ['/catalog', 'Products'],
+  ['/quote', 'Source & Quote'],
   ['/services', 'Services'],
-  ['/quote', 'Quoting Engine'],
-  ['/resources', 'Resources'],
+  ['/government', 'Government'],
+  ['/about', 'About'],
 ];
 
 export function Nav() {
@@ -44,10 +45,12 @@ export function Nav() {
     <header style={{ background: D.paper, borderBottom: `1px solid ${D.line}`, position: 'sticky', top: 0, zIndex: 30 }}>
       {!isMobile && (
         <div style={{ background: D.ink, color: D.paper, fontFamily: D.mono, fontSize: 11, letterSpacing: 0.8 }}>
-          <div style={{ maxWidth: 1360, margin: '0 auto', padding: `7px ${padX}px`, display: 'flex', gap: 24, alignItems: 'center' }}>
+          <div style={{ maxWidth: 1360, margin: '0 auto', padding: `7px ${padX}px`, display: 'flex', gap: 20, alignItems: 'center' }}>
             <span>FDA · 3015727296</span>
             <span style={{ opacity: .4 }}>/</span>
-            <span>MSPV BPA · 36C24123A0077</span>
+            <span>BPA · 36F79725D0203</span>
+            <span style={{ opacity: .4 }}>/</span>
+            <span>CAGE · 8MK70</span>
             <span style={{ opacity: .4 }}>/</span>
             <span>Veteran-Owned · Lithia Springs, GA</span>
             <span style={{ flex: 1 }} />
@@ -59,13 +62,13 @@ export function Nav() {
               ADMIN
             </Link>
             <span style={{ opacity: .4 }}>/</span>
-            <a href="tel:+16785550142" style={{ opacity: .7, color: 'inherit' }}>Sales · (678) 555-0142</a>
+            <a href="tel:+18338686483" style={{ opacity: .7, color: 'inherit' }}>Sales · 833.868.6483</a>
           </div>
         </div>
       )}
       {isMobile && (
         <div style={{ background: D.ink, color: D.paper, fontFamily: D.mono, fontSize: 10, letterSpacing: 0.8, textAlign: 'center', padding: '6px 12px' }}>
-          FDA-REGISTERED · VETERAN-OWNED · <a href="tel:+16785550142" style={{ color: 'inherit', textDecoration: 'underline' }}>(678) 555-0142</a>
+          FDA · CAGE 8MK70 · VETERAN-OWNED · <a href="tel:+18338686483" style={{ color: 'inherit', textDecoration: 'underline' }}>833.868.6483</a>
         </div>
       )}
 
@@ -111,7 +114,7 @@ export function Nav() {
               aria-label="Search catalog"
               style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 14px', border: `1px solid ${D.line}`, borderRadius: 999, color: D.ink3, fontSize: 13, width: 220, background: D.card, cursor: 'pointer' }}
             >
-              <Icon.search /> <span>Search 12,400 SKUs</span>
+              <Icon.search /> <span>Search products</span>
             </button>
           )}
           {!isMobile && (
@@ -156,12 +159,13 @@ export function Nav() {
               ))}
               <div style={{ height: 1, background: D.line, margin: '10px 14px' }} />
               {[
-                ['/about', 'About'],
+                ['/government', 'Government'],
+                ['/procurement', 'Procurement & Diversity'],
                 ['/contact', 'Contact'],
                 ['/locations', 'Locations'],
-                ['/blog', 'Field notes'],
+                ['/blog', 'Blog'],
                 ['/compliance', 'Compliance'],
-                ['/portfolio', 'Portfolio'],
+                ['/case-studies/tjs', 'TJS Case Study'],
                 ['/admin', 'Admin Console'],
               ].map(([path, label]) => (
                 <Link key={path} to={path} style={{
@@ -177,9 +181,10 @@ export function Nav() {
               <Link to="/quote" style={{ background: 'transparent', color: D.ink, border: `1.5px solid ${D.ink}`, padding: '11px 16px', borderRadius: 999, fontSize: 14, fontWeight: 500, textAlign: 'center' }}>
                 Start a quote
               </Link>
-              <a href="tel:+16785550142" style={{ marginTop: 6, fontFamily: D.mono, fontSize: 11, letterSpacing: 1, color: D.ink3, textAlign: 'center' }}>
-                CALL · (678) 555-0142
+              <a href="tel:+18338686483" style={{ marginTop: 6, fontFamily: D.mono, fontSize: 11, letterSpacing: 1, color: D.ink3, textAlign: 'center' }}>
+                CALL · 833.868.6483
               </a>
+              {/* Single number per spec §3a; all departments route to this line. */}
             </div>
           </aside>
         </>

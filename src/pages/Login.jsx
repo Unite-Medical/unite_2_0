@@ -107,7 +107,7 @@ export function Login() {
             </div>
           </div>
         </form>
-        {!isMobile && <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>FDA 3015727296 · VOSB · CAGE 8MK70</div>}
+        {!isMobile && <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>FDA 3015727296 · Veteran-owned · CAGE 8MK70</div>}
       </div>
       {isMobile ? null : (
       <div style={{ background: D.plum, color: D.paper, padding: 72, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', position: 'relative', overflow: 'hidden' }}>
@@ -119,7 +119,7 @@ export function Login() {
           <div style={{ marginTop: 24, fontSize: 14, color: D.plumSoft }}>Jessica Garcia · Sunrise ASC · 4 years on Unite</div>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 32 }}>
-          {[['98.6%', 'Fill rate'], ['48 hr', 'Median ship'], ['4 yr', 'Avg tenure']].map(([b, s], i) => (
+          {[['98.6%', 'Fill rate'], ['Same-day', 'Median ship'], ['4 yr', 'Avg tenure']].map(([b, s], i) => (
             <div key={i}>
               <div style={{ fontFamily: D.display, fontSize: 40, letterSpacing: -0.7, lineHeight: 1 }}>{b}</div>
               <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.plumSoft, marginTop: 8 }}>{s.toUpperCase()}</div>

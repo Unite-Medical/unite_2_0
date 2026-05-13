@@ -53,7 +53,7 @@ export function Invoices() {
     <div style={{ background: D.paper, fontFamily: D.sans, color: D.ink, minHeight: '100vh' }}>
       <Nav />
       <main id="main">
-        <PageHead eyebrow="ACCOUNT · INVOICES" title="Invoices & billing" sub="Pay outstanding balances, export to your AP system, and reconcile against QBO automatically." />
+        <PageHead eyebrow="ACCOUNT · INVOICES" title="Invoices & billing" sub="Pay outstanding balances, export to your AP system, and reconcile against our billing system automatically." />
         <div style={{ maxWidth: 1360, margin: '0 auto', padding: `24px ${padX}px ${isMobile ? 56 : 64}px` }}>
           <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(4,1fr)', gap: 12, marginBottom: 20 }}>
             {[

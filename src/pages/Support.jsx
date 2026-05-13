@@ -6,15 +6,12 @@ import { PageHead } from '../components/layout/PageHead.jsx';
 import { Grad } from '../components/shared/Grad.jsx';
 import { useViewport } from '../lib/viewport.js';
 import { useSEO } from '../lib/seo.js';
+import { FAQS, faqJsonLd } from '../data/faqs.js';
 
-const faqs = [
-  ['Do you have minimum order quantities?', 'No. Every SKU in our catalog can be ordered in single units. Volume pricing kicks in at tier breaks but never as a hard floor.'],
-  ['How fast do you ship?', 'Median 48 hours to ASC customers. Orders placed by 3pm ET from Atlanta ship same day.'],
-  ['Do you bill net-30?', 'Yes. Net-30 is standard for approved B2B accounts; net-60 is available on request for public / government entities.'],
-  ['Can I get a quote on something not in your catalog?', "Yes — that's what our Quoting Engine is for. Upload a vendor product sheet and we'll deliver a landed-cost customer quote within a business day."],
-  ['Do you support EDI?', '850, 810, 856 — yes. Punch-out via cXML and OCI for VA / government procurement systems also supported.'],
-  ['How does PDAC approval work for orthotics?', 'All L-code orthotics in our catalog carry current PDAC approval letters. You can download the letter directly from the product page.'],
-];
+// Tuples for the existing accordion UI; copy comes from the canonical FAQ
+// data module so the FAQPage JSON-LD (minimum order quantities, shipping,
+// net-30, sourcing, EDI, PDAC) and the rendered FAQ stay in lockstep.
+const faqs = FAQS.map((f) => [f.question, f.answer]);
 
 export function Support() {
   const { isMobile } = useViewport();
@@ -25,6 +22,7 @@ export function Support() {
     description:
       'Plain-language answers to the most common questions about ordering from Unite Medical: MOQs, shipping, billing, returns, EDI, PDAC.',
     canonical: '/support',
+    jsonLd: [faqJsonLd()],
   });
   return (
     <div style={{ background: D.paper, fontFamily: D.sans, color: D.ink, minHeight: '100vh' }}>

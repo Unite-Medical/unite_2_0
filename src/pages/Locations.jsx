@@ -5,28 +5,28 @@ import { PageHead } from '../components/layout/PageHead.jsx';
 import { useViewport } from '../lib/viewport.js';
 import { useSEO } from '../lib/seo.js';
 
+// Two-warehouse footprint per spec §4k. SKU counts come from Shopify later;
+// sqft awaits real numbers from Alex (Open Question §10.3).
 const hubs = [
-  { city: 'Atlanta, GA', type: 'HQ + main DC', skus: '12,400', sqft: '148,000', lat: 62, lng: 58 },
-  { city: 'Lithia Springs, GA', type: 'Overflow + import', skus: '4,200', sqft: '62,000', lat: 61, lng: 56 },
-  { city: 'Reno, NV', type: 'West DC', skus: '8,100', sqft: '88,000', lat: 52, lng: 18 },
-  { city: 'Dallas, TX', type: 'South DC', skus: '6,400', sqft: '71,000', lat: 68, lng: 40 },
+  { city: 'Lithia Springs, GA', type: 'HQ + main warehouse', skus: '—', sqft: '—', lat: 62, lng: 58 },
+  { city: 'Nevada', type: 'West warehouse', skus: '—', sqft: '—', lat: 52, lng: 18 },
 ];
 
 export function Locations() {
   const { isMobile } = useViewport();
   const padX = isMobile ? 20 : 40;
   useSEO({
-    title: 'Locations — 4 US distribution centers',
+    title: 'Locations — 2 US warehouses, same-day shipping',
     description:
-      'Atlanta · Reno · Dallas · Lithia Springs. Routed by proximity for 48-hour median delivery covering 94% of US ZIP codes.',
+      'Two US warehouses in Georgia and Nevada. Same-day shipping on orders before 2pm EST. Ships to all 50 states and territories.',
     canonical: '/locations',
   });
   return (
     <div style={{ background: D.paper, fontFamily: D.sans, color: D.ink, minHeight: '100vh' }}>
       <Nav />
-      <PageHead eyebrow="4 DOMESTIC WAREHOUSES · 3 COASTS"
+      <PageHead eyebrow="2 US WAREHOUSES · NATIONWIDE SHIPPING"
         title={<>Close to <em>every</em> dock.</>}
-        sub="Routed by proximity. 48-hr median delivery for 94% of US ZIP codes." />
+        sub="Same-day shipping on orders before 2pm EST. Ships to all 50 states and territories." />
       <div style={{ maxWidth: 1360, margin: '0 auto', padding: `24px ${padX}px ${isMobile ? 56 : 64}px`, display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 360px', gap: isMobile ? 18 : 28 }}>
         <div style={{ background: D.paperAlt, borderRadius: 16, border: `1px solid ${D.line}`, position: 'relative', overflow: 'hidden', minHeight: isMobile ? 320 : 520 }}>
           <div style={{ position: 'absolute', inset: 0, background: `
@@ -52,8 +52,10 @@ export function Locations() {
               <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.plum }}>{h.type.toUpperCase()}</div>
               <div style={{ fontFamily: D.display, fontSize: 24, letterSpacing: -0.4, marginTop: 6 }}>{h.city}</div>
               <div style={{ display: 'flex', gap: 24, marginTop: 10, fontSize: 12, color: D.ink2 }}>
-                <span>{h.skus} SKUs</span><span>{h.sqft} sqft</span>
+                <span>SKUs: {h.skus}</span><span>sqft: {h.sqft}</span>
               </div>
+              {/* TODO(alex): real Shopify-driven SKU count + warehouse sqft.
+                  Open question §10.2/§10.3. */}
             </div>
           ))}
         </div>

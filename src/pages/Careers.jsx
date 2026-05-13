@@ -24,7 +24,7 @@ export function Careers() {
   useSEO({
     title: 'Careers — build with us',
     description:
-      'Open roles at Unite Medical: engineering, sales, ops, compliance, government capture, design. Veteran-owned, remote-friendly, SDVOSB.',
+      'Open roles at Unite Medical: engineering, sales, ops, compliance, government capture, design. Veteran-owned, remote-friendly.',
     canonical: '/careers',
   });
   return (

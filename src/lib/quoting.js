@@ -1,6 +1,6 @@
 /**
  * Global Quoting Engine — the "core IP" from Section 8 of the brief.
- * Orchestrates openFDA → USITC HTS → Flexport → margin → Claude letter.
+ * Orchestrates openFDA → USITC HTS → our freight forwarder → margin → Claude letter.
  */
 
 import { db } from './db.js';
@@ -28,7 +28,7 @@ export async function runQuotingEngine({ vendor, customer_name = 'Atlanta Surgic
   const avgDuty = dutyRates.reduce((a, r) => a + r.mfn, 0) / dutyRates.length;
   onProgress({ step: 'hts', label: `Avg ${avgDuty.toFixed(1)}%` });
 
-  // 3) Flexport freight
+  // 3) our freight forwarder freight
   onProgress({ step: 'flexport', label: 'Requesting freight quote' });
   const freight = await flexport.getFreightQuote({ origin: 'CNSHA', destination: 'USATL', mode: 'LCL', cbm: 1.8 });
   const freightTotal = freight.data.rates[0].total_usd;
@@ -76,7 +76,7 @@ export async function runQuotingEngine({ vendor, customer_name = 'Atlanta Surgic
 }
 
 export const SAMPLE_VENDOR_SHEET = {
-  vendor: 'Shanghai MedTech Co.',
+  vendor: 'Sample Manufacturer',
   lines: [
     { name: 'Compression stockings 20-30mmHg', fob: 2.40, moq: 5000, hts: '6115.10', target_qty: 5000, fda_product_code: 'NHM' },
     { name: 'Thermometer probes, disposable', fob: 0.08, moq: 25000, hts: '9025.19', target_qty: 25000, fda_product_code: 'KGN' },

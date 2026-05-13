@@ -57,8 +57,8 @@ export function AdminInventory() {
           <AdminCard title="Movement · 30 days">
             <Sparkline points={[40,48,42,55,58,52,62,68,61,70,72,65,78,82,76,88,85,80,92,96,88,95,102,98,105,110,104,115,120,118]} dual />
             <div style={{ display: 'flex', gap: 20, marginTop: 18, fontSize: 12, color: D.ink2 }}>
-              <span><Icon.dot style={{ color: D.plum }} /> Inbound · Flexport ASNs</span>
-              <span><Icon.dot style={{ color: D.terra }} /> Outbound · ShipStation labels</span>
+              <span><Icon.dot style={{ color: D.plum }} /> Inbound · our freight forwarder ASNs</span>
+              <span><Icon.dot style={{ color: D.terra }} /> Outbound · our WMS labels</span>
             </div>
           </AdminCard>
           <AdminCard title="Warehouse utilization">

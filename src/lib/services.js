@@ -34,7 +34,7 @@ export const openfda = {
     await delay(150, 320);
     return {
       meta: { last_updated: new Date().toISOString() },
-      results: [{ registration_number: fei, owner_operator_number: 'OO-12348', name: 'Shanghai MedTech Co.', country_code: 'CN' }],
+      results: [{ registration_number: fei, owner_operator_number: 'OO-12348', name: 'Vetted Manufacturer A', country_code: 'CN' }],
     };
   },
 };
@@ -61,7 +61,7 @@ export const hts = {
   },
 };
 
-// ---------- Flexport (api.flexport.com) ----------
+// ---------- our freight forwarder (api.flexport.com) ----------
 
 export const flexport = {
   async getFreightQuote({ origin = 'CNSHA', destination = 'USATL', mode = 'LCL', cbm = 1.8, weight_kg = 220 }) {
@@ -96,7 +96,7 @@ export const flexport = {
   },
 };
 
-// ---------- ShipStation (ssapi.shipstation.com) ----------
+// ---------- our WMS (ssapi.shipstation.com) ----------
 
 const RATES = [
   { service: 'fedex_ground', label: 'FedEx Ground', amount: 0, transit_days: 4 },
@@ -126,7 +126,7 @@ export const shipstation = {
   },
 };
 
-// ---------- QuickBooks Online (api.intuit.com) ----------
+// ---------- our billing system Online (api.intuit.com) ----------
 
 export const qbo = {
   async createInvoice({ order_id, customer_id, amount, terms = 'net30' }) {
@@ -194,7 +194,7 @@ export const hubspot = {
 // ---------- Gmail / SES (gmail.googleapis.com) ----------
 
 export const gmail = {
-  async send({ to, subject, body, from = 'sales@unitemedical.com' }) {
+  async send({ to, subject, body, from = 'sales@unitemedical.net' }) {
     await delay(160, 320);
     const row = db.insert('gmail_outbox', {
       id: `gm_${uid().slice(3)}`,
@@ -257,7 +257,7 @@ export const claude = {
     const eta = new Date(eta_iso).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
     return {
       id: `msg_${uid().slice(3)}`,
-      content: `${contact_name} —\n\nPer our conversation, here is the landed-cost quote on ${product_count} SKUs for ${customer_name}, totaling $${total_usd.toLocaleString()} delivered FOB Atlanta.\n\nMargin is calibrated to our standard tier. Vessel arrives ${eta}; we'll release inventory the day it clears CBP. Reach back with any line edits and we'll re-cost in real time.\n\n— Damon\nFounder, Unite Medical`,
+      content: `${contact_name} —\n\nPer our conversation, here is the landed-cost quote on ${product_count} SKUs for ${customer_name}, totaling $${total_usd.toLocaleString()} delivered FOB Georgia.\n\nMargin is calibrated to our standard tier. Vessel arrives ${eta}; we'll release inventory the day it clears CBP. Reach back with any line edits and we'll re-cost in real time.\n\n— Damon\nFounder, Unite Medical`,
     };
   },
   async classifyHTS({ product_name }) {

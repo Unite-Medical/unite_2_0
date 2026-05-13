@@ -12,24 +12,26 @@ import { uid } from '../lib/format.js';
 import { useViewport } from '../lib/viewport.js';
 import { useSEO } from '../lib/seo.js';
 
+// Credentials per spec §4l. The unsubstantiated SBA-certification tile and
+// the unverified PDAC SKU count have been removed.
 const CREDENTIALS = [
   { label: 'FDA Registered', val: '3015727296', sub: 'Device distribution', anchor: 'fda' },
-  { label: 'MSPV BPA', val: '36C24123A0077', sub: 'Veterans Health Administration', anchor: 'mspv' },
+  { label: 'BPA', val: '36F79725D0203', sub: 'Via authorized SDVOSB partner', anchor: 'bpa' },
   { label: 'CAGE Code', val: '8MK70', sub: 'Federal contracting identifier', anchor: 'cage' },
   { label: 'DUNS', val: '117553945', sub: 'SAM.gov registered', anchor: 'duns' },
-  { label: 'VOSB', val: 'Verified', sub: 'Veteran-Owned Small Business', anchor: 'vosb' },
-  { label: 'TAA Compliant', val: 'Documented', sub: 'Country of origin per SKU', anchor: 'taa' },
+  { label: 'Veteran-Owned', val: 'DD214 Verified', sub: 'ID.me verified', anchor: 'veteran' },
+  { label: 'TAA Compliant', val: 'Prioritized', sub: 'TAA-compliant sourcing prioritized', anchor: 'taa' },
   { label: 'Berry Compliant', val: 'Medava PPE line', sub: 'Buy America Act', anchor: 'berry' },
-  { label: 'PDAC Approved', val: '48 SKUs', sub: 'Medicare billing codes', anchor: 'pdac' },
+  { label: 'PDAC Approved', val: 'Credentialed', sub: 'All orthotics + RegeniCool Pro', anchor: 'pdac' },
 ];
 
+// Policies per spec §4l: ISO is "pursuing" (not "aligned"). Cold-chain and
+// audit-environment claims that aren't currently true have been removed.
 const POLICIES = [
-  { t: 'Quality management', s: 'ISO 13485-aligned procedures across receiving, storage, and order picking. Every lot scanned, every temperature logged, every recall traceable to a customer in under 30 minutes.' },
-  { t: 'Cold chain', s: 'Validated 2–8 °C and -20 °C storage in Atlanta and Reno DCs. Continuous monitoring with audit-trail exports for state board and DEA inspections.' },
-  { t: 'Country-of-origin', s: 'Every SKU tied to a documented country of origin and HTS code. TAA, Buy America, and Berry compliance certifications generated on demand from your portal.' },
-  { t: 'Recalls & adverse events', s: 'Lot-level traceability lets us notify affected customers within one business day. MDR-eligible reports filed to FDA on the customer\u2019s behalf when requested.' },
-  { t: 'Data & privacy', s: 'Customer data stored in SOC 2 Type II environments. No PHI handled by Unite without a signed BAA. Retention and deletion policies aligned with HIPAA Privacy Rule.' },
-  { t: 'Supplier qualification', s: 'Every manufacturer audited against an internal questionnaire covering FDA registration, ISO certification, financial health, and onboarding posture before approval.' },
+  { t: 'Quality management', s: 'Pursuing ISO 13485 certification. Documented procedures across receiving, storage, and order picking. Every lot scanned, every recall traceable to a customer.' },
+  { t: 'Country-of-origin', s: 'Every SKU tied to a documented country of origin and HTS code. TAA, Buy America, and Berry compliance certifications generated on demand.' },
+  { t: 'Recalls & adverse events', s: 'Lot-level traceability for recall management. MDR-eligible reports filed to FDA on the customer\u2019s behalf when requested. See docs/schema/lot_tracking.sql for the data model.' },
+  { t: 'Supplier qualification', s: 'Every manufacturer audited against an internal questionnaire covering FDA registration, ISO certification, and product testing standards before approval.' },
 ];
 
 function DocLibrary() {
@@ -39,20 +41,20 @@ function DocLibrary() {
   async function request(doc) {
     setBusy(doc);
     db.insert('doc_requests', { id: uid('dr'), doc, requested_at: new Date().toISOString(), status: 'queued' });
-    await gmail.send({ to: 'compliance@unitemedical.com', subject: `Doc request · ${doc}`, body: `Customer requested: ${doc}` });
+    await gmail.send({ to: 'info@unitemedical.net', subject: `Doc request · ${doc}`, body: `Customer requested: ${doc}` });
     setRequested((s) => new Set([...s, doc]));
     setBusy(null);
   }
 
+  // Document list per spec §4l. Audit-environment reports and internal SOP
+  // documents that we don't actually hand out have been pruned.
   const docs = [
     'W-9 · current FY',
-    'Certificate of Insurance · $5M aggregate',
-    'Business Associate Agreement (HIPAA)',
+    'Certificate of Insurance',
     'FDA Establishment Registration',
+    'Capability Statement (federal)',
+    'Business Associate Agreement (HIPAA)',
     'TAA / Berry country-of-origin attestations',
-    'SOC 2 Type II report (NDA required)',
-    'Recall procedure SOP-014',
-    'Capability statement (federal)',
   ];
 
   return (
@@ -80,9 +82,9 @@ export function Compliance() {
   const { isMobile } = useViewport();
   const padX = isMobile ? 20 : 40;
   useSEO({
-    title: 'Compliance — FDA, MSPV BPA, CAGE, DUNS, TAA, Berry, PDAC',
+    title: 'Compliance — FDA, BPA, CAGE, DUNS, TAA, Berry, PDAC',
     description:
-      'FDA Establishment Registration #3015727296. MSPV BPA 36C24123A0077. CAGE 8MK70. DUNS 117553945. SDVOSB-verified. TAA, Berry, and PDAC documentation on request.',
+      'FDA Establishment Registration #3015727296. BPA 36F79725D0203. CAGE 8MK70. DUNS 117553945. Veteran-owned. TAA, Berry, and PDAC documentation on request.',
     canonical: '/compliance',
   });
   return (
@@ -92,7 +94,7 @@ export function Compliance() {
         <PageHead
           eyebrow="COMPLIANCE · CREDENTIALS · POLICY"
           title={<>The paperwork,<br /><Grad>kept clean.</Grad></>}
-          sub="Distribution is a regulated business. Below are the certifications, policies, and audit trails that keep us trusted by VHA procurement, ASCs, and pharmacy boards across 38 states."
+          sub="Distribution is a regulated business. Below are the certifications, policies, and audit trails that keep us trusted by health systems, ASCs, and pharmacy boards nationwide."
         />
 
         <section id="credentials" style={{ padding: `24px ${padX}px ${isMobile ? 56 : 80}px` }}>

@@ -11,6 +11,23 @@ npm run build    # production build → ./dist
 npm run lint     # eslint
 ```
 
+## Site rebuild PRD & phase verifier
+
+The active rebuild plan lives at `docs/PRD.md` (5 phases, sourced from the
+CTO spec). Items that need real data or external input are tracked in
+`docs/ALEX_THINGS.md`. The automated verifier at `scripts/phase_check.py`
+is the gating CI step — it fails the build if any forbidden string
+survives or any required redirect / route / data file is missing:
+
+```bash
+python3 scripts/phase_check.py            # all phases
+python3 scripts/phase_check.py --phase 1  # one phase
+python3 scripts/phase_check.py --strict   # fail on warnings too
+```
+
+The one-shot `scripts/_phase1_replace.py` documents and replays the
+codebase-wide string substitutions from spec §3c. It is idempotent.
+
 ## Real product catalog
 
 The 87-product Unite Medical catalog (scraped from the live unitemedical.net

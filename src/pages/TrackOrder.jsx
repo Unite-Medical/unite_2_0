@@ -11,7 +11,7 @@ import { useViewport } from '../lib/viewport.js';
 import { useSEO } from '../lib/seo.js';
 
 const PROGRESSION = [
-  { status: 'label_created', label: 'Label printed', sub: 'ShipStation issued tracking' },
+  { status: 'label_created', label: 'Label printed', sub: 'our WMS issued tracking' },
   { status: 'in_transit', label: 'In transit', sub: 'Picked up by carrier' },
   { status: 'out_for_delivery', label: 'Out for delivery', sub: 'On the truck' },
   { status: 'delivered', label: 'Delivered', sub: 'Signed for at receiving' },

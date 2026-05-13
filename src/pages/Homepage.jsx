@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { D } from '../tokens.js';
 import { Nav } from '../components/layout/Nav.jsx';
 import { Footer } from '../components/layout/Footer.jsx';
@@ -8,7 +7,8 @@ import { Icon } from '../components/shared/Icon.jsx';
 import { Grad } from '../components/shared/Grad.jsx';
 import { PartnerMarquee } from '../components/shared/PartnerMarquee.jsx';
 import { cartStore } from '../store/cart.js';
-import { PRODUCTS, SEGMENTS, TRUST_METRICS } from '../data/index.js';
+import { PRODUCTS, TRUST_METRICS } from '../data/index.js';
+import { TESTIMONIALS } from '../data/testimonials.js';
 import { IMG, PRODUCT_IMG } from '../lib/imageMap.js';
 import { useViewport } from '../lib/viewport.js';
 import { useSEO, organizationSchema, websiteSchema } from '../lib/seo.js';
@@ -33,7 +33,7 @@ function Hero() {
           <div>
             <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: isMobile ? 18 : 28, display: 'flex', alignItems: 'center', gap: 12 }}>
               <div style={{ width: 8, height: 8, borderRadius: 4, background: D.plum, flexShrink: 0 }} />
-              <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>FDA-REGISTERED · VETERAN-OWNED · EST. 2018</span>
+              <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>FDA-REGISTERED · VETERAN-OWNED · EST. 2019</span>
             </div>
             <h1 style={{
               fontFamily: D.display, fontWeight: 400,
@@ -41,23 +41,23 @@ function Hero() {
               lineHeight: 1.08,
               letterSpacing: 'clamp(-0.9px, -0.2vw, -2px)',
               color: D.ink, margin: 0,
-              // Explicit paint box: Fraunces italic ascenders/descenders
-              // (b, h, d, y, p) extend beyond the font's em-box, so reserve
-              // visual room here instead of relying on line-height alone.
               paddingTop: '0.08em',
               paddingBottom: '0.08em',
             }}>
-              The supply chain <Grad>behind</Grad><br />American medicine.
+              The supply chain your suppliers use.
             </h1>
-            <p style={{ fontSize: isMobile ? 16 : 18, lineHeight: 1.55, color: D.ink2, maxWidth: 540, marginTop: isMobile ? 18 : 28 }}>
-              We import, warehouse, and distribute for the people who keep the OR running — surgery centers, pharmacies, first responders, the VA. No minimum orders. Landed cost, transparent.
+            <p style={{ fontSize: isMobile ? 16 : 18, lineHeight: 1.55, color: D.ink2, maxWidth: 560, marginTop: isMobile ? 18 : 28 }}>
+              We source, stock, and ship Class 1 and Class 2 medical devices for surgery centers,
+              pharmacies, health systems, physician groups, and government buyers. We own and
+              warehouse everything we sell. No minimum orders on stocked items. Landed cost,
+              transparent.
             </p>
             <div style={{ display: 'flex', gap: 10, marginTop: isMobile ? 24 : 36, flexWrap: 'wrap' }}>
               <button onClick={() => navigate('/catalog')} style={{ background: D.plum, color: D.paper, border: 'none', padding: isMobile ? '14px 22px' : '15px 24px', borderRadius: 999, fontSize: 15, fontWeight: 500, cursor: 'pointer', fontFamily: D.sans, display: 'flex', alignItems: 'center', gap: 10, flex: isMobile ? '1 1 200px' : '0 0 auto', justifyContent: 'center' }}>
-                Get pricing <Icon.arrow />
+                Browse products <Icon.arrow />
               </button>
               <button onClick={() => navigate('/quote')} style={{ background: 'transparent', color: D.ink, border: `1.5px solid ${D.ink}`, padding: isMobile ? '14px 22px' : '15px 24px', borderRadius: 999, fontSize: 15, fontWeight: 500, cursor: 'pointer', fontFamily: D.sans, flex: isMobile ? '1 1 200px' : '0 0 auto' }}>
-                Quote a non-stocked item
+                Source & quote
               </button>
             </div>
           </div>
@@ -77,8 +77,10 @@ function Hero() {
               boxShadow: '0 20px 40px -20px rgba(36,26,40,.25)',
             }}>
               <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>LIVE INVENTORY</div>
-              <div style={{ fontFamily: D.display, fontSize: isMobile ? 32 : 44, lineHeight: 1, color: D.ink, marginTop: 8, letterSpacing: -0.8 }}>1.24M <span style={{ fontSize: isMobile ? 13 : 15, fontFamily: D.sans, color: D.ink2, letterSpacing: 0 }}>units</span></div>
-              <div style={{ fontSize: 12, color: D.ink2, marginTop: 6 }}>across Atlanta, Reno, Dallas</div>
+              <div style={{ fontFamily: D.display, fontSize: isMobile ? 26 : 34, lineHeight: 1.1, color: D.ink, marginTop: 8, letterSpacing: -0.6 }}>Stocked &amp; warehoused</div>
+              <div style={{ fontSize: 12, color: D.ink2, marginTop: 6 }}>Georgia &amp; Nevada</div>
+              {/* TODO(alex): wire to Shopify product/inventory count API
+                  once available \u2014 see PRD Open Q #2. */}
             </div>
           </div>
         </div>
@@ -88,6 +90,8 @@ function Hero() {
   );
 }
 
+// "By the numbers" — uses the canonical TRUST_METRICS array from data/index.js.
+// Lead-in headline rewritten to remove the competitor jab per spec.
 function Metrics() {
   const { isMobile } = useViewport();
   const padX = isMobile ? 20 : 40;
@@ -102,7 +106,7 @@ function Metrics() {
         <div>
           <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 20 }}>BY THE NUMBERS</div>
           <h2 style={{ fontFamily: D.display, fontSize: 'clamp(34px, 6vw, 56px)', fontWeight: 400, color: D.ink, letterSpacing: 'clamp(-0.7px, -0.13vw, -1.2px)', lineHeight: 1.02, margin: 0 }}>
-            Not the biggest.<br />Built for the ones <Grad>Big 3</Grad> can&apos;t serve.
+            The receipts. <Grad>Verified.</Grad>
           </h2>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: isMobile ? '24px 18px' : '32px 48px' }}>
@@ -123,61 +127,117 @@ function Metrics() {
   );
 }
 
-function SegmentRouter() {
+// "Two ways to buy" — replaces the "Find Your Lane" segment tabs per spec §4a.
+function TwoWaysToBuy() {
   const navigate = useNavigate();
   const { isMobile } = useViewport();
-  const [active, setActive] = useState('asc');
-  const seg = SEGMENTS.find((s) => s.id === active);
-  const segRoutes = { asc: '/segments/asc', gov: '/segments/gov', pharma: '/segments/pharmacy', dist: '/segments/distributors' };
   const padX = isMobile ? 20 : 40;
   return (
     <div style={{ background: D.plum, color: D.paper, padding: `${isMobile ? 56 : 96}px ${padX}px` }}>
       <div style={{ maxWidth: 1360, margin: '0 auto' }}>
-        <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plumSoft, marginBottom: 16 }}>FIND YOUR LANE</div>
-        <h2 style={{ fontFamily: D.display, fontSize: 'clamp(36px, 7.2vw, 72px)', fontWeight: 400, letterSpacing: 'clamp(-0.9px, -0.19vw, -1.8px)', lineHeight: 1.0, margin: 0, maxWidth: 900 }}>
-          Tell us who you are.<br />We&apos;ll show you <em>your</em> catalog.
+        <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plumSoft, marginBottom: 16 }}>TWO WAYS TO BUY</div>
+        <h2 style={{ fontFamily: D.display, fontSize: 'clamp(36px, 7.2vw, 72px)', fontWeight: 400, letterSpacing: 'clamp(-0.9px, -0.19vw, -1.8px)', lineHeight: 1.0, margin: 0, maxWidth: 1000 }}>
+          Two ways to buy.
         </h2>
-        <div style={{
-          marginTop: isMobile ? 32 : 56,
-          display: 'grid',
-          gridTemplateColumns: isMobile ? '1fr' : '320px 1fr',
-          gap: isMobile ? 20 : 40,
-          alignItems: 'start',
-        }}>
-          <div style={{ display: isMobile ? 'grid' : 'block', gridTemplateColumns: isMobile ? '1fr 1fr' : undefined, gap: isMobile ? 8 : 0 }}>
-            {SEGMENTS.map((s) => (
-              <button key={s.id} onClick={() => setActive(s.id)} style={{
-                display: 'block', width: '100%', textAlign: 'left',
-                background: active === s.id ? D.paper : 'transparent',
-                color: active === s.id ? D.ink : D.paper,
-                border: 'none', padding: '14px 16px', marginBottom: isMobile ? 0 : 8,
-                borderRadius: 10, fontFamily: D.sans, cursor: 'pointer',
-              }}>
-                <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, opacity: .6 }}>{s.tam} TAM</div>
-                <div style={{ fontFamily: D.display, fontSize: isMobile ? 18 : 22, fontWeight: 400, letterSpacing: -0.3, marginTop: 4, lineHeight: 1.1 }}>{s.title}</div>
-              </button>
-            ))}
-          </div>
-          <div style={{ background: D.paper, color: D.ink, padding: isMobile ? 24 : 40, borderRadius: 12, minHeight: isMobile ? 0 : 380 }}>
-            <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.2, color: D.plum, marginBottom: 14 }}>FOR {seg.title.toUpperCase()}</div>
-            <div style={{ fontFamily: D.display, fontSize: isMobile ? 26 : 40, letterSpacing: -0.6, lineHeight: 1.1 }}>{seg.line}</div>
-            <div style={{ marginTop: isMobile ? 22 : 32, display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr 1fr', gap: isMobile ? 14 : 20 }}>
-              {[['No MOQ floor', 'Order one unit.'], ['48-hr median ship', 'From 3 US warehouses.'], ['Dedicated rep', 'Not a call center.']].map(([t, s]) => (
-                <div key={t} style={{ borderLeft: `2px solid ${D.plum}`, paddingLeft: 14 }}>
-                  <div style={{ fontSize: 14, fontWeight: 600 }}>{t}</div>
-                  <div style={{ fontSize: 13, color: D.ink2, marginTop: 4 }}>{s}</div>
-                </div>
-              ))}
-            </div>
-            <button onClick={() => navigate(segRoutes[active])} style={{ marginTop: isMobile ? 24 : 36, background: D.ink, color: D.paper, border: 'none', padding: '14px 22px', borderRadius: 999, cursor: 'pointer', fontFamily: D.sans, fontSize: 14, fontWeight: 500, display: 'inline-flex', alignItems: 'center', gap: 10 }}>
-              Open the {seg.title} catalog <Icon.arrow />
+        <div style={{ marginTop: isMobile ? 32 : 56, display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: isMobile ? 16 : 22 }}>
+          <div style={{ background: D.paper, color: D.ink, borderRadius: 16, padding: isMobile ? 24 : 36 }}>
+            <h3 style={{ fontFamily: D.display, fontSize: isMobile ? 26 : 32, letterSpacing: -0.5, margin: 0 }}>Ready to buy?</h3>
+            <p style={{ fontSize: 15, lineHeight: 1.6, color: D.ink2, marginTop: 12 }}>
+              Browse our stocked catalog. Same-day shipping, no minimums on stocked items.
+            </p>
+            <button onClick={() => navigate('/catalog')} style={{ background: D.ink, color: D.paper, border: 'none', padding: '12px 22px', borderRadius: 999, fontSize: 14, fontWeight: 600, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 10 }}>
+              Browse products <Icon.arrow />
             </button>
           </div>
+          <div style={{ background: D.paper, color: D.ink, borderRadius: 16, padding: isMobile ? 24 : 36 }}>
+            <h3 style={{ fontFamily: D.display, fontSize: isMobile ? 26 : 32, letterSpacing: -0.5, margin: 0 }}>Need to source?</h3>
+            <p style={{ fontSize: 15, lineHeight: 1.6, color: D.ink2, marginTop: 12 }}>
+              Use our quoting engine to find and price non-stock items from our vetted
+              manufacturer network.
+            </p>
+            <button onClick={() => navigate('/quote')} style={{ background: D.ink, color: D.paper, border: 'none', padding: '12px 22px', borderRadius: 999, fontSize: 14, fontWeight: 600, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 10 }}>
+              Source &amp; quote <Icon.arrow />
+            </button>
+          </div>
+        </div>
+        <p style={{ fontSize: 14, color: D.plumSoft, marginTop: 28, maxWidth: 700 }}>
+          Don&apos;t see your segment? We work with any facility that buys medical supplies.{' '}
+          <Link to="/quote" style={{ color: D.paper, textDecoration: 'underline' }}>Start a quote →</Link>
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// Testimonial rail — uses the canonical TESTIMONIALS data (spec §5).
+function Testimonials() {
+  const { isMobile } = useViewport();
+  const padX = isMobile ? 20 : 40;
+  return (
+    <div style={{ background: D.paper, padding: `${isMobile ? 56 : 96}px ${padX}px`, borderTop: `1px solid ${D.line}` }}>
+      <div style={{ maxWidth: 1360, margin: '0 auto' }}>
+        <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 16 }}>WHAT CUSTOMERS SAY</div>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: isMobile ? 16 : 22 }}>
+          {TESTIMONIALS.map((t) => (
+            <figure key={t.name} style={{ margin: 0, background: D.card, border: `1px solid ${D.line}`, borderRadius: 16, padding: isMobile ? 22 : 28 }}>
+              <blockquote style={{ margin: 0, fontFamily: D.display, fontSize: isMobile ? 18 : 20, letterSpacing: -0.3, lineHeight: 1.35, color: D.ink, fontStyle: 'italic' }}>
+                &ldquo;{t.quote}&rdquo;
+              </blockquote>
+              <figcaption style={{ marginTop: 18, fontSize: 13, color: D.ink2 }}>
+                <div style={{ fontWeight: 600, color: D.ink }}>{t.name}</div>
+                <div>{t.title} · {t.org}</div>
+              </figcaption>
+            </figure>
+          ))}
         </div>
       </div>
     </div>
   );
 }
+
+// Partner Spotlight — TJS Recovery Store, per spec §4a.
+function PartnerSpotlight() {
+  const { isMobile } = useViewport();
+  const padX = isMobile ? 20 : 40;
+  return (
+    <div style={{ background: D.paperAlt, padding: `${isMobile ? 56 : 96}px ${padX}px`, borderTop: `1px solid ${D.line}`, borderBottom: `1px solid ${D.line}` }}>
+      <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+        <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 16 }}>PARTNER SPOTLIGHT</div>
+        <h2 style={{ fontFamily: D.display, fontSize: 'clamp(28px, 5.6vw, 48px)', fontWeight: 400, letterSpacing: -1, lineHeight: 1.1, margin: 0 }}>
+          &ldquo;We built their patient recovery store. <Grad>They put their name on it.</Grad>&rdquo;
+        </h2>
+        <p style={{ fontSize: 16, lineHeight: 1.65, color: D.ink2, marginTop: 18, maxWidth: 820 }}>
+          Total Joint Specialists — one of the most respected orthopedic groups in the
+          country — chose Unite to build, stock, and fulfill their entire Patient Recovery
+          Store. From product manufacturing to same-day drop shipping, every order flows
+          through our platform.
+        </p>
+        <div style={{ display: 'flex', gap: 12, marginTop: 24, flexWrap: 'wrap' }}>
+          <a
+            href="https://tjs.unitemedical.net/store"
+            target="_blank"
+            rel="noreferrer"
+            style={{ background: D.plum, color: D.paper, padding: '12px 22px', borderRadius: 999, fontSize: 14, fontWeight: 600 }}
+          >
+            Visit the TJS Recovery Store →
+          </a>
+          <Link
+            to="/case-studies/tjs"
+            style={{ background: 'transparent', color: D.ink, border: `1.5px solid ${D.ink}`, padding: '11px 22px', borderRadius: 999, fontSize: 14, fontWeight: 500 }}
+          >
+            Read the case study →
+          </Link>
+        </div>
+        <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1, color: D.ink3, marginTop: 20 }}>
+          White-label storefront · Product manufacturing · Direct-to-patient fulfillment
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// SegmentRouter "Find Your Lane" tabs removed per spec §4a — replaced by the
+// TwoWaysToBuy section above.
 
 function Featured() {
   const navigate = useNavigate();
@@ -192,7 +252,7 @@ function Featured() {
             In stock, <Grad>shipping today</Grad>.
           </h2>
           <button onClick={() => navigate('/catalog')} style={{ color: D.ink, fontSize: 14, display: 'flex', alignItems: 'center', gap: 8, background: 'none', border: 'none', cursor: 'pointer', fontFamily: D.sans, padding: 0 }}>
-            See all 12,400 SKUs <Icon.arrow />
+            Browse products <Icon.arrow />
           </button>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(4,1fr)', gap: isMobile ? 12 : 18 }}>
@@ -237,7 +297,8 @@ function CTA() {
         </h2>
         <div>
           <div style={{ fontSize: isMobile ? 15 : 17, lineHeight: 1.55, color: '#cfc4d2', marginBottom: isMobile ? 22 : 28 }}>
-            Order placed → inventory updates → invoice auto-creates → label prints → tracking returns to your portal. Zero human touchpoints. That&apos;s the product.
+            Order placed → inventory updates → invoice auto-creates → label prints → tracking
+            returns to your portal. Zero manual touchpoints.
           </div>
           <button onClick={() => navigate('/quote')} style={{ background: D.plum, color: D.paper, border: 'none', padding: '14px 24px', borderRadius: 999, fontSize: 15, fontWeight: 500, cursor: 'pointer', fontFamily: D.sans, display: 'inline-flex', alignItems: 'center', gap: 10 }}>
             Start a quote <Icon.arrow />
@@ -250,9 +311,9 @@ function CTA() {
 
 export function Homepage() {
   useSEO({
-    title: 'The supply chain behind American medicine',
+    title: 'The supply chain your suppliers use',
     description:
-      'Veteran-owned, FDA-registered wholesale medical supply for ASCs, pharmacies, government, EMS, and regional distributors. 12,400 SKUs, no MOQs, 48-hour median ship from Atlanta · Reno · Dallas.',
+      'Veteran-owned, FDA-registered wholesale medical supply for surgery centers, pharmacies, health systems, government, and regional distributors. No minimums on stocked items. Same-day shipping on orders before 2pm EST from Georgia & Nevada.',
     canonical: '/',
     type: 'website',
     jsonLd: [organizationSchema(), websiteSchema()],
@@ -262,8 +323,10 @@ export function Homepage() {
       <Nav />
       <Hero />
       <Metrics />
-      <SegmentRouter />
+      <TwoWaysToBuy />
       <Featured />
+      <PartnerSpotlight />
+      <Testimonials />
       <CTA />
       <Footer />
     </div>

@@ -25,7 +25,7 @@ const CATEGORY_TONES = {
   Surgical: {
     intro: 'A surgical-grade consumable manufactured to AAMI / ASTM specifications for use in OR, procedural, and field-medic environments. FDA-registered with documented country-of-origin per case.',
     fit: 'Single-use, ready-to-deploy, packaged in clinically appropriate quantities. Compatible with standard sterilization workflows where applicable.',
-    billing: 'Standard supply line item. Available under MSPV BPA for federal customers; no MOQs for commercial buyers.',
+    billing: 'Standard supply line item. Available under BPA for federal customers; no MOQs for commercial buyers.',
   },
   'Wound Care': {
     intro: 'A wound-management consumable intended to maintain a moist healing environment, manage exudate, and protect the wound bed during healing.',
@@ -54,7 +54,7 @@ const HIGHLIGHT_LIBRARY = {
     { title: 'PDAC-determined L-code', body: 'Filed and tracked under the published HCPCS code so claims can be submitted on day one.' },
     { title: 'Universal sizing', body: 'One SKU covers the most common patient population — no left/right variants to stock.' },
     { title: 'Field-fittable', body: 'Adjustable straps and stays mean the brace can be fit chairside in under five minutes.' },
-    { title: 'Same-day shipping', body: 'Ships from Atlanta if ordered by 3 PM ET. Median delivery to a Southeast ASC: 48 hours.' },
+    { title: 'Same-day shipping', body: 'Ships from Atlanta if ordered by 3 PM ET. Median delivery to a Southeast ASC: the same day.' },
   ],
   Diagnostics: [
     { title: 'CLIA-waived', body: 'Run in any clinic, urgent care, or pharmacy without a moderate-complexity certificate.' },
@@ -89,8 +89,8 @@ const HIGHLIGHT_LIBRARY = {
   Surgical: [
     { title: 'Sterile-field ready', body: 'Packaged for direct delivery to the sterile field; no double-wrap repackaging required.' },
     { title: 'No MOQs', body: 'Order by the case or the each. Buy what fits the procedure schedule, not a vendor minimum.' },
-    { title: 'MSPV BPA available', body: 'Federal buyers can pull this SKU directly under our active BPA without a fresh contract.' },
-    { title: 'Same-day shipping', body: 'Ships from Atlanta if ordered by 3 PM ET; median delivery to a Southeast ASC: 48 hours.' },
+    { title: 'BPA available', body: 'Federal buyers can pull this SKU directly under our active BPA without a fresh contract.' },
+    { title: 'Same-day shipping', body: 'Ships from Atlanta if ordered by 3 PM ET; median delivery to a Southeast ASC: the same day.' },
   ],
   Supplements: [
     { title: 'Practitioner-grade', body: 'Formulated for clinically meaningful doses, not the consumer-aisle compromise.' },
@@ -103,8 +103,8 @@ const HIGHLIGHT_LIBRARY = {
 const REVIEW_LIBRARY = {
   Orthotics: [
     { rating: 5, name: 'Sarah Chen', role: 'Materials Director · Atlanta Surgical Center', body: 'Fit chairside in under five minutes on every patient we tested. PDAC paperwork was already on file when our claims team called — that almost never happens.' },
-    { rating: 5, name: 'Dr. Aaron Patel', role: 'Orthopedic Surgeon · Buckhead ASC', body: 'My patients tolerate this brace better than the equivalent from the Big 3, and we pay roughly 22% less per unit. Easy switch.' },
-    { rating: 4, name: 'Latoya Brooks', role: 'AP Lead · Sunrise ASC', body: 'Net-30 invoicing reconciled cleanly to QBO on the first try. Volume-tier pricing kicks in earlier than I expected.' },
+    { rating: 5, name: 'Dr. Aaron Patel', role: 'Orthopedic Surgeon · Buckhead ASC', body: 'My patients tolerate this brace better than the equivalent from the the majors, and we pay roughly 22% less per unit. Easy switch.' },
+    { rating: 4, name: 'Latoya Brooks', role: 'AP Lead · Sunrise ASC', body: 'Net-30 invoicing reconciled cleanly to our billing system on the first try. Volume-tier pricing kicks in earlier than I expected.' },
   ],
   Diagnostics: [
     { rating: 5, name: 'Kareem Holloway, PharmD', role: 'Owner · Holloway Apothecary, Macon GA', body: 'Sells through every Friday like clockwork. The 25-count pack is exactly the right unit for our front-of-store program.' },
@@ -200,7 +200,7 @@ export function productCompliance(product) {
     { id: 'pdac', label: 'PDAC approved', sub: 'Determination letter on file for the assigned HCPCS code.', available: !!product.pdac_approved },
     { id: 'taa', label: 'TAA compliant', sub: 'Country-of-origin documented per Trade Agreements Act.', available: !!product.taa_compliant },
     { id: 'berry', label: 'Berry compliant', sub: 'Domestic content per Buy America Act for federal customers.', available: !!product.berry_compliant },
-    { id: 'mspv', label: 'MSPV listed', sub: 'Active under VA Medical Surgical Prime Vendor 36C24123A0077.', available: !!product.mspv_listed },
+    { id: 'mspv', label: 'MSPV listed', sub: 'Active under VA Medical Surgical Prime Vendor 36F79725D0203.', available: !!product.mspv_listed },
     { id: 'latex', label: 'Latex-free', sub: 'No natural rubber latex used in product or primary packaging.', available: true },
   ];
 }
@@ -216,7 +216,7 @@ export function productDocuments(product) {
   ];
   if (product.pdac_approved) docs.push({ label: 'PDAC determination letter', kind: 'PDF', size: '96 KB' });
   if (product.taa_compliant) docs.push({ label: 'TAA / country-of-origin attestation', kind: 'PDF', size: '64 KB' });
-  if (product.mspv_listed) docs.push({ label: 'MSPV BPA pricing schedule', kind: 'PDF', size: '52 KB' });
+  if (product.mspv_listed) docs.push({ label: 'BPA pricing schedule', kind: 'PDF', size: '52 KB' });
   if (product.category === 'Pharmaceuticals') docs.push({ label: 'Safety data sheet (SDS)', kind: 'PDF', size: '188 KB' });
   if (product.category === 'Equipment') docs.push({ label: 'Service & maintenance manual', kind: 'PDF', size: '1.4 MB' });
   return docs;

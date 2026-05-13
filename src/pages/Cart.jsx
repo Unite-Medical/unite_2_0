@@ -49,7 +49,7 @@ export function Cart() {
           {items.length === 0 && (
             <div style={{ background: D.card, border: `1px dashed ${D.line}`, borderRadius: 14, padding: 48, textAlign: 'center' }}>
               <div style={{ fontFamily: D.display, fontSize: 28, letterSpacing: -0.4 }}>Your cart is empty.</div>
-              <p style={{ color: D.ink2, marginTop: 10 }}>Browse 12,400 SKUs and add the ones you need to your next order.</p>
+              <p style={{ color: D.ink2, marginTop: 10 }}>Browse the stocked catalog and add the items you need to your next order.</p>
               <button onClick={() => navigate('/catalog')} style={{ marginTop: 14, background: D.plum, color: D.paper, border: 'none', padding: '12px 22px', borderRadius: 999, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>Open the catalog</button>
             </div>
           )}

@@ -51,7 +51,7 @@ export function Register() {
       const session = await auth.register({ email: form.email, password: form.password || 'demo', name: form.name, org_name: form.org_name, segment: form.segment });
       await Promise.all([
         hubspot.createContact({ email: form.email, firstname: form.name.split(' ')[0], lastname: form.name.split(' ').slice(1).join(' '), company: form.org_name, phone: form.phone, lifecyclestage: 'customer' }),
-        gmail.send({ to: form.email, subject: 'Welcome to Unite Medical', body: `Hi ${form.name.split(' ')[0]} — your account is live. Your dedicated rep will reach out within one business day.`, from: 'sales@unitemedical.com' }),
+        gmail.send({ to: form.email, subject: 'Welcome to Unite Medical', body: `Hi ${form.name.split(' ')[0]} — your account is live. Your dedicated rep will reach out within one business day.`, from: 'sales@unitemedical.net' }),
       ]);
       navigate(session.role === 'admin' ? '/admin' : '/dashboard');
     } catch (err) {

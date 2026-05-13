@@ -10,6 +10,9 @@ import { db } from '../lib/db.js';
 import { useViewport } from '../lib/viewport.js';
 import { useSEO } from '../lib/seo.js';
 
+// Status icons for the engine's pipeline steps. Internal step names (openfda,
+// flexport, claude) intentionally stay in the data layer; customer-facing
+// labels in `cards` below use generic copy per spec §4p.
 const STEP_ICONS = {
   parse: Icon.upload,
   openfda: Icon.shield,
@@ -22,10 +25,13 @@ const STEP_ICONS = {
 export function Quote() {
   const { isMobile } = useViewport();
   const padX = isMobile ? 20 : 40;
+  // TODO: full rebuild per Unite_Quoting_Engine_Spec.md is pending; this
+  // sanitization removes the proprietary tooling labels, vendor names, and
+  // margin figures from the current internal demo per spec §4p.
   useSEO({
-    title: 'Quoting Engine — vendor sheet in, customer PDF out',
+    title: 'Source & Quote · Unite Medical',
     description:
-      'Upload a foreign-vendor product sheet. We validate every FDA code, pull today\'s USITC duty rate, call Flexport for ocean freight, and land it on your customer\'s desk as a PDF in about fourteen seconds.',
+      'Source and price non-stock medical supplies from our vetted manufacturer network. Real-time pricing, landed cost, compliance verified.',
     canonical: '/quote',
   });
   const [running, setRunning] = useState(false);
@@ -50,11 +56,12 @@ export function Quote() {
 
   const stepFor = (step) => progress.filter((p) => p.step === step).pop();
 
+  // Generic customer-facing labels; backend integration names are not exposed.
   const cards = [
-    ['openFDA', stepFor('openfda')?.label || (running ? 'Validating…' : 'Idle'), 'openfda'],
-    ['USITC HTS', stepFor('hts')?.label || (running ? 'Pulling…' : 'Idle'), 'hts'],
-    ['Flexport', stepFor('flexport')?.label || (running ? 'Quoting…' : 'Idle'), 'flexport'],
-    ['Claude', stepFor('claude')?.label || (running ? 'Drafting…' : 'Idle'), 'claude'],
+    ['FDA verification', stepFor('openfda')?.label || (running ? 'Validating…' : 'Idle'), 'openfda'],
+    ['Customs & duty', stepFor('hts')?.label || (running ? 'Pulling…' : 'Idle'), 'hts'],
+    ['Freight quote', stepFor('flexport')?.label || (running ? 'Quoting…' : 'Idle'), 'flexport'],
+    ['Cover letter', stepFor('claude')?.label || (running ? 'Drafting…' : 'Idle'), 'claude'],
   ];
 
   const recent = db.useTable('quotes', { orderBy: 'created_at', dir: 'desc', limit: 5 });
@@ -67,12 +74,14 @@ export function Quote() {
       <main id="main">
         <div style={{ background: D.paperAlt, borderBottom: `1px solid ${D.line}` }}>
           <div style={{ maxWidth: 1360, margin: '0 auto', padding: `${isMobile ? 36 : 56}px ${padX}px` }}>
-            <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 14 }}>QUOTING ENGINE · CORE IP</div>
+            <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 14 }}>SOURCE & QUOTE</div>
             <h1 style={{ fontFamily: D.display, fontSize: 'clamp(38px, 7.6vw, 76px)', fontWeight: 400, letterSpacing: 'clamp(-1px, -0.19vw, -1.8px)', margin: 0, lineHeight: 1.0 }}>
-              Vendor spreadsheet in.<br /><Grad>Customer PDF out.</Grad> Fourteen seconds.
+              Source non-stock items. <Grad>Priced and ready.</Grad>
             </h1>
             <p style={{ color: D.ink2, maxWidth: 640, fontSize: 16, lineHeight: 1.55, marginTop: 20 }}>
-              Upload a foreign-vendor product sheet. We validate every FDA code, pull today&apos;s USITC duty rate, call Flexport for ocean freight, and land it on your customer&apos;s desk as a PDF — before your coffee cools.
+              Tell us what you need. We price it against our vetted manufacturer network,
+              verify compliance, and return a landed-cost customer quote with a delivery
+              window.
             </p>
             <div style={{ marginTop: 20, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
               <button onClick={() => handleRun()} disabled={running} style={{ background: D.plum, color: D.paper, border: 'none', padding: '13px 22px', borderRadius: 999, fontSize: 14, fontWeight: 600, cursor: running ? 'wait' : 'pointer', opacity: running ? 0.7 : 1 }}>
@@ -117,7 +126,7 @@ export function Quote() {
               <div style={{ padding: '18px 22px', borderBottom: `1px solid ${D.line}`, display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
                 <div style={{ fontFamily: D.display, fontSize: 22 }}>Landed cost breakdown</div>
                 <div style={{ flex: 1 }} />
-                <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>60% MARGIN ENFORCED</div>
+                <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>LANDED · DELIVERED</div>
               </div>
               <div className="um-scroll-x">
               <table style={{ width: '100%', minWidth: 640, borderCollapse: 'collapse', fontSize: 13 }}>
@@ -167,7 +176,7 @@ export function Quote() {
                 <div style={{ fontFamily: D.display, fontSize: 56, letterSpacing: -1.6, marginTop: 14, lineHeight: 1 }}>
                   {fmt.money(result?.quote.total ?? SAMPLE_VENDOR_SHEET.lines.reduce((a, l) => a + l.fob * 2.5 * (l.target_qty || 1), 0))}
                 </div>
-                <div style={{ fontSize: 13, color: D.plumSoft, marginTop: 8 }}>Landed · delivered · net 30 · FOB Atlanta</div>
+                <div style={{ fontSize: 13, color: D.plumSoft, marginTop: 8 }}>Landed · delivered · net 30 · FOB Georgia</div>
                 <div style={{ height: 1, background: 'rgba(255,255,255,.18)', margin: '22px 0' }} />
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, fontSize: 12 }}>
                   <div>
@@ -184,7 +193,7 @@ export function Quote() {
                 </button>
               </div>
               <div style={{ marginTop: 14, padding: 20, background: D.card, borderRadius: 12, border: `1px solid ${D.line}`, fontSize: 13, color: D.ink2, lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>
-                <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.plum, marginBottom: 10 }}>AI COVER LETTER · {result ? 'DRAFT READY' : 'WAITING'}</div>
+                <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.plum, marginBottom: 10 }}>COVER LETTER · {result ? 'DRAFT READY' : 'WAITING'}</div>
                 {result?.quote.cover_letter || `Mariah — per our call last Tuesday, here's pricing on the four SKUs we discussed for the Q3 build-out…`}
               </div>
             </div>

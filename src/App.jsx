@@ -21,9 +21,7 @@ const Locations = lazy(() => import('./pages/Locations.jsx').then((m) => ({ defa
 const Blog = lazy(() => import('./pages/Blog.jsx').then((m) => ({ default: m.Blog })));
 const BlogPost = lazy(() => import('./pages/BlogPost.jsx').then((m) => ({ default: m.BlogPost })));
 const Resources = lazy(() => import('./pages/Resources.jsx').then((m) => ({ default: m.Resources })));
-const Solutions = lazy(() => import('./pages/Solutions.jsx').then((m) => ({ default: m.Solutions })));
 const Compliance = lazy(() => import('./pages/Compliance.jsx').then((m) => ({ default: m.Compliance })));
-const VeteranOwned = lazy(() => import('./pages/VeteranOwned.jsx').then((m) => ({ default: m.VeteranOwned })));
 const Careers = lazy(() => import('./pages/Careers.jsx').then((m) => ({ default: m.Careers })));
 const Portfolio = lazy(() => import('./pages/Portfolio.jsx').then((m) => ({ default: m.Portfolio })));
 const Procurement = lazy(() => import('./pages/Procurement.jsx').then((m) => ({ default: m.Procurement })));
@@ -35,10 +33,11 @@ const ShippingPage = lazy(() => import('./pages/legal/Legal.jsx').then((m) => ({
 const Services = lazy(() => import('./pages/Services.jsx').then((m) => ({ default: m.Services })));
 const ServiceDistribution = lazy(() => import('./pages/ServiceDistribution.jsx').then((m) => ({ default: m.ServiceDistribution })));
 const ServicePDAC = lazy(() => import('./pages/ServicePDAC.jsx').then((m) => ({ default: m.ServicePDAC })));
-const ServiceDealer = lazy(() => import('./pages/ServiceDealer.jsx').then((m) => ({ default: m.ServiceDealer })));
-const ServiceEducation = lazy(() => import('./pages/ServiceEducation.jsx').then((m) => ({ default: m.ServiceEducation })));
+const ServiceDistributors = lazy(() => import('./pages/ServiceDistributors.jsx').then((m) => ({ default: m.ServiceDistributors })));
+const ServicePrivateLabel = lazy(() => import('./pages/ServicePrivateLabel.jsx').then((m) => ({ default: m.ServicePrivateLabel })));
+const Government = lazy(() => import('./pages/Government.jsx').then((m) => ({ default: m.Government })));
+const CaseStudyTJS = lazy(() => import('./pages/CaseStudyTJS.jsx').then((m) => ({ default: m.CaseStudyTJS })));
 const SegmentASC = lazy(() => import('./pages/segments/SegmentASC.jsx').then((m) => ({ default: m.SegmentASC })));
-const SegmentGov = lazy(() => import('./pages/segments/SegmentGov.jsx').then((m) => ({ default: m.SegmentGov })));
 const SegmentPharmacy = lazy(() => import('./pages/segments/SegmentPharmacy.jsx').then((m) => ({ default: m.SegmentPharmacy })));
 const SegmentEMS = lazy(() => import('./pages/segments/SegmentEMS.jsx').then((m) => ({ default: m.SegmentEMS })));
 const SegmentDealers = lazy(() => import('./pages/segments/SegmentDealers.jsx').then((m) => ({ default: m.SegmentDealers })));
@@ -79,11 +78,14 @@ export default function App() {
           <Route path="/orders/:id/track" element={<TrackOrder />} />
 
           <Route path="/about" element={<About />} />
-          <Route path="/about/veteran-owned" element={<VeteranOwned />} />
+          {/* /about/veteran-owned 301→ /procurement at the Vercel edge; client fallback for dev. */}
+          <Route path="/about/veteran-owned" element={<Navigate to="/procurement" replace />} />
           <Route path="/compliance" element={<Compliance />} />
           <Route path="/careers" element={<Careers />} />
           <Route path="/portfolio" element={<Portfolio />} />
           <Route path="/procurement" element={<Procurement />} />
+          <Route path="/government" element={<Government />} />
+          <Route path="/case-studies/tjs" element={<CaseStudyTJS />} />
 
           <Route path="/contact" element={<Contact />} />
           <Route path="/support" element={<Support />} />
@@ -98,21 +100,26 @@ export default function App() {
           <Route path="/returns" element={<Returns />} />
           <Route path="/shipping" element={<ShippingPage />} />
 
-          <Route path="/solutions" element={<Solutions />} />
+          {/* /solutions is killed in prod (Vercel 301 → /services); client fallback for dev. */}
+          <Route path="/solutions" element={<Navigate to="/services" replace />} />
           <Route path="/solutions/asc" element={<Navigate to="/segments/asc" replace />} />
           <Route path="/solutions/pharmacy" element={<Navigate to="/segments/pharmacy" replace />} />
-          <Route path="/solutions/government" element={<Navigate to="/segments/gov" replace />} />
+          <Route path="/solutions/government" element={<Navigate to="/government" replace />} />
           <Route path="/solutions/distributors" element={<Navigate to="/segments/distributors" replace />} />
           <Route path="/solutions/ems" element={<Navigate to="/segments/ems" replace />} />
 
           <Route path="/services" element={<Services />} />
           <Route path="/services/distribution" element={<ServiceDistribution />} />
           <Route path="/services/pdac" element={<ServicePDAC />} />
-          <Route path="/services/dealer" element={<ServiceDealer />} />
-          <Route path="/services/education" element={<ServiceEducation />} />
+          <Route path="/services/distributors" element={<ServiceDistributors />} />
+          <Route path="/services/private-label" element={<ServicePrivateLabel />} />
+          {/* Legacy slugs — Vercel 301s these in prod; client fallback in dev. */}
+          <Route path="/services/dealer" element={<Navigate to="/services/distributors" replace />} />
+          <Route path="/services/education" element={<Navigate to="/blog" replace />} />
 
           <Route path="/segments/asc" element={<SegmentASC />} />
-          <Route path="/segments/gov" element={<SegmentGov />} />
+          {/* /segments/gov 301→ /government at the edge; client fallback for dev. */}
+          <Route path="/segments/gov" element={<Navigate to="/government" replace />} />
           <Route path="/segments/pharmacy" element={<SegmentPharmacy />} />
           <Route path="/segments/ems" element={<SegmentEMS />} />
           <Route path="/segments/distributors" element={<SegmentDealers />} />

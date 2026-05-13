@@ -77,7 +77,7 @@ export function AdminOrders() {
           <h1 style={{ fontFamily: D.display, fontSize: 'clamp(34px, 5.6vw, 56px)', fontWeight: 400, letterSpacing: -1.3, lineHeight: 1.02, margin: 0 }}>Orders.</h1>
           <div style={{ display: 'flex', gap: 10 }}>
             <button onClick={syncShipStation} disabled={syncing} style={{ background: 'transparent', color: D.ink, border: `1px solid ${D.line}`, padding: '10px 16px', borderRadius: 999, fontSize: 13, cursor: syncing ? 'wait' : 'pointer', opacity: syncing ? 0.6 : 1 }}>
-              {syncing ? 'Syncing…' : 'Sync ShipStation + Cin7'}
+              {syncing ? 'Syncing…' : 'Sync our WMS + Cin7'}
             </button>
           </div>
         </div>

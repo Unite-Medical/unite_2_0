@@ -50,11 +50,11 @@ export function Catalog() {
 
   useSEO({
     title: cat === 'All'
-      ? 'Catalog · 12,400 medical-supply SKUs'
+      ? 'Medical supply catalog · Unite Medical'
       : `${cat} · Catalog`,
     description: cat === 'All'
-      ? 'Search 12,400 in-stock medical supply SKUs across orthotics, diagnostics, PPE, wound care, equipment, and pharmaceuticals. Veteran-owned, FDA-registered. No MOQs.'
-      : `${cat} from Unite Medical — in-stock, no MOQs, 48-hour median ship. Veteran-owned, FDA-registered, MSPV-listed catalog.`,
+      ? 'Browse the Unite Medical catalog: orthotics, diagnostics, PPE, wound care, equipment, and pharmaceuticals. Veteran-owned, FDA-registered. No minimums on stocked items. Same-day shipping on orders before 2pm EST.'
+      : `${cat} from Unite Medical — in stock, no minimums on stocked items, same-day shipping on orders before 2pm EST. Veteran-owned, FDA-registered catalog.`,
     canonical: cat === 'All' ? '/catalog' : `/catalog?cat=${encodeURIComponent(cat)}`,
   });
 
@@ -79,7 +79,7 @@ export function Catalog() {
       <main id="main">
       <div style={{ background: D.paperAlt, padding: `${isMobile ? 32 : 48}px ${padX}px`, borderBottom: `1px solid ${D.line}` }}>
         <div style={{ maxWidth: 1360, margin: '0 auto' }}>
-          <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.2, color: D.plum }}>CATALOG · 12,400 SKUS</div>
+          <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.2, color: D.plum }}>CATALOG · STOCKED & SHIPPING SAME DAY</div>
           <div style={{ display: 'flex', alignItems: isMobile ? 'flex-start' : 'end', justifyContent: 'space-between', marginTop: 10, flexDirection: isMobile ? 'column' : 'row', gap: 8 }}>
             <h1 style={{ fontFamily: D.display, fontSize: 'clamp(38px, 7.2vw, 72px)', fontWeight: 400, letterSpacing: 'clamp(-0.9px, -0.19vw, -1.8px)', margin: 0, lineHeight: 1.0 }}>
               {cat === 'All' ? <>Everything <Grad>in stock</Grad></> : cat}

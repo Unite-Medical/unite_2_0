@@ -4,8 +4,8 @@
  *   placeOrder() →
  *     1. create order + line items in DB
  *     2. deduct inventory (FIFO across warehouses)
- *     3. ShipStation: create label, get tracking #
- *     4. QuickBooks Online: create draft invoice
+ *     3. our WMS: create label, get tracking #
+ *     4. our billing system Online: create draft invoice
  *     5. Stripe: create payment intent (if card)
  *     6. write audit log entries
  *
@@ -75,7 +75,7 @@ export async function placeOrder({ customer, address, items, payment_terms = 'ne
     cartons: Math.max(1, Math.ceil(items.length / 4)),
     eta: new Date(Date.now() + 4 * 86400000).toISOString(),
     warehouse_id: primaryWarehouse,
-    events: [{ ts: new Date().toISOString(), label: 'Label created (ShipStation)' }],
+    events: [{ ts: new Date().toISOString(), label: 'Label created (our WMS)' }],
   });
 
   db.update('orders', id, { tracking_number: label.tracking_number, carrier: label.carrier, ship_from_warehouse: primaryWarehouse });

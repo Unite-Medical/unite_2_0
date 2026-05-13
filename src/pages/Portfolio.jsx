@@ -12,10 +12,10 @@ import { PORTFOLIO_IMG } from '../lib/imageMap.js';
 const CASES = [
   { customer: 'Atlanta Surgical Center', segment: 'ASC · 4 ORs', stat: '38%', stat_label: 'supply spend reduction', body: 'Switched from Medline in Q3 2025. We rebuilt their formulary around the seven CPT codes they actually run, and trimmed annual supply spend by $214K.' },
   { customer: 'Holloway Apothecary', segment: 'Independent Pharmacy · Macon GA', stat: '$420K', stat_label: 'new revenue / yr', body: 'Private-label rapid tests + Clyne telehealth fulfillment turned a 2-pharmacy chain into a regional drop-ship hub for OTC diagnostics.' },
-  { customer: 'VA Medical Center · Dublin', segment: 'Government', stat: '14 days', stat_label: 'first PO to first delivery', body: 'Berry-compliant Medava PPE delivered against the MSPV BPA in two weeks — beating the prior incumbent by six.' },
+  { customer: 'VA Medical Center · Dublin', segment: 'Government', stat: '14 days', stat_label: 'first PO to first delivery', body: 'Berry-compliant Medava PPE delivered against the BPA in two weeks — beating the prior incumbent by six.' },
   { customer: 'MedOne Distributors', segment: 'Regional Distributor', stat: '+$1.2M', stat_label: 'new GMV in Q1', body: 'White-label drop-ship for orthotic bracing under MedOne\'s brand. EDI 850/856 standardised. Their reps stopped fighting their ERP.' },
   { customer: 'Cobb County EMS', segment: 'EMS', stat: '38', stat_label: 'rigs on monthly restock', body: 'CoTCCC trauma kits and per-rig restock subscriptions across 38 ambulances. One quarterly invoice, zero supplier calls.' },
-  { customer: 'Sunrise ASC', segment: 'ASC · 6 ORs', stat: '48 hr', stat_label: 'first dock-to-OR', body: 'Coming in mid-McKesson transition, Sunrise needed continuity. We had product on the dock 48 hours after their first PO.' },
+  { customer: 'Sunrise ASC', segment: 'ASC · 6 ORs', stat: 'Same-day', stat_label: 'first dock-to-OR', body: 'Coming in mid-McKesson transition, Sunrise needed continuity. We had product on the dock the same day after their first PO.' },
 ];
 
 export function Portfolio() {

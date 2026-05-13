@@ -203,7 +203,7 @@ export function Checkout() {
               <button disabled={placing} onClick={handlePlace} style={{ marginTop: 20, width: '100%', background: D.paper, color: D.plum, border: 'none', padding: 14, borderRadius: 999, fontSize: 14, fontWeight: 600, cursor: placing ? 'wait' : 'pointer', opacity: placing ? 0.7 : 1 }}>
                 {placing ? 'Placing order…' : 'Place order'}
               </button>
-              <div style={{ marginTop: 12, fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.plumSoft, textAlign: 'center' }}>SYNCS TO QBO · SHIPSTATION · STRIPE</div>
+              <div style={{ marginTop: 12, fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.plumSoft, textAlign: 'center' }}>SYNCS TO our billing system · SHIPSTATION · STRIPE</div>
             </div>
           </div>
         </div>

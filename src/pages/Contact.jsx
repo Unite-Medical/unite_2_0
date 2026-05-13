@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { D } from '../tokens.js';
 import { Nav } from '../components/layout/Nav.jsx';
 import { Footer } from '../components/layout/Footer.jsx';
@@ -10,7 +11,19 @@ import { uid } from '../lib/format.js';
 import { useViewport } from '../lib/viewport.js';
 import { useSEO } from '../lib/seo.js';
 
-const REASONS = ['New account', 'Quote · stocked SKU', 'Quote · non-stocked import', 'Government / VA', 'Dealer program', 'Support'];
+// Contact form reasons per spec §4m. "Distributor program" replaces "Dealer
+// program"; "Document request" and "PDAC consulting" added; separate
+// Government/VA and Vendor desks removed (no dedicated emails).
+const REASONS = [
+  'New account',
+  'Quote · stocked item',
+  'Quote · non-stocked / sourcing',
+  'Government procurement',
+  'Distributor program',
+  'Document request',
+  'PDAC consulting',
+  'Support',
+];
 
 export function Contact() {
   const { isMobile } = useViewport();
@@ -18,10 +31,15 @@ export function Contact() {
   useSEO({
     title: 'Contact — call us, we answer',
     description:
-      'Talk to a Unite Medical rep on first ring. Sales (678) 555-0142, customer service (678) 555-0180, government desk (678) 555-0219, dealer program (678) 555-0255. Mon–Fri 7a–7p ET.',
+      'Every inbound goes to a real person. Mon–Fri 8am–5pm EST. Sales, support, government, and billing all on 833.868.6483.',
     canonical: '/contact',
   });
-  const [form, setForm] = useState({ first: '', last: '', org: '', email: '', message: '', reason: 'New account', route_to_rep: true });
+  // ?reason= deep-link picks the initial dropdown value; the user takes over
+  // afterwards via the select. We deliberately don't re-sync mid-session to
+  // avoid React 19's set-state-in-effect lint and the resulting render storm.
+  const [params] = useSearchParams();
+  const initialReason = params.get('reason') && REASONS.includes(params.get('reason')) ? params.get('reason') : 'New account';
+  const [form, setForm] = useState({ first: '', last: '', org: '', email: '', message: '', reason: initialReason, route_to_rep: true });
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(null);
 
@@ -55,7 +73,7 @@ export function Contact() {
           lifecyclestage: 'lead',
         }),
         gmail.send({ to: form.email, subject: `Got it — Unite Medical (${form.reason})`, body: `Hi ${form.first || 'there'}, thanks for reaching out. ${form.route_to_rep ? 'A rep is being assigned and will reply within one business day.' : 'A team member will be in touch shortly.'}` }),
-        gmail.send({ to: 'sales@unitemedical.com', subject: `New lead · ${form.org || form.first}`, body: `${form.reason}\n\n${form.message}` }),
+        gmail.send({ to: 'sales@unitemedical.net', subject: `New lead · ${form.org || form.first}`, body: `${form.reason}\n\n${form.message}` }),
       ]);
       setSubmitted({ id: lead.id });
     } finally {
@@ -68,9 +86,9 @@ export function Contact() {
       <Nav />
       <main id="main">
         <PageHead
-          eyebrow="CONTACT · MON-FRI 7A-7P ET"
-          title={<>Call us. <Grad>We answer.</Grad></>}
-          sub="Every inbound routes to a human on first ring. No trees, no queues — just the rep assigned to your segment."
+          eyebrow="CONTACT · MON-FRI 8AM-5PM EST"
+          title={<>Call us. We answer.</>}
+          sub="Every inbound goes to a real person."
         />
         <div style={{ maxWidth: 1360, margin: '0 auto', padding: `24px ${padX}px ${isMobile ? 56 : 64}px`, display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: isMobile ? 28 : 40 }}>
           <form onSubmit={handleSubmit} style={{ background: D.card, borderRadius: 14, border: `1px solid ${D.line}`, padding: isMobile ? 22 : 32 }}>
@@ -106,12 +124,12 @@ export function Contact() {
               Prefer to <em>talk</em>?
             </div>
             <div style={{ marginTop: 24, display: 'grid', gap: 14 }}>
+              {/* All numbers consolidated to one line per spec §4m. */}
               {[
-                ['Sales · new accounts', '(678) 555-0142', 'sales@unitemedical.com'],
-                ['Customer service', '(678) 555-0180', 'support@unitemedical.com'],
-                ['Government / VA', '(678) 555-0219', 'gov@unitemedical.com'],
-                ['Dealer program', '(678) 555-0255', 'dealers@unitemedical.com'],
-                ['Vendor / import partnerships', '(678) 555-0277', 'vendors@unitemedical.com'],
+                ['Sales & New Accounts', '833.868.6483', 'sales@unitemedical.net'],
+                ['Customer Support', '833.868.6483', 'support@unitemedical.net'],
+                ['General Inquiries', '833.868.6483', 'info@unitemedical.net'],
+                ['Accounting & Billing', '833.868.6483', 'accounting@unitemedical.net'],
               ].map(([name, phone, email]) => (
                 <div key={name} style={{ padding: 20, background: D.card, borderRadius: 12, border: `1px solid ${D.line}` }}>
                   <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.plum }}>{name.toUpperCase()}</div>
