@@ -38,10 +38,10 @@ export function Login() {
 
   async function handleDemoAdmin() {
     setError(null); setSubmitting(true);
-    setEmail('damon@unitemedical.com');
+    setEmail('damon@unitemedical.net');
     setPassword('admin');
     try {
-      const session = await auth.login('damon@unitemedical.com', 'admin');
+      const session = await auth.login('damon@unitemedical.net', 'admin');
       navigate(next && next.startsWith('/') ? next : '/admin');
       void session;
     } catch (err) {
@@ -100,7 +100,7 @@ export function Login() {
               <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.plum }}>DEMO ACCOUNTS</div>
               <div>Customer · sarah@atlanta-surgical.com / <code>demo</code></div>
               <div>Pharmacy · kareem@holloway.com / <code>demo</code></div>
-              <div>Admin · damon@unitemedical.com / <code>admin</code></div>
+              <div>Admin · damon@unitemedical.net / <code>admin</code></div>
             </div>
             <div style={{ marginTop: 20, fontSize: 13, color: D.ink2, textAlign: 'center' }}>
               New to Unite? <Link to="/register" style={{ color: D.plum, textDecoration: 'underline' }}>Request an account</Link>

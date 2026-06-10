@@ -40,7 +40,7 @@ export function Portfolio() {
         <section style={{ padding: `24px ${padX}px ${isMobile ? 56 : 96}px` }}>
           <div style={{ maxWidth: 1360, margin: '0 auto', display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(2, 1fr)', gap: isMobile ? 14 : 18 }}>
             {CASES.map((c, i) => (
-              <article key={c.customer} style={{ background: D.card, border: `1px solid ${D.line}`, borderRadius: 16, overflow: 'hidden' }}>
+              <article key={c.customer} className="um-card" style={{ background: D.card, border: `1px solid ${D.line}`, borderRadius: 16, overflow: 'hidden' }}>
                 <PhotoPlaceholder src={PORTFOLIO_IMG[i]} caption={c.customer.toLowerCase()} height={isMobile ? 160 : 220} stripeFrom="#e8ddcd" stripeTo="#d9c8b0" textColor={D.plum} radius={0} />
                 <div style={{ padding: isMobile ? 22 : 28 }}>
                   <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.2, color: D.plum }}>{c.segment.toUpperCase()}</div>

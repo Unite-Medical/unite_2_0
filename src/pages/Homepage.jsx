@@ -67,6 +67,7 @@ function Hero() {
               caption="warehouse floor, golden hour"
               height={isMobile ? 280 : 500}
               stripeFrom="#e8ddcd" stripeTo="#d9c8b0" textColor={D.plum}
+              eager
             />
             <div style={{
               position: 'absolute',
@@ -257,7 +258,7 @@ function Featured() {
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(4,1fr)', gap: isMobile ? 12 : 18 }}>
           {picks.map((p) => (
-            <article key={p.sku} style={{ background: D.card, borderRadius: 14, overflow: 'hidden', border: `1px solid ${D.line}` }}>
+            <article key={p.sku} className="um-card" style={{ background: D.card, borderRadius: 14, overflow: 'hidden', border: `1px solid ${D.line}` }}>
               <PhotoPlaceholder src={PRODUCT_IMG[p.sku]} caption={p.img} height={isMobile ? 140 : 210} stripeFrom="#ebe3d3" stripeTo="#ddd1b7" textColor={D.plum} />
               <div style={{ padding: isMobile ? 14 : 18 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: D.mono, fontSize: 10, letterSpacing: 0.8, color: D.ink3 }}>

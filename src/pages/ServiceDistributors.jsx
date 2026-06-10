@@ -5,6 +5,8 @@ import { D } from '../tokens.js';
 import { Nav } from '../components/layout/Nav.jsx';
 import { Footer } from '../components/layout/Footer.jsx';
 import { PageHead } from '../components/layout/PageHead.jsx';
+import { PhotoPlaceholder } from '../components/shared/PhotoPlaceholder.jsx';
+import { SERVICE_IMG } from '../lib/imageMap.js';
 import { useViewport } from '../lib/viewport.js';
 import { useSEO } from '../lib/seo.js';
 
@@ -59,6 +61,17 @@ export function ServiceDistributors() {
         eyebrow="SERVICE · DISTRIBUTOR PROGRAM"
         title={<>Your catalog. <em>Our import desk.</em></>}
         sub="Distribution, fulfillment, and sourcing for regional distributors who need a logistics partner they can trust — not a competitor."
+        right={
+          <PhotoPlaceholder
+            src={SERVICE_IMG[3]}
+            alt="Shrink-wrapped pallet being loaded onto a box truck at a loading dock"
+            caption="dock, end of day"
+            height={isMobile ? 220 : 360}
+            stripeFrom="#e8ddcd" stripeTo="#d9c8b0" textColor={D.plum}
+            radius={16}
+            eager
+          />
+        }
       />
       <div style={{ maxWidth: 1360, margin: '0 auto', padding: `8px ${padX}px ${isMobile ? 56 : 96}px` }}>
         <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: isMobile ? 14 : 20 }}>

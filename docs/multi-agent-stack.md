@@ -104,7 +104,7 @@ Each agent is an LLM with a focused system prompt, a curated tool set, a confide
 | **Owns** | Replies to "where's my order", "do you have X SKU", "send me the W9", "what's my net-30 balance"; escalates anything else |
 | **Replaces** | Tier-1 support (1.5 FTE) |
 | **APIs / tools** | Gmail · Cin7 · QBO · ShipStation · the in-house DB · Anthropic · vector DB of past tickets |
-| **Trigger** | Inbound email to `support@unitemedical.com` |
+| **Trigger** | Inbound email to `support@unitemedical.net` |
 | **Output** | Drafted reply, sent autonomously above threshold, queued for human review below |
 | **Confidence threshold** | 92%, but with a hard rule: anything mentioning a recall / injury / regulator → instant human escalation |
 

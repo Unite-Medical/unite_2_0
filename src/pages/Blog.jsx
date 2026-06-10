@@ -43,7 +43,7 @@ export function Blog() {
           {posts.length === 0 && <div style={{ padding: 48, textAlign: 'center', color: D.ink3, background: D.card, borderRadius: 14, border: `1px dashed ${D.line}` }}>No posts in this category.</div>}
 
           {featured && (
-            <article onClick={() => navigate(`/blog/${featured.slug}`)} style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.2fr 1fr', gap: isMobile ? 0 : 20, marginBottom: 28, background: D.card, border: `1px solid ${D.line}`, borderRadius: 16, overflow: 'hidden', cursor: 'pointer' }}>
+            <article onClick={() => navigate(`/blog/${featured.slug}`)} className="um-card" style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.2fr 1fr', gap: isMobile ? 0 : 20, marginBottom: 28, background: D.card, border: `1px solid ${D.line}`, borderRadius: 16, overflow: 'hidden', cursor: 'pointer' }}>
               <PhotoPlaceholder src={BLOG_IMG[featured.slug]} caption={featured.cover} height={isMobile ? 200 : 380} stripeFrom="#ebe3d3" stripeTo="#ddd1b7" textColor={D.plum} radius={0} />
               <div style={{ padding: isMobile ? 22 : 32, alignSelf: 'center' }}>
                 <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.plum }}>{featured.category.toUpperCase()} · {fmt.date(featured.posted_at).toUpperCase()} · {Math.max(3, Math.round((featured.body || '').length / 800))} MIN READ</div>
@@ -58,7 +58,7 @@ export function Blog() {
 
           <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : isTablet ? '1fr 1fr' : 'repeat(3,1fr)', gap: 14 }}>
             {rest.map((p) => (
-              <article key={p.slug} onClick={() => navigate(`/blog/${p.slug}`)} style={{ background: D.card, borderRadius: 14, border: `1px solid ${D.line}`, overflow: 'hidden', cursor: 'pointer' }}>
+              <article key={p.slug} onClick={() => navigate(`/blog/${p.slug}`)} className="um-card" style={{ background: D.card, borderRadius: 14, border: `1px solid ${D.line}`, overflow: 'hidden', cursor: 'pointer' }}>
                 <PhotoPlaceholder src={BLOG_IMG[p.slug]} caption={p.cover} height={isMobile ? 160 : 180} stripeFrom="#ebe3d3" stripeTo="#ddd1b7" textColor={D.plum} radius={0} />
                 <div style={{ padding: isMobile ? 18 : 22 }}>
                   <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.plum }}>{p.category.toUpperCase()} · {fmt.date(p.posted_at).toUpperCase()}</div>

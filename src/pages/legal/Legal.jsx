@@ -54,9 +54,9 @@ export function Privacy() {
         { title: 'Why we collect it', body: 'To process your orders, generate invoices, ship goods, support compliance audits, and improve the platform. We do not sell your data to third parties — full stop.' },
         { title: 'Where it lives', body: 'Customer records and order history are stored in SOC 2 Type II environments hosted in the United States. Backups are encrypted at rest with AES-256.' },
         { title: 'Sharing', body: 'We share order, payment, and shipping data with the third-party processors that move your goods (our WMS, FedEx, UPS, your bank, our billing system Online, Stripe) under contractual obligations to keep it confidential.' },
-        { title: 'Your rights', body: 'You may request a copy of the personal data we hold about you, request corrections, or request deletion. Email privacy@unitemedical.com and we will respond within 30 days.' },
+        { title: 'Your rights', body: 'You may request a copy of the personal data we hold about you, request corrections, or request deletion. Email privacy@unitemedical.net and we will respond within 30 days.' },
         { title: 'Children', body: 'The platform is intended for business use only and is not directed at anyone under 16.' },
-        { title: 'Contact', body: 'Privacy Officer · privacy@unitemedical.com · 1487 Trae Lane, Lithia Springs GA 30122.' },
+        { title: 'Contact', body: 'Privacy Officer · privacy@unitemedical.net · 1487 Trae Lane, Lithia Springs GA 30122.' },
       ]}
     />
   );

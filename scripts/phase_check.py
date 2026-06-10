@@ -72,7 +72,30 @@ class PhaseResult:
 SOURCE_GLOBS = ("**/*.jsx", "**/*.js", "**/*.html", "**/*.json", "**/*.css")
 
 # Files that legitimately discuss the old copy (PRD, source spec, scripts).
-DOC_EXEMPT_DIRS = {"node_modules", "dist", ".git", "docs", "scripts"}
+DOC_EXEMPT_DIRS = {"node_modules", "dist", ".git", "docs", "scripts", "prompts", "forecasting"}
+
+# Files where vendor / tool names (ShipStation, Cin7, QBO, Flexport)
+# are legitimately required: the external client code itself and the
+# admin-only integration dashboards. Phase-1 rules that match those
+# names skip these paths. All OTHER Phase-1 rules (phones, BPA #, etc.)
+# still apply.
+VENDOR_NAME_RULES = {
+    "ShipStation",
+    "QuickBooks/QBO",
+    "Flexport",
+    "Cin7 (customer-facing)",
+}
+VENDOR_NAME_EXEMPT_PATHS = (
+    "src/lib/external/",
+    "src/lib/services.js",          # re-export shim
+    "src/lib/receiving.js",         # inbound pipeline (names the systems it chains)
+    "src/pages/admin/AdminIntegrations.jsx",
+    "src/pages/admin/AdminAI.jsx",
+    "src/pages/admin/AdminMarginPolicy.jsx",
+    "src/pages/admin/AdminSurplus.jsx",
+    "src/pages/admin/AdminProductOnboard.jsx",
+    "src/pages/QuoteNew.jsx",
+)
 
 
 def iter_source_files() -> Iterable[Path]:
@@ -216,14 +239,24 @@ FORBIDDEN_PATTERNS: list[tuple[str, str]] = [
     ("3 coasts", r"\b3\s+COASTS\b|three\s+time\s+zones"),
     ("Atlanta/Reno/Dallas trio", r"Atlanta,?\s+Reno,?\s+(?:and\s+)?Dallas"),
     ("Dallas warehouse", r"Dallas,?\s+TX"),
+    # PRD-00: ghost Dallas warehouse — survived the original sweep
+    # because the city + state lived in separate JS fields.
+    ("Dallas city literal", r"['\"]Dallas['\"]"),
+    ("wh_dal warehouse id", r"\bwh_dal\b"),
     ("PunchOut", r"\bPunch[-\s]?Out\b|\bcXML\b|\bOCI\b"),
     ("ShipStation", r"\bShipStation\b"),
     ("QuickBooks/QBO", r"\bQuickBooks\b|\bQBO\b"),
     ("Flexport", r"\bFlexport\b"),
+    ("Cin7 (customer-facing)", r"\bCin7\b"),
     ("22-year military claim", r"\b22[\s\-]?year[s]?\b|two\s+decades"),
     ("U.S. Army (Damon)", r"U\.S\.\s+Army"),
     ("Army logistics officer", r"Army\s+logistics\s+officer"),
     ("Big 3 dig", r"Big[\s\-]?3"),
+    # PRD-00: catch-all for any @unitemedical.com address. The specific
+    # legacy aliases (sales, support, gov, dealers, vendors) are kept
+    # below for clearer error labels, but this rule covers any new
+    # offender (e.g., privacy@, damon@, ops@).
+    (".com email (catch-all)", r"(?i)@unitemedical\.com"),
     (".com email — sales", r"sales@unitemedical\.com"),
     (".com email — support", r"support@unitemedical\.com"),
     (".com email — gov", r"gov@unitemedical\.com"),
@@ -237,8 +270,16 @@ def check_phase_1() -> PhaseResult:
     files = list(iter_source_files())
 
     for label, rx in FORBIDDEN_PATTERNS:
+        # Vendor-name rules skip the integration admin pages and the
+        # external client folder where these names are required.
+        targeted_files = files
+        if label in VENDOR_NAME_RULES:
+            targeted_files = [
+                f for f in files
+                if not any(str(f.relative_to(ROOT)).startswith(p) for p in VENDOR_NAME_EXEMPT_PATHS)
+            ]
         res.violations.extend(
-            scan(files, rx, phase=1, rule=f"forbidden: {label}")
+            scan(targeted_files, rx, phase=1, rule=f"forbidden: {label}")
         )
 
     # Utility bar (Nav.jsx) must say the new things.

@@ -9,7 +9,9 @@
 import { REAL_PRODUCTS } from '../data/realCatalog.js';
 
 const VARIANT = 'v1';
-const base = (id) => `/images/generated/${id}-${VARIANT}.png`;
+// Marketing imagery is served as WebP (~10x lighter than the PNG masters,
+// which stay on disk for the generation pipeline).
+const base = (id) => `/images/generated/${id}-${VARIANT}.webp`;
 
 export const IMG = {
   HOME_HERO:        base('HOME-01'),
@@ -19,7 +21,20 @@ export const IMG = {
   DIST_PICK_PATH:   base('DIST-01'),
   EDU_IN_PERSON:    base('EDU-01'),
   EDU_ONLINE:       base('EDU-02'),
+  SURPLUS_HERO:     base('SURPLUS-01'),
+  COMPLIANCE_FILES: base('COMP-01'),
+  GOV_WAREHOUSE:    base('GOV-01'),
+  WAREHOUSE_GA:     base('LOC-GA'),
+  WAREHOUSE_NV:     base('LOC-NV'),
 };
+
+/* Services hub cards — keyed by index in src/pages/Services.jsx. */
+export const SERVICE_IMG = [
+  base('SVC-01'), // Distribution & Fulfillment
+  base('SVC-02'), // PDAC Consulting
+  base('SVC-03'), // Quoting & Sourcing
+  base('SVC-04'), // Distributor Program
+];
 
 /* SKU -> hero image path. Built from the real catalog. */
 const PRODUCT_HERO = Object.fromEntries(

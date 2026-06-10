@@ -4,6 +4,8 @@ import { Nav } from '../components/layout/Nav.jsx';
 import { Footer } from '../components/layout/Footer.jsx';
 import { PageHead } from '../components/layout/PageHead.jsx';
 import { Grad } from '../components/shared/Grad.jsx';
+import { PhotoPlaceholder } from '../components/shared/PhotoPlaceholder.jsx';
+import { SERVICE_IMG } from '../lib/imageMap.js';
 import { useViewport } from '../lib/viewport.js';
 import { useSEO } from '../lib/seo.js';
 
@@ -54,15 +56,24 @@ export function Services() {
         title={<>More than <Grad>a supplier</Grad>.</>}
         sub="Distribution, PDAC consulting, private-label manufacturing, and a sourcing platform. Built because our customers kept asking us to do more." />
       <div style={{ maxWidth: 1360, margin: '0 auto', padding: `24px ${padX}px ${isMobile ? 56 : 80}px` }}>
-        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(2,1fr)', gap: 14 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(2,1fr)', gap: isMobile ? 14 : 18 }}>
           {services.map((s, i) => (
-            <div key={i} style={{ background: D.card, borderRadius: 16, border: `1px solid ${D.line}`, padding: isMobile ? 22 : 32, display: 'flex', alignItems: isMobile ? 'flex-start' : 'center', gap: isMobile ? 16 : 24, flexDirection: isMobile ? 'column' : 'row' }}>
-              <div style={{ fontFamily: D.display, fontSize: isMobile ? 44 : 64, color: D.plum, letterSpacing: -1, minWidth: isMobile ? 0 : 80, lineHeight: 1 }}>{String(i + 1).padStart(2, '0')}</div>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontFamily: D.display, fontSize: isMobile ? 24 : 30, letterSpacing: -0.6, lineHeight: 1.15 }}>{s.name}</div>
-                <div style={{ fontSize: 14, color: D.ink2, marginTop: 8 }}>{s.sub}</div>
+            <div key={i} className="um-card" style={{ background: D.card, borderRadius: 16, border: `1px solid ${D.line}`, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+              <PhotoPlaceholder
+                src={SERVICE_IMG[i]}
+                alt={s.name}
+                caption={s.name.toLowerCase()}
+                height={isMobile ? 180 : 240}
+                stripeFrom="#ebe3d3" stripeTo="#ddd1b7" textColor={D.plum}
+              />
+              <div style={{ padding: isMobile ? 22 : 28, display: 'flex', alignItems: isMobile ? 'flex-start' : 'center', gap: isMobile ? 16 : 24, flexDirection: isMobile ? 'column' : 'row', flex: 1 }}>
+                <div style={{ fontFamily: D.display, fontSize: isMobile ? 38 : 48, color: D.plum, letterSpacing: -1, minWidth: isMobile ? 0 : 64, lineHeight: 1 }}>{String(i + 1).padStart(2, '0')}</div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontFamily: D.display, fontSize: isMobile ? 24 : 28, letterSpacing: -0.6, lineHeight: 1.15 }}>{s.name}</div>
+                  <div style={{ fontSize: 14, color: D.ink2, marginTop: 8, lineHeight: 1.55 }}>{s.sub}</div>
+                </div>
+                <button onClick={() => navigate(s.path)} style={{ background: 'transparent', color: D.ink, border: `1.5px solid ${D.ink}`, padding: '12px 20px', borderRadius: 999, fontSize: 13, cursor: 'pointer', whiteSpace: 'nowrap', alignSelf: isMobile ? 'stretch' : 'center', textAlign: 'center', fontFamily: D.sans }}>{s.cta} →</button>
               </div>
-              <button onClick={() => navigate(s.path)} style={{ background: 'transparent', color: D.ink, border: `1.5px solid ${D.ink}`, padding: '12px 20px', borderRadius: 999, fontSize: 13, cursor: 'pointer', whiteSpace: 'nowrap', alignSelf: isMobile ? 'stretch' : 'center', textAlign: 'center' }}>{s.cta} →</button>
             </div>
           ))}
         </div>

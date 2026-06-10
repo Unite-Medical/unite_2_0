@@ -108,7 +108,7 @@ export function OrderSuccess() {
                 <div style={{ width: 44, height: 44, borderRadius: 22, background: D.plum }} />
                 <div>
                   <div style={{ fontFamily: D.display, fontSize: 18, letterSpacing: -0.2 }}>{repName}</div>
-                  <div style={{ fontSize: 12, color: D.ink2 }}>{FALLBACK_REP.phone} · {repName.toLowerCase().split(' ')[0]}@unitemedical.com</div>
+                  <div style={{ fontSize: 12, color: D.ink2 }}>{FALLBACK_REP.phone} · {repName.toLowerCase().split(' ')[0]}@unitemedical.net</div>
                 </div>
               </div>
             </div>

@@ -1,0 +1,33 @@
+[project]
+name = "unite-forecasting"
+version = "0.1.0"
+description = "Per-SKU demand forecasting sidecar for Unite Medical (PRD-12)."
+requires-python = ">=3.12"
+dependencies = [
+  "fastapi>=0.115",
+  "uvicorn[standard]>=0.32",
+  "psycopg[binary]>=3.2",
+  "prophet>=1.1.6",
+  "pandas>=2.2",
+  "numpy>=1.26",
+  "pydantic>=2.9",
+  "python-dotenv>=1.0",
+  "sentry-sdk>=2.18",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.3",
+  "ruff>=0.7",
+  "mypy>=1.13",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+
+[tool.pytest.ini_options]
+addopts = "-q"

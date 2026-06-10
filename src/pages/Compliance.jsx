@@ -6,6 +6,8 @@ import { Footer } from '../components/layout/Footer.jsx';
 import { PageHead } from '../components/layout/PageHead.jsx';
 import { Grad } from '../components/shared/Grad.jsx';
 import { Icon } from '../components/shared/Icon.jsx';
+import { PhotoPlaceholder } from '../components/shared/PhotoPlaceholder.jsx';
+import { IMG } from '../lib/imageMap.js';
 import { db } from '../lib/db.js';
 import { gmail } from '../lib/services.js';
 import { uid } from '../lib/format.js';
@@ -95,6 +97,17 @@ export function Compliance() {
           eyebrow="COMPLIANCE · CREDENTIALS · POLICY"
           title={<>The paperwork,<br /><Grad>kept clean.</Grad></>}
           sub="Distribution is a regulated business. Below are the certifications, policies, and audit trails that keep us trusted by health systems, ASCs, and pharmacy boards nationwide."
+          right={
+            <PhotoPlaceholder
+              src={IMG.COMPLIANCE_FILES}
+              alt="Hands filing an archival folder into ordered compliance records"
+              caption="records, kept in order"
+              height={isMobile ? 220 : 360}
+              stripeFrom="#e8ddcd" stripeTo="#d9c8b0" textColor={D.plum}
+              radius={16}
+              eager
+            />
+          }
         />
 
         <section id="credentials" style={{ padding: `24px ${padX}px ${isMobile ? 56 : 80}px` }}>

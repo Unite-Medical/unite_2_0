@@ -17,7 +17,7 @@ import { seed } from './seed.js';
  */
 
 const STORAGE_KEY = 'um.db.v1';
-const SCHEMA_VERSION = 5;
+const SCHEMA_VERSION = 8;
 
 const TABLES = [
   'profiles', 'organizations', 'organization_users', 'addresses',
@@ -31,6 +31,18 @@ const TABLES = [
   'blog_posts', 'cms_pages', 'banners', 'doc_requests', 'vendors',
   'qbo_invoices', 'flexport_shipments', 'shipstation_labels',
   'stripe_payments', 'hubspot_contacts', 'gmail_outbox', 'audit_log',
+  // PRD-11: AI usage tracking
+  'ai_usage',
+  // PRD-10: hospital surplus intake
+  'surplus_submissions', 'surplus_lines',
+  // PRD-07: vendor compliance evidence
+  'vendor_evidence', 'product_compliance', 'compliance_events',
+  // PRD-12: replenishment (run-rate model output + draft POs)
+  'purchase_orders',
+  // PRD-05: CEO morning brief history
+  'daily_digests',
+  // Brief §7: trade-data discovery (vendor/customer lead mining)
+  'trade_records',
 ];
 
 function load() {

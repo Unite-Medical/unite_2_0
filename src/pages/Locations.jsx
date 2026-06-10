@@ -2,14 +2,16 @@ import { D } from '../tokens.js';
 import { Nav } from '../components/layout/Nav.jsx';
 import { Footer } from '../components/layout/Footer.jsx';
 import { PageHead } from '../components/layout/PageHead.jsx';
+import { PhotoPlaceholder } from '../components/shared/PhotoPlaceholder.jsx';
+import { IMG } from '../lib/imageMap.js';
 import { useViewport } from '../lib/viewport.js';
 import { useSEO } from '../lib/seo.js';
 
 // Two-warehouse footprint per spec §4k. SKU counts come from Shopify later;
 // sqft awaits real numbers from Alex (Open Question §10.3).
 const hubs = [
-  { city: 'Lithia Springs, GA', type: 'HQ + main warehouse', skus: '—', sqft: '—', lat: 62, lng: 58 },
-  { city: 'Nevada', type: 'West warehouse', skus: '—', sqft: '—', lat: 52, lng: 18 },
+  { city: 'Lithia Springs, GA', type: 'HQ + main warehouse', skus: '—', sqft: '—', lat: 62, lng: 58, img: IMG.WAREHOUSE_GA },
+  { city: 'Nevada', type: 'West warehouse', skus: '—', sqft: '—', lat: 52, lng: 18, img: IMG.WAREHOUSE_NV },
 ];
 
 export function Locations() {
@@ -48,14 +50,23 @@ export function Locations() {
         </div>
         <div>
           {hubs.map((h, i) => (
-            <div key={i} style={{ padding: 18, background: D.card, borderRadius: 12, border: `1px solid ${D.line}`, marginBottom: 10 }}>
-              <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.plum }}>{h.type.toUpperCase()}</div>
-              <div style={{ fontFamily: D.display, fontSize: 24, letterSpacing: -0.4, marginTop: 6 }}>{h.city}</div>
-              <div style={{ display: 'flex', gap: 24, marginTop: 10, fontSize: 12, color: D.ink2 }}>
-                <span>SKUs: {h.skus}</span><span>sqft: {h.sqft}</span>
+            <div key={i} className="um-card" style={{ background: D.card, borderRadius: 12, border: `1px solid ${D.line}`, marginBottom: 10, overflow: 'hidden' }}>
+              <PhotoPlaceholder
+                src={h.img}
+                alt={`${h.type} — ${h.city}`}
+                caption={h.city.toLowerCase()}
+                height={isMobile ? 160 : 170}
+                stripeFrom="#ebe3d3" stripeTo="#ddd1b7" textColor={D.plum}
+              />
+              <div style={{ padding: 18 }}>
+                <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.plum }}>{h.type.toUpperCase()}</div>
+                <div style={{ fontFamily: D.display, fontSize: 24, letterSpacing: -0.4, marginTop: 6 }}>{h.city}</div>
+                <div style={{ display: 'flex', gap: 24, marginTop: 10, fontSize: 12, color: D.ink2 }}>
+                  <span>SKUs: {h.skus}</span><span>sqft: {h.sqft}</span>
+                </div>
+                {/* TODO(alex): real Shopify-driven SKU count + warehouse sqft.
+                    Open question §10.2/§10.3. */}
               </div>
-              {/* TODO(alex): real Shopify-driven SKU count + warehouse sqft.
-                  Open question §10.2/§10.3. */}
             </div>
           ))}
         </div>

@@ -86,6 +86,52 @@ img {
   left: 16px;
 }
 
+/* --- Interaction polish (UI pass) ------------------------------------- */
+
+button {
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease,
+    border-color 0.18s ease,
+    opacity 0.18s ease,
+    transform 0.12s ease;
+}
+button:active:not(:disabled) {
+  transform: scale(0.985);
+}
+
+/* Card hover: gentle lift + photo zoom. Opt-in via .um-card. */
+.um-card {
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+}
+.um-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 22px 44px -24px rgba(36, 26, 40, 0.3);
+}
+.um-card img {
+  transition: transform 0.7s cubic-bezier(0.2, 0.6, 0.2, 1);
+}
+.um-card:hover img {
+  transform: scale(1.045);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .um-card,
+  .um-card img,
+  button {
+    transition: none !important;
+  }
+  .um-card:hover {
+    transform: none;
+  }
+  .um-card:hover img {
+    transform: none;
+  }
+}
+
 /* Generic horizontal-scroll wrapper for wide tables on mobile. */
 .um-scroll-x {
   overflow-x: auto;

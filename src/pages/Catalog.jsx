@@ -153,7 +153,7 @@ export function Catalog() {
             const stock = stockBySku.get(p.sku) || 0;
             const isLow = stock < 200;
             return (
-              <article key={p.sku} style={{ background: D.card, borderRadius: 14, overflow: 'hidden', border: `1px solid ${D.line}`, display: 'flex', flexDirection: 'column' }}>
+              <article key={p.sku} className="um-card" style={{ background: D.card, borderRadius: 14, overflow: 'hidden', border: `1px solid ${D.line}`, display: 'flex', flexDirection: 'column' }}>
                 <Link to={`/products/${p.sku}`} style={{ display: 'block' }}>
                   <PhotoPlaceholder src={PRODUCT_IMG[p.sku]} caption={p.img} height={isMobile ? 140 : 210} stripeFrom="#ebe3d3" stripeTo="#ddd1b7" textColor={D.plum} />
                 </Link>

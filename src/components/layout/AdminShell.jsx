@@ -7,17 +7,22 @@ import { auth } from '../../lib/auth.js';
 import { useViewport } from '../../lib/viewport.js';
 
 const NAV = [
-  ['Overview',   'overview',   '/admin'],
-  ['Products',   'products',   '/admin/products'],
-  ['Orders',     'orders',     '/admin/orders'],
-  ['Quotes',     'quotes',     '/admin/quotes'],
-  ['Inventory',  'inventory',  '/admin/inventory'],
-  ['Customers',  'customers',  '/admin/customers'],
-  ['CRM',        'crm',        '/admin/crm'],
-  ['Vendors',    'vendors',    '/admin/vendors'],
-  ['CMS',        'cms',        '/admin/cms'],
-  ['Analytics',  'analytics',  '/admin/analytics'],
-  ['Settings',   'settings',   '/admin/settings'],
+  ['Overview',      'overview',   '/admin'],
+  ['Morning brief', 'digest',     '/admin/digest'],
+  ['Products',      'products',   '/admin/products'],
+  ['Orders',        'orders',     '/admin/orders'],
+  ['Quotes',        'quotes',     '/admin/quotes'],
+  ['Inventory',     'inventory',  '/admin/inventory'],
+  ['Replenishment', 'replenish',  '/admin/replenishment'],
+  ['Finance',       'finance',    '/admin/finance'],
+  ['Customers',     'customers',  '/admin/customers'],
+  ['CRM',           'crm',        '/admin/crm'],
+  ['Vendors',       'vendors',    '/admin/vendors'],
+  ['Discovery',     'discovery',  '/admin/discovery'],
+  ['Compliance',    'compliance', '/admin/compliance'],
+  ['CMS',           'cms',        '/admin/cms'],
+  ['Analytics',     'analytics',  '/admin/analytics'],
+  ['Settings',      'settings',   '/admin/settings'],
 ];
 
 export function AdminShell({ active, children }) {

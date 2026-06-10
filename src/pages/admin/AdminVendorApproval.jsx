@@ -3,10 +3,12 @@ import { D } from '../../tokens.js';
 import { AdminShell } from '../../components/layout/AdminShell.jsx';
 import { db } from '../../lib/db.js';
 import { fmt } from '../../lib/format.js';
-import { openfda, gs1, hts } from '../../lib/services.js';
+import { gs1, hts } from '../../lib/services.js';
+import { evaluateVendor } from '../../lib/vendorScoring.js';
 import { useViewport } from '../../lib/viewport.js';
 
-const BADGE = (s) => ({ pass: ['#2d6a4f', 'PASS'], warn: [D.terra, 'REVIEW'], fail: ['#c3382d', 'FAIL'], pending: [D.ink3, 'PENDING'] })[s] || ['#8f8490', '—'];
+const BADGE = (s) => ({ pass: ['#2d6a4f', 'PASS'], warn: [D.terra, 'REVIEW'], fail: ['#c3382d', 'FAIL'], pending: [D.ink3, 'PENDING'], approved: ['#2d6a4f', 'APPROVED'], rejected: ['#c3382d', 'REJECTED'] })[s] || ['#8f8490', '—'];
+const DECISION_COLOR = { AUTO_APPROVE: '#2d6a4f', MANUAL_REVIEW: D.terra, AUTO_REJECT: '#c3382d' };
 
 export function AdminVendorApproval() {
   const { isMobile } = useViewport();
@@ -16,27 +18,42 @@ export function AdminVendorApproval() {
   const active = db.useRow('vendors', activeId);
   const [running, setRunning] = useState(false);
   const [checks, setChecks] = useState([]);
+  const [scoring, setScoring] = useState(null);
 
   async function runChecks() {
     if (!active) return;
     setRunning(true);
     setChecks([]);
-    const fda = await openfda.classification('KGN');
-    setChecks((c) => [...c, { name: 'openFDA device registration lookup', status: fda.results.length ? 'pass' : 'fail', detail: fda.results[0]?.name || 'Not found' }]);
+    setScoring(null);
+
+    // PRD-07 Phase 2: real vendor scoring against openFDA.
+    const result = await evaluateVendor({
+      name: active.name,
+      fei_number: active.fei_number,
+      country_of_origin: active.country,
+      business_age_years: active.business_age_years,
+      importgenius_annual_usd: active.importgenius_annual_usd,
+    });
+    setScoring(result);
+
+    // Supplementary point-checks (GS1 + HTS) — these flow into the
+    // product onboarding workflow (PRD-07 Phase 3); displayed here as
+    // confirmation that the rest of the pipeline is ready.
     const gtin = await gs1.validateGTIN('00012345678905');
-    setChecks((c) => [...c, { name: 'GS1 GTIN validation · top SKU', status: gtin.valid ? 'pass' : 'warn', detail: `GTIN ${gtin.gtin}` }]);
+    setChecks((c) => [...c, { name: 'GS1 GTIN validation · sample SKU', status: gtin.valid ? 'pass' : 'warn', detail: `GTIN ${gtin.gtin}` }]);
     const dutyA = await hts.lookup('9021.10');
-    setChecks((c) => [...c, { name: 'HTS code audit', status: 'pass', detail: `${dutyA.description} · ${dutyA.mfn}% MFN` }]);
-    setChecks((c) => [...c, { name: 'Country of origin / TAA', status: active.country === 'US' ? 'pass' : 'warn', detail: `Origin: ${active.country}` }]);
-    setChecks((c) => [...c, { name: 'Insurance · product liability', status: 'fail', detail: 'Certificate not provided.' }]);
+    setChecks((c) => [...c, { name: 'HTS lookup · sample code (9021.10)', status: 'pass', detail: `${dutyA.description} · ${dutyA.mfn}% MFN` }]);
+    setChecks((c) => [...c, { name: 'Country of origin · TAA flag', status: active.country === 'US' ? 'pass' : 'warn', detail: `Origin: ${active.country || '—'}` }]);
+    setChecks((c) => [...c, { name: 'Product liability insurance certificate', status: active.insurance_on_file ? 'pass' : 'warn', detail: active.insurance_on_file ? 'On file' : 'Not on file — request from vendor' }]);
+
     setRunning(false);
   }
 
   function approve() {
-    if (active) db.update('vendors', active.id, { status: 'approved', last_audit: new Date().toISOString() });
+    if (active) db.update('vendors', active.id, { status: 'approved', last_audit: new Date().toISOString(), approval_score: scoring?.score, approval_decision: scoring?.decision });
   }
   function reject() {
-    if (active) db.update('vendors', active.id, { status: 'rejected', last_audit: new Date().toISOString() });
+    if (active) db.update('vendors', active.id, { status: 'rejected', last_audit: new Date().toISOString(), approval_score: scoring?.score, approval_decision: scoring?.decision });
   }
 
   return (
@@ -78,15 +95,53 @@ export function AdminVendorApproval() {
                 </div>
               </div>
 
-              <div style={{ marginTop: 28, display: 'flex', gap: 12, alignItems: 'center' }}>
+              <div style={{ marginTop: 28, display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
                 <button onClick={runChecks} disabled={running} style={{ background: D.ink, color: D.paper, border: 'none', padding: '11px 20px', borderRadius: 999, fontSize: 13, fontWeight: 500, cursor: running ? 'wait' : 'pointer', opacity: running ? 0.6 : 1 }}>
-                  {running ? 'Running checks…' : 'Run vendor approval checks (openFDA + GS1 + HTS)'}
+                  {running ? 'Running checks…' : 'Run vendor approval pipeline'}
                 </button>
-                <div style={{ fontFamily: D.mono, fontSize: 11, color: D.ink3 }}>{checks.length} of 5 complete</div>
+                <div style={{ fontFamily: D.mono, fontSize: 11, color: D.ink3 }}>
+                  {scoring ? `Scored · ${scoring.components.length} components` : 'Idle'}
+                </div>
               </div>
 
+              {/* Scoring summary card */}
+              {scoring && (
+                <div style={{ marginTop: 22, padding: 20, borderRadius: 12, background: D.paperAlt, border: `1px solid ${D.line}` }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 14 }}>
+                    <div>
+                      <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>DECISION</div>
+                      <div style={{ fontFamily: D.display, fontSize: 28, color: DECISION_COLOR[scoring.decision] || D.ink, marginTop: 4, letterSpacing: -0.3 }}>
+                        {scoring.decision.replace('_', ' ')}
+                      </div>
+                      {scoring.reason && (
+                        <div style={{ fontSize: 12, color: D.ink2, marginTop: 4 }}>{scoring.reason}</div>
+                      )}
+                    </div>
+                    <div style={{ textAlign: 'right' }}>
+                      <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>SCORE</div>
+                      <div style={{ fontFamily: D.display, fontSize: 42, color: D.plum, marginTop: 4, letterSpacing: -0.4 }}>
+                        {scoring.score}
+                      </div>
+                    </div>
+                  </div>
+                  <div style={{ marginTop: 18, borderTop: `1px solid ${D.line}`, paddingTop: 16 }}>
+                    {scoring.components.map((cmp) => (
+                      <div key={cmp.name} style={{ display: 'grid', gridTemplateColumns: '1fr 80px', gap: 12, padding: '6px 0', alignItems: 'center', fontSize: 13 }}>
+                        <div>
+                          <div style={{ fontWeight: 500 }}>{cmp.name}</div>
+                          <div style={{ fontSize: 11, color: D.ink2, marginTop: 2 }}>{cmp.detail}</div>
+                        </div>
+                        <span style={{ fontFamily: D.mono, fontSize: 13, textAlign: 'right', color: cmp.points > 0 ? '#2d6a4f' : cmp.points < 0 ? '#c3382d' : D.ink3 }}>
+                          {cmp.points > 0 ? '+' : ''}{cmp.points}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               <div style={{ marginTop: 24 }}>
-                {checks.length === 0 && <div style={{ color: D.ink3, fontSize: 13 }}>No checks run yet. Hit the button.</div>}
+                {checks.length === 0 && !scoring && <div style={{ color: D.ink3, fontSize: 13 }}>No checks run yet. Hit the button.</div>}
                 {checks.map((c, i) => {
                   const [color, label] = BADGE(c.status);
                   return (

@@ -13,7 +13,7 @@
  */
 
 import { db } from './db.js';
-import { qbo, shipstation, stripe } from './services.js';
+import { hubspot, qbo, shipstation, stripe } from './services.js';
 import { uid } from './format.js';
 
 function pickWarehouse(sku, qty) {
@@ -97,6 +97,30 @@ export async function placeOrder({ customer, address, items, payment_terms = 'ne
     paymentIntent = await stripe.createPaymentIntent({ amount: Math.round(total * 100), currency: 'usd', metadata: { order_id: id } });
     await stripe.confirmPaymentIntent(paymentIntent.id);
     await qbo.recordPayment({ invoice_id: invoice.id, amount: total, method: 'card' });
+  }
+
+  // CRM sync (brief §6: order data flows bidirectionally with the CRM).
+  // Never let a CRM hiccup fail the order.
+  try {
+    const contact = await hubspot.upsertContact({
+      email: customer.email,
+      firstname: customer.name?.split(' ')[0],
+      lastname: customer.name?.split(' ').slice(1).join(' '),
+      company: customer.org_name,
+      lifecyclestage: 'customer',
+    });
+    await hubspot.createDeal({
+      dealname: `Order ${id} · ${customer.org_name}`,
+      amount: total,
+      stage: 'closedwon',
+      contact_id: contact?.id,
+      unite_order_id: id,
+      unite_segment: customer.segment || 'asc',
+      close_date: new Date().toISOString(),
+    });
+    db.insert('audit_log', { id: uid('aud'), kind: 'order.crm_synced', ref_id: id, payload: { contact_id: contact?.id } });
+  } catch (err) {
+    db.insert('audit_log', { id: uid('aud'), kind: 'order.crm_sync_failed', ref_id: id, payload: { error: err.message } });
   }
 
   db.insert('audit_log', { id: uid('aud'), kind: 'order.placed', ref_id: id, payload: { total, items: items.length, payment_method } });

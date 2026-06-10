@@ -4,6 +4,8 @@ import { D } from '../tokens.js';
 import { Nav } from '../components/layout/Nav.jsx';
 import { Footer } from '../components/layout/Footer.jsx';
 import { PageHead } from '../components/layout/PageHead.jsx';
+import { PhotoPlaceholder } from '../components/shared/PhotoPlaceholder.jsx';
+import { IMG } from '../lib/imageMap.js';
 import { useViewport } from '../lib/viewport.js';
 import { useSEO } from '../lib/seo.js';
 
@@ -50,6 +52,17 @@ export function Government() {
         eyebrow="GOVERNMENT · PROCUREMENT"
         title={<>Veteran-owned. <em>On contract.</em></>}
         sub="Medava products available through MSPV-NG and GSA Advantage. Berry-compliant PPE, TAA-compliant sourcing, and full compliance documentation on request."
+        right={
+          <PhotoPlaceholder
+            src={IMG.GOV_WAREHOUSE}
+            alt="Strapped shipping crate on a pallet in a warehouse bay, American flag on the wall behind"
+            caption="warehouse bay, ready for dispatch"
+            height={isMobile ? 220 : 360}
+            stripeFrom="#e8ddcd" stripeTo="#d9c8b0" textColor={D.plum}
+            radius={16}
+            eager
+          />
+        }
       />
       <div style={{ maxWidth: 1360, margin: '0 auto', padding: `8px ${padX}px ${isMobile ? 56 : 96}px` }}>
         <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(4,1fr)', gap: isMobile ? 12 : 18 }}>

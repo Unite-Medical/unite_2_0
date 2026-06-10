@@ -78,7 +78,6 @@ const STATIC_CATEGORIES = REAL_CATEGORIES.map((c) => ({
 const STATIC_WAREHOUSES = [
   { id: 'wh_atl', code: 'ATL', name: 'Atlanta, GA · main', city: 'Atlanta', state: 'GA', utilization: 0.74, capacity_units: 1_400_000, lat: 33.749, lng: -84.388 },
   { id: 'wh_reno', code: 'RNO', name: 'Reno, NV', city: 'Reno', state: 'NV', utilization: 0.52, capacity_units: 820_000, lat: 39.529, lng: -119.813 },
-  { id: 'wh_dal', code: 'DAL', name: 'Reno, NV', city: 'Dallas', state: 'TX', utilization: 0.61, capacity_units: 720_000, lat: 32.776, lng: -96.797 },
   { id: 'wh_lit', code: 'LIT', name: 'Lithia Springs · overflow', city: 'Lithia Springs', state: 'GA', utilization: 0.88, capacity_units: 280_000, lat: 33.794, lng: -84.665 },
 ];
 
@@ -96,8 +95,8 @@ const STATIC_ORGS = [
 const STATIC_PROFILES = [
   { id: 'usr_demo',     email: 'sarah@atlanta-surgical.com', password: 'demo', name: 'Sarah Chen', role: 'customer', org_id: 'org_atlsurgical', title: 'Materials Director' },
   { id: 'usr_kareem',   email: 'kareem@holloway.com', password: 'demo', name: 'Kareem Holloway', role: 'customer', org_id: 'org_holloway', title: 'Owner, PharmD' },
-  { id: 'usr_admin',    email: 'damon@unitemedical.com', password: 'admin', name: 'Damon Reed', role: 'admin', org_id: null, title: 'Founder & CEO' },
-  { id: 'usr_ops',      email: 'ops@unitemedical.com', password: 'admin', name: 'Miguel Vasquez', role: 'admin', org_id: null, title: 'Ops Lead' },
+  { id: 'usr_admin',    email: 'damon@unitemedical.net', password: 'admin', name: 'Damon Reed', role: 'admin', org_id: null, title: 'Founder & CEO' },
+  { id: 'usr_ops',      email: 'ops@unitemedical.net', password: 'admin', name: 'Miguel Vasquez', role: 'admin', org_id: null, title: 'Ops Lead' },
 ];
 
 const STATIC_ADDRESSES = [
@@ -180,7 +179,7 @@ function buildSampleOrders() {
       payment_terms: org.terms,
       payment_status: status === 'delivered' ? 'paid' : status === 'pending' ? 'pending' : 'invoiced',
       status,
-      ship_from_warehouse: ['wh_atl', 'wh_reno', 'wh_dal'][i % 3],
+      ship_from_warehouse: ['wh_atl', 'wh_reno'][i % 2],
       ship_to_address_id: 'adr_1',
       tracking_number: status === 'pending' ? null : `1Z${(7920475 + i)}81234`,
       carrier: status === 'pending' ? null : carriers[i % 3],
@@ -268,7 +267,6 @@ export function seed(db) {
 
     db.inventory.push({ id: `inv_atl_${p.sku}`, sku: p.sku, warehouse_id: 'wh_atl', on_hand: p.stock, reorder_at: Math.floor(p.stock * 0.2), reorder_qty: Math.floor(p.stock * 0.5) });
     db.inventory.push({ id: `inv_reno_${p.sku}`, sku: p.sku, warehouse_id: 'wh_reno', on_hand: Math.floor(p.stock * 0.3), reorder_at: Math.floor(p.stock * 0.06), reorder_qty: Math.floor(p.stock * 0.15) });
-    db.inventory.push({ id: `inv_dal_${p.sku}`, sku: p.sku, warehouse_id: 'wh_dal', on_hand: Math.floor(p.stock * 0.2), reorder_at: Math.floor(p.stock * 0.04), reorder_qty: Math.floor(p.stock * 0.1) });
 
     db.pricing.push({ id: `prc_${p.sku}_1`, sku: p.sku, tier: 1, min_qty: 1, unit_price: p.price });
     db.pricing.push({ id: `prc_${p.sku}_2`, sku: p.sku, tier: 2, min_qty: 50, unit_price: +(p.price * 0.93).toFixed(2) });

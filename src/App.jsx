@@ -9,6 +9,9 @@ import { RequireAdmin } from './components/layout/RequireAdmin.jsx';
 const Homepage = lazy(() => import('./pages/Homepage.jsx').then((m) => ({ default: m.Homepage })));
 const Catalog = lazy(() => import('./pages/Catalog.jsx').then((m) => ({ default: m.Catalog })));
 const Quote = lazy(() => import('./pages/Quote.jsx').then((m) => ({ default: m.Quote })));
+const QuoteNew = lazy(() => import('./pages/QuoteNew.jsx').then((m) => ({ default: m.QuoteNew })));
+const QuotePrint = lazy(() => import('./pages/QuotePrint.jsx').then((m) => ({ default: m.QuotePrint })));
+const Surplus = lazy(() => import('./pages/Surplus.jsx').then((m) => ({ default: m.Surplus })));
 const ProductDetail = lazy(() => import('./pages/ProductDetail.jsx').then((m) => ({ default: m.ProductDetail })));
 const Cart = lazy(() => import('./pages/Cart.jsx').then((m) => ({ default: m.Cart })));
 const Checkout = lazy(() => import('./pages/Checkout.jsx').then((m) => ({ default: m.Checkout })));
@@ -58,6 +61,16 @@ const AdminCustomers = lazy(() => import('./pages/admin/AdminCustomers.jsx').the
 const AdminProducts = lazy(() => import('./pages/admin/AdminProducts.jsx').then((m) => ({ default: m.AdminProducts })));
 const AdminProductEdit = lazy(() => import('./pages/admin/AdminProductEdit.jsx').then((m) => ({ default: m.AdminProductEdit })));
 const AdminSettings = lazy(() => import('./pages/admin/AdminSettings.jsx').then((m) => ({ default: m.AdminSettings })));
+const AdminIntegrations = lazy(() => import('./pages/admin/AdminIntegrations.jsx').then((m) => ({ default: m.AdminIntegrations })));
+const AdminAI = lazy(() => import('./pages/admin/AdminAI.jsx').then((m) => ({ default: m.AdminAI })));
+const AdminMarginPolicy = lazy(() => import('./pages/admin/AdminMarginPolicy.jsx').then((m) => ({ default: m.AdminMarginPolicy })));
+const AdminSurplus = lazy(() => import('./pages/admin/AdminSurplus.jsx').then((m) => ({ default: m.AdminSurplus })));
+const AdminProductOnboard = lazy(() => import('./pages/admin/AdminProductOnboard.jsx').then((m) => ({ default: m.AdminProductOnboard })));
+const AdminReplenishment = lazy(() => import('./pages/admin/AdminReplenishment.jsx').then((m) => ({ default: m.AdminReplenishment })));
+const AdminDigest = lazy(() => import('./pages/admin/AdminDigest.jsx').then((m) => ({ default: m.AdminDigest })));
+const AdminFinance = lazy(() => import('./pages/admin/AdminFinance.jsx').then((m) => ({ default: m.AdminFinance })));
+const AdminDiscovery = lazy(() => import('./pages/admin/AdminDiscovery.jsx').then((m) => ({ default: m.AdminDiscovery })));
+const AdminCompliance = lazy(() => import('./pages/admin/AdminCompliance.jsx').then((m) => ({ default: m.AdminCompliance })));
 
 export default function App() {
   return (
@@ -70,6 +83,9 @@ export default function App() {
           <Route path="/" element={<Homepage />} />
           <Route path="/catalog" element={<Catalog />} />
           <Route path="/quote" element={<Quote />} />
+          <Route path="/quote/new" element={<QuoteNew />} />
+          <Route path="/quotes/:id/print" element={<QuotePrint />} />
+          <Route path="/surplus" element={<Surplus />} />
           <Route path="/products/:id" element={<ProductDetail />} />
 
           <Route path="/cart" element={<Cart />} />
@@ -144,6 +160,16 @@ export default function App() {
           <Route path="/admin/products/new" element={<RequireAdmin><AdminProductEdit /></RequireAdmin>} />
           <Route path="/admin/products/edit/:sku" element={<RequireAdmin><AdminProductEdit /></RequireAdmin>} />
           <Route path="/admin/settings"  element={<RequireAdmin><AdminSettings /></RequireAdmin>} />
+          <Route path="/admin/integrations"     element={<RequireAdmin><AdminIntegrations /></RequireAdmin>} />
+          <Route path="/admin/integrations/ai"  element={<RequireAdmin><AdminAI /></RequireAdmin>} />
+          <Route path="/admin/settings/margin"  element={<RequireAdmin><AdminMarginPolicy /></RequireAdmin>} />
+          <Route path="/admin/surplus"          element={<RequireAdmin><AdminSurplus /></RequireAdmin>} />
+          <Route path="/admin/products/onboard" element={<RequireAdmin><AdminProductOnboard /></RequireAdmin>} />
+          <Route path="/admin/replenishment"    element={<RequireAdmin><AdminReplenishment /></RequireAdmin>} />
+          <Route path="/admin/digest"           element={<RequireAdmin><AdminDigest /></RequireAdmin>} />
+          <Route path="/admin/finance"          element={<RequireAdmin><AdminFinance /></RequireAdmin>} />
+          <Route path="/admin/discovery"        element={<RequireAdmin><AdminDiscovery /></RequireAdmin>} />
+          <Route path="/admin/compliance"       element={<RequireAdmin><AdminCompliance /></RequireAdmin>} />
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

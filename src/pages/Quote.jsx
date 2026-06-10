@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { D } from '../tokens.js';
 import { Nav } from '../components/layout/Nav.jsx';
 import { Footer } from '../components/layout/Footer.jsx';
@@ -23,6 +24,7 @@ const STEP_ICONS = {
 };
 
 export function Quote() {
+  const navigate = useNavigate();
   const { isMobile } = useViewport();
   const padX = isMobile ? 20 : 40;
   // TODO: full rebuild per Unite_Quoting_Engine_Spec.md is pending; this
@@ -188,9 +190,22 @@ export function Quote() {
                     <div style={{ marginTop: 4 }}>{fmt.date(result?.quote.eta || placeholderEta, { year: true })}<br />{result?.freight ? `${result.freight.mode} · ${Math.round(result.freight.rates[0].total_usd).toLocaleString()}` : 'MSC Vela 2E'}</div>
                   </div>
                 </div>
-                <button disabled={!result} style={{ marginTop: 22, width: '100%', background: D.paper, color: D.plum, border: 'none', padding: 14, borderRadius: 999, fontSize: 14, fontWeight: 600, fontFamily: D.sans, cursor: result ? 'pointer' : 'not-allowed', opacity: result ? 1 : 0.5 }}>
-                  {result ? 'Send PDF to customer' : 'Run engine first'}
+                <button
+                  disabled={!result}
+                  onClick={() => result && navigate(`/quotes/${result.quote.id}/print?view=internal`)}
+                  style={{ marginTop: 22, width: '100%', background: D.paper, color: D.plum, border: 'none', padding: 14, borderRadius: 999, fontSize: 14, fontWeight: 600, fontFamily: D.sans, cursor: result ? 'pointer' : 'not-allowed', opacity: result ? 1 : 0.5 }}
+                >
+                  {result ? 'Open quote PDF →' : 'Run engine first'}
                 </button>
+                {result && (
+                  <button
+                    type="button"
+                    onClick={() => navigate(`/quotes/${result.quote.id}/print`)}
+                    style={{ marginTop: 10, width: '100%', background: 'transparent', color: D.paper, border: `1.5px solid ${D.paper}`, padding: 12, borderRadius: 999, fontSize: 13, fontWeight: 500, fontFamily: D.sans, cursor: 'pointer' }}
+                  >
+                    Preview customer view
+                  </button>
+                )}
               </div>
               <div style={{ marginTop: 14, padding: 20, background: D.card, borderRadius: 12, border: `1px solid ${D.line}`, fontSize: 13, color: D.ink2, lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>
                 <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.plum, marginBottom: 10 }}>COVER LETTER · {result ? 'DRAFT READY' : 'WAITING'}</div>

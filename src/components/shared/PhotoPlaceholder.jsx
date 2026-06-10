@@ -11,6 +11,7 @@ export function PhotoPlaceholder({
   textColor = 'rgba(40,30,20,.55)',
   radius = 2,
   objectPosition = 'center',
+  eager = false, // set for above-the-fold heroes so LCP isn't lazy-loaded
   children,
 }) {
   // If the provided src 404s, gracefully fall back to the stripe placeholder
@@ -31,7 +32,8 @@ export function PhotoPlaceholder({
         <img
           src={src}
           alt={alt || caption || ''}
-          loading="lazy"
+          loading={eager ? 'eager' : 'lazy'}
+          fetchPriority={eager ? 'high' : undefined}
           decoding="async"
           onError={() => setErrored(true)}
           style={{

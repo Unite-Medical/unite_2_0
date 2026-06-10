@@ -1,0 +1,259 @@
+/**
+ * Stripe client — PRD-09.
+ *
+ * Docs:
+ *   https://docs.stripe.com/api/invoices/create
+ *   https://docs.stripe.com/api/invoices/send
+ *   https://docs.stripe.com/api/customers/create
+ *   https://docs.stripe.com/api/payment_intents
+ *
+ * Auth: secret key in Bearer header (server-side only — never to the
+ * browser). Plus a webhook signing secret for /hooks/stripe.
+ *
+ * Endpoints used here:
+ *   POST /v1/customers
+ *   POST /v1/invoices                       create draft
+ *   POST /v1/invoiceitems                   add line items
+ *   POST /v1/invoices/{id}/finalize
+ *   POST /v1/invoices/{id}/send             trigger the email
+ *   POST /v1/payment_intents                card/ACH up-front payment
+ *   POST /v1/payment_intents/{id}/confirm
+ */
+
+import { db } from '../db.js';
+import { delay, uid } from '../format.js';
+import { API_BASE, env, fetchJson, realOrStub } from './_http.js';
+
+const STRIPE_BASE = 'https://api.stripe.com/v1';
+
+function isConfigured() {
+  return Boolean(env('STRIPE_SECRET_KEY'));
+}
+
+function viaBackendProxy() {
+  return Boolean(API_BASE);
+}
+
+// Stripe uses x-www-form-urlencoded, not JSON. Build a flat encoder.
+function encodeForm(obj, prefix = '') {
+  const params = new URLSearchParams();
+  function walk(prefix, value) {
+    if (value === undefined || value === null) return;
+    if (Array.isArray(value)) {
+      value.forEach((v, i) => walk(`${prefix}[${i}]`, v));
+      return;
+    }
+    if (typeof value === 'object') {
+      for (const [k, v] of Object.entries(value)) walk(prefix ? `${prefix}[${k}]` : k, v);
+      return;
+    }
+    params.append(prefix, String(value));
+  }
+  for (const [k, v] of Object.entries(obj || {})) walk(prefix ? `${prefix}[${k}]` : k, v);
+  return params.toString();
+}
+
+async function callStripe({ method = 'POST', path, body }) {
+  if (viaBackendProxy()) {
+    return fetchJson(`${API_BASE}/proxy/stripe${path}`, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: body ? JSON.stringify(body) : undefined,
+    });
+  }
+  return fetchJson(`${STRIPE_BASE}${path}`, {
+    method,
+    headers: {
+      Authorization: `Bearer ${env('STRIPE_SECRET_KEY')}`,
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: body ? encodeForm(body) : undefined,
+  });
+}
+
+function termsToDays(terms) {
+  if (terms === 'net30') return 30;
+  if (terms === 'net60') return 60;
+  return 7; // card / ach default
+}
+
+export const stripe = {
+  /** Create or fetch a Stripe Customer for one of our orgs. */
+  async upsertCustomer({ org }) {
+    if (!org?.id) throw new Error('stripe.upsertCustomer requires an org');
+    const body = {
+      name: org.name,
+      email: org.billing_email,
+      metadata: { unite_org_id: org.id, unite_segment: org.segment, unite_tier: org.tier },
+    };
+    return realOrStub({
+      scope: 'stripe',
+      label: `upsertCustomer(${org.id})`,
+      predicate: () => isConfigured() || viaBackendProxy(),
+      real: async () => {
+        const resp = await callStripe({ path: '/customers', body });
+        return { id: resp.id, email: resp.email };
+      },
+      stub: async () => {
+        await delay(140, 320);
+        return { id: `cus_STUB_${org.id}`, email: org.billing_email, stub: true };
+      },
+    });
+  },
+
+  /**
+   * Create a Net-30 / Net-60 invoice that emails the customer with a
+   * payment link. Per Stripe billing docs, `collection_method =
+   * send_invoice` + `days_until_due` gives the dunning UX we want.
+   */
+  async createInvoice({ stripe_customer_id, line_items, terms = 'net30', payment_methods = ['ach_debit', 'card'], order_id }) {
+    return realOrStub({
+      scope: 'stripe',
+      label: `createInvoice(${order_id})`,
+      predicate: () => isConfigured() || viaBackendProxy(),
+      real: async () => {
+        // 1) add invoice items
+        for (const li of line_items || []) {
+          await callStripe({
+            path: '/invoiceitems',
+            body: {
+              customer: stripe_customer_id,
+              amount: Math.round((li.unit_price * li.qty) * 100), // cents
+              currency: 'usd',
+              description: li.name || li.product_sku,
+              quantity: li.qty,
+              metadata: { unite_order_id: order_id, unite_sku: li.product_sku || '' },
+            },
+          });
+        }
+        // 2) create the invoice
+        const invoice = await callStripe({
+          path: '/invoices',
+          body: {
+            customer: stripe_customer_id,
+            collection_method: 'send_invoice',
+            days_until_due: termsToDays(terms),
+            payment_settings: { payment_method_types: payment_methods },
+            metadata: { unite_order_id: order_id, unite_terms: terms },
+            auto_advance: true,
+          },
+        });
+        // 3) finalize + send
+        await callStripe({ path: `/invoices/${invoice.id}/finalize`, body: {} });
+        const sent = await callStripe({ path: `/invoices/${invoice.id}/send`, body: {} });
+        const row = db.insert('invoices', {
+          id: `inv_${order_id}`,
+          order_id,
+          stripe_invoice_id: sent.id,
+          amount: sent.amount_due / 100,
+          balance: sent.amount_remaining / 100,
+          terms,
+          status: 'open',
+          due_date: new Date(sent.due_date * 1000).toISOString().slice(0, 10),
+          issued_at: new Date().toISOString(),
+        });
+        return row;
+      },
+      stub: async () => {
+        await delay(280, 540);
+        const amount = (line_items || []).reduce((a, li) => a + (li.unit_price * li.qty), 0);
+        const row = db.insert('invoices', {
+          id: `inv_${order_id}`,
+          order_id,
+          stripe_invoice_id: `STUB_in_${uid().slice(3)}`,
+          amount,
+          balance: amount,
+          terms,
+          status: 'open',
+          due_date: new Date(Date.now() + termsToDays(terms) * 86400000).toISOString().slice(0, 10),
+          issued_at: new Date().toISOString(),
+        });
+        return row;
+      },
+    });
+  },
+
+  /** Create a PaymentIntent (card / ACH up-front flow). */
+  async createPaymentIntent({ amount, currency = 'usd', stripe_customer_id, payment_method_types = ['card', 'us_bank_account'], metadata = {} }) {
+    const body = {
+      amount: Math.round(amount * 100),
+      currency,
+      customer: stripe_customer_id,
+      payment_method_types,
+      metadata,
+    };
+    return realOrStub({
+      scope: 'stripe',
+      label: 'createPaymentIntent',
+      predicate: () => isConfigured() || viaBackendProxy(),
+      real: async () => {
+        const pi = await callStripe({ path: '/payment_intents', body });
+        const row = db.insert('stripe_payments', {
+          id: pi.id,
+          stripe_pi_id: pi.id,
+          amount,
+          currency,
+          metadata,
+          status: pi.status,
+        });
+        return row;
+      },
+      stub: async () => {
+        await delay(180, 380);
+        const row = db.insert('stripe_payments', {
+          id: `pi_${uid().slice(3)}`,
+          stripe_pi_id: `pi_STUB_${uid().slice(3)}`,
+          amount,
+          currency,
+          metadata,
+          status: 'requires_payment_method',
+        });
+        return row;
+      },
+    });
+  },
+
+  /** Confirm a PaymentIntent (mock client-side confirmation). */
+  async confirmPaymentIntent(stripe_pi_id) {
+    return realOrStub({
+      scope: 'stripe',
+      label: `confirmPaymentIntent(${stripe_pi_id})`,
+      predicate: () => isConfigured() || viaBackendProxy(),
+      real: async () => {
+        const pi = await callStripe({ path: `/payment_intents/${stripe_pi_id}/confirm`, body: {} });
+        const mirror = db.list('stripe_payments', { where: { stripe_pi_id } })[0];
+        if (mirror) db.update('stripe_payments', mirror.id, { status: pi.status, confirmed_at: new Date().toISOString() });
+        return pi;
+      },
+      stub: async () => {
+        await delay(220, 480);
+        const mirror = db.list('stripe_payments', { where: { stripe_pi_id } })[0];
+        if (mirror) db.update('stripe_payments', mirror.id, { status: 'succeeded', confirmed_at: new Date().toISOString() });
+        return { id: stripe_pi_id, status: 'succeeded', stub: true };
+      },
+    });
+  },
+
+  /** Webhook entrypoint. Real signature verification happens in the
+   *  backend route handler (PRD-01); this dispatches the payload. */
+  async handleWebhookEvent(event) {
+    const { type, data } = event || {};
+    if (!type) return { ok: false, reason: 'no_type' };
+    db.insert('audit_log', { id: uid('aud'), kind: `stripe.${type}`, ref_id: data?.object?.id, payload: event });
+    if (type === 'invoice.paid') {
+      const invoiceId = data.object.id;
+      const mirror = db.list('invoices', { where: { stripe_invoice_id: invoiceId } })[0];
+      if (mirror) db.update('invoices', mirror.id, { status: 'paid', balance: 0, paid_at: new Date().toISOString() });
+      return { ok: true, kind: 'invoice.paid', mirrored: Boolean(mirror) };
+    }
+    if (type === 'payment_intent.succeeded') {
+      const pi_id = data.object.id;
+      const mirror = db.list('stripe_payments', { where: { stripe_pi_id: pi_id } })[0];
+      if (mirror) db.update('stripe_payments', mirror.id, { status: 'succeeded', confirmed_at: new Date().toISOString() });
+      return { ok: true, kind: 'pi.succeeded' };
+    }
+    return { ok: true, kind: type, ignored: true };
+  },
+
+  __isConfigured: isConfigured,
+};

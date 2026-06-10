@@ -30,7 +30,7 @@ export function AdminOrders() {
   const pending = allOrders.filter((o) => o.status === 'pending' || o.status === 'processing').length;
 
   const [syncing, setSyncing] = useState(false);
-  async function syncShipStation() {
+  async function syncWarehouse() {
     setSyncing(true);
     await Promise.all([cin7.syncInventory('wh_atl'), shipstation.getRates({ weight_lbs: 12 })]);
     setSyncing(false);
@@ -76,8 +76,8 @@ export function AdminOrders() {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: isMobile ? 'flex-start' : 'end', flexDirection: isMobile ? 'column' : 'row', gap: 14 }}>
           <h1 style={{ fontFamily: D.display, fontSize: 'clamp(34px, 5.6vw, 56px)', fontWeight: 400, letterSpacing: -1.3, lineHeight: 1.02, margin: 0 }}>Orders.</h1>
           <div style={{ display: 'flex', gap: 10 }}>
-            <button onClick={syncShipStation} disabled={syncing} style={{ background: 'transparent', color: D.ink, border: `1px solid ${D.line}`, padding: '10px 16px', borderRadius: 999, fontSize: 13, cursor: syncing ? 'wait' : 'pointer', opacity: syncing ? 0.6 : 1 }}>
-              {syncing ? 'Syncing…' : 'Sync our WMS + Cin7'}
+            <button onClick={syncWarehouse} disabled={syncing} style={{ background: 'transparent', color: D.ink, border: `1px solid ${D.line}`, padding: '10px 16px', borderRadius: 999, fontSize: 13, cursor: syncing ? 'wait' : 'pointer', opacity: syncing ? 0.6 : 1 }}>
+              {syncing ? 'Syncing…' : 'Sync warehouse'}
             </button>
           </div>
         </div>
