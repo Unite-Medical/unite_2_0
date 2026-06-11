@@ -5,6 +5,7 @@ import { Nav } from '../components/layout/Nav.jsx';
 import { Footer } from '../components/layout/Footer.jsx';
 import { Icon } from '../components/shared/Icon.jsx';
 import { Grad } from '../components/shared/Grad.jsx';
+import { Eyebrow } from '../components/shared/Eyebrow.jsx';
 import { runQuotingEngine, SAMPLE_VENDOR_SHEET } from '../lib/quoting.js';
 import { fmt } from '../lib/format.js';
 import { db } from '../lib/db.js';
@@ -76,7 +77,7 @@ export function Quote() {
       <main id="main">
         <div style={{ background: D.paperAlt, borderBottom: `1px solid ${D.line}` }}>
           <div style={{ maxWidth: 1360, margin: '0 auto', padding: `${isMobile ? 36 : 56}px ${padX}px` }}>
-            <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 14 }}>SOURCE & QUOTE</div>
+            <Eyebrow style={{ marginBottom: 14 }}>SOURCE & QUOTE</Eyebrow>
             <h1 style={{ fontFamily: D.display, fontSize: 'clamp(38px, 7.6vw, 76px)', fontWeight: 400, letterSpacing: 'clamp(-1px, -0.19vw, -1.8px)', margin: 0, lineHeight: 1.0 }}>
               Source non-stock items. <Grad>Priced and ready.</Grad>
             </h1>

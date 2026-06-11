@@ -77,6 +77,7 @@ export function ServicePDAC() {
             stripeFrom="#ebe3d3"
             stripeTo="#ddd1b7"
             textColor={D.plum}
+            radius={16}
           />
           <div style={{ marginTop: 18, padding: isMobile ? 22 : 28, background: D.plum, color: D.paper, borderRadius: 16 }}>
             <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.plumSoft }}>SUCCESS RATE</div>

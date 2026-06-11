@@ -86,6 +86,131 @@ img {
   left: 16px;
 }
 
+/* --- Design system (redesign pass) ------------------------------------ */
+
+::selection {
+  background: rgba(94, 41, 99, 0.18);
+  color: #241a28;
+}
+
+/* Glass sticky nav */
+.um-nav-glass {
+  background: rgba(247, 242, 234, 0.84);
+  -webkit-backdrop-filter: blur(16px) saturate(1.5);
+  backdrop-filter: blur(16px) saturate(1.5);
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .um-nav-glass {
+    background: #f7f2ea;
+  }
+}
+
+/* Nav link hover (desktop pills) */
+.um-nav-link {
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.um-nav-link:hover:not([aria-current='page']) {
+  background: rgba(94, 41, 99, 0.08);
+  color: #241a28;
+}
+
+/* CTA arrow nudge — any button/link hover slides its arrow icon */
+.um-arrow {
+  transition: transform 0.22s cubic-bezier(0.2, 0.6, 0.2, 1);
+}
+button:hover .um-arrow,
+a:hover .um-arrow {
+  transform: translateX(3px);
+}
+
+/* Scroll reveal — applied by <Reveal>, activated by IntersectionObserver */
+.um-reveal {
+  opacity: 0;
+  transform: translate3d(0, 22px, 0);
+  transition:
+    opacity 0.7s cubic-bezier(0.2, 0.6, 0.2, 1),
+    transform 0.7s cubic-bezier(0.2, 0.6, 0.2, 1);
+  will-change: opacity, transform;
+}
+.um-reveal.um-revealed {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .um-reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+/* Split panels that invert to plum on hover (homepage: Two ways to buy) */
+.um-flip-panel {
+  background: #fbf7ef;
+  color: #241a28;
+  border: 1px solid #e3dacd;
+  transition:
+    background 0.4s cubic-bezier(0.2, 0.6, 0.2, 1),
+    color 0.4s cubic-bezier(0.2, 0.6, 0.2, 1),
+    border-color 0.4s ease,
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+.um-flip-panel .um-flip-numeral {
+  color: rgba(94, 41, 99, 0.1);
+  transition: color 0.4s ease;
+}
+.um-flip-panel .um-flip-sub {
+  color: #564b5c;
+  transition: color 0.4s ease;
+}
+.um-flip-panel .um-flip-cta {
+  background: #241a28;
+  color: #f7f2ea;
+  transition: background 0.4s ease, color 0.4s ease;
+}
+.um-flip-panel:hover,
+.um-flip-panel:focus-visible {
+  background: #5e2963;
+  color: #f7f2ea;
+  border-color: #5e2963;
+  transform: translateY(-4px);
+  box-shadow: 0 30px 60px -28px rgba(94, 41, 99, 0.55);
+}
+.um-flip-panel:hover .um-flip-numeral,
+.um-flip-panel:focus-visible .um-flip-numeral {
+  color: rgba(247, 242, 234, 0.14);
+}
+.um-flip-panel:hover .um-flip-sub,
+.um-flip-panel:focus-visible .um-flip-sub {
+  color: #e5d6e7;
+}
+.um-flip-panel:hover .um-flip-cta,
+.um-flip-panel:focus-visible .um-flip-cta {
+  background: #f7f2ea;
+  color: #5e2963;
+}
+
+/* Horizontal product rail — snap scrolling, hidden scrollbar */
+.um-rail {
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.um-rail::-webkit-scrollbar {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .um-flip-panel,
+  .um-flip-panel * {
+    transition: none !important;
+  }
+  .um-flip-panel:hover {
+    transform: none;
+  }
+}
+
 /* --- Interaction polish (UI pass) ------------------------------------- */
 
 button {

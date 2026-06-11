@@ -140,9 +140,27 @@ export function Footer() {
           ))}
         </div>
 
+        {/* Oversized typographic signature — clipped at the baseline */}
+        <div aria-hidden="true" style={{ marginTop: isMobile ? 40 : 72, overflow: 'hidden', height: isMobile ? '13vw' : 'min(11vw, 150px)' }}>
+          <div
+            style={{
+              fontFamily: D.display,
+              fontWeight: 400,
+              fontSize: isMobile ? '15.5vw' : 'min(12.5vw, 172px)',
+              lineHeight: 0.78,
+              letterSpacing: '-0.04em',
+              color: 'rgba(247,242,234,.16)',
+              whiteSpace: 'nowrap',
+              userSelect: 'none',
+            }}
+          >
+            Unite Medical
+          </div>
+        </div>
+
         <div
           style={{
-            marginTop: isMobile ? 32 : 48,
+            marginTop: isMobile ? 18 : 24,
             paddingTop: 20,
             borderTop: '1px solid rgba(255,255,255,.14)',
             fontFamily: D.mono,

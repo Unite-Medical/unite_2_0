@@ -114,7 +114,8 @@ export function Compliance() {
           <div style={{ maxWidth: 1360, margin: '0 auto' }}>
             <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(4, 1fr)', gap: isMobile ? 12 : 18 }}>
               {CREDENTIALS.map((c) => (
-                <div key={c.label} id={c.anchor} style={{ borderTop: `2px solid ${D.plum}`, padding: '20px 0' }}>
+                <div key={c.label} id={c.anchor} style={{ padding: '0 0 20px' }}>
+                  <div style={{ height: 2, background: D.grad, borderRadius: 2, opacity: 0.9, marginBottom: 20 }} />
                   <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>{c.label.toUpperCase()}</div>
                   <div style={{ fontFamily: D.display, fontSize: 26, letterSpacing: -0.4, color: D.ink, marginTop: 8 }}>{c.val}</div>
                   <div style={{ fontSize: 12, color: D.ink2, marginTop: 4 }}>{c.sub}</div>

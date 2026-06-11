@@ -65,12 +65,17 @@ export function Government() {
         }
       />
       <div style={{ maxWidth: 1360, margin: '0 auto', padding: `8px ${padX}px ${isMobile ? 56 : 96}px` }}>
-        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(4,1fr)', gap: isMobile ? 12 : 18 }}>
+        <div style={{
+          display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(4,1fr)',
+          gap: isMobile ? '24px 16px' : 0,
+          borderTop: isMobile ? 'none' : `1px solid ${D.line}`,
+          paddingTop: isMobile ? 0 : 36,
+        }}>
           {credentials.map((c) => (
-            <div key={c.label} style={{ border: `1px solid ${D.line}`, borderRadius: 14, padding: isMobile ? 18 : 22, background: D.card }}>
+            <div key={c.label} style={!isMobile ? { borderLeft: `1px solid ${D.line}`, paddingLeft: 28, paddingRight: 20 } : undefined}>
               <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1.2, color: D.plum }}>{c.label.toUpperCase()}</div>
-              <div style={{ fontFamily: D.display, fontSize: isMobile ? 20 : 26, letterSpacing: -0.5, marginTop: 8, lineHeight: 1.1 }}>{c.value}</div>
-              <div style={{ fontSize: 12, color: D.ink2, marginTop: 6 }}>{c.sub}</div>
+              <div style={{ fontFamily: D.display, fontSize: isMobile ? 20 : 30, letterSpacing: '-0.02em', marginTop: 10, lineHeight: 1.05, wordBreak: 'break-word' }}>{c.value}</div>
+              <div style={{ fontSize: 12, color: D.ink2, marginTop: 8 }}>{c.sub}</div>
             </div>
           ))}
         </div>

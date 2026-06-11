@@ -42,7 +42,7 @@ export function Nav() {
   const padY = isMobile ? 13 : 18;
 
   return (
-    <header style={{ background: D.paper, borderBottom: `1px solid ${D.line}`, position: 'sticky', top: 0, zIndex: 30 }}>
+    <header className="um-nav-glass" style={{ borderBottom: `1px solid ${D.line}`, position: 'sticky', top: 0, zIndex: 30 }}>
       {!isMobile && (
         <div style={{ background: D.ink, color: D.paper, fontFamily: D.mono, fontSize: 11, letterSpacing: 0.8 }}>
           <div style={{ maxWidth: 1360, margin: '0 auto', padding: `7px ${padX}px`, display: 'flex', gap: 20, alignItems: 'center' }}>
@@ -88,6 +88,7 @@ export function Nav() {
               <Link
                 key={path}
                 to={path}
+                className="um-nav-link"
                 aria-current={isActive(path) ? 'page' : undefined}
                 style={{
                   background: isActive(path) ? D.plum : 'transparent',
@@ -97,7 +98,6 @@ export function Nav() {
                   fontSize: 14,
                   fontWeight: isActive(path) ? 600 : 500,
                   fontFamily: D.sans,
-                  transition: 'background .15s, color .15s',
                 }}
               >
                 {label}

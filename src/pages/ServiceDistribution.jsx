@@ -52,7 +52,7 @@ export function ServiceDistribution() {
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.3fr 1fr', gap: isMobile ? 22 : 24 }}>
-          <PhotoPlaceholder src={IMG.DIST_PICK_PATH} caption="warehouse · pick path" height={isMobile ? 240 : 520} stripeFrom="#ebe3d3" stripeTo="#ddd1b7" textColor={D.plum} eager />
+          <PhotoPlaceholder src={IMG.DIST_PICK_PATH} caption="warehouse · pick path" height={isMobile ? 240 : 520} stripeFrom="#ebe3d3" stripeTo="#ddd1b7" textColor={D.plum} radius={isMobile ? 16 : 22} eager />
           <div>
             <div style={{ fontFamily: D.display, fontSize: 'clamp(28px, 4.6vw, 40px)', letterSpacing: -0.8, lineHeight: 1.08 }}>How we ship to you.</div>
             {STEPS.map((s, i) => (

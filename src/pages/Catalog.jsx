@@ -6,6 +6,7 @@ import { Footer } from '../components/layout/Footer.jsx';
 import { PhotoPlaceholder } from '../components/shared/PhotoPlaceholder.jsx';
 import { Icon } from '../components/shared/Icon.jsx';
 import { Grad } from '../components/shared/Grad.jsx';
+import { Eyebrow } from '../components/shared/Eyebrow.jsx';
 import { cartStore } from '../store/cart.js';
 import { db } from '../lib/db.js';
 import { fmt } from '../lib/format.js';
@@ -79,7 +80,7 @@ export function Catalog() {
       <main id="main">
       <div style={{ background: D.paperAlt, padding: `${isMobile ? 32 : 48}px ${padX}px`, borderBottom: `1px solid ${D.line}` }}>
         <div style={{ maxWidth: 1360, margin: '0 auto' }}>
-          <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.2, color: D.plum }}>CATALOG · STOCKED & SHIPPING SAME DAY</div>
+          <Eyebrow>CATALOG · STOCKED & SHIPPING SAME DAY</Eyebrow>
           <div style={{ display: 'flex', alignItems: isMobile ? 'flex-start' : 'end', justifyContent: 'space-between', marginTop: 10, flexDirection: isMobile ? 'column' : 'row', gap: 8 }}>
             <h1 style={{ fontFamily: D.display, fontSize: 'clamp(38px, 7.2vw, 72px)', fontWeight: 400, letterSpacing: 'clamp(-0.9px, -0.19vw, -1.8px)', margin: 0, lineHeight: 1.0 }}>
               {cat === 'All' ? <>Everything <Grad>in stock</Grad></> : cat}

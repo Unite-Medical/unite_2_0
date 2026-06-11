@@ -81,7 +81,7 @@ export function BlogPost() {
           </div>
         </div>
         <div style={{ maxWidth: 1180, margin: `0 auto ${isMobile ? 28 : 40}px`, padding: `0 ${padX}px` }}>
-          <PhotoPlaceholder src={BLOG_IMG[post.slug]} caption={post.cover} height={isMobile ? 220 : 420} stripeFrom="#ebe3d3" stripeTo="#ddd1b7" textColor={D.plum} />
+          <PhotoPlaceholder src={BLOG_IMG[post.slug]} caption={post.cover} height={isMobile ? 220 : 420} stripeFrom="#ebe3d3" stripeTo="#ddd1b7" textColor={D.plum} radius={isMobile ? 14 : 20} eager />
         </div>
         <article style={{ maxWidth: 720, margin: '0 auto', padding: `0 ${padX}px ${isMobile ? 56 : 80}px`, fontSize: isMobile ? 16 : 17, lineHeight: 1.7, color: D.ink }}>
           <p style={{ fontFamily: D.display, fontSize: 22, fontStyle: 'italic', color: D.ink2, borderLeft: `3px solid ${D.plum}`, paddingLeft: 22, margin: '0 0 32px' }}>

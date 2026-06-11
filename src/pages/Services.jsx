@@ -4,6 +4,7 @@ import { Nav } from '../components/layout/Nav.jsx';
 import { Footer } from '../components/layout/Footer.jsx';
 import { PageHead } from '../components/layout/PageHead.jsx';
 import { Grad } from '../components/shared/Grad.jsx';
+import { Icon } from '../components/shared/Icon.jsx';
 import { PhotoPlaceholder } from '../components/shared/PhotoPlaceholder.jsx';
 import { SERVICE_IMG } from '../lib/imageMap.js';
 import { useViewport } from '../lib/viewport.js';
@@ -56,26 +57,51 @@ export function Services() {
         title={<>More than <Grad>a supplier</Grad>.</>}
         sub="Distribution, PDAC consulting, private-label manufacturing, and a sourcing platform. Built because our customers kept asking us to do more." />
       <div style={{ maxWidth: 1360, margin: '0 auto', padding: `24px ${padX}px ${isMobile ? 56 : 80}px` }}>
-        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(2,1fr)', gap: isMobile ? 14 : 18 }}>
-          {services.map((s, i) => (
-            <div key={i} className="um-card" style={{ background: D.card, borderRadius: 16, border: `1px solid ${D.line}`, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-              <PhotoPlaceholder
-                src={SERVICE_IMG[i]}
-                alt={s.name}
-                caption={s.name.toLowerCase()}
-                height={isMobile ? 180 : 240}
-                stripeFrom="#ebe3d3" stripeTo="#ddd1b7" textColor={D.plum}
-              />
-              <div style={{ padding: isMobile ? 22 : 28, display: 'flex', alignItems: isMobile ? 'flex-start' : 'center', gap: isMobile ? 16 : 24, flexDirection: isMobile ? 'column' : 'row', flex: 1 }}>
-                <div style={{ fontFamily: D.display, fontSize: isMobile ? 38 : 48, color: D.plum, letterSpacing: -1, minWidth: isMobile ? 0 : 64, lineHeight: 1 }}>{String(i + 1).padStart(2, '0')}</div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontFamily: D.display, fontSize: isMobile ? 24 : 28, letterSpacing: -0.6, lineHeight: 1.15 }}>{s.name}</div>
-                  <div style={{ fontSize: 14, color: D.ink2, marginTop: 8, lineHeight: 1.55 }}>{s.sub}</div>
+        <div style={{ display: 'grid', gap: isMobile ? 16 : 28 }}>
+          {services.map((s, i) => {
+            const flip = i % 2 === 1;
+            return (
+              <div
+                key={i}
+                className="um-card"
+                style={{
+                  background: D.card, borderRadius: isMobile ? 20 : 28,
+                  border: `1px solid ${D.line}`, overflow: 'hidden',
+                  display: 'grid',
+                  gridTemplateColumns: isMobile ? '1fr' : flip ? '1fr 1.1fr' : '1.1fr 1fr',
+                  alignItems: 'stretch',
+                }}
+              >
+                <div style={{ order: isMobile ? 0 : flip ? 2 : 0, minHeight: isMobile ? 200 : 340 }}>
+                  <PhotoPlaceholder
+                    src={SERVICE_IMG[i]}
+                    alt={s.name}
+                    caption={s.name.toLowerCase()}
+                    height="100%"
+                    stripeFrom="#ebe3d3" stripeTo="#ddd1b7" textColor={D.plum}
+                  />
                 </div>
-                <button onClick={() => navigate(s.path)} style={{ background: 'transparent', color: D.ink, border: `1.5px solid ${D.ink}`, padding: '12px 20px', borderRadius: 999, fontSize: 13, cursor: 'pointer', whiteSpace: 'nowrap', alignSelf: isMobile ? 'stretch' : 'center', textAlign: 'center', fontFamily: D.sans }}>{s.cta} →</button>
+                <div style={{
+                  order: 1,
+                  padding: isMobile ? 24 : '48px 56px',
+                  display: 'flex', flexDirection: 'column', justifyContent: 'center',
+                  alignItems: 'flex-start', position: 'relative',
+                }}>
+                  <div aria-hidden="true" style={{
+                    position: 'absolute', top: isMobile ? -2 : 8, right: isMobile ? 12 : 24,
+                    fontFamily: D.display, fontSize: isMobile ? 80 : 140, lineHeight: 1,
+                    color: 'rgba(94,41,99,.08)', letterSpacing: '-0.05em', userSelect: 'none',
+                  }}>{String(i + 1).padStart(2, '0')}</div>
+                  <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum }}>{String(i + 1).padStart(2, '0')}</div>
+                  <div style={{ fontFamily: D.display, fontSize: isMobile ? 28 : 42, letterSpacing: '-0.02em', lineHeight: 1.05, marginTop: 12, position: 'relative' }}>{s.name}</div>
+                  <div style={{ fontSize: isMobile ? 14 : 16, color: D.ink2, marginTop: 14, lineHeight: 1.6, maxWidth: 480, position: 'relative' }}>{s.sub}</div>
+                  <button onClick={() => navigate(s.path)} style={{ background: D.ink, color: D.paper, border: 'none', padding: isMobile ? '12px 22px' : '14px 26px', borderRadius: 999, fontSize: 14, fontWeight: 600, cursor: 'pointer', marginTop: 24, fontFamily: D.sans, display: 'inline-flex', alignItems: 'center', gap: 10 }}>
+                    {s.cta} <Icon.arrow />
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
       <Footer />

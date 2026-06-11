@@ -257,7 +257,8 @@ export function Surplus() {
                   ['3', 'You accept', 'Get our offer in 1–2 business days. Accept and we schedule pickup at no cost to you.'],
                   ['4', 'You get paid', 'Net-30 ACH or check on accepted lots. Repeat-supplier accounts get priority + better pricing.'],
                 ].map(([n, h, s]) => (
-                  <div key={n} style={{ padding: 18, borderTop: `2px solid ${D.plum}` }}>
+                  <div key={n} style={{ padding: '18px 18px 18px 0' }}>
+                    <div style={{ height: 2, background: D.grad, borderRadius: 2, opacity: 0.9, marginBottom: 16 }} />
                     <div style={{ fontFamily: D.mono, fontSize: 11, color: D.plum, letterSpacing: 1 }}>STEP {n}</div>
                     <div style={{ fontFamily: D.display, fontSize: 22, marginTop: 10, letterSpacing: -0.3 }}>{h}</div>
                     <div style={{ fontSize: 13, color: D.ink2, marginTop: 8, lineHeight: 1.55 }}>{s}</div>
