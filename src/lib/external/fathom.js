@@ -109,4 +109,36 @@ export const fathom = {
 
     return { activity_id: activity.id, action_items, insights, hubspot_tasks };
   },
+
+  /**
+   * Manual ingest used by the admin CRM ("+ FATHOM CALL") and by
+   * verifier scripts — wraps a hand-entered call summary in the
+   * webhook payload shape and runs the same pipeline.
+   *
+   * @param {object} args
+   * @param {string} args.rep            Rep email or name
+   * @param {string} args.organization   Customer org on the call
+   * @param {string} args.transcript     Transcript or summary text
+   * @param {number} [args.duration_min]
+   * @param {string} [args.deal_id]
+   * @param {string} [args.contact_id]
+   */
+  async ingestCallSummary({ rep, organization, transcript, duration_min = 0, deal_id, contact_id }) {
+    return this.handleCallCompleted({
+      event: 'recording.completed',
+      data: {
+        recording_id: `manual_${uid().slice(3)}`,
+        transcript,
+        summary: transcript?.slice(0, 280),
+        call: {
+          duration_seconds: duration_min * 60,
+          started_at: new Date().toISOString(),
+          participants: [{ organization }],
+          title: organization,
+        },
+        host: { email: rep, name: rep },
+        metadata: { unite_deal_id: deal_id || null, unite_contact_id: contact_id || null },
+      },
+    });
+  },
 };

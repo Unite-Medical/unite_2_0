@@ -11,155 +11,158 @@ import { PartnerMarquee } from '../components/shared/PartnerMarquee.jsx';
 import { cartStore } from '../store/cart.js';
 import { PRODUCTS, TRUST_METRICS } from '../data/index.js';
 import { TESTIMONIALS } from '../data/testimonials.js';
-import { IMG, PRODUCT_IMG } from '../lib/imageMap.js';
+import { IMG, PRODUCT_IMG, productCutout } from '../lib/imageMap.js';
 import { useViewport } from '../lib/viewport.js';
 import { useSEO, organizationSchema, websiteSchema } from '../lib/seo.js';
 
 /* ------------------------------------------------------------------ */
-/* Hero — full-width editorial headline, image bleeding off the right  */
-/* edge of the viewport, frosted live-inventory card overlapping it.   */
+/* Hero — cinematic full-bleed: the photograph IS the first screen.    */
+/* Deep-ink scrim, cream display type overlaid bottom-left, live       */
+/* inventory ticker pinned along the hero's bottom hairline.           */
 /* ------------------------------------------------------------------ */
 function Hero() {
   const navigate = useNavigate();
   const { isMobile } = useViewport();
   const padX = isMobile ? 20 : 40;
   return (
-    <section id="main" style={{ background: D.paper, position: 'relative', overflow: 'hidden' }}>
-      <div aria-hidden="true" style={{
-        position: 'absolute', inset: 0, pointerEvents: 'none',
-        background: `
-          radial-gradient(720px 460px at 88% 0%, rgba(94,41,99,.08), transparent 70%),
-          radial-gradient(560px 400px at 4% 100%, rgba(184,80,44,.05), transparent 70%)`,
-      }} />
-      <div style={{ padding: `${isMobile ? 36 : 72}px ${padX}px 0`, position: 'relative' }}>
+    <section
+      id="main"
+      style={{
+        position: 'relative',
+        background: D.inkDeep,
+        color: D.paper,
+        minHeight: isMobile ? '86svh' : '92svh',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'flex-end',
+        overflow: 'hidden',
+      }}
+    >
+      {/* Full-bleed photography behind everything */}
+      <div className="um-hero-media" aria-hidden="true">
+        <img src={IMG.HOME_HERO} alt="" fetchPriority="high" decoding="async" />
+        <div className="um-hero-scrim" />
+      </div>
+
+      {/* Headline block, pinned low like a film title card */}
+      <div style={{ position: 'relative', padding: `${isMobile ? 120 : 160}px ${padX}px 0` }}>
         <div className="um-fade-up" style={{ maxWidth: 1360, margin: '0 auto' }}>
-          <Eyebrow pulse style={{ marginBottom: isMobile ? 18 : 30 }}>FDA-REGISTERED · VETERAN-OWNED · EST. 2019</Eyebrow>
-          {/* Headline owns the full container width — the biggest type on the site */}
+          <Eyebrow dark pulse style={{ marginBottom: isMobile ? 18 : 28 }}>FDA-REGISTERED · VETERAN-OWNED · EST. 2019</Eyebrow>
           <h1 style={{
             fontFamily: D.display, fontWeight: 400,
-            fontSize: 'clamp(48px, 11.5vw, 148px)',
-            lineHeight: 0.96,
+            fontSize: 'clamp(46px, 10.5vw, 138px)',
+            lineHeight: 0.94,
             letterSpacing: '-0.035em',
-            color: D.ink, margin: 0,
+            color: D.paper, margin: 0,
             paddingBottom: '0.06em',
-            maxWidth: '12em',
+            maxWidth: '10.5em',
+            textShadow: '0 2px 40px rgba(24,16,27,.45)',
           }}>
             The supply chain your <Grad>suppliers</Grad> use.
           </h1>
-        </div>
-      </div>
 
-      {/* Copy + CTAs on the left; photography bleeding off the right edge */}
-      <div style={{ padding: `${isMobile ? 28 : 48}px ${padX}px 0`, position: 'relative' }}>
-        <div style={{
-          maxWidth: 1360, margin: '0 auto',
-          display: 'grid',
-          gridTemplateColumns: isMobile ? '1fr' : 'minmax(360px, 1fr) 1.35fr',
-          gap: isMobile ? 28 : 72,
-          alignItems: 'end',
-        }}>
-          <div style={{ paddingBottom: isMobile ? 0 : 56 }}>
-            <p style={{ fontSize: isMobile ? 16 : 18, lineHeight: 1.55, color: D.ink2, maxWidth: 560, margin: 0 }}>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: isMobile ? '1fr' : 'minmax(360px, 640px) auto',
+            gap: isMobile ? 22 : 56,
+            alignItems: 'end',
+            marginTop: isMobile ? 20 : 36,
+            paddingBottom: isMobile ? 28 : 56,
+          }}>
+            <p style={{ fontSize: isMobile ? 15.5 : 18, lineHeight: 1.55, color: 'rgba(247,242,234,.82)', margin: 0 }}>
               We source, stock, and ship Class 1 and Class 2 medical devices for surgery centers,
               pharmacies, health systems, physician groups, and government buyers. We own and
               warehouse everything we sell. No minimum orders on stocked items. Landed cost,
               transparent.
             </p>
-            <div style={{ display: 'flex', gap: 10, marginTop: isMobile ? 24 : 36, flexWrap: 'wrap' }}>
-              <button onClick={() => navigate('/catalog')} style={{ background: D.plum, color: D.paper, border: 'none', padding: isMobile ? '14px 22px' : '16px 28px', borderRadius: 999, fontSize: 15, fontWeight: 500, cursor: 'pointer', fontFamily: D.sans, display: 'flex', alignItems: 'center', gap: 10, flex: isMobile ? '1 1 200px' : '0 0 auto', justifyContent: 'center' }}>
+            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+              <button onClick={() => navigate('/catalog')} style={{ background: D.paper, color: D.ink, border: 'none', padding: isMobile ? '14px 22px' : '16px 28px', borderRadius: 999, fontSize: 15, fontWeight: 600, cursor: 'pointer', fontFamily: D.sans, display: 'flex', alignItems: 'center', gap: 10, flex: isMobile ? '1 1 200px' : '0 0 auto', justifyContent: 'center' }}>
                 Browse products <Icon.arrow />
               </button>
-              <button onClick={() => navigate('/quote')} style={{ background: 'transparent', color: D.ink, border: `1.5px solid ${D.ink}`, padding: isMobile ? '14px 22px' : '16px 28px', borderRadius: 999, fontSize: 15, fontWeight: 500, cursor: 'pointer', fontFamily: D.sans, flex: isMobile ? '1 1 200px' : '0 0 auto' }}>
+              <button onClick={() => navigate('/quote')} className="um-glass-btn" style={{ color: D.paper, padding: isMobile ? '14px 22px' : '16px 28px', borderRadius: 999, fontSize: 15, fontWeight: 500, cursor: 'pointer', fontFamily: D.sans, flex: isMobile ? '1 1 200px' : '0 0 auto' }}>
                 Source &amp; quote
               </button>
             </div>
           </div>
-
-          <div style={{
-            position: 'relative',
-            // Bleed the image to the raw viewport edge: cancel the container's
-            // right gutter (padX when narrow, the auto-centering margin when wide).
-            marginRight: `calc((min(1360px, 100vw - ${padX * 2}px) - 100vw) / 2)`,
-          }}>
-            {/* Image runs to the raw viewport edge — no right radius */}
-            <div style={{ borderRadius: isMobile ? '16px 0 0 16px' : '24px 0 0 24px', overflow: 'hidden' }}>
-              <PhotoPlaceholder
-                src={IMG.HOME_HERO}
-                caption="warehouse floor, golden hour"
-                height={isMobile ? 300 : 540}
-                stripeFrom="#e8ddcd" stripeTo="#d9c8b0" textColor={D.plum}
-                radius={0}
-                eager
-              />
-            </div>
-            <div style={{
-              position: 'absolute',
-              left: isMobile ? 14 : -40,
-              bottom: isMobile ? 14 : 48,
-              background: 'rgba(247,242,234,.92)',
-              backdropFilter: 'blur(10px)',
-              WebkitBackdropFilter: 'blur(10px)',
-              border: `1px solid ${D.line}`,
-              borderRadius: 16,
-              padding: isMobile ? 16 : 24, width: isMobile ? 240 : 310,
-              boxShadow: '0 28px 56px -26px rgba(36,26,40,.38)',
-            }}>
-              <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3, display: 'flex', alignItems: 'center', gap: 8 }}>
-                <span style={{ width: 6, height: 6, borderRadius: 3, background: '#3b8760', display: 'inline-block', animation: 'umPulse 2.6s ease-in-out infinite' }} />
-                LIVE INVENTORY
-              </div>
-              <div style={{ fontFamily: D.display, fontSize: isMobile ? 26 : 34, lineHeight: 1.1, color: D.ink, marginTop: 8, letterSpacing: -0.6 }}>Stocked &amp; warehoused</div>
-              <div style={{ fontSize: 12, color: D.ink2, marginTop: 6 }}>Georgia &amp; Nevada</div>
-              {/* TODO(alex): wire to Shopify product/inventory count API
-                  once available \u2014 see PRD Open Q #2. */}
-            </div>
-          </div>
         </div>
       </div>
-      <PartnerMarquee />
+
+      {/* Live-inventory ticker along the hero's bottom hairline */}
+      <div style={{ position: 'relative', borderTop: '1px solid rgba(247,242,234,.18)', background: 'rgba(24,16,27,.55)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}>
+        <div style={{
+          maxWidth: 1360, margin: '0 auto', padding: `${isMobile ? 12 : 16}px ${padX}px`,
+          display: 'flex', alignItems: 'center', gap: isMobile ? 14 : 28, flexWrap: 'wrap',
+          fontFamily: D.mono, fontSize: isMobile ? 10 : 11, letterSpacing: 1.1,
+          color: 'rgba(247,242,234,.72)',
+        }}>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+            <span style={{ width: 6, height: 6, borderRadius: 3, background: '#5fbd8a', display: 'inline-block', animation: 'umPulse 2.6s ease-in-out infinite' }} />
+            LIVE INVENTORY
+          </span>
+          <span style={{ opacity: .35 }}>/</span>
+          <span>STOCKED &amp; WAREHOUSED</span>
+          <span style={{ opacity: .35 }}>/</span>
+          <span>GEORGIA &amp; NEVADA</span>
+          {!isMobile && <>
+            <span style={{ opacity: .35 }}>/</span>
+            <span>SAME-DAY SHIPPING · ORDERS BEFORE 2PM EST</span>
+          </>}
+          {/* TODO(alex): wire to Shopify product/inventory count API
+              once available — see PRD Open Q #2. */}
+        </div>
+      </div>
     </section>
   );
 }
 
 /* ------------------------------------------------------------------ */
-/* Metrics — inverted ink band, hairline-divided columns, huge figures */
+/* Metrics — dark purple liquid glass. Frosted bevelled stat panes     */
+/* float over an aggressive plum canvas (layered blooms + film grain). */
+/* The cursor-glide sheen is driven globally (lib/glassSheen.js).      */
 /* ------------------------------------------------------------------ */
 function Metrics() {
   const { isMobile } = useViewport();
   const padX = isMobile ? 20 : 40;
+
   return (
-    <div style={{ background: D.ink, color: D.paper, padding: `${isMobile ? 64 : 110}px ${padX}px`, position: 'relative', overflow: 'hidden' }}>
-      <div aria-hidden="true" style={{
-        position: 'absolute', inset: 0, pointerEvents: 'none',
-        background: 'radial-gradient(640px 460px at 95% 100%, rgba(94,41,99,.45), transparent 70%)',
-      }} />
-      <div style={{ maxWidth: 1360, margin: '0 auto', position: 'relative' }}>
+    <div
+      style={{
+        color: D.paper,
+        padding: `${isMobile ? 72 : 120}px ${padX}px`,
+        background: `linear-gradient(160deg, #1e0e23 0%, #2e1135 60%, #1a0c1f 100%)`,
+      }}
+    >
+      <div style={{ maxWidth: 1360, margin: '0 auto' }}>
         <Reveal>
           <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plumSoft, marginBottom: 20 }}>BY THE NUMBERS</div>
           <h2 style={{ fontFamily: D.display, fontSize: 'clamp(38px, 7.5vw, 84px)', fontWeight: 400, letterSpacing: '-0.03em', lineHeight: 0.98, margin: 0 }}>
             The receipts. <Grad>Verified.</Grad>
           </h2>
         </Reveal>
+        {/* Plain hairline grid — registration numbers ARE the design. */}
         <div style={{
-          marginTop: isMobile ? 40 : 72,
+          marginTop: isMobile ? 36 : 64,
           display: 'grid',
           gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(4, 1fr)',
-          gap: isMobile ? '32px 20px' : 0,
+          gap: isMobile ? '0 20px' : '0 40px',
         }}>
           {TRUST_METRICS.map((t, i) => (
-            <Reveal key={i} delay={i * 90} style={!isMobile ? {
-              borderLeft: '1px solid rgba(247,242,234,.16)',
-              paddingLeft: 28,
-              paddingRight: 20,
-            } : undefined}>
-              <div style={{
-                fontFamily: D.display,
-                fontSize: 'clamp(34px, 4.6vw, 64px)',
-                letterSpacing: -1.5, lineHeight: 0.95,
-                color: D.paper,
-                wordBreak: 'break-word',
-              }}>{t.big}</div>
-              <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1, color: 'rgba(247,242,234,.55)', marginTop: 14, lineHeight: 1.5 }}>{t.small.toUpperCase()}</div>
+            <Reveal key={i} delay={i * 80}>
+              <div style={{ borderTop: '1px solid rgba(247,242,234,.22)', padding: `${isMobile ? 18 : 26}px 0 ${isMobile ? 22 : 8}px` }}>
+                <div style={{ fontFamily: D.mono, fontSize: isMobile ? 9.5 : 11, letterSpacing: 1.2, color: 'rgba(247,242,234,.6)', lineHeight: 1.5 }}>
+                  {t.small.toUpperCase()}
+                </div>
+                <div style={{
+                  fontFamily: D.display,
+                  // One fixed scale for every card so long registration
+                  // codes wrap instead of dictating the row's rhythm.
+                  fontSize: isMobile ? 'clamp(22px, 6vw, 32px)' : 'clamp(28px, 2.6vw, 42px)',
+                  letterSpacing: -1, lineHeight: 1.06,
+                  color: D.paper,
+                  overflowWrap: 'anywhere',
+                  marginTop: 14,
+                }}>{t.big}</div>
+              </div>
             </Reveal>
           ))}
         </div>
@@ -249,11 +252,11 @@ function Featured() {
   const padX = isMobile ? 20 : 40;
   const picks = PRODUCTS.slice(0, 8);
   return (
-    <div style={{ padding: `${isMobile ? 64 : 120}px 0`, background: D.paperAlt, overflow: 'hidden' }}>
+    <div style={{ padding: `${isMobile ? 72 : 140}px 0`, background: D.paperAlt, overflow: 'hidden' }}>
       <div style={{ maxWidth: 1360, margin: '0 auto', padding: `0 ${padX}px` }}>
         <Reveal>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: isMobile ? 'flex-start' : 'end', flexDirection: isMobile ? 'column' : 'row', gap: 14 }}>
-            <h2 style={{ fontFamily: D.display, fontSize: 'clamp(38px, 7vw, 84px)', fontWeight: 400, letterSpacing: '-0.03em', color: D.ink, margin: 0, lineHeight: 0.98 }}>
+            <h2 style={{ fontFamily: D.display, fontSize: 'clamp(40px, 7.6vw, 96px)', fontWeight: 400, letterSpacing: '-0.03em', color: D.ink, margin: 0, lineHeight: 0.98 }}>
               In stock, <Grad>shipping today</Grad>.
             </h2>
             <button onClick={() => navigate('/catalog')} style={{ color: D.ink, fontSize: 14, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 8, background: 'none', border: `1.5px solid ${D.ink}`, borderRadius: 999, padding: '12px 22px', cursor: 'pointer', fontFamily: D.sans, whiteSpace: 'nowrap' }}>
@@ -278,38 +281,85 @@ function Featured() {
           scrollPaddingLeft: `max(${padX}px, calc((100vw - 1360px) / 2 + ${padX}px))`,
         }}
       >
-        {picks.map((p) => (
-          <article
-            key={p.sku}
-            className="um-card"
-            style={{
-              flex: `0 0 ${isMobile ? 232 : 318}px`,
-              scrollSnapAlign: 'start',
-              background: D.card, borderRadius: 20, overflow: 'hidden',
-              border: `1px solid ${D.line}`,
-              display: 'flex', flexDirection: 'column',
-            }}
-          >
-            <PhotoPlaceholder src={PRODUCT_IMG[p.sku]} caption={p.img} height={isMobile ? 160 : 230} stripeFrom="#ebe3d3" stripeTo="#ddd1b7" textColor={D.plum} />
-            <div style={{ padding: isMobile ? 16 : 20, flex: 1, display: 'flex', flexDirection: 'column' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: D.mono, fontSize: 10, letterSpacing: 0.8, color: D.ink3 }}>
-                <span>{p.sku}</span>
-                <span style={{ display: isMobile ? 'none' : 'inline' }}>HCPCS {p.hcpcs}</span>
-              </div>
-              <div style={{ fontFamily: D.display, fontSize: isMobile ? 17 : 20, color: D.ink, marginTop: 10, lineHeight: 1.25, flex: 1 }}>{p.name}</div>
-              <div style={{ fontSize: 12, color: D.ink2, marginTop: 6 }}>{p.cat} · {p.packSize}</div>
-              <div style={{ display: 'flex', alignItems: 'end', justifyContent: 'space-between', marginTop: 16 }}>
-                <div>
-                  <div style={{ fontFamily: D.display, fontSize: isMobile ? 20 : 26, color: D.plum, letterSpacing: -0.4 }}>${p.price.toFixed(2)}</div>
-                  <div style={{ fontFamily: D.mono, fontSize: 10, color: D.ink3 }}>MOQ {p.moq}</div>
+        {picks.map((p, i) => {
+          const cutout = productCutout(p.sku);
+          // Alternate soft washes behind the floating cutouts so the
+          // rail reads as a sequence, not a repeat.
+          const wash = [
+            'radial-gradient(120% 100% at 50% 108%, rgba(94,41,99,.16), transparent 62%), linear-gradient(165deg, #f6efe2 0%, #ece0cd 100%)',
+            'radial-gradient(120% 100% at 50% 108%, rgba(246,79,0,.13), transparent 62%), linear-gradient(165deg, #f7f0e4 0%, #efe2cf 100%)',
+            'radial-gradient(120% 100% at 50% 108%, rgba(95,189,138,.14), transparent 62%), linear-gradient(165deg, #f5efe3 0%, #eadfd0 100%)',
+          ][i % 3];
+          return (
+            <article
+              key={p.sku}
+              className="um-card"
+              style={{
+                flex: `0 0 ${isMobile ? 262 : 396}px`,
+                scrollSnapAlign: 'start',
+                background: D.card, borderRadius: 20, overflow: 'hidden',
+                border: `1px solid ${D.line}`,
+                display: 'flex', flexDirection: 'column',
+              }}
+            >
+              {cutout ? (
+                <Link to={`/products/${p.sku}`} aria-label={p.name} style={{ display: 'block' }}>
+                  <div className="um-cutout-stage" style={{
+                    height: isMobile ? 196 : 312, position: 'relative',
+                    display: 'grid', placeItems: 'center',
+                    background: wash, borderBottom: `1px solid ${D.line}`,
+                    overflow: 'hidden',
+                  }}>
+                    {/* floor shadow the cutout "stands" on */}
+                    <div aria-hidden="true" style={{
+                      position: 'absolute', bottom: 14, left: '50%', transform: 'translateX(-50%)',
+                      width: '58%', height: 14, borderRadius: '50%',
+                      background: 'radial-gradient(ellipse, rgba(36,26,40,.18), transparent 70%)',
+                    }} />
+                    <img
+                      className="um-cutout-img"
+                      src={cutout}
+                      alt={p.name}
+                      loading="lazy"
+                      decoding="async"
+                      style={{ maxWidth: '80%', maxHeight: '84%', objectFit: 'contain', position: 'relative' }}
+                    />
+                    <span style={{
+                      position: 'absolute', top: 12, left: 12,
+                      display: 'inline-flex', alignItems: 'center', gap: 6,
+                      fontFamily: D.mono, fontSize: 9, letterSpacing: 1,
+                      color: D.ink2, background: 'rgba(251,247,239,.78)',
+                      backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)',
+                      border: `1px solid ${D.line}`, borderRadius: 999, padding: '4px 10px',
+                    }}>
+                      <span style={{ width: 5, height: 5, borderRadius: 3, background: '#5fbd8a', display: 'inline-block', animation: 'umPulse 2.6s ease-in-out infinite' }} />
+                      IN STOCK
+                    </span>
+                  </div>
+                </Link>
+              ) : (
+                <PhotoPlaceholder src={PRODUCT_IMG[p.sku]} caption={p.img} height={isMobile ? 196 : 312} stripeFrom="#ebe3d3" stripeTo="#ddd1b7" textColor={D.plum} />
+              )}
+              <div style={{ padding: isMobile ? 18 : 24, flex: 1, display: 'flex', flexDirection: 'column' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: D.mono, fontSize: 10, letterSpacing: 0.8, color: D.ink3 }}>
+                  <span>{p.sku}</span>
+                  <span style={{ display: isMobile ? 'none' : 'inline' }}>HCPCS {p.hcpcs}</span>
                 </div>
-                <button onClick={() => cartStore.add(p.sku)} aria-label={`Add ${p.name}`} style={{ background: D.ink, color: D.paper, border: 'none', width: 42, height: 42, borderRadius: 21, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <Icon.plus />
-                </button>
+                <div style={{ fontFamily: D.display, fontSize: isMobile ? 18 : 23, color: D.ink, marginTop: 10, lineHeight: 1.25, flex: 1 }}>{p.name}</div>
+                <div style={{ fontSize: 13, color: D.ink2, marginTop: 6 }}>{p.cat} · {p.packSize}</div>
+                <div style={{ display: 'flex', alignItems: 'end', justifyContent: 'space-between', marginTop: 18 }}>
+                  <div>
+                    <div style={{ fontFamily: D.display, fontSize: isMobile ? 22 : 30, color: D.plum, letterSpacing: -0.4 }}>${p.price.toFixed(2)}</div>
+                    <div style={{ fontFamily: D.mono, fontSize: 10, color: D.ink3 }}>MOQ {p.moq}</div>
+                  </div>
+                  <button onClick={() => cartStore.add(p.sku)} aria-label={`Add ${p.name}`} className="um-add-btn" style={{ background: D.ink, color: D.paper, border: 'none', width: 46, height: 46, borderRadius: 23, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <Icon.plus />
+                  </button>
+                </div>
               </div>
-            </div>
-          </article>
-        ))}
+            </article>
+          );
+        })}
         {/* trailing breathing room so the last card can snap into view */}
         <div aria-hidden="true" style={{ flex: `0 0 ${padX}px` }} />
       </div>
@@ -318,6 +368,122 @@ function Featured() {
           <span style={{ display: 'inline-block', width: 36, height: 1, background: D.ink3 }} />
           SCROLL
         </div>
+      </div>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Shortage strip — the no-EDI intake play, one line + one action      */
+/* ------------------------------------------------------------------ */
+/* ------------------------------------------------------------------ */
+/* OwnedInventory — clean fact band. The "zero middlemen" pitch as     */
+/* plain editorial: headline left, three hairline fact rows right.     */
+/* No photography, no glass — procurement buyers want the numbers.     */
+/* ------------------------------------------------------------------ */
+function OwnedInventory() {
+  const navigate = useNavigate();
+  const { isMobile } = useViewport();
+  const padX = isMobile ? 20 : 40;
+  const facts = [
+    { stat: '0', label: 'Middlemen', sub: 'Inventory owned and shipped from Unite-operated distribution centers.' },
+    { stat: '2', label: 'Warehouses', sub: 'Lithia Springs, GA and Las Vegas, NV — coverage on both coasts.' },
+    { stat: '2pm', label: 'Same-day cutoff', sub: 'Orders placed before 2pm EST on stocked items ship the same day.' },
+  ];
+  return (
+    <div style={{ background: D.paper, padding: `${isMobile ? 64 : 120}px ${padX}px`, borderTop: `1px solid ${D.line}` }}>
+      <div style={{
+        maxWidth: 1360, margin: '0 auto',
+        display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.1fr 1fr',
+        gap: isMobile ? 40 : 80, alignItems: 'start',
+      }}>
+        <Reveal>
+          <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 18 }}>OWNED INVENTORY</div>
+          <h2 style={{ fontFamily: D.display, fontSize: 'clamp(30px, 5vw, 58px)', fontWeight: 400, letterSpacing: '-0.03em', lineHeight: 1.04, margin: 0, color: D.ink }}>
+            Most supplies cross four distributors before they reach you. <Grad>Ours cross zero.</Grad>
+          </h2>
+          <p style={{ fontSize: isMobile ? 14.5 : 16.5, lineHeight: 1.65, color: D.ink2, marginTop: 20, maxWidth: 520 }}>
+            We buy direct from manufacturers, hold the stock in our own buildings, and ship it
+            ourselves. No brokered inventory, no surprise substitutions, no third-party markups.
+          </p>
+          <button
+            onClick={() => navigate('/catalog')}
+            style={{
+              background: D.ink, color: D.paper, border: 'none',
+              padding: isMobile ? '14px 24px' : '16px 30px', borderRadius: 999,
+              fontSize: 15, fontWeight: 600, cursor: 'pointer', fontFamily: D.sans,
+              display: 'inline-flex', alignItems: 'center', gap: 10, marginTop: 28,
+            }}
+          >
+            Browse stocked catalog <Icon.arrow />
+          </button>
+        </Reveal>
+        <div>
+          {facts.map((f, i) => (
+            <Reveal key={f.label} delay={i * 90}>
+              <div style={{
+                display: 'grid', gridTemplateColumns: isMobile ? '92px 1fr' : '130px 1fr',
+                gap: isMobile ? 16 : 28, alignItems: 'baseline',
+                padding: `${isMobile ? 22 : 30}px 0`,
+                borderTop: `1px solid ${D.line}`,
+              }}>
+                <div style={{ fontFamily: D.display, fontSize: isMobile ? 40 : 56, letterSpacing: '-0.03em', color: D.plum, lineHeight: 1 }}>{f.stat}</div>
+                <div>
+                  <div style={{ fontSize: isMobile ? 15 : 16, fontWeight: 600, color: D.ink }}>{f.label}</div>
+                  <div style={{ fontSize: isMobile ? 13 : 14, lineHeight: 1.6, color: D.ink2, marginTop: 6 }}>{f.sub}</div>
+                </div>
+              </div>
+            </Reveal>
+          ))}
+          <div style={{ borderTop: `1px solid ${D.line}` }} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ShortageStrip() {
+  const navigate = useNavigate();
+  const { isMobile } = useViewport();
+  const padX = isMobile ? 20 : 40;
+  return (
+    <div style={{ background: D.inkDeep, color: D.paper, padding: `${isMobile ? 64 : 110}px ${padX}px` }}>
+      <div style={{
+        maxWidth: 1360, margin: '0 auto',
+        display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr auto',
+        gap: isMobile ? 28 : 64, alignItems: 'center',
+      }}>
+        <Reveal>
+          <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plumSoft, marginBottom: 16 }}>
+            NO EDI · NO PORTAL SETUP · NO FORMATTING
+          </div>
+          <h2 style={{ fontFamily: D.display, fontSize: 'clamp(28px, 5vw, 56px)', fontWeight: 400, letterSpacing: '-0.03em', lineHeight: 1.04, margin: 0 }}>
+            Backordered somewhere else?<br />
+            <Grad>Paste your shortage list.</Grad>
+          </h2>
+          <p style={{ fontSize: isMobile ? 14.5 : 16, lineHeight: 1.6, color: 'rgba(247,242,234,.78)', marginTop: 16, maxWidth: 560 }}>
+            We match every line against stocked inventory in real time, surface in-stock
+            equivalents, and route the rest to our sourcing network.
+          </p>
+        </Reveal>
+        <Reveal delay={120}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: isMobile ? 'flex-start' : 'flex-end', gap: 12 }}>
+            <button
+              onClick={() => navigate('/shortage-list')}
+              style={{
+                background: D.paper, color: D.ink, border: 'none',
+                padding: isMobile ? '15px 26px' : '18px 34px', borderRadius: 999,
+                fontSize: 15, fontWeight: 600, cursor: 'pointer', fontFamily: D.sans,
+                display: 'inline-flex', alignItems: 'center', gap: 10,
+              }}
+            >
+              Match my list <Icon.arrow />
+            </button>
+            <span style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.2, color: 'rgba(247,242,234,.6)' }}>
+              FREE · TAKES ~60 SECONDS
+            </span>
+          </div>
+        </Reveal>
       </div>
     </div>
   );
@@ -470,11 +636,20 @@ export function Homepage() {
   });
   return (
     <div style={{ background: D.paper, fontFamily: D.sans, color: D.ink }}>
-      <Nav />
+      {/* Overlay: hero photography runs full-bleed behind the floating capsule */}
+      <Nav overlay />
       <Hero />
+      <PartnerMarquee
+        background={D.inkDeep}
+        borderColor="rgba(247,242,234,.12)"
+        variant="paper"
+        eyebrowColor={D.plumSoft}
+      />
       <Metrics />
       <TwoWaysToBuy />
       <Featured />
+      <OwnedInventory />
+      <ShortageStrip />
       <PartnerSpotlight />
       <Testimonials />
       <CTA />

@@ -174,6 +174,15 @@ export const hubspot = {
   },
 
   /**
+   * Compatibility alias — several call sites (Register, Contact)
+   * predate the upsert naming. Same semantics: create, or update on
+   * email collision.
+   */
+  async createContact(args) {
+    return this.upsertContact(args);
+  },
+
+  /**
    * One-time setup: ensure all Unite custom properties exist on HubSpot.
    * Idempotent — 409s on existing properties are ignored.
    */

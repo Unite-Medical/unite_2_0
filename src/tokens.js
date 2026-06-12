@@ -3,6 +3,7 @@ export const D = {
   paperAlt: '#ede5d6',
   card: '#fbf7ef',
   ink: '#241a28',
+  inkDeep: '#18101b',
   ink2: '#564b5c',
   ink3: '#8f8490',
   line: '#e3dacd',

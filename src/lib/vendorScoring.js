@@ -28,6 +28,7 @@ export const VENDOR_SCORING_CONFIG = {
     business_age_5y_plus: +5,
     class_i_recall_5y: -20,
     importgenius_volume_100k_plus: +5,
+    has_510k_clearances: +5,
   },
   thresholds: {
     auto_approve_min: 35,
@@ -201,6 +202,21 @@ export async function evaluateVendor(candidate, config = VENDOR_SCORING_CONFIG) 
       name: 'Import volume signal',
       points: config.weights.importgenius_volume_100k_plus,
       detail: `~$${Math.round(candidate.importgenius_annual_usd).toLocaleString()}/yr`,
+    });
+  }
+
+  // 9) 510(k) clearance history — positive trust signal (brief §6).
+  // Zero results is neutral: Class I / 510(k)-exempt devices are common
+  // in our mix and don't require premarket clearance.
+  const clearances = await openfda.device510k(candidate.name);
+  evidence.clearances_510k = clearances;
+  const clearanceCount = clearances?.meta?.results?.total ?? clearances?.results?.length ?? 0;
+  if (clearanceCount > 0) {
+    score += config.weights.has_510k_clearances;
+    components.push({
+      name: `510(k) clearances: ${clearanceCount}`,
+      points: config.weights.has_510k_clearances,
+      detail: `most recent: ${clearances.results?.[0]?.k_number || 'on file'} (${clearances.results?.[0]?.decision_date || 'n/a'})`,
     });
   }
 

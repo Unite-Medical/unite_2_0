@@ -11,15 +11,18 @@
  *   reorder_pt  = run_rate × (vendor lead time + safety days)
  *   days_cover  = on_hand_total / run_rate
  *
- * The Python sidecar (forecasting/) replaces the run-rate math with
- * Prophet seasonal forecasts once deployed; the interface here
- * (computeReplenishment → rows with status/days_cover/suggested_qty)
- * stays identical so the UI doesn't change.
+ * The Python sidecar (forecasting/) upgrades the run-rate math to
+ * Prophet seasonal forecasts: `computeReplenishmentSmart()` pulls
+ * per-SKU horizons through /api/proxy/forecast and substitutes the
+ * Prophet daily mean for the run rate wherever a forecast exists.
+ * SKUs without a forecast (or with the sidecar down) keep the
+ * run-rate math, so the row shape never changes.
  */
 
 import { db } from './db.js';
 import { uid } from './format.js';
 import { cin7 } from './services.js';
+import { forecast } from './external/forecast.js';
 
 export const DEFAULTS = {
   window_days: 90,      // trailing demand window
@@ -54,7 +57,7 @@ export function computeRunRates({ window_days = DEFAULTS.window_days } = {}) {
  * suggested order quantity. Sorted most-urgent first.
  */
 export function computeReplenishment(opts = {}) {
-  const { lead_time_days = DEFAULTS.lead_time_days, safety_days = DEFAULTS.safety_days } = opts;
+  const { lead_time_days = DEFAULTS.lead_time_days, safety_days = DEFAULTS.safety_days, forecasts = null } = opts;
   const rates = computeRunRates(opts);
   const products = db.list('products');
   const inventory = db.list('inventory');
@@ -65,7 +68,8 @@ export function computeReplenishment(opts = {}) {
   }
 
   const rows = products.map((p) => {
-    const rate = rates[p.sku]?.run_rate || 0;
+    const prophet = forecasts?.[p.sku];
+    const rate = prophet?.daily_mean ?? (rates[p.sku]?.run_rate || 0);
     const onHand = onHandBySku[p.sku] || 0;
     const reorderPoint = Math.ceil(rate * (lead_time_days + safety_days));
     const daysCover = rate > 0 ? onHand / rate : Infinity;
@@ -95,12 +99,35 @@ export function computeReplenishment(opts = {}) {
       days_cover: Number.isFinite(daysCover) ? Math.round(daysCover) : null,
       status,
       suggested_qty: suggestedQty,
+      model: prophet ? (prophet.source === 'prophet' ? 'prophet' : 'run-rate') : 'run-rate',
     };
   });
 
   const rank = { stockout: 0, reorder: 1, watch: 2, ok: 3 };
   rows.sort((a, b) => (rank[a.status] - rank[b.status]) || ((a.days_cover ?? 1e9) - (b.days_cover ?? 1e9)));
   return rows;
+}
+
+/**
+ * Forecast-aware replenishment — PRD-12 Phase 2.
+ *
+ * Pulls Prophet horizons from the sidecar for every catalog SKU and
+ * recomputes the table with the forecast daily mean in place of the
+ * trailing run rate. Returns the same row shape plus `model` so the
+ * UI can badge which engine produced each line. Falls back to pure
+ * run-rate rows when the sidecar is unreachable.
+ */
+export async function computeReplenishmentSmart(opts = {}) {
+  const skus = db.list('products').map((p) => p.sku);
+  let forecasts = null;
+  try {
+    forecasts = await forecast.getForecastMap(skus);
+  } catch {
+    forecasts = null;
+  }
+  const rows = computeReplenishment({ ...opts, forecasts });
+  const prophetCount = rows.filter((r) => r.model === 'prophet').length;
+  return { rows, forecasts, prophet_skus: prophetCount };
 }
 
 /** Rows that need action today — used by the CEO digest + inventory alerts. */

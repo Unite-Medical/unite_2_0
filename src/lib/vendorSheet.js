@@ -3,9 +3,8 @@
  *
  * Accepts CSV or XLSX uploaded from the quoting wizard. CSV is parsed
  * inline (RFC-4180-ish handling for quoted fields with commas/newlines);
- * XLSX support is wired but requires SheetJS at runtime (loaded as a
- * dep when the backend lands). Until then, XLSX uploads return a
- * helpful error pointing to the CSV path.
+ * XLSX is read natively via src/lib/xlsx.js (ZIP + DOMParser, no deps)
+ * so foreign vendors can upload their Excel templates as-is.
  *
  * Expected columns (order doesn't matter, headers are case-insensitive):
  *   product_name      (required)
@@ -23,6 +22,7 @@
  */
 
 import { isValidGtin } from './external/gs1.js';
+import { readXlsxRows } from './xlsx.js';
 
 export const REQUIRED_COLUMNS = ['product_name', 'fob_price_usd'];
 
@@ -102,15 +102,14 @@ function str(v) {
 }
 
 /**
- * Parse a CSV/XLSX file (we accept the raw text for now) into the
- * canonical line shape consumed by `src/lib/quoting.js`.
+ * Parse pre-split rows (from CSV or XLSX) into the canonical line
+ * shape consumed by `src/lib/quoting.js`.
  *
  * Returns: { ok, vendor, lines, errors, warnings, totals }
  */
-export function parseVendorSheetText({ text, filename = 'sheet.csv', vendorHint = '' }) {
+export function parseVendorSheetRows({ rows, filename = 'sheet.csv', vendorHint = '' }) {
   const result = { ok: false, vendor: vendorHint || filename.replace(/\.[^.]+$/, ''), lines: [], errors: [], warnings: [], totals: { rows: 0, accepted: 0 } };
 
-  const rows = parseCsv(text);
   if (rows.length < 2) {
     result.errors.push('Sheet must have a header row and at least one data row.');
     return result;
@@ -172,21 +171,36 @@ export function parseVendorSheetText({ text, filename = 'sheet.csv', vendorHint 
   return result;
 }
 
+/** CSV text entrypoint (kept for paste-in flows + tests). */
+export function parseVendorSheetText({ text, filename = 'sheet.csv', vendorHint = '' }) {
+  return parseVendorSheetRows({ rows: parseCsv(text), filename, vendorHint });
+}
+
 /** Convenience: parse a File or Blob from an <input type="file">. */
 export async function parseVendorSheetFile(file, { vendorHint = '' } = {}) {
   const filename = file?.name || 'sheet.csv';
   const ext = filename.split('.').pop()?.toLowerCase();
-  if (ext === 'xlsx' || ext === 'xls') {
-    // SheetJS wiring would land here once we have a backend that can
-    // host the dep. For now we return a friendly error pointing the
-    // user at CSV export.
+  if (ext === 'xlsx') {
+    try {
+      const rows = await readXlsxRows(await file.arrayBuffer());
+      return parseVendorSheetRows({ rows, filename, vendorHint });
+    } catch (err) {
+      return {
+        ok: false,
+        vendor: vendorHint || filename.replace(/\.[^.]+$/, ''),
+        lines: [],
+        errors: [`Couldn't read the workbook (${err.message}). Export as CSV and re-upload if it persists.`],
+        warnings: [],
+        totals: { rows: 0, accepted: 0 },
+      };
+    }
+  }
+  if (ext === 'xls') {
     return {
       ok: false,
       vendor: vendorHint || filename.replace(/\.[^.]+$/, ''),
       lines: [],
-      errors: [
-        `XLSX upload isn't supported in the browser today. Export the sheet as CSV (File → Download → Comma-Separated Values) and re-upload — the parser is identical.`,
-      ],
+      errors: ['Legacy .xls (BIFF) isn\'t supported — save as .xlsx or CSV and re-upload.'],
       warnings: [],
       totals: { rows: 0, accepted: 0 },
     };

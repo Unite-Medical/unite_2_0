@@ -18,6 +18,7 @@ import { fmt } from '../../lib/format.js';
 import { useViewport } from '../../lib/viewport.js';
 import { ai } from '../../lib/ai/client.js';
 import { gmail } from '../../lib/services.js';
+import { publishSubmissionLines, offersFor, acceptOffer, declineOffer } from '../../lib/marketplace.js';
 
 const STATUS_COLOR = {
   new:        ['#8f8490', 'NEW'],
@@ -38,6 +39,25 @@ export function AdminSurplus() {
 
   const [valuating, setValuating] = useState(false);
   const [error, setError] = useState(null);
+  const allOffers = db.useTable('surplus_offers', { orderBy: 'created_at', dir: 'desc' });
+  const activeOffers = activeId ? offersFor({ submission_id: activeId }) : [];
+  void allOffers; // subscription keeps the offers panel live
+
+  function publishToMarketplace() {
+    if (!active) return;
+    const { published } = publishSubmissionLines(active.id);
+    if (published === 0) setError('No unlisted "want" lines to publish — mark lines as want first.');
+    else setError(null);
+  }
+
+  async function decideOffer(offer, accept) {
+    try {
+      if (accept) await acceptOffer(offer.id);
+      else declineOffer(offer.id);
+    } catch (e) {
+      setError(e?.message || 'Offer update failed.');
+    }
+  }
 
   async function runValuation() {
     if (!active || lines.length === 0) return;
@@ -183,6 +203,9 @@ Founder, Unite Medical`,
                 <button onClick={sendOffer} disabled={!lines.some((l) => l.decision === 'want')} style={{ background: D.plum, color: D.paper, border: 'none', padding: '10px 22px', borderRadius: 999, fontSize: 13, fontWeight: 600, cursor: 'pointer', opacity: lines.some((l) => l.decision === 'want') ? 1 : 0.4 }}>
                   Send offer to hospital
                 </button>
+                <button onClick={publishToMarketplace} disabled={!lines.some((l) => l.decision === 'want' && !l.listed)} style={{ background: 'transparent', color: D.plum, border: `1px solid ${D.plum}`, padding: '10px 22px', borderRadius: 999, fontSize: 13, fontWeight: 600, cursor: 'pointer', opacity: lines.some((l) => l.decision === 'want' && !l.listed) ? 1 : 0.4 }}>
+                  Publish to marketplace ↗
+                </button>
               </div>
               {error && <div style={{ marginTop: 12, padding: 10, borderRadius: 8, background: '#fbe9e1', color: '#7a2d10', fontSize: 13 }}>{error}</div>}
 
@@ -241,6 +264,41 @@ Founder, Unite Medical`,
                   </tbody>
                 </table>
               </div>
+
+              {activeOffers.length > 0 && (
+                <div style={{ marginTop: 28 }}>
+                  <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.plum, marginBottom: 10 }}>
+                    MARKETPLACE OFFERS · {activeOffers.filter((o) => o.status === 'open').length} OPEN
+                  </div>
+                  {activeOffers.map((o) => {
+                    const line = db.get('surplus_lines', o.line_id);
+                    return (
+                      <div key={o.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, padding: '12px 14px', border: `1px solid ${D.line}`, borderRadius: 10, marginBottom: 8, flexWrap: 'wrap' }}>
+                        <div>
+                          <div style={{ fontSize: 13, fontWeight: 600 }}>
+                            {o.buyer_org || o.buyer_name} · ${o.offer_usd_per_unit.toFixed(2)}/unit × {o.qty}
+                            <span style={{ fontFamily: D.mono, color: D.plum, marginLeft: 8 }}>{fmt.money(o.offer_usd_total)}</span>
+                          </div>
+                          <div style={{ fontSize: 11, color: D.ink3, marginTop: 2 }}>
+                            {line?.normalized_name || line?.raw_description} · {o.buyer_email} · {fmt.ago(o.created_at)}
+                            {o.message ? ` · “${o.message}”` : ''}
+                          </div>
+                        </div>
+                        {o.status === 'open' ? (
+                          <div style={{ display: 'flex', gap: 8 }}>
+                            <button onClick={() => decideOffer(o, true)} style={{ fontSize: 11, fontFamily: D.mono, letterSpacing: 0.8, padding: '6px 14px', background: '#2d6a4f', color: D.paper, border: 'none', borderRadius: 999, cursor: 'pointer' }}>ACCEPT</button>
+                            <button onClick={() => decideOffer(o, false)} style={{ fontSize: 11, fontFamily: D.mono, letterSpacing: 0.8, padding: '6px 14px', background: 'transparent', color: '#c3382d', border: '1px solid #c3382d', borderRadius: 999, cursor: 'pointer' }}>DECLINE</button>
+                          </div>
+                        ) : (
+                          <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, padding: '4px 10px', borderRadius: 999, background: o.status === 'accepted' ? '#e8f5ed' : '#fbe9e1', color: o.status === 'accepted' ? '#1d4731' : '#7a2d10' }}>
+                            {o.status.toUpperCase()}
+                          </span>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </>
           )}
         </div>

@@ -21,6 +21,7 @@ import {
   productStockByWarehouse,
 } from '../lib/productCopy.js';
 import { useSEO, productSchema, breadcrumbSchema } from '../lib/seo.js';
+import { findSubstitutes } from '../lib/matching.js';
 
 function tierForQty(qty) {
   if (qty >= 250) return '250+';
@@ -106,6 +107,7 @@ export function ProductDetail() {
   const documents = useMemo(() => (product ? productDocuments(product) : []), [product]);
   const reviews = useMemo(() => (product ? productReviews(product) : []), [product]);
   const related = useMemo(() => (product ? relatedProducts(product, 4) : []), [product]);
+  const substitutes = useMemo(() => (product ? findSubstitutes(product, 3) : []), [product]);
   const stockByWh = useMemo(() => (product ? productStockByWarehouse(product.sku) : []), [product]);
 
   if (!product) {
@@ -419,6 +421,37 @@ export function ProductDetail() {
             </div>
           </div>
         </section>
+
+        {/* STOCKED EQUIVALENTS — backorder insurance (Cato-gap substitute matching) */}
+        {substitutes.length > 0 && (
+          <section style={{ padding: `${isMobile ? 40 : 56}px ${padX}px` }}>
+            <div style={{ maxWidth: 1360, margin: '0 auto', background: D.card, border: `1px solid ${D.line}`, borderRadius: 20, padding: isMobile ? 18 : 28 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+                <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: '#3b8760', background: 'rgba(59,135,96,.1)', padding: '4px 10px', borderRadius: 999 }}>
+                  STOCKED EQUIVALENTS
+                </span>
+                <span style={{ fontSize: 13.5, color: D.ink2 }}>
+                  Backordered elsewhere? These warehoused items cover the same use case.
+                </span>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : `repeat(${Math.min(substitutes.length, 3)}, 1fr)`, gap: 12, marginTop: 16 }}>
+                {substitutes.map((p) => (
+                  <div key={p.sku} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px', background: D.paper, border: `1px solid ${D.line}`, borderRadius: 14 }}>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <Link to={`/products/${encodeURIComponent(p.sku)}`} style={{ fontSize: 14, fontWeight: 600, color: D.ink, display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        {p.name}
+                      </Link>
+                      <div style={{ fontFamily: D.mono, fontSize: 10.5, color: D.ink3, marginTop: 2 }}>{p.sku} · {fmt.money(p.price)}</div>
+                    </div>
+                    <button aria-label={`Add ${p.name}`} onClick={() => cartStore.add(p.sku)} style={{ background: D.ink, color: D.paper, border: 'none', width: 36, height: 36, borderRadius: 18, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      <Icon.plus />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* REVIEWS */}
         <section style={{ background: D.paperAlt, borderTop: `1px solid ${D.line}`, borderBottom: `1px solid ${D.line}`, padding: `${isMobile ? 48 : 72}px ${padX}px` }}>

@@ -16,7 +16,9 @@ const LINKS = [
   ['/about', 'About'],
 ];
 
-export function Nav() {
+// `overlay` — nav floats over the page top (no flow space). Use on pages
+// whose hero photography should run full-bleed behind the capsule.
+export function Nav({ overlay = false }) {
   const navigate = useNavigate();
   const location = useLocation();
   const cart = useCart();
@@ -24,6 +26,27 @@ export function Nav() {
   const cartCount = cart.items.reduce((a, b) => a + b.qty, 0);
   const { isMobile } = useViewport();
   const [open, setOpen] = useState(false);
+
+  // At the top of the page the nav is a solid full-bleed band that
+  // merges with the dark hero/masthead below it; once you scroll it
+  // compresses into the frosted glass chrome.
+  const [scrolled, setScrolled] = useState(() => typeof window !== 'undefined' && window.scrollY > 24);
+  useEffect(() => {
+    let raf = 0;
+    const onScroll = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        setScrolled(window.scrollY > 24);
+      });
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
 
   // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { setOpen(false); }, [location.pathname]);
@@ -38,14 +61,26 @@ export function Nav() {
     return location.pathname === path || location.pathname.startsWith(`${path}/`);
   };
 
-  const padX = isMobile ? 18 : 40;
-  const padY = isMobile ? 13 : 18;
+  const padX = isMobile ? 14 : 22;
+  // A touch taller while full-bleed at the top; compresses on detach.
+  const padY = scrolled ? (isMobile ? 10 : 12) : (isMobile ? 13 : 17);
 
   return (
-    <header className="um-nav-glass" style={{ borderBottom: `1px solid ${D.line}`, position: 'sticky', top: 0, zIndex: 30 }}>
+    <header
+      className={`um-nav-wrap${overlay ? ' um-nav-wrap--overlay' : ''}`}
+      style={{
+        // Full-bleed at the top of the page; inset once detached.
+        padding: scrolled ? `${isMobile ? 10 : 14}px ${isMobile ? 12 : 24}px 0` : '0',
+        color: D.paper,
+      }}
+    >
+      <div
+        className={`um-nav-glass${scrolled ? '' : ' um-nav-glass--top'}`}
+        style={{ maxWidth: scrolled ? 1280 : '100vw', margin: '0 auto' }}
+      >
       {!isMobile && (
-        <div style={{ background: D.ink, color: D.paper, fontFamily: D.mono, fontSize: 11, letterSpacing: 0.8 }}>
-          <div style={{ maxWidth: 1360, margin: '0 auto', padding: `7px ${padX}px`, display: 'flex', gap: 20, alignItems: 'center' }}>
+        <div style={{ background: 'rgba(0,0,0,.28)', color: 'rgba(247,242,234,.78)', fontFamily: D.mono, fontSize: 11, letterSpacing: 0.8, borderBottom: '1px solid rgba(247,242,234,.08)' }}>
+          <div style={{ padding: `7px ${padX}px`, display: 'flex', gap: 20, alignItems: 'center' }}>
             <span>FDA · 3015727296</span>
             <span style={{ opacity: .4 }}>/</span>
             <span>BPA · 36F79725D0203</span>
@@ -67,19 +102,20 @@ export function Nav() {
         </div>
       )}
       {isMobile && (
-        <div style={{ background: D.ink, color: D.paper, fontFamily: D.mono, fontSize: 10, letterSpacing: 0.8, textAlign: 'center', padding: '6px 12px' }}>
+        <div style={{ background: 'rgba(0,0,0,.28)', color: 'rgba(247,242,234,.78)', fontFamily: D.mono, fontSize: 10, letterSpacing: 0.8, textAlign: 'center', padding: '6px 12px', borderBottom: '1px solid rgba(247,242,234,.08)' }}>
           FDA · CAGE 8MK70 · VETERAN-OWNED · <a href="tel:+18338686483" style={{ color: 'inherit', textDecoration: 'underline' }}>833.868.6483</a>
         </div>
       )}
 
       <div style={{
-        maxWidth: 1360, margin: '0 auto', padding: `${padY}px ${padX}px`,
+        padding: `${padY}px ${padX}px`,
+        transition: 'padding 0.5s cubic-bezier(0.22, 1, 0.36, 1)',
         display: 'grid',
-        gridTemplateColumns: isMobile ? 'auto 1fr auto' : 'auto 1fr auto',
-        alignItems: 'center', gap: isMobile ? 12 : 48,
+        gridTemplateColumns: 'auto 1fr auto',
+        alignItems: 'center', gap: isMobile ? 12 : 28,
       }}>
         <Link to="/" aria-label="Unite Medical home" style={{ display: 'inline-flex' }}>
-          <UMLogo size={isMobile ? 26 : 30} color={D.ink} weight={600} />
+          <UMLogo size={isMobile ? 26 : 30} color={D.paper} weight={600} />
         </Link>
 
         {!isMobile && (
@@ -92,7 +128,7 @@ export function Nav() {
                 aria-current={isActive(path) ? 'page' : undefined}
                 style={{
                   background: isActive(path) ? D.plum : 'transparent',
-                  color: isActive(path) ? D.paper : D.ink2,
+                  color: isActive(path) ? D.paper : 'rgba(247,242,234,.72)',
                   padding: '9px 18px',
                   borderRadius: 999,
                   fontSize: 14,
@@ -112,17 +148,17 @@ export function Nav() {
             <button
               onClick={() => navigate('/catalog')}
               aria-label="Search catalog"
-              style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 14px', border: `1px solid ${D.line}`, borderRadius: 999, color: D.ink3, fontSize: 13, width: 220, background: D.card, cursor: 'pointer' }}
+              style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 14px', border: '1px solid rgba(247,242,234,.2)', borderRadius: 999, color: 'rgba(247,242,234,.55)', fontSize: 13, width: 220, background: 'rgba(247,242,234,.06)', cursor: 'pointer' }}
             >
               <Icon.search /> <span>Search products</span>
             </button>
           )}
           {!isMobile && (
-            <Link to={session ? '/dashboard' : '/login'} style={{ background: 'none', color: D.ink, fontFamily: D.sans, fontSize: 13 }}>
+            <Link to={session ? '/dashboard' : '/login'} style={{ background: 'none', color: 'rgba(247,242,234,.85)', fontFamily: D.sans, fontSize: 13 }}>
               {session ? 'Dashboard' : 'Sign in'}
             </Link>
           )}
-          <Link to="/cart" aria-label={`Cart, ${cartCount} items`} style={{ display: 'flex', alignItems: 'center', gap: 7, background: D.ink, color: D.paper, padding: isMobile ? '9px 12px' : '10px 16px', borderRadius: 999, fontSize: isMobile ? 12 : 13, fontFamily: D.sans }}>
+          <Link to="/cart" aria-label={`Cart, ${cartCount} items`} style={{ display: 'flex', alignItems: 'center', gap: 7, background: D.paper, color: D.ink, padding: isMobile ? '9px 12px' : '10px 16px', borderRadius: 999, fontSize: isMobile ? 12 : 13, fontWeight: 600, fontFamily: D.sans }}>
             <Icon.cart /> {cartCount ? cartCount : (isMobile ? '' : 'Cart')}
           </Link>
           {isMobile && (
@@ -130,12 +166,13 @@ export function Nav() {
               onClick={() => setOpen(true)}
               aria-label="Open menu"
               aria-expanded={open}
-              style={{ background: 'transparent', color: D.ink, border: `1px solid ${D.line}`, borderRadius: 10, width: 40, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', padding: 0 }}
+              style={{ background: 'transparent', color: D.paper, border: '1px solid rgba(247,242,234,.25)', borderRadius: 10, width: 40, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', padding: 0 }}
             >
               <Icon.menu />
             </button>
           )}
         </div>
+      </div>
       </div>
 
       {isMobile && open && (
@@ -159,6 +196,8 @@ export function Nav() {
               ))}
               <div style={{ height: 1, background: D.line, margin: '10px 14px' }} />
               {[
+                ['/shortage-list', 'Shortage List Matcher'],
+                ['/supply-risk', 'Supply Risk Monitor'],
                 ['/government', 'Government'],
                 ['/procurement', 'Procurement & Diversity'],
                 ['/contact', 'Contact'],

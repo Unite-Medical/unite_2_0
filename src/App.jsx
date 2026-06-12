@@ -12,6 +12,9 @@ const Quote = lazy(() => import('./pages/Quote.jsx').then((m) => ({ default: m.Q
 const QuoteNew = lazy(() => import('./pages/QuoteNew.jsx').then((m) => ({ default: m.QuoteNew })));
 const QuotePrint = lazy(() => import('./pages/QuotePrint.jsx').then((m) => ({ default: m.QuotePrint })));
 const Surplus = lazy(() => import('./pages/Surplus.jsx').then((m) => ({ default: m.Surplus })));
+const SurplusMarket = lazy(() => import('./pages/SurplusMarket.jsx').then((m) => ({ default: m.SurplusMarket })));
+const ShortageMatch = lazy(() => import('./pages/ShortageMatch.jsx').then((m) => ({ default: m.ShortageMatch })));
+const SupplyRisk = lazy(() => import('./pages/SupplyRisk.jsx').then((m) => ({ default: m.SupplyRisk })));
 const ProductDetail = lazy(() => import('./pages/ProductDetail.jsx').then((m) => ({ default: m.ProductDetail })));
 const Cart = lazy(() => import('./pages/Cart.jsx').then((m) => ({ default: m.Cart })));
 const Checkout = lazy(() => import('./pages/Checkout.jsx').then((m) => ({ default: m.Checkout })));
@@ -53,6 +56,7 @@ const AdminOverview = lazy(() => import('./pages/admin/AdminOverview.jsx').then(
 const AdminAnalytics = lazy(() => import('./pages/admin/AdminAnalytics.jsx').then((m) => ({ default: m.AdminAnalytics })));
 const AdminInventory = lazy(() => import('./pages/admin/AdminInventory.jsx').then((m) => ({ default: m.AdminInventory })));
 const AdminCRM = lazy(() => import('./pages/admin/AdminCRM.jsx').then((m) => ({ default: m.AdminCRM })));
+const AdminReps = lazy(() => import('./pages/admin/AdminReps.jsx').then((m) => ({ default: m.AdminReps })));
 const AdminOrders = lazy(() => import('./pages/admin/AdminOrders.jsx').then((m) => ({ default: m.AdminOrders })));
 const AdminCMS = lazy(() => import('./pages/admin/AdminCMS.jsx').then((m) => ({ default: m.AdminCMS })));
 const AdminVendorApproval = lazy(() => import('./pages/admin/AdminVendorApproval.jsx').then((m) => ({ default: m.AdminVendorApproval })));
@@ -86,6 +90,9 @@ export default function App() {
           <Route path="/quote/new" element={<QuoteNew />} />
           <Route path="/quotes/:id/print" element={<QuotePrint />} />
           <Route path="/surplus" element={<Surplus />} />
+          <Route path="/surplus/market" element={<SurplusMarket />} />
+          <Route path="/shortage-list" element={<ShortageMatch />} />
+          <Route path="/supply-risk" element={<SupplyRisk />} />
           <Route path="/products/:id" element={<ProductDetail />} />
 
           <Route path="/cart" element={<Cart />} />
@@ -151,6 +158,7 @@ export default function App() {
           <Route path="/admin/analytics" element={<RequireAdmin><AdminAnalytics /></RequireAdmin>} />
           <Route path="/admin/inventory" element={<RequireAdmin><AdminInventory /></RequireAdmin>} />
           <Route path="/admin/crm"       element={<RequireAdmin><AdminCRM /></RequireAdmin>} />
+          <Route path="/admin/reps"      element={<RequireAdmin><AdminReps /></RequireAdmin>} />
           <Route path="/admin/customers" element={<RequireAdmin><AdminCustomers /></RequireAdmin>} />
           <Route path="/admin/quotes"    element={<RequireAdmin><AdminQuotes /></RequireAdmin>} />
           <Route path="/admin/orders"    element={<RequireAdmin><AdminOrders /></RequireAdmin>} />

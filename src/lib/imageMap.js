@@ -7,6 +7,7 @@
 */
 
 import { REAL_PRODUCTS } from '../data/realCatalog.js';
+import CUTOUTS from '../data/productCutouts.json';
 
 const VARIANT = 'v1';
 // Marketing imagery is served as WebP (~10x lighter than the PNG masters,
@@ -56,6 +57,15 @@ const PRODUCT_HANDLE = Object.fromEntries(
  * (callers fall back to the striped <PhotoPlaceholder> stripe).
  */
 export const PRODUCT_IMG = PRODUCT_HERO;
+
+/**
+ * SKU -> transparent-background cutout PNG (produced by
+ * scripts/remove_bg.mjs via the remove.bg API). Empty string when the
+ * SKU hasn't been processed yet — callers fall back to the hero photo.
+ */
+export function productCutout(sku) {
+  return CUTOUTS[sku] || '';
+}
 
 export const SEGMENT_IMG = {
   asc:          base('SOL-01'),

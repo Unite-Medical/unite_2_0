@@ -20,15 +20,17 @@
 
 import { db } from '../db.js';
 import { uid, delay } from '../format.js';
+import { API_BASE } from '../external/_http.js';
 import { loadPrompt, PROMPT_REGISTRY } from './registry.js';
 import { SCHEMA_BY_PROMPT_KEY, validate } from './schemas.js';
 
 const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
-// Vite injects env vars at build time. NEVER expose this in the
-// browser in production — for now it's safe because the key isn't
-// set (we run in stub mode).
+// Node-side direct key (verifier scripts, future workers). The browser
+// NEVER holds the key — it calls /api/proxy/anthropic/v1/messages and
+// the serverless proxy injects ANTHROPIC_API_KEY (api/_lib/services.js).
 const API_KEY = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_ANTHROPIC_API_KEY) || '';
 const IS_BROWSER = typeof window !== 'undefined';
+const PROXY_URL = API_BASE ? `${API_BASE}/proxy/anthropic/v1/messages` : '';
 
 // Per-prompt usage cost (USD per million tokens) — Sonnet 4.6 rates
 // approximated; refresh from Anthropic pricing periodically.
@@ -119,13 +121,16 @@ async function callAnthropic({ model, maxTokens, temperature, prompt, tool }) {
     body.tool_choice = { type: 'tool', name: tool.tool_name };
   }
 
-  const res = await fetch(ANTHROPIC_API_URL, {
+  // Browser → serverless proxy (key injected server-side).
+  // Node     → direct Anthropic call with the local key.
+  const viaProxy = IS_BROWSER || !API_KEY;
+  const url = viaProxy ? PROXY_URL : ANTHROPIC_API_URL;
+  const headers = viaProxy
+    ? { 'Content-Type': 'application/json' }
+    : { 'Content-Type': 'application/json', 'x-api-key': API_KEY, 'anthropic-version': '2023-06-01' };
+  const res = await fetch(url, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': API_KEY,
-      'anthropic-version': '2023-06-01',
-    },
+    headers,
     body: JSON.stringify(body),
   });
   if (!res.ok) {
@@ -167,86 +172,95 @@ export const ai = {
     const entry = PROMPT_REGISTRY[key];
     if (!entry) throw new Error(`Unknown prompt key: ${key}`);
     const start = Date.now();
+    const version = entry.path.match(/\.v(\d+)\./)?.[1] || 'unknown';
 
-    // Stub-mode: no key or in the browser (we never put the key
-    // client-side). In stub mode we still log usage so the admin
-    // dashboard reflects what would have been called.
-    const useStub = !API_KEY || IS_BROWSER;
-    if (useStub) {
-      const stub = STUBS[key];
-      if (!stub) throw new Error(`No stub registered for prompt key: ${key}`);
-      // Simulate latency so UI tests on busy/idle states pass.
-      await delay(220, 540);
-      const data = await stub(input);
-      const usage = {
-        prompt_key: key,
-        prompt_version: entry.path.match(/\.v(\d+)\./)?.[1] || 'unknown',
-        model: entry.model,
-        input_tokens: 0,
-        output_tokens: 0,
-        usd_cost: 0,
-        duration_ms: Date.now() - start,
-        status: 'stub',
-        source,
-      };
-      logUsage(usage);
-      return { data, usage, stub: true };
-    }
+    // Real-first: in the browser we go through the serverless proxy
+    // (key injected server-side); in Node we call Anthropic directly
+    // when a key is present. Any failure — including the proxy's 503
+    // "not_configured" before ANTHROPIC_API_KEY is set in Vercel —
+    // falls through to the deterministic stub so the UI never blocks.
+    const canTryReal = (API_KEY && !IS_BROWSER) || Boolean(PROXY_URL);
+    let realError = null;
 
-    // Real call (backend / Node only; browser is forced to stub above).
-    const template = await loadPrompt(key);
-    const prompt = substitute(template, input);
-    const tool = SCHEMA_BY_PROMPT_KEY[key];
-    try {
-      const resp = await callAnthropic({
-        model: entry.model,
-        maxTokens: entry.maxTokens,
-        temperature: entry.temperature,
-        prompt,
-        tool,
-      });
-      const cost = MODEL_COSTS[entry.model] || { input: 0, output: 0 };
-      const usd =
-        (resp.input_tokens / 1_000_000) * cost.input
-        + (resp.output_tokens / 1_000_000) * cost.output;
-      const usage = {
-        prompt_key: key,
-        prompt_version: entry.path.match(/\.v(\d+)\./)?.[1] || 'unknown',
-        model: resp.model,
-        input_tokens: resp.input_tokens,
-        output_tokens: resp.output_tokens,
-        usd_cost: +usd.toFixed(4),
-        duration_ms: Date.now() - start,
-        status: 'ok',
-        source,
-      };
-      logUsage(usage);
+    if (canTryReal) {
+      const template = await loadPrompt(key);
+      const prompt = substitute(template, input);
+      const tool = SCHEMA_BY_PROMPT_KEY[key];
+      try {
+        const resp = await callAnthropic({
+          model: entry.model,
+          maxTokens: entry.maxTokens,
+          temperature: entry.temperature,
+          prompt,
+          tool,
+        });
+        const cost = MODEL_COSTS[entry.model] || { input: 0, output: 0 };
+        const usd =
+          (resp.input_tokens / 1_000_000) * cost.input
+          + (resp.output_tokens / 1_000_000) * cost.output;
+        const usage = {
+          prompt_key: key,
+          prompt_version: version,
+          model: resp.model,
+          input_tokens: resp.input_tokens,
+          output_tokens: resp.output_tokens,
+          usd_cost: +usd.toFixed(4),
+          duration_ms: Date.now() - start,
+          status: 'ok',
+          source,
+        };
+        logUsage(usage);
 
-      // Schema-validated tool output if tool-use was active.
-      if (tool && resp.tool_input != null) {
-        const { ok, errors } = validate(resp.tool_input, tool.input_schema);
-        if (!ok) {
-          logUsage({ ...usage, status: 'schema_violation', error: errors.join('; ') });
-          throw new Error(`schema violation in ${key}: ${errors[0]}`);
+        // Schema-validated tool output if tool-use was active.
+        if (tool && resp.tool_input != null) {
+          const { ok, errors } = validate(resp.tool_input, tool.input_schema);
+          if (!ok) {
+            logUsage({ ...usage, status: 'schema_violation', error: errors.join('; ') });
+            throw new Error(`schema violation in ${key}: ${errors[0]}`);
+          }
+          return { data: resp.tool_input, usage, stub: false };
         }
-        return { data: resp.tool_input, usage, stub: false };
+        return { data: { content: resp.content }, usage, stub: false };
+      } catch (err) {
+        realError = err;
+        logUsage({
+          prompt_key: key,
+          prompt_version: version,
+          model: entry.model,
+          input_tokens: estimateTokens(prompt),
+          output_tokens: 0,
+          usd_cost: 0,
+          duration_ms: Date.now() - start,
+          status: 'error',
+          source,
+          error: err.message,
+        });
       }
-      return { data: { content: resp.content }, usage, stub: false };
-    } catch (err) {
-      logUsage({
-        prompt_key: key,
-        prompt_version: entry.path.match(/\.v(\d+)\./)?.[1] || 'unknown',
-        model: entry.model,
-        input_tokens: estimateTokens(prompt),
-        output_tokens: 0,
-        usd_cost: 0,
-        duration_ms: Date.now() - start,
-        status: 'error',
-        source,
-        error: err.message,
-      });
-      throw err;
     }
+
+    // Stub path — either real isn't reachable or it failed above. We
+    // still log usage so the admin dashboard reflects the call.
+    const stub = STUBS[key];
+    if (!stub) {
+      if (realError) throw realError;
+      throw new Error(`No stub registered for prompt key: ${key}`);
+    }
+    await delay(220, 540);
+    const data = await stub(input);
+    const usage = {
+      prompt_key: key,
+      prompt_version: version,
+      model: entry.model,
+      input_tokens: 0,
+      output_tokens: 0,
+      usd_cost: 0,
+      duration_ms: Date.now() - start,
+      status: realError ? 'stub_fallback' : 'stub',
+      source,
+      ...(realError ? { error: realError.message } : {}),
+    };
+    logUsage(usage);
+    return { data, usage, stub: true };
   },
 
   /** For tests / verifier. */

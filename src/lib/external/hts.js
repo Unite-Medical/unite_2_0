@@ -1,21 +1,18 @@
 /**
  * USITC Harmonized Tariff Schedule REST client.
  *
- * PRD-08 Phase 2. The USITC publishes the HTS as a free REST API:
- *   https://hts.usitc.gov/reststop/exportList
- *
- * Reality check: the USITC endpoint does NOT currently send permissive
- * CORS headers, so the browser can't fetch it directly. When the
- * Node/Fastify backend lands (PRD-01), this client gets a flag to
- * route through `${API_BASE}/proxy/hts` which is permitted. Until
- * then we fall back to the embedded rate table — which is enough
- * for the demo and for the bulk of our SKU mix.
- *
- * The function signatures here match what `src/lib/quoting.js` already
- * imports, so when the backend is in place, only the body changes.
+ * PRD-08 Phase 2. The USITC publishes the HTS as a free REST API
+ * (hts.usitc.gov) but without CORS headers, so the browser routes
+ * through our serverless hop at `${API_BASE}/proxy/hts`
+ * (api/proxy/hts.js) which normalizes the response to
+ * `{ hts_code, description, mfn, special }`. On any failure we fall
+ * back to the embedded rate table so the demo + offline dev still
+ * work and quoting never blocks on tariff lookups.
  */
 
-const PROXY_BASE = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_BASE) || '';
+import { API_BASE } from './_http.js';
+
+const PROXY_BASE = API_BASE;
 const REQUEST_TIMEOUT_MS = 4500;
 
 // Embedded rate table — current as of April 2026 per the source spec.

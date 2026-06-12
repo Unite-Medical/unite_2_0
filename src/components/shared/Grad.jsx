@@ -10,11 +10,12 @@ import { D } from '../../tokens.js';
  */
 export function Grad({ children, style = {} }) {
   return (
-    <span style={{
+    <span className="um-grad-shimmer" style={{
       background: D.grad,
       // Extend the gradient past the box so italic swashes that sit
       // outside the EM box still get painted, not transparent.
-      backgroundSize: '120% 140%',
+      // Oversized on X so the shimmer keyframes have room to drift.
+      backgroundSize: '180% 140%',
       backgroundPosition: 'center',
       WebkitBackgroundClip: 'text',
       backgroundClip: 'text',

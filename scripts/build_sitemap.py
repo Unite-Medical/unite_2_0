@@ -15,6 +15,7 @@ Run after any catalog or blog change:
 
 from __future__ import annotations
 
+import json
 import re
 from datetime import date
 from pathlib import Path
@@ -22,6 +23,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 PUBLIC = ROOT / "public"
 SEED = ROOT / "src" / "lib" / "seed.js"
+CATALOG = ROOT / "src" / "data" / "realCatalog.js"
 
 SITE_URL = "https://unitemedical.net"
 
@@ -29,6 +31,10 @@ STATIC_ROUTES = [
     ("/",                        "1.0",  "weekly"),
     ("/catalog",                 "0.95", "daily"),
     ("/quote",                   "0.9",  "weekly"),
+    ("/shortage-list",           "0.9",  "weekly"),
+    ("/supply-risk",             "0.9",  "daily"),
+    ("/surplus",                 "0.85", "monthly"),
+    ("/surplus/market",          "0.85", "daily"),
     ("/solutions",               "0.9",  "weekly"),
     ("/segments/asc",            "0.9",  "monthly"),
     ("/segments/pharmacy",       "0.9",  "monthly"),
@@ -61,8 +67,19 @@ STATIC_ROUTES = [
 CATEGORY_FILTERS = ["Orthotics", "Diagnostics", "PPE", "Wound Care", "Pharmaceuticals", "Equipment"]
 
 
-def parse_skus(seed_text: str) -> list[str]:
-    return re.findall(r"sku:\s*'([^']+)'", seed_text)
+def parse_skus() -> list[str]:
+    """Top-level product SKUs from src/data/realCatalog.js.
+
+    The catalog module is `export const REAL_CATALOG = { ...JSON... };`
+    so we slice out the object literal and json-parse it, then take
+    PRODUCTS[].sku (variants stay off the sitemap — they share the
+    parent product page).
+    """
+    text = CATALOG.read_text()
+    start = text.index("{", text.index("REAL_CATALOG"))
+    end = text.rindex("};", 0, text.index("export const REAL_PRODUCTS")) + 1
+    catalog = json.loads(text[start:end])
+    return [p["sku"] for p in catalog.get("PRODUCTS", []) if p.get("sku")]
 
 
 def parse_blog_slugs(seed_text: str) -> list[str]:
@@ -87,7 +104,7 @@ def url_xml(loc: str, priority: str, freq: str, lastmod: str) -> str:
 
 def main() -> int:
     seed_text = SEED.read_text()
-    skus = parse_skus(seed_text)
+    skus = parse_skus()
     blog_slugs = parse_blog_slugs(seed_text)
     today = date.today().isoformat()
 

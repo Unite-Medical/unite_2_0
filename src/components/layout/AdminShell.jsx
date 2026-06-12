@@ -5,6 +5,7 @@ import { UMLogo } from '../shared/Logo.jsx';
 import { Icon } from '../shared/Icon.jsx';
 import { auth } from '../../lib/auth.js';
 import { useViewport } from '../../lib/viewport.js';
+import { useWebhookBridge } from '../../lib/webhookBridge.js';
 
 const NAV = [
   ['Overview',      'overview',   '/admin'],
@@ -17,9 +18,11 @@ const NAV = [
   ['Finance',       'finance',    '/admin/finance'],
   ['Customers',     'customers',  '/admin/customers'],
   ['CRM',           'crm',        '/admin/crm'],
+  ['Reps',          'reps',       '/admin/reps'],
   ['Vendors',       'vendors',    '/admin/vendors'],
   ['Discovery',     'discovery',  '/admin/discovery'],
   ['Compliance',    'compliance', '/admin/compliance'],
+  ['Surplus',       'surplus',    '/admin/surplus'],
   ['CMS',           'cms',        '/admin/cms'],
   ['Analytics',     'analytics',  '/admin/analytics'],
   ['Settings',      'settings',   '/admin/settings'],
@@ -31,6 +34,10 @@ export function AdminShell({ active, children }) {
   const session = auth.use();
   const { isMobile } = useViewport();
   const [open, setOpen] = useState(false);
+
+  // Drain verified webhook events from /api/hooks/events into the
+  // local DB while an admin tab is open (PRD-01 interim bridge).
+  useWebhookBridge(session?.role === 'admin');
 
   // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { setOpen(false); }, [location.pathname]);

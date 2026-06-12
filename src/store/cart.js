@@ -10,6 +10,7 @@ import { useEffect, useSyncExternalStore } from 'react';
 import { db } from '../lib/db.js';
 import { auth } from '../lib/auth.js';
 import { uid } from '../lib/format.js';
+import { priceFor } from '../lib/pricing.js';
 
 const subs = new Set();
 let activeCartId = 'cart_demo';
@@ -53,10 +54,16 @@ export const cartStore = {
     if (!product) return;
     const lineSku = variant?.sku || product.sku;
     const lineName = variant?.title ? `${product.name} · ${variant.title}` : product.name;
-    const lineUnit = variant?.price ?? product.price;
     const existing = db.list('cart_items', { where: { cart_id: activeCartId, sku: lineSku } })[0];
+    const nextQty = (existing?.qty || 0) + qty;
+    // Role-based pricing: qty breaks (product SKU) × org tier. Variants
+    // carry their own list price; tier discount still applies.
+    const priced = priceFor({ sku: product.sku, qty: nextQty, basePrice: variant?.price ?? product.price });
+    const lineUnit = variant?.price != null
+      ? priceFor({ sku: '__variant__', qty: nextQty, basePrice: variant.price }).unit_price
+      : priced.unit_price;
     if (existing) {
-      db.update('cart_items', existing.id, { qty: existing.qty + qty });
+      db.update('cart_items', existing.id, { qty: nextQty, unit_price: lineUnit, list_price: priced.list_price, pricing_tier: priced.tier });
     } else {
       db.insert('cart_items', {
         id: uid('ci'),
@@ -66,6 +73,8 @@ export const cartStore = {
         variant_title: variant?.title || null,
         qty,
         unit_price: lineUnit,
+        list_price: priced.list_price,
+        pricing_tier: priced.tier,
         name: lineName,
       });
     }
@@ -75,8 +84,15 @@ export const cartStore = {
   setQty(sku, qty) {
     const existing = db.list('cart_items', { where: { cart_id: activeCartId, sku } })[0];
     if (!existing) return;
-    if (qty <= 0) db.remove('cart_items', existing.id);
-    else db.update('cart_items', existing.id, { qty: Math.max(1, qty) });
+    if (qty <= 0) { db.remove('cart_items', existing.id); notify(); return; }
+    const nextQty = Math.max(1, qty);
+    // Re-tier the line: crossing a qty break (or signing in to a
+    // tiered account) changes the unit price. Variant lines keep their
+    // own list price (no parent qty breaks), tier discount still applies.
+    const priced = existing.variant_title
+      ? priceFor({ sku: '__variant__', qty: nextQty, basePrice: existing.list_price ?? existing.unit_price })
+      : priceFor({ sku: existing.product_id || sku, qty: nextQty, basePrice: existing.list_price ?? existing.unit_price });
+    db.update('cart_items', existing.id, { qty: nextQty, unit_price: priced.unit_price, list_price: priced.list_price, pricing_tier: priced.tier });
     notify();
   },
 

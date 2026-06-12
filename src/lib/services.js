@@ -23,35 +23,19 @@ export { cin7 } from './external/cin7.js';
 export { gs1 } from './external/gs1.js';
 export { fathom } from './external/fathom.js';
 export { importgenius } from './external/importgenius.js';
+// PRD-05 / brief §5 — Google Workspace + Calendly clients. `gmail.send`
+// goes through the real Gmail API when the Google OAuth refresh token
+// is configured server-side, and mirrors every message into the local
+// `gmail_outbox` table either way.
+export { gmail } from './external/gmail.js';
+export { gcal } from './external/gcal.js';
+export { calendly } from './external/calendly.js';
+// PRD-12 Phase 2 — Prophet forecasting sidecar (forecasting/) via the
+// backend proxy; replenishment swaps run-rate math for these horizons.
+export { forecast } from './external/forecast.js';
 
-import { db } from './db.js';
-import { uid, delay } from './format.js';
+import { uid } from './format.js';
 import { ai } from './ai/client.js';
-
-// ---------- Gmail / Resend (transactional outbox) ----------
-// PRD-05 §4.2: transactional mail flows through Resend in production.
-// Reading inbound shared inboxes (`info@`, `sales@`, `support@`) is a
-// separate read-only Gmail API integration also covered by PRD-05.
-// For dev we still just write to the `gmail_outbox` table.
-
-export const gmail = {
-  async send({ to, subject, body, from = 'sales@unitemedical.net', template_key, drafted_by = 'human' }) {
-    await delay(160, 320);
-    const row = db.insert('gmail_outbox', {
-      id: `gm_${uid().slice(3)}`,
-      to_address: to,
-      from_address: from,
-      subject,
-      body,
-      body_format: 'text',
-      status: 'queued',
-      drafted_by,
-      template_key,
-      created_at: new Date().toISOString(),
-    });
-    return row;
-  },
-};
 
 // ---------- Claude — routed through the prompt registry (PRD-11) ----------
 // Thin compat shim: legacy callers use these named methods, the

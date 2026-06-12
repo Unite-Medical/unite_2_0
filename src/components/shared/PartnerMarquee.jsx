@@ -64,6 +64,7 @@ export function PartnerMarquee({
   showEyebrow = true,
   variant = 'ink',
   height = 28,
+  eyebrowColor = D.plum,
 }) {
   const speedClass = speed === 'slow' ? ' um-marquee--slow' : '';
   const dirClass = reverse ? ' um-marquee--reverse' : '';
@@ -91,7 +92,7 @@ export function PartnerMarquee({
             fontFamily: D.mono,
             fontSize: 11,
             letterSpacing: 1.4,
-            color: D.plum,
+            color: eyebrowColor,
           }}
         >
           {eyebrow}

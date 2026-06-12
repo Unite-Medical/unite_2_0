@@ -17,7 +17,7 @@ import { seed } from './seed.js';
  */
 
 const STORAGE_KEY = 'um.db.v1';
-const SCHEMA_VERSION = 8;
+const SCHEMA_VERSION = 11;
 
 const TABLES = [
   'profiles', 'organizations', 'organization_users', 'addresses',
@@ -43,6 +43,16 @@ const TABLES = [
   'daily_digests',
   // Brief §7: trade-data discovery (vendor/customer lead mining)
   'trade_records',
+  // Cato-gap: no-EDI shortage-list intake (paste a backorder list, get matches)
+  'shortage_requests',
+  // PRD-06 / brief §2 #5: 1099 rep network (roster + computed commissions)
+  'reps',
+  // Brief §5: Google Calendar / Calendly meeting mirror
+  'calendar_events',
+  // Brief §8: surplus marketplace (buyer offers on published lots)
+  'surplus_offers',
+  // Brief §2 #5: Stripe Connect commission payouts to 1099 reps
+  'rep_payouts',
 ];
 
 function load() {
@@ -76,6 +86,19 @@ let state = (() => {
 
 const subs = new Map(); // table -> Set<fn>
 const rowSubs = new Map(); // `${table}:${id}` -> Set<fn>
+
+// Write-through hooks (src/lib/remoteDb.js): every local mutation is
+// announced so it can be mirrored to Postgres via /api/db/sync.
+// `applyingRemote` suppresses echo when pulled rows are applied locally.
+const mutationSubs = new Set();
+let applyingRemote = false;
+
+function emitMutation(table, op, id, row) {
+  if (applyingRemote) return;
+  for (const fn of mutationSubs) {
+    try { fn({ table, op, id, row }); } catch { /* mirror must never break the app */ }
+  }
+}
 
 function notify(table, id) {
   subs.get(table)?.forEach((fn) => fn());
@@ -149,6 +172,7 @@ export const db = {
     const created = { id, created_at: nowIso(), updated_at: nowIso(), ...row };
     state = { ...state, [table]: [...(state[table] || []), created] };
     notify(table, id);
+    emitMutation(table, 'upsert', id, created);
     return created;
   },
 
@@ -163,6 +187,7 @@ export const db = {
       }),
     };
     notify(table, id);
+    if (updated) emitMutation(table, 'upsert', id, updated);
     return updated;
   },
 
@@ -174,7 +199,55 @@ export const db = {
   remove(table, id) {
     const before = (state[table] || []).length;
     state = { ...state, [table]: (state[table] || []).filter((r) => r.id !== id) };
-    if ((state[table] || []).length !== before) notify(table, id);
+    if ((state[table] || []).length !== before) {
+      notify(table, id);
+      emitMutation(table, 'delete', id, null);
+    }
+  },
+
+  /** Subscribe to every local mutation (write-through mirror). Returns unsubscribe. */
+  onMutation(fn) {
+    mutationSubs.add(fn);
+    return () => mutationSubs.delete(fn);
+  },
+
+  /**
+   * Replace local tables with rows pulled from the server. Does NOT
+   * echo back through onMutation (that would loop forever).
+   * `tables` is { table_name: [rows] }; rows flagged __deleted are removed.
+   */
+  applyRemoteSnapshot(tables) {
+    applyingRemote = true;
+    try {
+      const next = { ...state };
+      for (const [table, rows] of Object.entries(tables || {})) {
+        if (!TABLES.includes(table)) continue;
+        const existing = new Map((next[table] || []).map((r) => [r.id, r]));
+        for (const row of rows) {
+          if (row.__deleted) { existing.delete(row.id); continue; }
+          const clean = { ...row };
+          delete clean.__deleted;
+          existing.set(clean.id, clean);
+        }
+        next[table] = [...existing.values()];
+      }
+      state = next;
+      persist(state);
+      for (const table of Object.keys(tables || {})) {
+        subs.get(table)?.forEach((fn) => fn());
+      }
+    } finally {
+      applyingRemote = false;
+    }
+  },
+
+  /** Every row in every table — used for the first full push to Postgres. */
+  allRows() {
+    const out = [];
+    for (const table of TABLES) {
+      for (const row of state[table] || []) out.push({ table, op: 'upsert', id: row.id, row });
+    }
+    return out;
   },
 
   /** Subscribe to changes for an entire table. Returns unsubscribe. */

@@ -93,25 +93,164 @@ img {
   color: #241a28;
 }
 
-/* Glass sticky nav */
+/* Floating glass nav — detached capsule that hovers over the page.
+   Wrapper is invisible and click-through; the capsule carries a deep
+   ink-plum glass (no brightness lift — it muddied photography), a
+   hairline border, top rim highlight, and a long soft drop so it
+   reads as floating rather than a full-width chrome slab. */
+.um-nav-wrap {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  pointer-events: none;
+  /* The wrapper's padding animates 0 → inset as the bar detaches. */
+  transition: padding 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.um-nav-wrap--overlay {
+  position: fixed;
+  left: 0;
+  right: 0;
+}
 .um-nav-glass {
-  background: rgba(247, 242, 234, 0.84);
-  -webkit-backdrop-filter: blur(16px) saturate(1.5);
-  backdrop-filter: blur(16px) saturate(1.5);
+  pointer-events: auto;
+  overflow: hidden;
+  border-radius: 22px;
+  border: 1px solid rgba(247, 242, 234, 0.16);
+  background: linear-gradient(180deg, rgba(40, 22, 44, 0.82), rgba(24, 16, 27, 0.68));
+  -webkit-backdrop-filter: blur(22px) saturate(1.5);
+  backdrop-filter: blur(22px) saturate(1.5);
+  box-shadow:
+    inset 0 1px 0 rgba(247, 242, 234, 0.14),
+    inset 0 -1px 0 rgba(24, 16, 27, 0.4),
+    0 24px 60px -28px rgba(24, 16, 27, 0.65),
+    0 2px 10px rgba(24, 16, 27, 0.22);
+  transition:
+    border-radius 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    max-width 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.5s ease,
+    background 0.5s ease,
+    box-shadow 0.5s ease;
+}
+
+/* At the very top of the page the capsule is a full-bleed chrome bar —
+   square corners, edge to edge, merged with the masthead below. On
+   scroll it shrinks into the floating capsule (the form above). */
+.um-nav-glass--top {
+  border-radius: 0;
+  border-color: rgba(247, 242, 234, 0.08);
+  background: linear-gradient(180deg, rgba(32, 18, 36, 0.92), rgba(24, 16, 27, 0.8));
+  box-shadow: inset 0 -1px 0 rgba(247, 242, 234, 0.07);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .um-nav-wrap,
+  .um-nav-glass {
+    transition: none;
+  }
 }
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   .um-nav-glass {
-    background: #f7f2ea;
+    background: #1e1322;
   }
 }
 
-/* Nav link hover (desktop pills) */
+/* Glass pill button (on dark glass surfaces) */
+.um-glass-btn {
+  background: rgba(247, 242, 234, 0.12);
+  -webkit-backdrop-filter: blur(10px) saturate(1.4);
+  backdrop-filter: blur(10px) saturate(1.4);
+  border: 1px solid rgba(247, 242, 234, 0.38);
+  box-shadow: inset 0 1px 0 rgba(247, 242, 234, 0.2);
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+.um-glass-btn:hover {
+  background: rgba(247, 242, 234, 0.22);
+  border-color: rgba(247, 242, 234, 0.6);
+  transform: translateY(-1px);
+}
+
+/* Aurora orbs that drift behind the glass pane */
+.um-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(46px);
+  pointer-events: none;
+}
+.um-orb-a { animation: um-orb-a 16s ease-in-out infinite alternate; }
+.um-orb-b { animation: um-orb-b 20s ease-in-out infinite alternate; }
+.um-orb-c { animation: um-orb-c 13s ease-in-out infinite alternate; }
+@keyframes um-orb-a {
+  from { transform: translate(0, 0) scale(1); }
+  to   { transform: translate(-70px, 50px) scale(1.15); }
+}
+@keyframes um-orb-b {
+  from { transform: translate(0, 0) scale(1); }
+  to   { transform: translate(90px, -40px) scale(1.1); }
+}
+@keyframes um-orb-c {
+  from { transform: translate(0, 0) scale(1); }
+  to   { transform: translate(-50px, -60px) scale(0.9); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .um-orb-a, .um-orb-b, .um-orb-c { animation: none; }
+}
+
+/* Gradient-text shimmer — the ember→plum sweep drifts slowly so every
+   <Grad> headline feels alive without distracting. */
+@keyframes umGradShimmer {
+  0%, 100% { background-position: 0% center; }
+  50% { background-position: 100% center; }
+}
+.um-grad-shimmer {
+  animation: umGradShimmer 7s ease-in-out infinite;
+}
+
+/* Staggered entrance delays for masthead type (pairs with .um-fade-up) */
+.um-d1 { animation-delay: 0.08s; }
+.um-d2 { animation-delay: 0.18s; }
+.um-d3 { animation-delay: 0.3s; }
+
+/* Nav link hover (desktop pills, on dark chrome) */
 .um-nav-link {
   transition: background 0.15s ease, color 0.15s ease;
 }
 .um-nav-link:hover:not([aria-current='page']) {
-  background: rgba(94, 41, 99, 0.08);
-  color: #241a28;
+  background: rgba(247, 242, 234, 0.1);
+  color: #f7f2ea;
+}
+
+/* Cinematic hero — full-bleed image + ink wash, slow Ken Burns drift */
+.um-hero-media {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.um-hero-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  animation: umHeroDrift 24s ease-out both;
+}
+@keyframes umHeroDrift {
+  from {
+    transform: scale(1.08);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+.um-hero-scrim {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to top, rgba(24, 16, 27, 0.94) 0%, rgba(24, 16, 27, 0.55) 45%, rgba(24, 16, 27, 0.35) 100%),
+    linear-gradient(105deg, rgba(24, 16, 27, 0.85) 0%, rgba(24, 16, 27, 0.25) 60%, rgba(94, 41, 99, 0.25) 100%);
+}
+@media (prefers-reduced-motion: reduce) {
+  .um-hero-media img {
+    animation: none;
+    transform: none;
+  }
 }
 
 /* CTA arrow nudge — any button/link hover slides its arrow icon */
@@ -142,6 +281,95 @@ a:hover .um-arrow {
     opacity: 1 !important;
     transform: none !important;
     transition: none !important;
+  }
+}
+
+/* --- Liquid glass — dark plum (homepage metrics) ----------------------- */
+/* Recipe: frosted base (blur + saturate so the backdrop enriches, not    */
+/* grays), a stacked box-shadow bevel (top rim / edge ring / bottom       */
+/* shade / drop), a static top gloss, and a cursor-glide sheen driven by  */
+/* --mx/--sheen from one delegated pointermove listener.                  */
+
+.um-glass-card {
+  position: relative;
+  border-radius: 24px;
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(120, 52, 126, 0.42), rgba(38, 14, 44, 0.6) 55%, rgba(74, 28, 80, 0.45));
+  backdrop-filter: blur(18px) saturate(180%) brightness(1.08);
+  -webkit-backdrop-filter: blur(18px) saturate(180%) brightness(1.08);
+  box-shadow:
+    inset 0 1px 0.5px rgba(255, 255, 255, 0.38),
+    inset 1px 0 0.5px rgba(255, 255, 255, 0.12),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1),
+    inset 0 -14px 32px -16px rgba(0, 0, 0, 0.55),
+    0 28px 70px -20px rgba(0, 0, 0, 0.65);
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease;
+}
+.um-glass-card:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    inset 0 1px 0.5px rgba(255, 255, 255, 0.5),
+    inset 1px 0 0.5px rgba(255, 255, 255, 0.16),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.16),
+    inset 0 -14px 32px -16px rgba(0, 0, 0, 0.55),
+    0 36px 90px -22px rgba(0, 0, 0, 0.75);
+}
+
+/* Static top gloss — the always-on sheen where light catches the pane */
+.um-glass-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.16), transparent 38%);
+}
+
+/* Reactive sheen — a diagonal band of light that GLIDES toward the      */
+/* cursor (transitioned background-position), not glued to it.           */
+.um-glass-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: var(--sheen, 0);
+  transition:
+    opacity 0.6s ease,
+    background-position 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  background-image: linear-gradient(
+    105deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.1) 49%,
+    rgba(255, 255, 255, 0.17) 50%,
+    rgba(255, 255, 255, 0.1) 51%,
+    transparent 60%
+  );
+  background-size: 250% 100%;
+  background-repeat: no-repeat;
+  background-position: var(--mx, 50%) 0;
+}
+
+/* Film grain over the glass canvas — keeps big dark surfaces from       */
+/* looking sterile. One fixed compositor layer, pointer-transparent.     */
+.um-grain::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='7'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .um-glass-card::before {
+    display: none;
+  }
+  .um-glass-card,
+  .um-glass-card:hover {
+    transform: none;
+    transition: none;
   }
 }
 
@@ -190,6 +418,46 @@ a:hover .um-arrow {
 .um-flip-panel:focus-visible .um-flip-cta {
   background: #f7f2ea;
   color: #5e2963;
+}
+
+/* Product cutout imagery — background-removed PNGs floating over a
+   soft wash. The product "lifts" toward you on card hover. */
+.um-cutout-img {
+  filter: drop-shadow(0 16px 22px rgba(36, 26, 40, 0.22));
+  transition:
+    transform 0.6s cubic-bezier(0.2, 0.6, 0.2, 1),
+    filter 0.6s ease;
+  will-change: transform;
+}
+.um-card:hover .um-cutout-img {
+  transform: translateY(-7px) scale(1.06) rotate(-1.2deg);
+  filter: drop-shadow(0 30px 38px rgba(36, 26, 40, 0.3));
+}
+
+/* The wash behind a cutout brightens slightly under the cursor */
+.um-cutout-stage {
+  transition: filter 0.5s ease;
+}
+.um-card:hover .um-cutout-stage {
+  filter: saturate(1.12) brightness(1.02);
+}
+
+/* Round add-to-cart button — inverts to plum and pops */
+.um-add-btn {
+  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+.um-add-btn:hover {
+  background-color: #5e2963 !important;
+  transform: scale(1.1);
+  box-shadow: 0 10px 22px -8px rgba(94, 41, 99, 0.55);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .um-cutout-img,
+  .um-card:hover .um-cutout-img {
+    transition: none;
+    transform: none;
+  }
 }
 
 /* Horizontal product rail — snap scrolling, hidden scrollbar */
@@ -334,6 +602,7 @@ button:active:not(:disabled) {
   background: rgba(36, 26, 40, 0.46);
   backdrop-filter: blur(2px);
   z-index: 60;
+  pointer-events: auto; /* wrapper is pointer-events:none */
   animation: umFadeIn 0.18s ease-out;
 }
 @keyframes umFadeIn {
@@ -348,14 +617,24 @@ button:active:not(:disabled) {
   position: fixed;
   top: 0;
   right: 0;
+  pointer-events: auto;
   height: 100vh;
   height: 100dvh;
   width: min(86vw, 380px);
-  background: #f7f2ea;
+  background: rgba(247, 242, 234, 0.88);
+  -webkit-backdrop-filter: blur(24px) saturate(1.5);
+  backdrop-filter: blur(24px) saturate(1.5);
   z-index: 61;
   overflow-y: auto;
-  box-shadow: -20px 0 60px -20px rgba(36, 26, 40, 0.4);
+  box-shadow:
+    inset 1px 0 0 rgba(255, 255, 255, 0.5),
+    -20px 0 60px -20px rgba(36, 26, 40, 0.4);
   animation: umSlideIn 0.22s ease-out;
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .um-drawer {
+    background: #f7f2ea;
+  }
 }
 @keyframes umSlideIn {
   from {

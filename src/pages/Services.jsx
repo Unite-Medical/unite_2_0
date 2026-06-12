@@ -104,6 +104,47 @@ export function Services() {
           })}
         </div>
       </div>
+      {/* PDAC value band — flat, factual, reimbursement-first */}
+      <div style={{ background: D.inkDeep, color: D.paper, padding: `${isMobile ? 64 : 110}px ${padX}px` }}>
+        <div style={{
+          maxWidth: 1360, margin: '0 auto',
+          display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.1fr 1fr',
+          gap: isMobile ? 36 : 80, alignItems: 'start',
+        }}>
+          <div>
+            <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: '#c8a4cd', marginBottom: 16 }}>PDAC & REIMBURSEMENT</div>
+            <h2 style={{ fontFamily: D.display, fontSize: 'clamp(28px, 4.6vw, 52px)', fontWeight: 400, letterSpacing: '-0.03em', lineHeight: 1.06, margin: 0 }}>
+              Most braces stall at Medicare review. <Grad>Ours arrive billable.</Grad>
+            </h2>
+            <p style={{ fontSize: isMobile ? 14.5 : 16, lineHeight: 1.65, color: 'rgba(247,242,234,.78)', marginTop: 18, maxWidth: 520 }}>
+              100% of our orthopedic line carries verified HCPCS coding. Every SKU ships with its
+              L-code, modifiers, and documentation checklist attached to the invoice — and if a
+              claim gets pulled, our coding team supplies the verification letter same day.
+            </p>
+          </div>
+          <div>
+            {[
+              { stat: '100%', label: 'PDAC-verified orthopedic line', sub: 'Verification held on every Unite-branded orthosis at time of listing.' },
+              { stat: 'L-codes', label: 'Attached to every invoice', sub: 'HCPCS code, modifiers, and documentation checklist included per SKU.' },
+              { stat: 'Same day', label: 'Audit response', sub: 'Verification letters and spec sheets supplied within one business day.' },
+            ].map((f, i) => (
+              <div key={i} style={{
+                display: 'grid', gridTemplateColumns: isMobile ? '100px 1fr' : '140px 1fr',
+                gap: isMobile ? 16 : 28, alignItems: 'baseline',
+                padding: `${isMobile ? 20 : 26}px 0`,
+                borderTop: '1px solid rgba(247,242,234,.18)',
+              }}>
+                <div style={{ fontFamily: D.display, fontSize: isMobile ? 26 : 34, letterSpacing: '-0.02em', color: '#c8a4cd', lineHeight: 1.05 }}>{f.stat}</div>
+                <div>
+                  <div style={{ fontSize: isMobile ? 14.5 : 15.5, fontWeight: 600 }}>{f.label}</div>
+                  <div style={{ fontSize: isMobile ? 13 : 13.5, lineHeight: 1.6, color: 'rgba(247,242,234,.7)', marginTop: 6 }}>{f.sub}</div>
+                </div>
+              </div>
+            ))}
+            <div style={{ borderTop: '1px solid rgba(247,242,234,.18)' }} />
+          </div>
+        </div>
+      </div>
       <Footer />
     </div>
   );

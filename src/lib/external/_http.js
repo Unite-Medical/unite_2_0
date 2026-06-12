@@ -17,9 +17,21 @@ export const IS_BROWSER = typeof window !== 'undefined';
 export const IS_DEV =
   typeof import.meta !== 'undefined' && import.meta.env?.DEV;
 
-/** Backend proxy base URL, set in production once PRD-01 ships. */
+/**
+ * Backend proxy base URL.
+ *
+ * PRD-01 shipped as Vercel serverless functions under /api — in the
+ * browser we default to the same-origin '/api' so every client
+ * attempts the real upstream through the proxy first. When a service
+ * has no credentials configured server-side the proxy answers 503 and
+ * `realOrStub` drops to the local stub, so dev/demo behavior is
+ * unchanged until env vars are set in Vercel.
+ *
+ * VITE_API_BASE still overrides (e.g. pointing at a preview deploy).
+ */
 export const API_BASE =
-  (typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_BASE) || '';
+  (typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_BASE)
+  || (typeof window !== 'undefined' ? '/api' : '');
 
 /** Lightweight env reader. Browser: Vite injects via `import.meta.env`.
  *  Node: `process.env`. We use `globalThis.process` so the browser
@@ -78,16 +90,30 @@ export async function realOrStub({ scope, label, predicate, real, stub }) {
 }
 
 /**
- * Validate a webhook signature. Each upstream uses a different
- * algorithm but the call site stays uniform.
+ * Validate a webhook signature (HMAC-SHA256, hex or base64 output).
+ *
+ * Server-side verification with timestamp tolerance lives in
+ * `api/_lib/http.js` — that's what the /api/hooks/* receivers use.
+ * This WebCrypto version exists so client-side dispatchers can
+ * re-verify events when a secret is intentionally exposed (e.g. a
+ * sandboxed integration test) and for Node-based verifier scripts.
  */
-export async function verifyWebhookSignature({ algorithm, secret, payload, header }) {
+export async function verifyWebhookSignature({ algorithm = 'sha256', secret, payload, header }) {
   if (!secret) return { ok: false, reason: 'no_secret_configured' };
   if (!header) return { ok: false, reason: 'no_signature_header' };
-  // We don't run on the server yet — webhook verification is a
-  // backend-only concern. Until PRD-01 ships, every webhook is logged
-  // but considered untrusted.
-  void algorithm;
-  void payload;
-  return { ok: false, reason: 'pending_pr_01_backend' };
+  if (algorithm !== 'sha256') return { ok: false, reason: `unsupported_algorithm_${algorithm}` };
+  const subtle = globalThis.crypto?.subtle;
+  if (!subtle) return { ok: false, reason: 'webcrypto_unavailable' };
+  try {
+    const enc = new TextEncoder();
+    const key = await subtle.importKey('raw', enc.encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+    const mac = new Uint8Array(await subtle.sign('HMAC', key, enc.encode(String(payload))));
+    const hex = [...mac].map((b) => b.toString(16).padStart(2, '0')).join('');
+    const b64 = btoa(String.fromCharCode(...mac));
+    const given = String(header).replace(/^sha256=/, '').trim();
+    const ok = given === hex || given === b64;
+    return ok ? { ok: true } : { ok: false, reason: 'signature_mismatch' };
+  } catch (err) {
+    return { ok: false, reason: `verify_failed_${err.message}` };
+  }
 }

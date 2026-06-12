@@ -18,6 +18,9 @@
  *   POST /v1/invoices/{id}/send             trigger the email
  *   POST /v1/payment_intents                card/ACH up-front payment
  *   POST /v1/payment_intents/{id}/confirm
+ *   POST /v1/accounts                       Connect Express account (1099 reps)
+ *   POST /v1/account_links                  onboarding link for the rep
+ *   POST /v1/transfers                      commission payout to a connected account
  */
 
 import { db } from '../db.js';
@@ -230,6 +233,89 @@ export const stripe = {
         const mirror = db.list('stripe_payments', { where: { stripe_pi_id } })[0];
         if (mirror) db.update('stripe_payments', mirror.id, { status: 'succeeded', confirmed_at: new Date().toISOString() });
         return { id: stripe_pi_id, status: 'succeeded', stub: true };
+      },
+    });
+  },
+
+  // -------------------------------------------------------------------------
+  // Stripe Connect — 1099 rep payout rail (brief §2 #5)
+  // -------------------------------------------------------------------------
+
+  /** Create an Express connected account for a 1099 rep. */
+  async createConnectedAccount({ rep }) {
+    if (!rep?.email) throw new Error('stripe.createConnectedAccount requires a rep with an email');
+    return realOrStub({
+      scope: 'stripe',
+      label: `createConnectedAccount(${rep.email})`,
+      predicate: () => isConfigured() || viaBackendProxy(),
+      real: async () => {
+        const acct = await callStripe({
+          path: '/accounts',
+          body: {
+            type: 'express',
+            email: rep.email,
+            business_type: 'individual',
+            capabilities: { transfers: { requested: true } },
+            metadata: { unite_rep_id: rep.id, unite_rep_name: rep.name },
+          },
+        });
+        return { id: acct.id, email: rep.email };
+      },
+      stub: async () => {
+        await delay(220, 420);
+        return { id: `acct_STUB_${rep.id}`, email: rep.email, stub: true };
+      },
+    });
+  },
+
+  /** Hosted onboarding link so the rep can add their bank details. */
+  async createAccountLink({ stripe_account_id, return_url, refresh_url }) {
+    const origin = typeof window !== 'undefined' ? window.location.origin : 'https://unitemedical.net';
+    return realOrStub({
+      scope: 'stripe',
+      label: `createAccountLink(${stripe_account_id})`,
+      predicate: () => isConfigured() || viaBackendProxy(),
+      real: async () => {
+        const link = await callStripe({
+          path: '/account_links',
+          body: {
+            account: stripe_account_id,
+            type: 'account_onboarding',
+            return_url: return_url || `${origin}/admin/reps`,
+            refresh_url: refresh_url || `${origin}/admin/reps`,
+          },
+        });
+        return { url: link.url, expires_at: link.expires_at };
+      },
+      stub: async () => {
+        await delay(140, 280);
+        return { url: `https://connect.stripe.com/setup/e/stub/${stripe_account_id}`, stub: true };
+      },
+    });
+  },
+
+  /** Transfer a commission to a rep's connected account. */
+  async createTransfer({ stripe_account_id, amount, currency = 'usd', metadata = {} }) {
+    if (!stripe_account_id) throw new Error('stripe.createTransfer requires a destination account');
+    return realOrStub({
+      scope: 'stripe',
+      label: `createTransfer(${stripe_account_id})`,
+      predicate: () => isConfigured() || viaBackendProxy(),
+      real: async () => {
+        const tr = await callStripe({
+          path: '/transfers',
+          body: {
+            amount: Math.round(amount * 100),
+            currency,
+            destination: stripe_account_id,
+            metadata,
+          },
+        });
+        return { id: tr.id, amount, currency, destination: stripe_account_id };
+      },
+      stub: async () => {
+        await delay(260, 520);
+        return { id: `tr_STUB_${uid().slice(3)}`, amount, currency, destination: stripe_account_id, stub: true };
       },
     });
   },

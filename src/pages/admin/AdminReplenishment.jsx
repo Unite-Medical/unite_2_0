@@ -8,7 +8,7 @@
  * (CTO brief success criterion #2).
  */
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { D } from '../../tokens.js';
 import { AdminShell } from '../../components/layout/AdminShell.jsx';
@@ -16,6 +16,7 @@ import { db } from '../../lib/db.js';
 import { fmt } from '../../lib/format.js';
 import { useViewport } from '../../lib/viewport.js';
 import { computeReplenishment, draftPurchaseOrders, recalcReorderPoints, DEFAULTS } from '../../lib/replenishment.js';
+import { forecast } from '../../lib/external/forecast.js';
 import { simulateInboundShipment } from '../../lib/receiving.js';
 
 const STATUS_CHIP = {
@@ -37,12 +38,24 @@ export function AdminReplenishment() {
   const [onlyAction, setOnlyAction] = useState(true);
   const [busy, setBusy] = useState(null);
   const [notice, setNotice] = useState(null);
+  const [forecasts, setForecasts] = useState(null);
+
+  // Try the Prophet sidecar on mount; null = pure run-rate math.
+  useEffect(() => {
+    let alive = true;
+    const skus = db.list('products').map((p) => p.sku);
+    forecast.getForecastMap(skus)
+      .then((map) => { if (alive && Object.keys(map).length > 0) setForecasts(map); })
+      .catch(() => {});
+    return () => { alive = false; };
+  }, []);
 
   const rows = useMemo(
-    () => computeReplenishment(),
+    () => computeReplenishment({ forecasts }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [inventory, orders],
+    [inventory, orders, forecasts],
   );
+  const prophetCount = rows.filter((r) => r.model === 'prophet').length;
   const actionable = rows.filter((r) => r.status === 'stockout' || r.status === 'reorder');
   const visible = onlyAction ? rows.filter((r) => r.status !== 'ok') : rows;
   const suggestedSpend = actionable.reduce((a, r) => a + r.suggested_qty * (r.cogs || 0), 0);
@@ -68,6 +81,18 @@ export function AdminReplenishment() {
     setNotice(`${n} warehouse reorder points recalculated from the trailing ${DEFAULTS.window_days}-day run rate.`);
   }
 
+  async function handleProphetRun() {
+    setBusy('prophet'); setNotice(null);
+    try {
+      const resp = await forecast.runAll();
+      if (resp.stub) {
+        setNotice('Forecasting sidecar not deployed (FORECAST_API_URL unset) — table stays on the run-rate model. Deploy forecasting/ and set the env var to switch to Prophet.');
+      } else {
+        setNotice(`Prophet run ${resp.run_id} queued on the sidecar. Horizons refresh on the next page load.`);
+      }
+    } finally { setBusy(null); }
+  }
+
   const btn = (primary) => ({
     padding: '10px 18px', borderRadius: 8, fontSize: 13, fontFamily: D.sans, cursor: 'pointer',
     background: primary ? D.plum : 'transparent', color: primary ? '#fff' : D.ink,
@@ -80,8 +105,9 @@ export function AdminReplenishment() {
         <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 12 }}>INVENTORY · RUN-RATE MODEL</div>
         <h1 style={{ fontFamily: D.display, fontSize: 'clamp(32px, 5vw, 52px)', fontWeight: 400, letterSpacing: -1.2, lineHeight: 1.02, margin: 0 }}>Replenishment</h1>
         <div style={{ marginTop: 10, fontSize: 13, color: D.ink2, maxWidth: 640 }}>
-          Trailing {DEFAULTS.window_days}-day demand → reorder point at {DEFAULTS.lead_time_days}d lead time + {DEFAULTS.safety_days}d safety stock.
-          The Python forecasting sidecar replaces this math with seasonal forecasts once deployed.
+          {prophetCount > 0
+            ? <>Prophet seasonal forecasts active on {prophetCount} SKU(s) via the forecasting sidecar; remaining SKUs use the trailing {DEFAULTS.window_days}-day run rate.</>
+            : <>Trailing {DEFAULTS.window_days}-day demand → reorder point at {DEFAULTS.lead_time_days}d lead time + {DEFAULTS.safety_days}d safety stock. Prophet horizons take over per-SKU as the sidecar publishes them.</>}
         </div>
       </div>
 
@@ -104,6 +130,7 @@ export function AdminReplenishment() {
           <button onClick={handleDraftPOs} disabled={busy} style={btn(true)}>{busy === 'po' ? 'Drafting…' : `Draft POs (${actionable.length} SKUs)`}</button>
           <button onClick={handleRecalc} disabled={busy} style={btn(false)}>Recalculate reorder points</button>
           <button onClick={handleSimulate} disabled={busy} style={btn(false)}>{busy === 'sim' ? 'Receiving…' : 'Simulate inbound container clearing'}</button>
+          <button onClick={handleProphetRun} disabled={busy} style={btn(false)}>{busy === 'prophet' ? 'Queuing…' : 'Run Prophet forecast'}</button>
           <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: D.ink2, marginLeft: 'auto', cursor: 'pointer' }}>
             <input type="checkbox" checked={onlyAction} onChange={(e) => setOnlyAction(e.target.checked)} />
             Needs attention only
@@ -131,7 +158,12 @@ export function AdminReplenishment() {
                     <td style={{ padding: 12, fontFamily: D.mono, fontSize: 12 }}>{r.sku}</td>
                     <td style={{ padding: 12, maxWidth: 240, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.name}</td>
                     <td style={{ padding: 12, color: D.ink2 }}>{r.vendor || '—'}</td>
-                    <td style={{ padding: 12 }}>{r.run_rate > 0 ? r.run_rate.toFixed(2) : '—'}</td>
+                    <td style={{ padding: 12 }}>
+                      {r.run_rate > 0 ? r.run_rate.toFixed(2) : '—'}
+                      {r.model === 'prophet' && (
+                        <span title="Prophet seasonal forecast" style={{ marginLeft: 6, fontFamily: D.mono, fontSize: 8, letterSpacing: 1, padding: '2px 6px', borderRadius: 999, background: `${D.plum}18`, color: D.plum }}>PROPHET</span>
+                      )}
+                    </td>
                     <td style={{ padding: 12 }}>{fmt.number(r.on_hand)}</td>
                     <td style={{ padding: 12 }}>{fmt.number(r.reorder_point)}</td>
                     <td style={{ padding: 12 }}>{r.days_cover == null ? '∞' : `${r.days_cover}d`}</td>

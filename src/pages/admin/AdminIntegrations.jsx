@@ -11,7 +11,7 @@
  * reflects reality automatically.
  */
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { D } from '../../tokens.js';
 import { AdminShell } from '../../components/layout/AdminShell.jsx';
 import { AdminCard } from '../../components/layout/AdminCard.jsx';
@@ -19,6 +19,7 @@ import { Icon } from '../../components/shared/Icon.jsx';
 import { useViewport } from '../../lib/viewport.js';
 import { db } from '../../lib/db.js';
 import { fmt } from '../../lib/format.js';
+import { API_BASE } from '../../lib/external/_http.js';
 
 import { qbo } from '../../lib/external/qbo.js';
 import { flexport } from '../../lib/external/flexport.js';
@@ -29,6 +30,12 @@ import { stripe } from '../../lib/external/stripe.js';
 import { gs1 } from '../../lib/external/gs1.js';
 import { openfda } from '../../lib/external/openfda.js';
 import { hts } from '../../lib/external/hts.js';
+import { gmail } from '../../lib/external/gmail.js';
+import { gcal } from '../../lib/external/gcal.js';
+import { calendly } from '../../lib/external/calendly.js';
+import { forecast } from '../../lib/external/forecast.js';
+import { ai } from '../../lib/ai/client.js';
+import { remoteDbStatus } from '../../lib/remoteDb.js';
 
 const INTEGRATIONS = [
   {
@@ -36,10 +43,11 @@ const INTEGRATIONS = [
     label: 'QuickBooks Online',
     prd: 'PRD-02',
     client: qbo,
-    envVars: ['QBO_CLIENT_ID', 'QBO_CLIENT_SECRET', 'QBO_REALM_ID', 'QBO_ACCESS_TOKEN'],
+    envVars: ['QBO_CLIENT_ID', 'QBO_CLIENT_SECRET', 'QBO_REALM_ID', 'QBO_REFRESH_TOKEN'],
     docsUrl: 'https://developer.intuit.com/app/developer/qbo/docs/api/accounting/most-commonly-used/invoice',
     sample: () => qbo.ping(),
     tablesWatched: ['qbo_invoices'],
+    connectUrl: '/api/auth/qbo/connect',
   },
   {
     key: 'flexport',
@@ -117,11 +125,73 @@ const INTEGRATIONS = [
     label: 'USITC HTS',
     prd: 'PRD-08',
     client: hts,
-    envVars: ['(none — free)'],
+    envVars: ['(none — free, via /api/proxy/hts)'],
     docsUrl: 'https://hts.usitc.gov',
     sample: () => hts.lookup('9021.10'),
     tablesWatched: [],
     alwaysReal: true,
+  },
+  {
+    key: 'anthropic',
+    label: 'Anthropic (Claude)',
+    prd: 'PRD-11',
+    client: ai,
+    envVars: ['ANTHROPIC_API_KEY (server)'],
+    docsUrl: 'https://platform.claude.com/docs/en/api/messages',
+    sample: () => ai.run('quoting/hts_classify', { input: { product_name: 'Hinged knee brace' }, source: 'integrations-ping' }),
+    tablesWatched: ['ai_usage'],
+  },
+  {
+    key: 'gmail',
+    label: 'Gmail API',
+    prd: 'PRD-05',
+    client: gmail,
+    envVars: ['GOOGLE_CLIENT_ID', 'GOOGLE_CLIENT_SECRET', 'GOOGLE_REFRESH_TOKEN'],
+    docsUrl: 'https://developers.google.com/gmail/api/reference/rest',
+    sample: () => gmail.listInbox({ limit: 1 }),
+    tablesWatched: ['gmail_outbox'],
+    connectUrl: '/api/auth/google/connect',
+  },
+  {
+    key: 'gcal',
+    label: 'Google Calendar',
+    prd: 'PRD-05',
+    client: gcal,
+    envVars: ['(same Google grant as Gmail)'],
+    docsUrl: 'https://developers.google.com/calendar/api/v3/reference',
+    sample: () => gcal.listUpcoming({ limit: 1 }),
+    tablesWatched: ['calendar_events'],
+    connectUrl: '/api/auth/google/connect',
+  },
+  {
+    key: 'calendly',
+    label: 'Calendly',
+    prd: 'Brief §5',
+    client: calendly,
+    envVars: ['CALENDLY_API_KEY', 'CALENDLY_WEBHOOK_SECRET'],
+    docsUrl: 'https://developer.calendly.com/api-docs',
+    sample: () => calendly.listEventTypes(),
+    tablesWatched: ['calendar_events'],
+  },
+  {
+    key: 'forecast',
+    label: 'Prophet forecasting sidecar',
+    prd: 'PRD-12',
+    client: forecast,
+    envVars: ['FORECAST_API_URL', 'FORECAST_API_TOKEN (optional)'],
+    docsUrl: 'https://facebook.github.io/prophet/docs/quick_start.html',
+    sample: () => forecast.health(),
+    tablesWatched: ['purchase_orders'],
+  },
+  {
+    key: 'postgres',
+    label: 'Postgres (durable persistence)',
+    prd: 'PRD-13',
+    client: null,
+    envVars: ['DATABASE_URL', 'DB_SYNC_TOKEN', 'VITE_DB_SYNC_TOKEN (build-time)'],
+    docsUrl: 'https://neon.tech/docs/serverless/serverless-driver',
+    sample: async () => remoteDbStatus(),
+    tablesWatched: [],
   },
 ];
 
@@ -140,6 +210,23 @@ export function AdminIntegrations() {
 
   const [results, setResults] = useState({});
   const [running, setRunning] = useState(null);
+  const [serverHealth, setServerHealth] = useState(null); // null = checking, false = unreachable
+
+  // Server-side configuration snapshot (booleans only) from the
+  // serverless layer — the source of truth for what's live-wired.
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch(`${API_BASE}/health`);
+        const json = res.ok ? await res.json() : null;
+        if (!cancelled) setServerHealth(json?.ok ? json : false);
+      } catch {
+        if (!cancelled) setServerHealth(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
 
   async function runPing(integration) {
     setRunning(integration.key);
@@ -156,8 +243,8 @@ export function AdminIntegrations() {
 
   function status(integration) {
     if (integration.alwaysReal) return 'real';
-    const configured = integration.client?.__isConfigured?.();
-    if (configured) return 'real';
+    // Server-side env config (via /api/health) is the source of truth.
+    if (serverHealth && serverHealth.services?.[integration.key]?.configured) return 'real';
     const r = results[integration.key];
     if (r?.ok === false) return 'error';
     return 'stub';
@@ -178,6 +265,14 @@ export function AdminIntegrations() {
         <p style={{ fontSize: 14, color: D.ink2, marginTop: 10, maxWidth: 720, lineHeight: 1.55 }}>
           Every external service the platform talks to. Each row shows whether credentials are configured (Vercel/Doppler env vars), the last server event we received, and a button to ping the upstream.
         </p>
+        <div style={{ marginTop: 14, display: 'inline-flex', alignItems: 'center', gap: 10, padding: '8px 14px', borderRadius: 999, border: `1px solid ${D.line}`, background: D.card }}>
+          <span style={{ width: 8, height: 8, borderRadius: 4, background: serverHealth ? '#2d6a4f' : serverHealth === false ? '#c3382d' : '#8f8490' }} />
+          <span style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 0.8, color: D.ink2 }}>
+            {serverHealth ? `Serverless layer online · ${Object.values(serverHealth.services || {}).filter((s) => s.configured).length} services configured`
+              : serverHealth === false ? 'Serverless layer unreachable (local dev — clients fall back to stubs)'
+              : 'Checking serverless layer…'}
+          </span>
+        </div>
       </div>
 
       <div style={{ padding: isMobile ? 20 : 32, display: 'grid', gridTemplateColumns: '1fr', gap: 18 }}>
@@ -223,6 +318,12 @@ export function AdminIntegrations() {
                   >
                     {running === it.key ? 'Pinging…' : <>Run a ping <Icon.arrow /></>}
                   </button>
+
+                  {it.connectUrl && (
+                    <a href={it.connectUrl} style={{ background: 'transparent', color: D.plum, border: `1px solid ${D.plum}`, padding: '10px 18px', borderRadius: 999, fontSize: 13, fontWeight: 500, textAlign: 'center', textDecoration: 'none' }}>
+                      Connect via OAuth ↗
+                    </a>
+                  )}
 
                   {result && (
                     <div style={{ padding: 12, borderRadius: 8, background: result.ok ? '#e8f5ed' : '#fbe9e1', fontSize: 12, color: result.ok ? '#1d4731' : '#7a2d10', lineHeight: 1.5 }}>

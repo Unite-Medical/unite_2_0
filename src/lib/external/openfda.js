@@ -219,11 +219,89 @@ async function udiLookup(di) {
   }
 }
 
+/**
+ * 510(k) premarket clearances for a manufacturer (brief §6).
+ * A history of cleared submissions is a positive trust signal in
+ * vendor scoring; zero results is neutral (Class I exempt devices
+ * don't need 510(k)s).
+ *
+ * @param {string} applicant  Manufacturer / applicant name
+ * @param {number} limit
+ */
+async function device510k(applicant, limit = 10) {
+  if (!applicant) return { meta: { results: { total: 0 } }, results: [] };
+  const cacheKey = `510k:${applicant}:${limit}`;
+  const cached = cacheGet(cacheKey);
+  if (cached) return cached;
+
+  const search = `applicant:${encodeURIComponent(`"${applicant}"`)}`;
+  try {
+    const data = await withTimeout(
+      (signal) => fetchJson(`${API_BASE}/510k.json?search=${search}&sort=decision_date:desc&limit=${limit}`, signal),
+      REQUEST_TIMEOUT_MS,
+    );
+    cacheSet(cacheKey, data);
+    return data;
+  } catch (err) {
+    warn(`device510k(${applicant}) failed (${err.message})`);
+    const empty = { meta: { results: { total: 0 }, fallback: true }, results: [] };
+    cacheSet(cacheKey, empty);
+    return empty;
+  }
+}
+
+// Embedded sample feed so the Supply Risk monitor renders offline /
+// rate-limited. Clearly marked fallback:true so the UI labels it.
+const FALLBACK_ENFORCEMENT = [
+  { recalling_firm: 'Coastline Medical Devices LLC', product_description: 'Nitrile examination gloves, powder-free, sizes S–XL', classification: 'Class II', reason_for_recall: 'Pinhole defects detected above AQL in retained lot samples.', status: 'Ongoing', report_date: '20260601', state: 'CA' },
+  { recalling_firm: 'Apex Diagnostic Systems Inc', product_description: 'Rapid influenza A&B antigen test kits, 25-count professional', classification: 'Class II', reason_for_recall: 'Potential for false negative results at low viral concentrations.', status: 'Ongoing', report_date: '20260522', state: 'NJ' },
+  { recalling_firm: 'OrthoFlex Manufacturing Co', product_description: 'Hinged knee brace, post-op ROM, universal sizing', classification: 'Class III', reason_for_recall: 'Hinge stop may fail under load; risk of hyperextension.', status: 'Ongoing', report_date: '20260514', state: 'TX' },
+  { recalling_firm: 'SterilePak Industries', product_description: 'Disposable surgical gowns, AAMI Level 3', classification: 'Class II', reason_for_recall: 'Sterility assurance not validated for affected lots.', status: 'Terminated', report_date: '20260430', state: 'FL' },
+  { recalling_firm: 'BioTrace Labs', product_description: 'Strep A rapid test cassettes, CLIA-waived', classification: 'Class II', reason_for_recall: 'Mislabeled expiration dating on outer carton.', status: 'Ongoing', report_date: '20260418', state: 'OH' },
+];
+
+/**
+ * Recent device enforcement reports (recalls) across the whole industry —
+ * powers the public Supply Risk monitor. Most recent first.
+ *
+ * @param {object} opts
+ * @param {number} opts.sinceDays  Lookback window. Default 90.
+ * @param {number} opts.limit      Max records. Default 20.
+ */
+async function recentEnforcement({ sinceDays = 90, limit = 20 } = {}) {
+  const cacheKey = `enforcement:${sinceDays}:${limit}`;
+  const cached = cacheGet(cacheKey);
+  if (cached) return cached;
+
+  const fromDate = new Date(Date.now() - sinceDays * 86400000).toISOString().slice(0, 10).replace(/-/g, '');
+  const toDate = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+  const search = `report_date:[${fromDate}+TO+${toDate}]`;
+
+  try {
+    const data = await withTimeout(
+      (signal) => fetchJson(`${API_BASE}/enforcement.json?search=${search}&sort=report_date:desc&limit=${limit}`, signal),
+      REQUEST_TIMEOUT_MS,
+    );
+    cacheSet(cacheKey, data);
+    return data;
+  } catch (err) {
+    warn(`recentEnforcement failed (${err.message}); using sample feed`);
+    const fallback = {
+      meta: { last_updated: new Date().toISOString(), results: { total: FALLBACK_ENFORCEMENT.length }, fallback: true },
+      results: FALLBACK_ENFORCEMENT.slice(0, limit),
+    };
+    cacheSet(cacheKey, fallback);
+    return fallback;
+  }
+}
+
 export const openfda = {
   classification,
   registrationListing,
   recallHistory,
+  recentEnforcement,
   udiLookup,
+  device510k,
   // Exposed for verifier scripts + tests
   __cache: cache,
   __FALLBACK_PRODUCT_CODES: FALLBACK_PRODUCT_CODES,

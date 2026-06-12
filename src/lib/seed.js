@@ -328,6 +328,16 @@ export function seed(db) {
     });
   });
 
+  // 1099 rep network — brief §2 #5. Commission entries are computed
+  // live from orders (src/lib/reps.js), so only the roster is seeded.
+  [
+    { id: 'rep_meredith', name: 'Meredith Cole',   email: 'meredith@unitemedical.net', territory: 'Southeast · ASC',          segment_focus: 'asc',          commission_pct: 6.0, status: 'active', calendly_url: 'https://calendly.com/unitemedical/meredith', started_at: isoDaysAgo(540) },
+    { id: 'rep_aidan',    name: 'Aidan Park',       email: 'aidan@unitemedical.net',    territory: 'National · Pharmacy/DME',  segment_focus: 'pharmacy',     commission_pct: 5.0, status: 'active', calendly_url: 'https://calendly.com/unitemedical/aidan',    started_at: isoDaysAgo(410) },
+    { id: 'rep_terrell',  name: 'Terrell Jenkins',  email: 'terrell@unitemedical.net',  territory: 'Southeast · EMS/Gov',      segment_focus: 'ems',          commission_pct: 6.0, status: 'active', calendly_url: 'https://calendly.com/unitemedical/terrell',  started_at: isoDaysAgo(300) },
+    { id: 'rep_miguel',   name: 'Miguel Vasquez',   email: 'miguel@unitemedical.net',   territory: 'Texas / South Central',    segment_focus: 'distributors', commission_pct: 5.5, status: 'ramping', calendly_url: 'https://calendly.com/unitemedical/miguel', started_at: isoDaysAgo(60) },
+    { id: 'rep_damon',    name: 'Damon Reed',       email: 'damon@unitemedical.net',    territory: 'House accounts · Gov/VA',  segment_focus: 'gov',          commission_pct: 0,   status: 'principal', calendly_url: 'https://calendly.com/unitemedical/damon', started_at: isoDaysAgo(900) },
+  ].forEach((r) => db.reps.push(r));
+
   ['Damon Reed', 'Meredith Cole', 'Aidan Park', 'Terrell Jenkins', 'Miguel Vasquez'].forEach((name, i) => {
     db.activities.push({
       id: `act_${i + 1}`,

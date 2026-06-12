@@ -69,6 +69,8 @@ const COLUMNS = [
   {
     h: 'Support',
     links: [
+      ['/shortage-list', 'Shortage List Matcher'],
+      ['/supply-risk', 'Supply Risk Monitor'],
       ['/contact', 'Contact'],
       ['/support', 'FAQs'],
       ['tel:+18338686483', '833.868.6483', true],
@@ -84,8 +86,11 @@ export function Footer() {
   const cols = isMobile ? '1fr' : isTablet ? '1fr 1fr' : '1.6fr 1fr 1fr 1fr';
 
   return (
-    <footer style={{ background: D.plum, color: D.paper, padding: `${isMobile ? 44 : 64}px ${padX}px ${isMobile ? 24 : 32}px` }}>
-      <div style={{ maxWidth: 1360, margin: '0 auto' }}>
+    <footer className="um-grain" style={{ background: D.plum, color: D.paper, padding: `${isMobile ? 44 : 64}px ${padX}px ${isMobile ? 24 : 32}px`, position: 'relative', overflow: 'hidden' }}>
+      {/* Aurora drift — the same living-light language as the glass sections */}
+      <div aria-hidden="true" className="um-orb um-orb-b" style={{ width: 520, height: 520, top: '-30%', right: '-8%', background: 'radial-gradient(circle, rgba(24,16,27,.55), rgba(24,16,27,0) 70%)' }} />
+      <div aria-hidden="true" className="um-orb um-orb-a" style={{ width: 420, height: 420, bottom: '-35%', left: '-6%', background: 'radial-gradient(circle, rgba(246,79,0,.22), rgba(246,79,0,0) 70%)' }} />
+      <div style={{ maxWidth: 1360, margin: '0 auto', position: 'relative' }}>
         <div style={{ display: 'grid', gridTemplateColumns: cols, gap: isMobile ? 32 : 48 }}>
           <div>
             <Link to="/" aria-label="Unite Medical home">
