@@ -48,10 +48,12 @@ async function main() {
       // Neon's HTTP driver runs one statement per call; split on
       // semicolons at line ends (the blueprints don't use functions
       // or dollar-quoted bodies).
+      // Keep statements that contain any non-comment line; leading
+      // comment lines are valid SQL and pass through harmlessly.
       const statements = body
-        .split(/;\s*$/m)
+        .split(/;[ \t]*(?:--[^\n]*)?$/m)
         .map((s) => s.trim())
-        .filter((s) => s && !s.startsWith('--'));
+        .filter((s) => s.split('\n').some((line) => line.trim() && !line.trim().startsWith('--')));
       for (const stmt of statements) await sql.query(stmt);
       await sql`INSERT INTO _migrations (filename) VALUES (${file})`;
       console.log(`  + ${file}`);

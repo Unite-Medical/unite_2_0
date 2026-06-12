@@ -10,7 +10,9 @@ CREATE TABLE IF NOT EXISTS tier_pricing (
   PRIMARY KEY (product_sku, tier, effective_from)
 );
 
-CREATE INDEX IF NOT EXISTS idx_tier_pricing_lookup ON tier_pricing (product_sku, tier) WHERE effective_to IS NULL OR effective_to >= CURRENT_DATE;
+-- CURRENT_DATE is not IMMUTABLE so it can't appear in an index
+-- predicate; index effective_to instead and filter at query time.
+CREATE INDEX IF NOT EXISTS idx_tier_pricing_lookup ON tier_pricing (product_sku, tier, effective_to);
 
 CREATE TABLE IF NOT EXISTS catalog_visibility (
   product_sku     TEXT REFERENCES products(sku) ON DELETE CASCADE,

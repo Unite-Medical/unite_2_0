@@ -16,17 +16,8 @@ CREATE TABLE IF NOT EXISTS purchase_orders (
 
 CREATE INDEX IF NOT EXISTS idx_purchase_orders_status ON purchase_orders (status);
 
-CREATE TABLE IF NOT EXISTS daily_digests (
-  id            TEXT PRIMARY KEY,
-  date          DATE NOT NULL,
-  generated_at  TIMESTAMPTZ NOT NULL DEFAULT now(),
-  generated_by  TEXT NOT NULL DEFAULT 'heuristic',   -- heuristic | claude
-  source        TEXT NOT NULL DEFAULT 'cron',        -- cron | manual
-  bullets       JSONB NOT NULL DEFAULT '[]',
-  signal_counts JSONB NOT NULL DEFAULT '{}'
-);
-
-CREATE INDEX IF NOT EXISTS idx_daily_digests_date ON daily_digests (date DESC);
+-- daily_digests is owned by 0014_gmail_outbox.sql (digest_date column);
+-- the duplicate definition that previously lived here has been removed.
 
 CREATE TABLE IF NOT EXISTS trade_records (
   id                 TEXT PRIMARY KEY,

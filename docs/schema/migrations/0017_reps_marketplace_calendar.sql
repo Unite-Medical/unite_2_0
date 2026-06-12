@@ -23,8 +23,8 @@ CREATE TABLE IF NOT EXISTS reps (
 CREATE TABLE IF NOT EXISTS surplus_offers (
   id                 TEXT PRIMARY KEY,
   created_at         TIMESTAMPTZ NOT NULL DEFAULT now(),
-  line_id            TEXT NOT NULL REFERENCES surplus_lines(id),
-  submission_id      TEXT REFERENCES surplus_submissions(id),
+  line_id            UUID NOT NULL REFERENCES surplus_lines(id),
+  submission_id      UUID REFERENCES surplus_submissions(id),
   buyer_name         TEXT,
   buyer_email        TEXT NOT NULL,
   buyer_org          TEXT,
