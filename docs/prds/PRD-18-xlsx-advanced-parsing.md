@@ -2,7 +2,7 @@
 
 **Source:** CTO Brief §7 — "Approved foreign vendor uploads product template (Excel/CSV)"
 **Owner:** Alex (CTO)
-**Status:** draft
+**Status:** shipped (client-side) 2026-06-15 — multi-sheet reader, zero-dep XLSX writer + downloadable validated template, multilingual + fuzzy + Claude column mapping, translation, version detection. SSE/large-file streaming deferred to the backend (PRD-01).
 **Depends on:** PRD-01 (backend — SheetJS can't run safely in browser at reasonable bundle size)
 **Blocks:** PRD-16 (quoting engine v3 requires XLSX support)
 

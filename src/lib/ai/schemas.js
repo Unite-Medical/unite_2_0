@@ -194,6 +194,42 @@ export const surplus_valuation = {
   }, ['valuations']),
 };
 
+// ---- 10. quoting/column_map -----------------------------------------------
+
+export const column_map = {
+  tool_name: 'map_columns',
+  description: 'Map spreadsheet headers to canonical product fields.',
+  input_schema: p.object('Container of column mappings.', {
+    mappings: p.array('One entry per confidently-mapped header.',
+      p.object('A header → field mapping.', {
+        field:        p.enum('Canonical field name.', [
+          'product_name', 'fda_product_code', 'hts_code', 'fob_price_usd',
+          'moq', 'lead_time_days', 'country_of_origin', 'description',
+          'gtin', 'packaging', 'target_quantity', 'notes',
+        ]),
+        column_index: p.integer('0-based index of the source header.'),
+        confidence:   p.number('0..1 confidence.'),
+      }, ['field', 'column_index', 'confidence']),
+    ),
+  }, ['mappings']),
+};
+
+// ---- 11. quoting/translate_lines ------------------------------------------
+
+export const translate_lines = {
+  tool_name: 'record_translations',
+  description: 'Translate product names + descriptions to US-English.',
+  input_schema: p.object('Container of line translations.', {
+    translations: p.array('One entry per input line, preserving index.',
+      p.object('A translated line.', {
+        index:          p.integer('The input line index (preserved).'),
+        name_en:        p.string('English product name.'),
+        description_en: p.string('English description, or empty string.'),
+      }, ['index', 'name_en', 'description_en']),
+    ),
+  }, ['translations']),
+};
+
 // ---- Registry mapping prompt_key → schema ---------------------------------
 
 export const SCHEMA_BY_PROMPT_KEY = {
@@ -204,6 +240,8 @@ export const SCHEMA_BY_PROMPT_KEY = {
   'vendor/recall_notice':        recall_notice,
   'quoting/hts_classify':        hts_classify,
   'quoting/cover_letter':        cover_letter,
+  'quoting/column_map':          column_map,
+  'quoting/translate_lines':     translate_lines,
   'surplus/line_normalize':      surplus_normalize,
   'surplus/valuation':           surplus_valuation,
 };

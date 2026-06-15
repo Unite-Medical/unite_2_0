@@ -91,6 +91,13 @@ const STUBS = {
       reasoning: 'Heuristic fallback (no API key configured).',
     };
   },
+  'quoting/column_map': () => ({ mappings: [] }),
+  'quoting/translate_lines': (input) => {
+    let lines = [];
+    try { lines = JSON.parse(input.lines || '[]'); } catch { lines = []; }
+    // Offline: echo source text (no real translation, but never breaks).
+    return { translations: lines.map((l) => ({ index: l.index, name_en: l.name || '', description_en: l.description || '' })) };
+  },
   'fathom/extract_action_items': () => ({ items: [] }),
   'fathom/extract_insights':     () => ({ objections: [], competitors: [], pricing: [], coaching_flags: [], next_step: '', sentiment_score: 3, sentiment_reason: 'no API key configured' }),
   'digest/ceo_morning_brief':    () => ({ bullets: [{ priority: 1, headline: 'Daily digest unavailable', summary: 'Anthropic API key not configured.', why_it_matters: 'Wire VITE_ANTHROPIC_API_KEY (dev) or ANTHROPIC_API_KEY (prod) to enable.', deep_link: '/admin/integrations/ai', severity: 'attention' }] }),

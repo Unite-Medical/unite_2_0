@@ -10,17 +10,23 @@
  */
 
 // Vite resolves these as static assets at build time.
-// In a backend (PRD-01), we'd swap this for fs.readFileSync.
-const promptUrls = import.meta.glob('../../../prompts/**/*.v*.md', {
-  query: '?raw',
-  import: 'default',
-  eager: false,
-});
+// In a backend (PRD-01) or a plain Node/test runtime, `import.meta.glob`
+// doesn't exist — guard it so the module is importable everywhere. In
+// those environments callers fall back to deterministic stubs.
+const promptUrls = (typeof import.meta !== 'undefined' && typeof import.meta.glob === 'function')
+  ? import.meta.glob('../../../prompts/**/*.v*.md', {
+    query: '?raw',
+    import: 'default',
+    eager: false,
+  })
+  : {};
 
 export const PROMPT_REGISTRY = {
   // ---- PRD-08 quoting ----
   'quoting/cover_letter': { path: 'quoting/cover_letter.v1.md', model: 'claude-sonnet-4-6', maxTokens: 800, temperature: 0.3 },
   'quoting/hts_classify': { path: 'quoting/hts_classify.v1.md', model: 'claude-sonnet-4-6', maxTokens: 1024, temperature: 0 },
+  'quoting/column_map': { path: 'quoting/column_map.v1.md', model: 'claude-sonnet-4-6', maxTokens: 1024, temperature: 0 },
+  'quoting/translate_lines': { path: 'quoting/translate_lines.v1.md', model: 'claude-sonnet-4-6', maxTokens: 2048, temperature: 0 },
 
   // ---- PRD-05 fathom ----
   'fathom/extract_action_items': { path: 'fathom/extract_action_items.v1.md', model: 'claude-sonnet-4-6', maxTokens: 2048, temperature: 0 },
