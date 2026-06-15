@@ -12,6 +12,9 @@ const Quote = lazy(() => import('./pages/Quote.jsx').then((m) => ({ default: m.Q
 const QuoteNew = lazy(() => import('./pages/QuoteNew.jsx').then((m) => ({ default: m.QuoteNew })));
 const QuotePrint = lazy(() => import('./pages/QuotePrint.jsx').then((m) => ({ default: m.QuotePrint })));
 const QuoteAccept = lazy(() => import('./pages/QuoteAccept.jsx').then((m) => ({ default: m.QuoteAccept })));
+const PortalQuote = lazy(() => import('./pages/PortalQuote.jsx').then((m) => ({ default: m.PortalQuote })));
+const AccountQuotes = lazy(() => import('./pages/AccountQuotes.jsx').then((m) => ({ default: m.AccountQuotes })));
+const RepPortal = lazy(() => import('./pages/RepPortal.jsx').then((m) => ({ default: m.RepPortal })));
 const Surplus = lazy(() => import('./pages/Surplus.jsx').then((m) => ({ default: m.Surplus })));
 const SurplusMarket = lazy(() => import('./pages/SurplusMarket.jsx').then((m) => ({ default: m.SurplusMarket })));
 const ShortageMatch = lazy(() => import('./pages/ShortageMatch.jsx').then((m) => ({ default: m.ShortageMatch })));
@@ -159,7 +162,10 @@ export default function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/account/settings" element={<AccountSettings />} />
           <Route path="/account/invoices" element={<Invoices />} />
+          <Route path="/account/quotes" element={<AccountQuotes />} />
           <Route path="/invoices/:id/print" element={<InvoicePrint />} />
+          <Route path="/portal/quote" element={<PortalQuote />} />
+          <Route path="/rep" element={<RepPortal />} />
 
           <Route path="/admin"           element={<RequireAdmin><AdminOverview /></RequireAdmin>} />
           <Route path="/admin/analytics" element={<RequireAdmin><AdminAnalytics /></RequireAdmin>} />

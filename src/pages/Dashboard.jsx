@@ -120,8 +120,9 @@ export function Dashboard() {
               <div style={{ background: D.card, borderRadius: 14, padding: 22, border: `1px solid ${D.line}` }}>
                 <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>QUICK LINKS</div>
                 {[
+                  ['Build a quote (self-serve)', '/portal/quote'],
+                  ['Your quotes', '/account/quotes'],
                   ['Open the catalog', '/catalog'],
-                  ['Run the quoting engine', '/quote'],
                   ['Account settings', '/account/settings'],
                   ['Invoices & receipts', '/account/invoices'],
                   ['HCPCS reference', '/resources/coding'],

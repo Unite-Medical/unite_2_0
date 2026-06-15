@@ -19,6 +19,7 @@ import { recordEvent, processEvent, replayEvent, MAX_ATTEMPTS, busStats } from '
 import { runFulfillment, createReturn, PIPELINE_STEPS } from '../src/lib/fulfillment.js';
 import { compareVendorOffers } from '../src/lib/quoting.js';
 import { acceptQuote } from '../src/lib/quoteAcceptance.js';
+import { buildSelfServeQuote, requestSourcing } from '../src/lib/selfServeQuote.js';
 import { db } from '../src/lib/db.js';
 import { uid } from '../src/lib/format.js';
 
@@ -126,6 +127,21 @@ section('PRD-16/19 · acceptance + compare');
   ]);
   ok(cmp.products[0].best_vendor === 'B', 'cheapest vendor selected');
   ok(cmp.total_savings > 0, 'savings computed');
+}
+
+// ── PRD-19: self-serve quoting ─────────────────────────────────────────────
+section('PRD-19 · self-serve quoting');
+{
+  const sku = db.list('products')[0]?.sku;
+  ok(Boolean(sku), 'catalog has products to quote');
+  const res = buildSelfServeQuote({ items: [{ sku, qty: 100 }], org: { id: 'org_atlsurgical', name: 'Atlanta Surgical Center', tier: 'A' } });
+  ok(res.ok && res.quote, 'self-serve quote built');
+  ok(res.quote.acceptance_token && res.quote.source === 'self_serve', 'quote has acceptance token + source');
+  ok(res.lines[0].sell_per_unit > 0 && res.lines[0].ext_sell > 0, 'line priced via tier engine');
+  const acc = await acceptQuote(res.quote.acceptance_token);
+  ok(acc.ok, 'self-serve quote is acceptable end-to-end');
+  const src = requestSourcing({ description: '5000 nitrile gloves size L', org: { id: 'org_x', name: 'X' } });
+  ok(src.ok && src.lead, 'sourcing request captured as lead');
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);
