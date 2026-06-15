@@ -18,6 +18,17 @@ import { useViewport } from '../../lib/viewport.js';
 import { computeReplenishment, draftPurchaseOrders, recalcReorderPoints, DEFAULTS } from '../../lib/replenishment.js';
 import { forecast } from '../../lib/external/forecast.js';
 import { simulateInboundShipment } from '../../lib/receiving.js';
+import { approvePurchaseOrder, sendPurchaseOrderToVendor, receivePurchaseOrder, cancelPurchaseOrder, threeWayMatch, outstandingLines } from '../../lib/purchaseOrders.js';
+
+const PO_CHIP = {
+  draft: [D.ink3, 'DRAFT'],
+  approved: [D.terra, 'APPROVED'],
+  sent: [D.plum, 'SENT'],
+  partially_received: ['#9a7b1e', 'PARTIAL'],
+  received: ['#2d6a4f', 'RECEIVED'],
+  closed: ['#2d6a4f', 'CLOSED'],
+  cancelled: ['#c3382d', 'CANCELLED'],
+};
 
 const STATUS_CHIP = {
   stockout: ['#c3382d', 'STOCKOUT'],
@@ -39,6 +50,7 @@ export function AdminReplenishment() {
   const [busy, setBusy] = useState(null);
   const [notice, setNotice] = useState(null);
   const [forecasts, setForecasts] = useState(null);
+  const [poBusy, setPoBusy] = useState(null);
 
   // Try the Prophet sidecar on mount; null = pure run-rate math.
   useEffect(() => {
@@ -92,6 +104,36 @@ export function AdminReplenishment() {
       }
     } finally { setBusy(null); }
   }
+
+  async function handlePo(po_id, action, label) {
+    setPoBusy(po_id); setNotice(null);
+    try {
+      const res = await action();
+      if (res?.ok === false) {
+        setNotice(`PO ${po_id}: ${label} blocked — ${(res.reason || 'unknown').replace(/_/g, ' ')}.`);
+      } else if (res?.fully_received) {
+        setNotice(`PO ${po_id} fully received — inventory updated, ${res.reorder_rows} reorder points recalculated, vendor bill ${res.bill?.id || 'pending'} posted.`);
+      } else if (res?.receipt) {
+        setNotice(`PO ${po_id}: partial receipt logged (${res.receipt.units} units).`);
+      } else if (res?.to) {
+        setNotice(`PO ${po_id} emailed to ${res.to}.`);
+      } else {
+        setNotice(`PO ${po_id}: ${label}.`);
+      }
+    } finally { setPoBusy(null); }
+  }
+
+  function showMatch(po_id) {
+    const m = threeWayMatch(po_id);
+    if (!m.ok) { setNotice(`PO ${po_id}: ${m.reason}.`); return; }
+    setNotice(
+      m.matched
+        ? `PO ${po_id} 3-way match OK — ordered ${fmt.money(m.ordered_total)}, received ${fmt.money(m.received_total)}${m.bill_total != null ? `, billed ${fmt.money(m.bill_total)}` : ''}.`
+        : `PO ${po_id} 3-way mismatch — ${m.discrepancies.length} line(s) off; received ${fmt.money(m.received_total)} vs ordered ${fmt.money(m.ordered_total)}.`,
+    );
+  }
+
+  const poBtn = { padding: '6px 12px', borderRadius: 6, fontSize: 12, fontFamily: D.sans, cursor: 'pointer', border: 'none' };
 
   const btn = (primary) => ({
     padding: '10px 18px', borderRadius: 8, fontSize: 13, fontFamily: D.sans, cursor: 'pointer',
@@ -185,23 +227,76 @@ export function AdminReplenishment() {
           <div style={{ fontFamily: D.display, fontSize: 22, letterSpacing: -0.4 }}>Draft purchase orders</div>
           <div style={{ marginTop: 12, display: 'grid', gap: 12 }}>
             {pos.length === 0 && <div style={{ fontSize: 13, color: D.ink3 }}>No draft POs yet — the model drafts one per vendor when SKUs cross their reorder point.</div>}
-            {pos.map((po) => (
-              <div key={po.id} style={{ background: D.card, border: `1px solid ${D.line}`, borderRadius: 12, padding: 18, display: 'flex', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
-                <div>
-                  <div style={{ fontWeight: 600, fontSize: 14 }}>{po.vendor_name}</div>
-                  <div style={{ fontSize: 12, color: D.ink2, marginTop: 4 }}>
-                    {(po.line_items || []).length} lines · expected {fmt.date(po.expected_delivery)} · WMS ref <span style={{ fontFamily: D.mono }}>{po.wms_po_id || '—'}</span>
+            {pos.map((po) => {
+              const status = po.status || 'draft';
+              const [chipColor, chipLabel] = PO_CHIP[status] || PO_CHIP.draft;
+              const out = outstandingLines(po);
+              const orderedUnits = out.reduce((a, l) => a + (l.qty || 0), 0);
+              const receivedUnits = out.reduce((a, l) => a + (l.received_qty || 0), 0);
+              const isBusy = poBusy === po.id;
+              const canReceive = status === 'sent' || status === 'approved' || status === 'partially_received';
+              const canCancel = status !== 'received' && status !== 'closed' && status !== 'cancelled';
+              return (
+                <div key={po.id} style={{ background: D.card, border: `1px solid ${D.line}`, borderRadius: 12, padding: 18 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
+                    <div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                        <span style={{ fontWeight: 600, fontSize: 14 }}>{po.vendor_name}</span>
+                        <span style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, padding: '3px 8px', borderRadius: 999, background: `${chipColor}20`, color: chipColor }}>{chipLabel}</span>
+                      </div>
+                      <div style={{ fontSize: 12, color: D.ink2, marginTop: 6 }}>
+                        {po.id} · {(po.line_items || []).length} lines · expected {fmt.date(po.expected_delivery)} · WMS <span style={{ fontFamily: D.mono }}>{po.wms_po_id || '—'}</span>
+                        {po.qbo_po_id ? <> · QBO PO <span style={{ fontFamily: D.mono }}>{po.qbo_po_id}</span></> : null}
+                        {po.qbo_bill_id ? <> · Bill <span style={{ fontFamily: D.mono }}>{po.qbo_bill_id}</span></> : null}
+                      </div>
+                      <div style={{ fontSize: 12, color: D.ink3, marginTop: 4 }}>
+                        {(po.line_items || []).slice(0, 4).map((l) => `${l.qty}× ${l.sku}`).join(' · ')}{(po.line_items || []).length > 4 ? ' · …' : ''}
+                      </div>
+                      {receivedUnits > 0 && (
+                        <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 0.6, color: '#9a7b1e', marginTop: 6 }}>
+                          RECEIVED {fmt.number(receivedUnits)} / {fmt.number(orderedUnits)} UNITS
+                        </div>
+                      )}
+                    </div>
+                    <div style={{ textAlign: 'right' }}>
+                      <div style={{ fontFamily: D.display, fontSize: 26, color: D.plum }}>{fmt.money(po.total_cost)}</div>
+                      <div style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, color: D.ink3, marginTop: 4 }}>{fmt.ago(po.created_at)}</div>
+                    </div>
                   </div>
-                  <div style={{ fontSize: 12, color: D.ink3, marginTop: 4 }}>
-                    {(po.line_items || []).slice(0, 4).map((l) => `${l.qty}× ${l.sku}`).join(' · ')}{(po.line_items || []).length > 4 ? ' · …' : ''}
+
+                  <div style={{ marginTop: 14, display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
+                    {status === 'draft' && (
+                      <button disabled={isBusy} onClick={() => handlePo(po.id, () => approvePurchaseOrder(po.id, { approved_by: 'admin' }), 'approved + synced to QBO')} style={{ ...poBtn, background: D.plum, color: '#fff' }}>
+                        {isBusy ? '…' : 'Approve'}
+                      </button>
+                    )}
+                    {(status === 'draft' || status === 'approved') && (
+                      <button disabled={isBusy} onClick={() => handlePo(po.id, () => sendPurchaseOrderToVendor(po.id, { sent_by: 'admin' }), 'sent to vendor')} style={{ ...poBtn, background: status === 'approved' ? D.plum : 'transparent', color: status === 'approved' ? '#fff' : D.ink, border: status === 'approved' ? 'none' : `1px solid ${D.line}` }}>
+                        {isBusy ? '…' : 'Send to vendor'}
+                      </button>
+                    )}
+                    {canReceive && (
+                      <button disabled={isBusy} onClick={() => handlePo(po.id, () => receivePurchaseOrder(po.id, { received_by: 'admin' }), 'received')} style={{ ...poBtn, background: '#2d6a4f', color: '#fff' }}>
+                        {isBusy ? '…' : 'Receive all'}
+                      </button>
+                    )}
+                    {(status === 'received' || status === 'partially_received' || status === 'closed') && (
+                      <button disabled={isBusy} onClick={() => showMatch(po.id)} style={{ ...poBtn, background: 'transparent', color: D.ink, border: `1px solid ${D.line}` }}>
+                        3-way match
+                      </button>
+                    )}
+                    <Link to={`/admin/purchase-orders/${po.id}/print`} style={{ ...poBtn, background: 'transparent', color: D.ink, border: `1px solid ${D.line}`, textDecoration: 'none' }}>
+                      View / PDF
+                    </Link>
+                    {canCancel && (
+                      <button disabled={isBusy} onClick={() => { if (window.confirm(`Cancel PO ${po.id}?`)) handlePo(po.id, () => cancelPurchaseOrder(po.id, { cancelled_by: 'admin' }), 'cancelled'); }} style={{ ...poBtn, background: 'transparent', color: D.terra, border: `1px solid ${D.terra}`, marginLeft: 'auto' }}>
+                        Cancel
+                      </button>
+                    )}
                   </div>
                 </div>
-                <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontFamily: D.display, fontSize: 26, color: D.plum }}>{fmt.money(po.total_cost)}</div>
-                  <div style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, color: D.ink3, marginTop: 4 }}>{(po.status || 'draft').toUpperCase()} · {fmt.ago(po.created_at)}</div>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 

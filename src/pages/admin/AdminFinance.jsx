@@ -7,6 +7,7 @@
  */
 
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { D } from '../../tokens.js';
 import { AdminShell } from '../../components/layout/AdminShell.jsx';
 import { db } from '../../lib/db.js';
@@ -176,6 +177,7 @@ export function AdminFinance() {
                         </>
                       )}
                       {isPaid && <span style={{ fontSize: 12, color: D.ink3 }}>{inv.paid_at ? `paid ${fmt.ago(inv.paid_at)}` : 'paid'}</span>}
+                      <Link to={`/invoices/${inv.id}/print`} style={{ marginLeft: 8, padding: '6px 12px', borderRadius: 6, fontSize: 12, background: 'transparent', color: D.plum, border: `1px solid ${D.line}`, textDecoration: 'none', fontFamily: D.sans }}>PDF</Link>
                     </td>
                   </tr>
                 );

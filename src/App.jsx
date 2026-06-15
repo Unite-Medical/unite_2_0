@@ -52,6 +52,8 @@ const Register = lazy(() => import('./pages/Register.jsx').then((m) => ({ defaul
 const Dashboard = lazy(() => import('./pages/Dashboard.jsx').then((m) => ({ default: m.Dashboard })));
 const AccountSettings = lazy(() => import('./pages/AccountSettings.jsx').then((m) => ({ default: m.AccountSettings })));
 const Invoices = lazy(() => import('./pages/Invoices.jsx').then((m) => ({ default: m.Invoices })));
+const InvoicePrint = lazy(() => import('./pages/InvoicePrint.jsx').then((m) => ({ default: m.InvoicePrint })));
+const PurchaseOrderPrint = lazy(() => import('./pages/admin/PurchaseOrderPrint.jsx').then((m) => ({ default: m.PurchaseOrderPrint })));
 const AdminOverview = lazy(() => import('./pages/admin/AdminOverview.jsx').then((m) => ({ default: m.AdminOverview })));
 const AdminAnalytics = lazy(() => import('./pages/admin/AdminAnalytics.jsx').then((m) => ({ default: m.AdminAnalytics })));
 const AdminInventory = lazy(() => import('./pages/admin/AdminInventory.jsx').then((m) => ({ default: m.AdminInventory })));
@@ -153,6 +155,7 @@ export default function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/account/settings" element={<AccountSettings />} />
           <Route path="/account/invoices" element={<Invoices />} />
+          <Route path="/invoices/:id/print" element={<InvoicePrint />} />
 
           <Route path="/admin"           element={<RequireAdmin><AdminOverview /></RequireAdmin>} />
           <Route path="/admin/analytics" element={<RequireAdmin><AdminAnalytics /></RequireAdmin>} />
@@ -174,6 +177,7 @@ export default function App() {
           <Route path="/admin/surplus"          element={<RequireAdmin><AdminSurplus /></RequireAdmin>} />
           <Route path="/admin/products/onboard" element={<RequireAdmin><AdminProductOnboard /></RequireAdmin>} />
           <Route path="/admin/replenishment"    element={<RequireAdmin><AdminReplenishment /></RequireAdmin>} />
+          <Route path="/admin/purchase-orders/:id/print" element={<RequireAdmin><PurchaseOrderPrint /></RequireAdmin>} />
           <Route path="/admin/digest"           element={<RequireAdmin><AdminDigest /></RequireAdmin>} />
           <Route path="/admin/finance"          element={<RequireAdmin><AdminFinance /></RequireAdmin>} />
           <Route path="/admin/discovery"        element={<RequireAdmin><AdminDiscovery /></RequireAdmin>} />

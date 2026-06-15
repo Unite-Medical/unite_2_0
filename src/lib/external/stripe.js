@@ -25,6 +25,7 @@
 
 import { db } from '../db.js';
 import { delay, uid } from '../format.js';
+import { qbo } from './qbo.js';
 import { API_BASE, env, fetchJson, realOrStub } from './_http.js';
 
 const STRIPE_BASE = 'https://api.stripe.com/v1';
@@ -110,6 +111,8 @@ export const stripe = {
    * send_invoice` + `days_until_due` gives the dunning UX we want.
    */
   async createInvoice({ stripe_customer_id, line_items, terms = 'net30', payment_methods = ['ach_debit', 'card'], order_id }) {
+    const dueDate = new Date(Date.now() + termsToDays(terms) * 86400000).toISOString().slice(0, 10);
+    const localAmount = (line_items || []).reduce((a, li) => a + (li.unit_price * li.qty), 0);
     return realOrStub({
       scope: 'stripe',
       label: `createInvoice(${order_id})`,
@@ -144,32 +147,34 @@ export const stripe = {
         // 3) finalize + send
         await callStripe({ path: `/invoices/${invoice.id}/finalize`, body: {} });
         const sent = await callStripe({ path: `/invoices/${invoice.id}/send`, body: {} });
-        const row = db.insert('invoices', {
-          id: `inv_${order_id}`,
+        const row = db.upsert('stripe_invoices', {
+          id: `sinv_${order_id}`,
           order_id,
           stripe_invoice_id: sent.id,
+          hosted_invoice_url: sent.hosted_invoice_url || null,
           amount: sent.amount_due / 100,
           balance: sent.amount_remaining / 100,
           terms,
-          status: 'open',
-          due_date: new Date(sent.due_date * 1000).toISOString().slice(0, 10),
+          status: sent.status || 'open',
+          due_date: sent.due_date ? new Date(sent.due_date * 1000).toISOString().slice(0, 10) : dueDate,
           issued_at: new Date().toISOString(),
         });
         return row;
       },
       stub: async () => {
         await delay(280, 540);
-        const amount = (line_items || []).reduce((a, li) => a + (li.unit_price * li.qty), 0);
-        const row = db.insert('invoices', {
-          id: `inv_${order_id}`,
+        const row = db.upsert('stripe_invoices', {
+          id: `sinv_${order_id}`,
           order_id,
           stripe_invoice_id: `STUB_in_${uid().slice(3)}`,
-          amount,
-          balance: amount,
+          hosted_invoice_url: null,
+          amount: localAmount,
+          balance: localAmount,
           terms,
           status: 'open',
-          due_date: new Date(Date.now() + termsToDays(terms) * 86400000).toISOString().slice(0, 10),
+          due_date: dueDate,
           issued_at: new Date().toISOString(),
+          stub: true,
         });
         return row;
       },
@@ -327,16 +332,70 @@ export const stripe = {
     if (!type) return { ok: false, reason: 'no_type' };
     db.insert('audit_log', { id: uid('aud'), kind: `stripe.${type}`, ref_id: data?.object?.id, payload: event });
     if (type === 'invoice.paid') {
-      const invoiceId = data.object.id;
-      const mirror = db.list('invoices', { where: { stripe_invoice_id: invoiceId } })[0];
-      if (mirror) db.update('invoices', mirror.id, { status: 'paid', balance: 0, paid_at: new Date().toISOString() });
-      return { ok: true, kind: 'invoice.paid', mirrored: Boolean(mirror) };
+      const obj = data.object || {};
+      const invoiceId = obj.id;
+      const paidAt = new Date().toISOString();
+      const paidAmount = typeof obj.amount_paid === 'number' ? obj.amount_paid / 100 : undefined;
+      const method = obj.payment_settings?.payment_method_types?.[0] === 'card' ? 'card' : 'ach';
+
+      // 1) Stripe-side mirror.
+      const smirror = db.list('stripe_invoices', { where: { stripe_invoice_id: invoiceId } })[0];
+      if (smirror) db.update('stripe_invoices', smirror.id, { status: 'paid', balance: 0, paid_at: paidAt });
+
+      // 2) Canonical AR invoice — match by stripe_invoice_id or order_id.
+      const orderId = smirror?.order_id || obj.metadata?.unite_order_id;
+      const canonical = db.list('invoices', { where: { stripe_invoice_id: invoiceId } })[0]
+        || (orderId ? db.list('invoices', { where: { order_id: orderId } })[0] : null);
+      if (canonical) {
+        db.update('invoices', canonical.id, { status: 'paid', balance: 0, paid_at: paidAt, payment_method: method });
+        if (canonical.order_id) {
+          const order = db.get('orders', canonical.order_id);
+          if (order) db.update('orders', order.id, { payment_status: 'paid' });
+        }
+      }
+
+      // 3) Reconcile to QBO — post the Payment against the open invoice.
+      let qboResult = null;
+      try {
+        const qboInvoiceId = canonical?.qbo_id
+          || db.list('qbo_invoices', { where: { order_id: orderId } })[0]?.qbo_invoice_id;
+        if (qboInvoiceId) {
+          qboResult = await qbo.recordPayment({
+            qbo_invoice_id: qboInvoiceId,
+            amount: paidAmount ?? canonical?.amount ?? smirror?.amount ?? 0,
+            method,
+          });
+        }
+      } catch (err) {
+        db.insert('audit_log', { id: uid('aud'), kind: 'stripe.reconcile_failed', ref_id: invoiceId, payload: { error: err.message } });
+      }
+
+      // 4) Record the local payment row for the AR ledger.
+      if (canonical) {
+        db.insert('payments', {
+          id: uid('pmt'),
+          invoice_id: canonical.id,
+          order_id: canonical.order_id,
+          amount: paidAmount ?? canonical.amount,
+          method,
+          source: 'stripe',
+          stripe_invoice_id: invoiceId,
+          received_at: paidAt,
+        });
+      }
+      return { ok: true, kind: 'invoice.paid', mirrored: Boolean(canonical), reconciled: Boolean(qboResult) };
     }
     if (type === 'payment_intent.succeeded') {
       const pi_id = data.object.id;
       const mirror = db.list('stripe_payments', { where: { stripe_pi_id: pi_id } })[0];
       if (mirror) db.update('stripe_payments', mirror.id, { status: 'succeeded', confirmed_at: new Date().toISOString() });
       return { ok: true, kind: 'pi.succeeded' };
+    }
+    if (type === 'invoice.payment_failed') {
+      const invoiceId = data.object?.id;
+      const smirror = db.list('stripe_invoices', { where: { stripe_invoice_id: invoiceId } })[0];
+      if (smirror) db.update('stripe_invoices', smirror.id, { status: 'payment_failed', last_failure_at: new Date().toISOString() });
+      return { ok: true, kind: 'invoice.payment_failed', mirrored: Boolean(smirror) };
     }
     return { ok: true, kind: type, ignored: true };
   },

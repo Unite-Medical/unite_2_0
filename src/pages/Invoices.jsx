@@ -102,7 +102,9 @@ export function Invoices() {
                         <td style={{ padding: '14px 18px' }}>
                           <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, padding: '4px 10px', borderRadius: 999, background: isPaid ? 'rgba(94,41,99,.1)' : D.terraSoft, color: isPaid ? D.ink2 : D.terra }}>{(inv.status || 'OPEN').toUpperCase()}</span>
                         </td>
-                        <td style={{ padding: '14px 18px', fontFamily: D.mono, fontSize: 11, color: D.plum, textAlign: 'right', cursor: 'pointer' }}>PDF →</td>
+                        <td style={{ padding: '14px 18px', textAlign: 'right' }}>
+                          <button onClick={() => navigate(`/invoices/${inv.id}/print`)} style={{ background: 'none', border: 'none', fontFamily: D.mono, fontSize: 11, color: D.plum, cursor: 'pointer', padding: 0 }}>PDF →</button>
+                        </td>
                       </tr>
                     );
                   })}

@@ -17,7 +17,7 @@ import { seed } from './seed.js';
  */
 
 const STORAGE_KEY = 'um.db.v1';
-const SCHEMA_VERSION = 11;
+const SCHEMA_VERSION = 12;
 
 const TABLES = [
   'profiles', 'organizations', 'organization_users', 'addresses',
@@ -30,7 +30,9 @@ const TABLES = [
   'leads', 'contacts', 'activities', 'tasks',
   'blog_posts', 'cms_pages', 'banners', 'doc_requests', 'vendors',
   'qbo_invoices', 'flexport_shipments', 'shipstation_labels',
-  'stripe_payments', 'hubspot_contacts', 'gmail_outbox', 'audit_log',
+  'stripe_payments', 'stripe_invoices', 'hubspot_contacts', 'gmail_outbox', 'audit_log',
+  // PRD-09 / PRD-12: goods-receipt records against purchase orders
+  'po_receipts',
   // PRD-11: AI usage tracking
   'ai_usage',
   // PRD-10: hospital surplus intake

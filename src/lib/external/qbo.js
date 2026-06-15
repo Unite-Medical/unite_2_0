@@ -247,6 +247,89 @@ export const qbo = {
     });
   },
 
+  /**
+   * Create a QBO PurchaseOrder for a vendor restock (PRD-02 / PRD-12).
+   * Mirrors into our `qbo_invoices`-style ledger via the PO row itself.
+   *
+   * @param {object} args
+   * @param {object} args.po               our `purchase_orders` row
+   * @param {string} [args.vendor_qbo_id]  QBO Vendor.Id
+   */
+  async createPurchaseOrder({ po, vendor_qbo_id }) {
+    const lines = (po?.line_items || []).map((li) => ({
+      Amount: Number(((li.qty || 0) * (li.cost || 0)).toFixed(2)),
+      DetailType: 'ItemBasedExpenseLineDetail',
+      ItemBasedExpenseLineDetail: {
+        ItemRef: { value: li.qbo_item_id || '1' },
+        Qty: li.qty,
+        UnitPrice: li.cost,
+      },
+      Description: li.name || li.sku,
+    }));
+    const body = {
+      VendorRef: { value: vendor_qbo_id || '1' },
+      Line: lines,
+      POStatus: 'Open',
+      DocNumber: po?.id,
+      PrivateNote: `Unite Medical replenishment PO ${po?.id} · ${po?.vendor_name || ''}`,
+    };
+    return realOrStub({
+      scope: 'qbo',
+      label: `createPurchaseOrder(${po?.id})`,
+      predicate: () => isConfigured() || viaBackendProxy(),
+      real: async () => {
+        const { PurchaseOrder } = await callQbo({ entity: 'purchaseorder', body });
+        db.insert('audit_log', { id: uid('aud'), kind: 'qbo.po.created', ref_id: po?.id, payload: { qbo_po_id: PurchaseOrder.Id, total: PurchaseOrder.TotalAmt } });
+        return { id: PurchaseOrder.Id, doc_number: PurchaseOrder.DocNumber, amount: PurchaseOrder.TotalAmt };
+      },
+      stub: async () => {
+        await delay(220, 460);
+        db.insert('audit_log', { id: uid('aud'), kind: 'qbo.po.created', ref_id: po?.id, payload: { stub: true } });
+        return { id: `STUB-po-${po?.id}`, doc_number: po?.id, amount: po?.total_cost, stub: true };
+      },
+    });
+  },
+
+  /**
+   * Post a vendor Bill against a received PurchaseOrder (AP side).
+   * Called when goods are received so COGS/AP land in the books.
+   *
+   * @param {object} args
+   * @param {object} args.po               our `purchase_orders` row
+   * @param {number} [args.amount]         defaults to the PO total
+   * @param {string} [args.vendor_qbo_id]  QBO Vendor.Id
+   */
+  async createBillFromPO({ po, amount, vendor_qbo_id }) {
+    const total = amount ?? po?.total_cost ?? 0;
+    const body = {
+      VendorRef: { value: vendor_qbo_id || '1' },
+      Line: [{
+        DetailType: 'AccountBasedExpenseLineDetail',
+        Amount: total,
+        AccountBasedExpenseLineDetail: { AccountRef: { value: '7' /* COGS, resolved server-side */ } },
+        Description: `Goods received against PO ${po?.id} · ${po?.vendor_name || ''}`,
+      }],
+      DocNumber: `BILL-${po?.id}`,
+      DueDate: new Date(Date.now() + 30 * 86400000).toISOString().slice(0, 10),
+      PrivateNote: `Auto-created on receipt of PO ${po?.id}`,
+    };
+    return realOrStub({
+      scope: 'qbo',
+      label: `createBillFromPO(${po?.id})`,
+      predicate: () => isConfigured() || viaBackendProxy(),
+      real: async () => {
+        const { Bill } = await callQbo({ entity: 'bill', body });
+        db.insert('audit_log', { id: uid('aud'), kind: 'qbo.bill.created', ref_id: po?.id, payload: { bill_id: Bill.Id, amount: Bill.TotalAmt } });
+        return { id: Bill.Id, amount: Bill.TotalAmt };
+      },
+      stub: async () => {
+        await delay(220, 460);
+        db.insert('audit_log', { id: uid('aud'), kind: 'qbo.bill.created', ref_id: po?.id, payload: { stub: true, amount: total } });
+        return { id: `STUB-bill-${po?.id}`, amount: total, stub: true };
+      },
+    });
+  },
+
   /** Health/auth ping. */
   async ping() {
     return realOrStub({

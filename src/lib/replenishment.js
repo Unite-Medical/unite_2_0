@@ -151,7 +151,8 @@ export async function draftPurchaseOrders({ rows = null, created_by = 'run-rate-
   for (const [vendor, lines] of Object.entries(byVendor)) {
     const id = uid('po');
     const total = +(lines.reduce((a, l) => a + l.suggested_qty * (l.cogs || 0), 0)).toFixed(2);
-    const lineItems = lines.map((l) => ({ sku: l.sku, name: l.name, qty: l.suggested_qty, cost: l.cogs || 0 }));
+    const lineItems = lines.map((l) => ({ sku: l.sku, name: l.name, qty: l.suggested_qty, cost: l.cogs || 0, received_qty: 0 }));
+    const vendorRow = db.list('vendors').find((v) => v.name === vendor);
 
     const wms = await cin7.createPO({
       vendor_name: vendor,
@@ -162,11 +163,14 @@ export async function draftPurchaseOrders({ rows = null, created_by = 'run-rate-
     const row = db.insert('purchase_orders', {
       id,
       vendor_name: vendor,
+      vendor_id: vendorRow?.id || null,
       status: 'draft',
       created_by,
       line_items: lineItems,
       total_cost: total,
       wms_po_id: wms?.id || null,
+      qbo_po_id: null,
+      qbo_bill_id: null,
       expected_delivery: new Date(Date.now() + DEFAULTS.lead_time_days * 86400000).toISOString(),
     });
     db.insert('audit_log', { id: uid('aud'), kind: 'replenish.po_drafted', ref_id: id, payload: { vendor, lines: lineItems.length, total } });

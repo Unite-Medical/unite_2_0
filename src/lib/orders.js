@@ -5,9 +5,10 @@
  *     1. create order + line items in DB
  *     2. deduct inventory (FIFO across warehouses)
  *     3. our WMS: create label, get tracking #
- *     4. our billing system Online: create draft invoice
- *     5. Stripe: create payment intent (if card)
- *     6. write audit log entries
+ *     4. QBO: create invoice (books) + canonical AR row
+ *     5. Stripe: hosted invoice for net-terms/ACH (collection rail),
+ *        or PaymentIntent + QBO payment for card (paid up front)
+ *     6. CRM sync + write audit log entries
  *
  * Returns the created order so the UI can navigate to confirmation.
  */
@@ -20,6 +21,25 @@ function pickWarehouse(sku, qty) {
   const rows = db.list('inventory', { where: { sku }, orderBy: 'on_hand', dir: 'desc' });
   for (const r of rows) if (r.on_hand >= qty) return r;
   return rows[0] || null;
+}
+
+const TERMS_DAYS = { net30: 30, net60: 60, ach: 7, card: 0, wire: 7, mspv: 30 };
+function dueDateFor(terms) {
+  return new Date(Date.now() + (TERMS_DAYS[terms] ?? 30) * 86400000).toISOString().slice(0, 10);
+}
+
+/**
+ * Resolve (and cache) the QBO Customer id for an org so we don't create
+ * a duplicate QBO customer on every order. Caches onto the org row.
+ */
+async function resolveQboCustomerId(customer) {
+  const org = db.get('organizations', customer.org_id);
+  if (org?.qbo_customer_id) return org.qbo_customer_id;
+  const result = await qbo.upsertCustomer({
+    org: { id: customer.org_id, name: customer.org_name, segment: customer.segment, tier: org?.tier },
+  });
+  if (org && result?.id) db.update('organizations', org.id, { qbo_customer_id: result.id });
+  return result?.id;
 }
 
 export async function placeOrder({ customer, address, items, payment_terms = 'net30', payment_method = 'ach', po_number = null, ship_method = 'fedex_ground', notes = '' }) {
@@ -80,23 +100,62 @@ export async function placeOrder({ customer, address, items, payment_terms = 'ne
 
   db.update('orders', id, { tracking_number: label.tracking_number, carrier: label.carrier, ship_from_warehouse: primaryWarehouse });
 
-  const invoice = await qbo.createInvoice({ order_id: id, customer_id: customer.org_id, amount: total, terms: payment_terms });
-  db.insert('invoices', {
-    id: invoice.doc_number,
+  // Line items in the shape both QBO + Stripe clients expect.
+  const lineItems = items.map((it) => ({ qty: it.qty, unit_price: it.unit_price, name: it.name, product_sku: it.sku }));
+  const dueDate = dueDateFor(payment_terms);
+
+  // 1) Books: QBO invoice (CFO's accounting source of truth).
+  const qboCustomerId = await resolveQboCustomerId(customer);
+  const qboInvoice = await qbo.createInvoice({
+    order_id: id,
+    qbo_customer_id: qboCustomerId,
+    items: lineItems,
+    terms: payment_terms,
+    due_date: new Date(dueDate),
+  });
+
+  // 2) Collection rail: Stripe invoice (send_invoice) for net-terms / ACH.
+  //    Card pays up front via PaymentIntent below; wire is collected
+  //    out-of-band, so neither needs a Stripe hosted invoice.
+  let stripeInvoice = null;
+  if (payment_method !== 'card' && payment_method !== 'wire') {
+    try {
+      const stripeCustomer = await stripe.upsertCustomer({
+        org: { id: customer.org_id, name: customer.org_name, billing_email: customer.email, segment: customer.segment },
+      });
+      stripeInvoice = await stripe.createInvoice({
+        stripe_customer_id: stripeCustomer.id,
+        line_items: lineItems,
+        terms: payment_terms,
+        order_id: id,
+      });
+    } catch (err) {
+      db.insert('audit_log', { id: uid('aud'), kind: 'order.stripe_invoice_failed', ref_id: id, payload: { error: err.message } });
+    }
+  }
+
+  // 3) Canonical AR record the portal + finance dashboard read from.
+  const invoiceRow = db.insert('invoices', {
+    id: qboInvoice.doc_number,
     order_id: id,
     customer_id: customer.org_id,
     amount: total,
     terms: payment_terms,
     status: payment_method === 'card' ? 'pending' : 'open',
-    due_date: invoice.due_date,
-    qbo_id: invoice.id,
+    due_date: qboInvoice.due_date || dueDate,
+    qbo_id: qboInvoice.qbo_invoice_id,
+    stripe_invoice_id: stripeInvoice?.stripe_invoice_id || null,
+    hosted_invoice_url: stripeInvoice?.hosted_invoice_url || null,
   });
 
   let paymentIntent = null;
   if (payment_method === 'card') {
-    paymentIntent = await stripe.createPaymentIntent({ amount: Math.round(total * 100), currency: 'usd', metadata: { order_id: id } });
+    paymentIntent = await stripe.createPaymentIntent({ amount: total, currency: 'usd', metadata: { order_id: id } });
     await stripe.confirmPaymentIntent(paymentIntent.id);
-    await qbo.recordPayment({ invoice_id: invoice.id, amount: total, method: 'card' });
+    await qbo.recordPayment({ qbo_invoice_id: qboInvoice.qbo_invoice_id, amount: total, method: 'card' });
+    db.update('invoices', invoiceRow.id, { status: 'paid', balance: 0, paid_at: new Date().toISOString(), payment_method: 'card' });
+    db.update('orders', id, { payment_status: 'paid' });
+    db.insert('payments', { id: uid('pmt'), invoice_id: invoiceRow.id, order_id: id, amount: total, method: 'card', source: 'stripe', received_at: new Date().toISOString() });
   }
 
   // CRM sync (brief §6: order data flows bidirectionally with the CRM).
@@ -125,5 +184,5 @@ export async function placeOrder({ customer, address, items, payment_terms = 'ne
 
   db.insert('audit_log', { id: uid('aud'), kind: 'order.placed', ref_id: id, payload: { total, items: items.length, payment_method } });
 
-  return { order: db.get('orders', id), shipment_id: `shp_${id}`, invoice_id: invoice.doc_number, payment_intent_id: paymentIntent?.id || null };
+  return { order: db.get('orders', id), shipment_id: `shp_${id}`, invoice_id: invoiceRow.id, payment_intent_id: paymentIntent?.id || null };
 }
