@@ -11,6 +11,7 @@ const Catalog = lazy(() => import('./pages/Catalog.jsx').then((m) => ({ default:
 const Quote = lazy(() => import('./pages/Quote.jsx').then((m) => ({ default: m.Quote })));
 const QuoteNew = lazy(() => import('./pages/QuoteNew.jsx').then((m) => ({ default: m.QuoteNew })));
 const QuotePrint = lazy(() => import('./pages/QuotePrint.jsx').then((m) => ({ default: m.QuotePrint })));
+const QuoteAccept = lazy(() => import('./pages/QuoteAccept.jsx').then((m) => ({ default: m.QuoteAccept })));
 const Surplus = lazy(() => import('./pages/Surplus.jsx').then((m) => ({ default: m.Surplus })));
 const SurplusMarket = lazy(() => import('./pages/SurplusMarket.jsx').then((m) => ({ default: m.SurplusMarket })));
 const ShortageMatch = lazy(() => import('./pages/ShortageMatch.jsx').then((m) => ({ default: m.ShortageMatch })));
@@ -77,6 +78,8 @@ const AdminDigest = lazy(() => import('./pages/admin/AdminDigest.jsx').then((m) 
 const AdminFinance = lazy(() => import('./pages/admin/AdminFinance.jsx').then((m) => ({ default: m.AdminFinance })));
 const AdminDiscovery = lazy(() => import('./pages/admin/AdminDiscovery.jsx').then((m) => ({ default: m.AdminDiscovery })));
 const AdminCompliance = lazy(() => import('./pages/admin/AdminCompliance.jsx').then((m) => ({ default: m.AdminCompliance })));
+const AdminWebhooks = lazy(() => import('./pages/admin/AdminWebhooks.jsx').then((m) => ({ default: m.AdminWebhooks })));
+const AdminFulfillment = lazy(() => import('./pages/admin/AdminFulfillment.jsx').then((m) => ({ default: m.AdminFulfillment })));
 
 export default function App() {
   return (
@@ -91,6 +94,7 @@ export default function App() {
           <Route path="/quote" element={<Quote />} />
           <Route path="/quote/new" element={<QuoteNew />} />
           <Route path="/quotes/:id/print" element={<QuotePrint />} />
+          <Route path="/q/:token" element={<QuoteAccept />} />
           <Route path="/surplus" element={<Surplus />} />
           <Route path="/surplus/market" element={<SurplusMarket />} />
           <Route path="/shortage-list" element={<ShortageMatch />} />
@@ -182,6 +186,8 @@ export default function App() {
           <Route path="/admin/finance"          element={<RequireAdmin><AdminFinance /></RequireAdmin>} />
           <Route path="/admin/discovery"        element={<RequireAdmin><AdminDiscovery /></RequireAdmin>} />
           <Route path="/admin/compliance"       element={<RequireAdmin><AdminCompliance /></RequireAdmin>} />
+          <Route path="/admin/fulfillment"      element={<RequireAdmin><AdminFulfillment /></RequireAdmin>} />
+          <Route path="/admin/webhooks"         element={<RequireAdmin><AdminWebhooks /></RequireAdmin>} />
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

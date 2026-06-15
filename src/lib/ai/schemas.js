@@ -205,7 +205,7 @@ export const column_map = {
         field:        p.enum('Canonical field name.', [
           'product_name', 'fda_product_code', 'hts_code', 'fob_price_usd',
           'moq', 'lead_time_days', 'country_of_origin', 'description',
-          'gtin', 'packaging', 'target_quantity', 'notes',
+          'gtin', 'packaging', 'target_quantity', 'notes', 'currency',
         ]),
         column_index: p.integer('0-based index of the source header.'),
         confidence:   p.number('0..1 confidence.'),
@@ -230,6 +230,45 @@ export const translate_lines = {
   }, ['translations']),
 };
 
+// ---- 12. quoting/fda_classify ---------------------------------------------
+
+export const fda_classify = {
+  tool_name: 'propose_fda_code',
+  description: 'Propose an FDA product code + device class for a medical product.',
+  input_schema: p.object('FDA classification proposal.', {
+    primary: p.object('Best-guess FDA classification.', {
+      product_code: p.string('3-letter FDA product code, e.g. "FMF", "KGN".'),
+      device_name:  p.string('FDA device name for that code.'),
+      device_class: p.enum('FDA device class.', ['I', 'II', 'III', 'unclassified']),
+      regulation_number: p.string('21 CFR regulation number, or empty string.'),
+      confidence:   p.number('0..1 confidence.'),
+    }, ['product_code', 'device_name', 'device_class', 'confidence']),
+    alternates: p.array('Up to 2 alternate codes.',
+      p.object('Alternate FDA code.', {
+        product_code: p.string('3-letter code.'),
+        device_name:  p.string('Device name.'),
+        confidence:   p.number('0..1.'),
+      }, ['product_code', 'device_name', 'confidence']),
+    ),
+    reasoning: p.string('1-2 sentence justification.'),
+  }, ['primary', 'alternates', 'reasoning']),
+};
+
+// ---- 13. vendor/outreach_email_intl ---------------------------------------
+
+export const outreach_email_intl = {
+  tool_name: 'draft_intl_email',
+  description: 'Draft a vendor outreach email localized to the vendor\'s language.',
+  input_schema: p.object('Localized outreach draft.', {
+    language:      p.string('Target language name (e.g. "Simplified Chinese").'),
+    subject:       p.string('Subject line in the target language, ≤ 60 chars.'),
+    body:          p.string('Email body in the target language, plain text.'),
+    subject_en:    p.string('English translation of the subject.'),
+    body_en:       p.string('English translation of the body (for the rep).'),
+    signoff_name:  p.string('Sender display name.'),
+  }, ['language', 'subject', 'body', 'subject_en', 'body_en', 'signoff_name']),
+};
+
 // ---- Registry mapping prompt_key → schema ---------------------------------
 
 export const SCHEMA_BY_PROMPT_KEY = {
@@ -239,9 +278,11 @@ export const SCHEMA_BY_PROMPT_KEY = {
   'vendor/outreach_email':       outreach_email,
   'vendor/recall_notice':        recall_notice,
   'quoting/hts_classify':        hts_classify,
+  'quoting/fda_classify':        fda_classify,
   'quoting/cover_letter':        cover_letter,
   'quoting/column_map':          column_map,
   'quoting/translate_lines':     translate_lines,
+  'vendor/outreach_email_intl':  outreach_email_intl,
   'surplus/line_normalize':      surplus_normalize,
   'surplus/valuation':           surplus_valuation,
 };

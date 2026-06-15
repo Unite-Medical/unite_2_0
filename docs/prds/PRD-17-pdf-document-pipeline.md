@@ -2,7 +2,7 @@
 
 **Source:** CTO Brief §7 (quoting PDF), §4 (invoices, POs, packing slips)
 **Owner:** Alex (CTO)
-**Status:** draft
+**Status:** shipped (client-side) 2026-06-15 — zero-dep PDF engine (`src/lib/pdf.js`, validated with pypdf), branded templates for quote/invoice/PO/packing slip/compliance cert (`src/lib/documents.js`), versioned `documents` table, "Download PDF" on the quote print view. Server-side render + R2 storage/signed URLs deferred to PRD-01.
 **Depends on:** PRD-01 (backend for server-side rendering)
 **Blocks:** PRD-16 (quoting engine v3 needs branded PDFs), PRD-24 (zero-touch fulfillment needs auto-generated packing slips)
 

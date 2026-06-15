@@ -25,6 +25,7 @@ export const PROMPT_REGISTRY = {
   // ---- PRD-08 quoting ----
   'quoting/cover_letter': { path: 'quoting/cover_letter.v1.md', model: 'claude-sonnet-4-6', maxTokens: 800, temperature: 0.3 },
   'quoting/hts_classify': { path: 'quoting/hts_classify.v1.md', model: 'claude-sonnet-4-6', maxTokens: 1024, temperature: 0 },
+  'quoting/fda_classify': { path: 'quoting/fda_classify.v1.md', model: 'claude-sonnet-4-6', maxTokens: 1024, temperature: 0 },
   'quoting/column_map': { path: 'quoting/column_map.v1.md', model: 'claude-sonnet-4-6', maxTokens: 1024, temperature: 0 },
   'quoting/translate_lines': { path: 'quoting/translate_lines.v1.md', model: 'claude-sonnet-4-6', maxTokens: 2048, temperature: 0 },
 
@@ -37,6 +38,7 @@ export const PROMPT_REGISTRY = {
 
   // ---- PRD-07 vendor ----
   'vendor/outreach_email': { path: 'vendor/outreach_email.v1.md', model: 'claude-sonnet-4-6', maxTokens: 600, temperature: 0.3 },
+  'vendor/outreach_email_intl': { path: 'vendor/outreach_email_intl.v1.md', model: 'claude-sonnet-4-6', maxTokens: 900, temperature: 0.3 },
   'vendor/recall_notice': { path: 'vendor/recall_notice.v1.md', model: 'claude-sonnet-4-6', maxTokens: 800, temperature: 0.1 },
 
   // ---- PRD-10 surplus ----

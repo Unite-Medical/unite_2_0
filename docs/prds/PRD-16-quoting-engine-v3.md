@@ -2,7 +2,7 @@
 
 **Source:** CTO Brief §7 — "This is the system that no competitor at Unite Medical's scale offers as a customer-facing tool. It transforms Unite Medical from a distributor into an intelligent sourcing platform."
 **Owner:** Alex (CTO) — this is the company
-**Status:** draft
+**Status:** mostly shipped (client-side) 2026-06-15 — 6-component landed cost, tier margins + floor, freight-mode comparison (PRD-08/16), branded PDF (PRD-17), FDA auto-classification of un-coded lines (`classifyMissingFdaCodes`), tokenized acceptance (`/q/:token` → order), and multi-vendor compare (`compareVendorOffers`). Live USITC/Flexport/ImportGenius feeds deferred to their integration PRDs.
 **Depends on:** PRD-01, PRD-03 (Flexport live), PRD-07 (vendor approval live), PRD-08 (v2 foundation), PRD-11 (Claude), PRD-15 (ImportGenius), PRD-17 (PDF pipeline), PRD-18 (XLSX support)
 **Blocks:** "Unite Source" product launch — the thing that makes Unite Medical a technology company, not just a distributor
 

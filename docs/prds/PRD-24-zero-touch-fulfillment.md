@@ -2,7 +2,7 @@
 
 **Source:** CTO Brief §1 — "A customer places an order → inventory updates, invoice auto-creates in QBO, ShipStation generates label, tracking number returns to customer portal — zero human touchpoints"
 **Owner:** Alex (CTO)
-**Status:** draft
+**Status:** shipped (client-side) 2026-06-15 — orchestrator (`src/lib/fulfillment.js`) runs validate→reserve→payment→invoice→shipping→packing slip→notify→delivered with retry + per-integration circuit breakers, backorders, auto-fulfill on restock, and returns/RMAs. Observable at `/admin/fulfillment`. Server worker + true async retry queue deferred to PRD-01/20.
 **Depends on:** PRD-01, PRD-02 (QBO), PRD-03 (Flexport), PRD-04 (Cin7/WMS), PRD-09 (Stripe), PRD-14 (B2B portal), PRD-17 (PDF pipeline), PRD-20 (webhook event bus)
 **Blocks:** the north star — "enter data once, sync everywhere"
 

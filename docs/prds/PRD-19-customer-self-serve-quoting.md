@@ -2,7 +2,7 @@
 
 **Source:** CTO Brief §7 — "customer-facing tool" / "intelligent sourcing platform"
 **Owner:** Alex (CTO)
-**Status:** draft
+**Status:** partial (client-side) 2026-06-15 — tokenized quote acceptance page (`/q/:token`, `src/lib/quoteAcceptance.js`) converts a sent quote into an order with no login, and FDA product-code classification (`quoting/fda_classify` prompt + schema + stub) fills un-coded lines. A full self-serve catalog-quote builder (`/portal/quote`) remains for a focused pass.
 **Depends on:** PRD-01, PRD-14 (B2B portal auth + role-based access), PRD-16 (quoting engine v3), PRD-17 (PDF generation)
 **Blocks:** "Unite Source" public launch as a named product
 

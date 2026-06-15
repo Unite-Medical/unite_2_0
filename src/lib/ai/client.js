@@ -92,6 +92,12 @@ const STUBS = {
     };
   },
   'quoting/column_map': () => ({ mappings: [] }),
+  'quoting/fda_classify': (input) => {
+    const codes = [['FMF', 'Examination glove', 'I'], ['KGN', 'Surgical apparel', 'II'], ['LRO', 'Wheelchair', 'I'], ['BSZ', 'Stethoscope', 'I'], ['DXN', 'Infusion pump', 'II']];
+    const i = (input.product_name?.length || 0) % codes.length;
+    const [code, name, klass] = codes[i];
+    return { primary: { product_code: code, device_name: name, device_class: klass, regulation_number: '', confidence: 0.5 }, alternates: [], reasoning: 'Heuristic fallback (no API key configured).' };
+  },
   'quoting/translate_lines': (input) => {
     let lines = [];
     try { lines = JSON.parse(input.lines || '[]'); } catch { lines = []; }
@@ -102,6 +108,7 @@ const STUBS = {
   'fathom/extract_insights':     () => ({ objections: [], competitors: [], pricing: [], coaching_flags: [], next_step: '', sentiment_score: 3, sentiment_reason: 'no API key configured' }),
   'digest/ceo_morning_brief':    () => ({ bullets: [{ priority: 1, headline: 'Daily digest unavailable', summary: 'Anthropic API key not configured.', why_it_matters: 'Wire VITE_ANTHROPIC_API_KEY (dev) or ANTHROPIC_API_KEY (prod) to enable.', deep_link: '/admin/integrations/ai', severity: 'attention' }] }),
   'vendor/outreach_email':       (input) => ({ subject: `Sourcing partnership — ${input.company_name || 'your company'}`, body: 'Stub outreach email body.', signoff_name: 'Damon Reed' }),
+  'vendor/outreach_email_intl':  (input) => ({ language: input.language || 'English', subject: `Sourcing partnership — ${input.company_name || 'your company'}`, body: 'Stub localized outreach email body.', subject_en: `Sourcing partnership — ${input.company_name || 'your company'}`, body_en: 'Stub localized outreach email body (English).', signoff_name: 'Damon Reed' }),
   'vendor/recall_notice':        () => ({ subject: 'Recall notice', body: 'Stub recall notice body.' }),
   'surplus/line_normalize':      (input) => ({ lines: (input.lines || []).map((l, idx) => ({ index: idx, normalized_name: l.raw_description, category: 'Other', condition_hint: 'unknown', expiry_iso: null, qty: l.qty, gtin: null, flags: [] })) }),
   'surplus/valuation':           (input) => ({ valuations: (input.normalized_lines_json?.lines || []).map((l) => ({ index: l.index, decision: 'pass', decision_reason: 'no API key configured', est_retail_usd: 0, offer_usd_per_unit: 0, offer_usd_total: 0, confidence: 0 })) }),

@@ -18,12 +18,8 @@
  */
 
 import { useEffect } from 'react';
-import { API_BASE, warn } from './external/_http.js';
-import { stripe } from './external/stripe.js';
-import { flexport } from './external/flexport.js';
-import { shipstation } from './external/shipstation.js';
-import { fathom } from './external/fathom.js';
-import { calendly } from './external/calendly.js';
+import { API_BASE } from './external/_http.js';
+import { ingestEvent, processDue } from './webhookBus.js';
 
 const SEQ_KEY = 'um.webhook_bridge.seq.v1';
 const POLL_MS = 20_000;
@@ -35,38 +31,31 @@ function saveSeq(seq) {
   try { localStorage.setItem(SEQ_KEY, String(seq)); } catch { /* private mode */ }
 }
 
-async function dispatch(evt) {
-  const { source, payload } = evt;
-  if (source === 'stripe') return stripe.handleWebhookEvent(payload);
-  if (source === 'flexport') return flexport.handleWebhookEvent(payload);
-  // ShipStation events arrive hydrated as { notice, resource }; the
-  // client dispatcher consumes the original notice shape.
-  if (source === 'shipstation') return shipstation.handleWebhookEvent(payload?.notice || payload);
-  if (source === 'fathom') return fathom.handleCallCompleted(payload);
-  if (source === 'calendly') return calendly.handleWebhookEvent(payload);
-  return { ok: false, reason: `unknown_source_${source}` };
-}
-
+/**
+ * Poll the serverless buffer and hand every event to the durable bus
+ * (idempotent record → dispatch → retry/dead-letter). Also drives the
+ * retry timer for events that previously failed.
+ */
 export async function drainWebhookEvents() {
-  if (!API_BASE) return { drained: 0 };
+  // Always advance any due retries, even when offline.
+  let retried = 0;
+  try { retried = await processDue(); } catch { /* non-fatal */ }
+
+  if (!API_BASE) return { drained: 0, retried };
   let data;
   try {
     const res = await fetch(`${API_BASE}/hooks/events?since=${lastSeq()}`);
-    if (!res.ok) return { drained: 0 };
+    if (!res.ok) return { drained: 0, retried };
     data = await res.json();
   } catch {
-    return { drained: 0 }; // dev server / offline — nothing to drain
+    return { drained: 0, retried }; // dev server / offline
   }
   const events = data?.events || [];
   for (const evt of events) {
-    try {
-      await dispatch(evt);
-    } catch (err) {
-      warn('webhookBridge', `dispatch ${evt.source}/${evt.type} failed: ${err.message}`);
-    }
-    saveSeq(evt.seq);
+    try { await ingestEvent(evt); } catch { /* bus records failures itself */ }
+    if (evt.seq != null) saveSeq(evt.seq);
   }
-  return { drained: events.length };
+  return { drained: events.length, retried };
 }
 
 /** Mount once inside the admin shell. */

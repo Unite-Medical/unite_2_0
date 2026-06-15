@@ -2,7 +2,7 @@
 
 **Source:** CTO Brief §7 — "A foreign vendor uploads their product template" / "product description in English or Chinese"
 **Owner:** Alex (CTO)
-**Status:** draft
+**Status:** shipped (client-side) 2026-06-15 — exchange-rate client (`src/lib/external/exchangeRates.js`) with live fetch + 12h cache + offline fallback, currency aliases/symbol detection, per-line FOB→USD normalization in the vendor-sheet ingest, and a localized vendor-outreach prompt (`vendor/outreach_email_intl`). Translation already shipped in PRD-18.
 **Depends on:** PRD-01, PRD-11 (Claude for translation), PRD-16 (quoting engine v3), PRD-18 (XLSX parsing)
 **Blocks:** nothing critical — enhances vendor onboarding velocity
 

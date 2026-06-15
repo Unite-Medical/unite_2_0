@@ -17,7 +17,7 @@ import { seed } from './seed.js';
  */
 
 const STORAGE_KEY = 'um.db.v1';
-const SCHEMA_VERSION = 12;
+const SCHEMA_VERSION = 13;
 
 const TABLES = [
   'profiles', 'organizations', 'organization_users', 'addresses',
@@ -55,6 +55,16 @@ const TABLES = [
   'surplus_offers',
   // Brief §2 #5: Stripe Connect commission payouts to 1099 reps
   'rep_payouts',
+  // PRD-17: generated PDF artifacts (quotes, invoices, POs, packing slips, certs)
+  'documents',
+  // PRD-20: webhook event bus (idempotency + retry + dead-letter)
+  'webhook_events',
+  // PRD-24: zero-touch fulfillment pipeline + backorders + returns
+  'fulfillment_pipeline', 'backorders', 'rmas',
+  // PRD-22: cached FX rates for multi-currency vendor sheets
+  'exchange_rates',
+  // PRD-14: per-tier SKU pricing + per-segment catalog visibility
+  'tier_pricing', 'catalog_visibility',
 ];
 
 function load() {

@@ -47,11 +47,88 @@ export function qtyBreakPrice(sku, qty = 1, fallback = null) {
 export function priceFor({ sku, qty = 1, basePrice = null, org = undefined }) {
   const resolvedOrg = org === undefined ? auth.org() : org;
   const list = qtyBreakPrice(sku, qty, basePrice) ?? basePrice ?? 0;
+  const tier = resolvedOrg?.tier || 'C';
+
+  // PRD-14: an explicit per-SKU contract price for this tier wins over the
+  // generic tier multiplier. Honors an optional min_qty on the contract.
+  const contract = tierPriceOverride(sku, tier, qty);
+  if (contract != null) {
+    return {
+      unit_price: +Number(contract).toFixed(2),
+      list_price: +Number(list).toFixed(2),
+      tier,
+      tier_discount_pct: list > 0 ? +((1 - contract / list) * 100).toFixed(1) : 0,
+      contract: true,
+    };
+  }
+
   const mult = tierMultiplier(resolvedOrg);
   return {
     unit_price: +(list * mult).toFixed(2),
     list_price: +Number(list).toFixed(2),
-    tier: resolvedOrg?.tier || 'C',
+    tier,
     tier_discount_pct: +((1 - mult) * 100).toFixed(1),
+    contract: false,
   };
+}
+
+// ---------------------------------------------------------------------------
+// PRD-14 · per-SKU tier contracts (`tier_pricing` table)
+// ---------------------------------------------------------------------------
+
+/**
+ * Look up a negotiated per-unit price for (sku, tier) honoring an
+ * optional `min_qty`. Returns the price or null when no contract exists.
+ * Rows: { sku, tier, unit_price, min_qty }.
+ */
+export function tierPriceOverride(sku, tier, qty = 1) {
+  if (!sku || !tier) return null;
+  const rows = db.list('tier_pricing', { where: { sku, tier } });
+  if (!rows.length) return null;
+  const eligible = rows
+    .filter((r) => qty >= (r.min_qty || 0))
+    .sort((a, b) => (b.min_qty || 0) - (a.min_qty || 0));
+  return eligible[0]?.unit_price ?? null;
+}
+
+// ---------------------------------------------------------------------------
+// PRD-14 · catalog visibility gating (`catalog_visibility` table)
+// ---------------------------------------------------------------------------
+
+/**
+ * Whether a product is visible to an org/segment. Default-open: a product
+ * is visible unless an explicit rule hides it. Rules:
+ *   { sku?, category?, segment?, tier?, mode: 'hide'|'show_only' }
+ * - 'hide'      → hidden from the matched segment/tier
+ * - 'show_only' → visible ONLY to the matched segment/tier
+ */
+export function isProductVisible(product, org = undefined) {
+  const resolvedOrg = org === undefined ? auth.org() : org;
+  const segment = resolvedOrg?.segment || 'public';
+  const tier = resolvedOrg?.tier || 'C';
+  const rules = db.list('catalog_visibility');
+  if (!rules.length) return true;
+
+  const matches = (r) =>
+    (!r.sku || r.sku === product.sku)
+    && (!r.category || r.category === product.category);
+
+  // show_only rules: if any exist for this product, the org must match one.
+  const showOnly = rules.filter((r) => r.mode === 'show_only' && matches(r));
+  if (showOnly.length) {
+    const allowed = showOnly.some((r) => (!r.segment || r.segment === segment) && (!r.tier || r.tier === tier));
+    if (!allowed) return false;
+  }
+
+  // hide rules: any matching hide for this org hides the product.
+  const hidden = rules.some((r) => r.mode === 'hide' && matches(r)
+    && (!r.segment || r.segment === segment) && (!r.tier || r.tier === tier));
+  return !hidden;
+}
+
+/** Filter a product list down to what the org may see. */
+export function filterVisibleProducts(products, org = undefined) {
+  const rules = db.list('catalog_visibility');
+  if (!rules.length) return products;
+  return products.filter((p) => isProductVisible(p, org));
 }

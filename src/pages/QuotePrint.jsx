@@ -18,6 +18,7 @@ import { D } from '../tokens.js';
 import { db } from '../lib/db.js';
 import { fmt } from '../lib/format.js';
 import { useSEO } from '../lib/seo.js';
+import { generateDocument } from '../lib/documents.js';
 
 const PAGE_STYLE = `
   @media print {
@@ -101,8 +102,11 @@ export function QuotePrint() {
       <div className="um-print-sheet">
         {/* Top toolbar (hidden in print) */}
         <div className="um-no-print" style={{ display: 'flex', gap: 10, marginBottom: 20, alignItems: 'center', flexWrap: 'wrap' }}>
-          <button type="button" className="um-print-cta" onClick={() => window.print()} style={{ background: D.plum, color: D.paper }}>
-            Print / Save as PDF
+          <button type="button" className="um-print-cta" onClick={() => generateDocument({ type: 'quote', ref_id: id, view: isInternal ? 'internal' : 'customer', download: true })} style={{ background: D.plum, color: D.paper }}>
+            Download PDF
+          </button>
+          <button type="button" className="um-print-cta" onClick={() => window.print()} style={{ background: 'transparent', color: D.ink, border: `1.5px solid ${D.ink}` }}>
+            Print
           </button>
           <Link to={isInternal ? `/quotes/${id}/print` : `/quotes/${id}/print?view=internal`} style={{ padding: '10px 18px', borderRadius: 999, border: `1.5px solid ${D.ink}`, color: D.ink, textDecoration: 'none', fontSize: 14 }}>
             {isInternal ? 'Switch to customer view' : 'Switch to internal view'}

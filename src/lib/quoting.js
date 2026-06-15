@@ -14,8 +14,43 @@
 
 import { db } from './db.js';
 import { openfda, hts, flexport, claude } from './services.js';
-import { delay } from './format.js';
+import { delay, uid } from './format.js';
 import { loadMarginPolicy, marginForTier, applyMargin } from './marginPolicy.js';
+import { ai } from './ai/client.js';
+
+/**
+ * Fill missing FDA product codes via Claude (PRD-19). Lines flagged
+ * `fda_inferred` (no code supplied by the vendor) get a best-guess code
+ * + device class so the openFDA validation step has something real to
+ * check. Best-effort: failures leave the inferred default in place.
+ */
+export async function classifyMissingFdaCodes(lines, { onProgress = () => {} } = {}) {
+  const targets = lines.filter((l) => l.fda_inferred);
+  if (targets.length === 0) return { classified: 0 };
+  onProgress({ step: 'fda_classify', label: `Classifying ${targets.length} line(s) with no FDA code…` });
+  let classified = 0;
+  for (const line of targets) {
+    try {
+      const { data } = await ai.run('quoting/fda_classify', {
+        input: {
+          product_name: line.name,
+          description: line.description || '',
+          country_of_origin: line.country_of_origin || '',
+          hts_code: line.hts || '',
+        },
+        source: 'quoting-engine',
+      });
+      if (data?.primary?.product_code) {
+        line.fda_product_code = String(data.primary.product_code).toUpperCase();
+        line.device_class = data.primary.device_class;
+        line.fda_confidence = data.primary.confidence;
+        line.fda_classified = true;
+        classified += 1;
+      }
+    } catch { /* keep inferred default */ }
+  }
+  return { classified };
+}
 
 export const TARGET_MARGIN = 0.60; // legacy default (tier C) — kept for callers/tests
 
@@ -54,6 +89,7 @@ export async function runQuotingEngine({
   contact_name = 'Mariah Patel',
   customer_tier = 'C',
   warehouse_receiving_per_unit = WAREHOUSE_RECEIVING_PER_UNIT,
+  classifyFda = true,
   lines = [],
   onProgress = () => {},
 }) {
@@ -64,6 +100,9 @@ export async function runQuotingEngine({
 
   onProgress({ step: 'parse', label: `Parsed ${lines.length} line items` });
   await delay(180, 300);
+
+  // 0) Fill missing FDA codes (PRD-19) before validation.
+  if (classifyFda) await classifyMissingFdaCodes(lines, { onProgress });
 
   // 1) FDA validation
   onProgress({ step: 'openfda', label: 'Validating FDA product codes' });
@@ -157,6 +196,7 @@ export async function runQuotingEngine({
     freight_valid_until: freight.valid_until,
     cover_letter: letter.content,
     status: 'draft',
+    acceptance_token: `${uid('qt')}-${Math.random().toString(36).slice(2, 12)}`,
     valid_until: new Date(Date.now() + (policy.quote_validity_days || 14) * 86400000).toISOString(),
     eta: etaIso,
   });
@@ -165,6 +205,56 @@ export async function runQuotingEngine({
   onProgress({ step: 'done', label: `Quote ${quoteId} drafted` });
 
   return { quote, lines: priced, freight, dutyRates, fda };
+}
+
+/**
+ * Multi-vendor comparison (PRD-16 §8 stretch). Given priced line sets
+ * from several vendors, group by product (normalized name or GTIN) and
+ * pick the cheapest landed cost per product, reporting the savings vs the
+ * most expensive offer. Pure + synchronous — feeds a compare UI.
+ *
+ * @param {{ vendor:string, lines:Array }[]} offers
+ * @returns {{ products: Array, total_best_landed:number, total_savings:number }}
+ */
+export function compareVendorOffers(offers = []) {
+  const groups = new Map();
+  for (const offer of offers) {
+    for (const line of offer.lines || []) {
+      const key = (line.gtin || line.name || '').toString().trim().toLowerCase();
+      if (!key) continue;
+      if (!groups.has(key)) groups.set(key, { product: line.name, gtin: line.gtin || null, candidates: [] });
+      groups.get(key).candidates.push({
+        vendor: offer.vendor,
+        landed_per_unit: Number(line.landed_per_unit ?? line.fob) || 0,
+        fob: Number(line.fob) || 0,
+        lead_time_days: line.lead_time_days ?? null,
+        sell_per_unit: line.sell_per_unit ?? null,
+      });
+    }
+  }
+
+  const products = [];
+  let totalBest = 0;
+  let totalSavings = 0;
+  for (const g of groups.values()) {
+    const sorted = g.candidates.slice().sort((a, b) => a.landed_per_unit - b.landed_per_unit);
+    const best = sorted[0];
+    const worst = sorted[sorted.length - 1];
+    const savings = +(worst.landed_per_unit - best.landed_per_unit).toFixed(4);
+    totalBest += best.landed_per_unit;
+    totalSavings += savings;
+    products.push({
+      product: g.product,
+      gtin: g.gtin,
+      best_vendor: best.vendor,
+      best_landed: best.landed_per_unit,
+      offers: sorted,
+      savings_per_unit: savings,
+      savings_pct: worst.landed_per_unit > 0 ? +(savings / worst.landed_per_unit * 100).toFixed(1) : 0,
+    });
+  }
+
+  return { products, total_best_landed: +totalBest.toFixed(2), total_savings: +totalSavings.toFixed(2) };
 }
 
 export const SAMPLE_VENDOR_SHEET = {

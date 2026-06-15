@@ -2,7 +2,7 @@
 
 **Source:** CTO Brief §1 — "Enter data once — have it sync across all aspects of the company"
 **Owner:** Alex (CTO)
-**Status:** draft
+**Status:** shipped (client-side) 2026-06-15 — durable bus (`src/lib/webhookBus.js`): idempotent dedup by (source, event_id), exponential-backoff retries, dead-letter queue, operator replay. `webhook_events` table + `/admin/webhooks` console; the polling bridge now feeds the bus. Server-side queue (BullMQ/QStash) deferred to PRD-01.
 **Depends on:** PRD-01 (Fastify backend)
 **Blocks:** reliable operation of PRD-02 (QBO), PRD-03 (Flexport), PRD-04 (Cin7), PRD-09 (Stripe)
 

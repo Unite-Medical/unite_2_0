@@ -34,6 +34,7 @@ import { isValidGtin } from './external/gs1.js';
 import { readXlsxWorkbook } from './xlsx.js';
 import { ai } from './ai/client.js';
 import { detectTemplateVersion, TEMPLATE_VERSION } from './quoteTemplate.js';
+import { normalizeCurrency, convert } from './external/exchangeRates.js';
 
 export const REQUIRED_COLUMNS = ['product_name', 'fob_price_usd'];
 
@@ -56,6 +57,7 @@ export const COLUMN_ALIASES = {
   packaging:         ['packaging', 'pack size', 'pack', 'packing', 'carton', 'unit of measure', 'uom'],
   target_quantity:   ['target_quantity', 'target qty', 'quantity', 'qty', 'order quantity', 'requested qty'],
   notes:             ['notes', 'comments', 'comment', 'note'],
+  currency:          ['currency', 'ccy', 'cur', 'currency code', 'fob currency', 'price currency', 'unit'],
 };
 
 // PRD-18 §5 Layer 2 — multilingual aliases (Chinese / Korean / Vietnamese).
@@ -72,6 +74,7 @@ export const COLUMN_ALIASES_INTL = {
   packaging:         ['包装', '包装规格', '装箱', '포장', 'đóng gói', 'quy cách'],
   target_quantity:   ['数量', '订购数量', '需求数量', '수량', '주문수량', 'số lượng'],
   notes:             ['备注', '其他', '비고', 'ghi chú'],
+  currency:          ['币种', '货币', '通货', '통화', '화폐', 'tiền tệ', 'đơn vị tiền'],
 };
 
 // All canonical fields the AI mapper is allowed to choose from.
@@ -276,6 +279,23 @@ function hasNonAscii(s) {
   return false;
 }
 
+/**
+ * Detect a currency from a raw price cell (e.g. "¥12.50", "€9,90",
+ * "RMB 8.0"). Returns an ISO code or null. Used as a fallback when there
+ * is no dedicated currency column.
+ */
+function detectCurrencyToken(raw) {
+  const s = String(raw || '').trim();
+  if (!s) return null;
+  const symbol = s.match(/[$€£¥₩₹₫]/);
+  if (symbol) return normalizeCurrency(symbol[0]);
+  const code = s.match(/\b([A-Za-z]{3})\b/);
+  if (code) { const c = normalizeCurrency(code[1]); if (c) return c; }
+  const word = s.match(/(rmb|yuan|renminbi|euro|won|yen|dong|rupee|baht|ringgit|rupiah|peso|sterling)/i);
+  if (word) return normalizeCurrency(word[1]);
+  return null;
+}
+
 // ---------------------------------------------------------------------------
 // Core row parser
 // ---------------------------------------------------------------------------
@@ -328,7 +348,10 @@ export function parseVendorSheetRows({ rows, filename = 'sheet.csv', vendorHint 
     result.totals.rows += 1;
 
     const name = str(cell('product_name'));
-    const fob = num(cell('fob_price_usd'));
+    const rawFob = cell('fob_price_usd');
+    const fob = num(rawFob);
+    const currencyCell = str(cell('currency'));
+    const fobCurrency = normalizeCurrency(currencyCell) || detectCurrencyToken(rawFob) || 'USD';
     if (!name) { result.warnings.push(`Row ${r + 1}: missing product_name, skipped.`); result.totals.skipped += 1; continue; }
     if (fob === null) { result.warnings.push(`Row ${r + 1} (${name}): invalid fob_price_usd, skipped.`); result.totals.skipped += 1; continue; }
     if (fob <= 0) { result.warnings.push(`Row ${r + 1} (${name}): fob_price_usd must be > 0, skipped.`); result.totals.skipped += 1; continue; }
@@ -336,6 +359,7 @@ export function parseVendorSheetRows({ rows, filename = 'sheet.csv', vendorHint 
       result.warnings.push(`Row ${r + 1} (${name}): FOB $${fob} looks out of range — please double-check the unit price.`);
     }
 
+    const fdaProvided = Boolean(str(cell('fda_product_code')));
     const fda = str(cell('fda_product_code')).toUpperCase() || 'KGN';
     const hts = str(cell('hts_code'));
     const moq = int(cell('moq')) ?? 1;
@@ -362,10 +386,14 @@ export function parseVendorSheetRows({ rows, filename = 'sheet.csv', vendorHint 
       name,
       name_original: name,
       fob,
+      fob_currency: fobCurrency,
+      fob_original: fob,
+      converted: false,
       moq,
       target_qty,
       hts: hts || '6307.90',
       fda_product_code: fda,
+      fda_inferred: !fdaProvided,
       gtin: gtin || null,
       country_of_origin: country || null,
       description: description || null,
@@ -438,6 +466,41 @@ export async function translateLines(lines, { onProgress = () => {} } = {}) {
     // Translation is best-effort — fall back to original text.
   }
   return { lines, translations };
+}
+
+// ---------------------------------------------------------------------------
+// Multi-currency normalization (PRD-22)
+// ---------------------------------------------------------------------------
+
+/**
+ * Normalize every non-USD FOB price to USD via the exchange-rate client,
+ * preserving the original. Mutates + returns the same line objects.
+ *
+ * @returns {Promise<{ lines, converted: number, stale: boolean, currencies: string[] }>}
+ */
+export async function convertLineCurrencies(lines, { onProgress = () => {} } = {}) {
+  const foreign = lines.filter((l) => l.fob_currency && l.fob_currency !== 'USD');
+  const currencies = [...new Set(foreign.map((l) => l.fob_currency))];
+  if (foreign.length === 0) return { lines, converted: 0, stale: false, currencies: [] };
+
+  onProgress({ step: 'currency', label: `Converting ${foreign.length} line(s) from ${currencies.join(', ')} → USD…` });
+  let converted = 0;
+  let stale = false;
+  for (const line of foreign) {
+    try {
+      const { amount, rate, stale: s } = await convert(line.fob_original, line.fob_currency, 'USD');
+      line.fob = +amount.toFixed(4);
+      line.fob_usd = line.fob;
+      line.fx_rate = rate;
+      line.converted = true;
+      stale = stale || Boolean(s);
+      converted += 1;
+    } catch {
+      // Leave the original value; flag so the rep notices.
+      line.fx_error = true;
+    }
+  }
+  return { lines, converted, stale, currencies };
 }
 
 // ---------------------------------------------------------------------------
@@ -549,14 +612,26 @@ export async function ingestVendorFile(file, {
     rows: dataSheet.rows, filename, vendorHint, resolved,
   });
 
-  // 5) Translate non-English text.
+  // 5) Normalize foreign-currency prices to USD.
+  let currencyInfo = { converted: 0, stale: false, currencies: [] };
+  if (result.ok) {
+    currencyInfo = await convertLineCurrencies(result.lines, { onProgress });
+    if (currencyInfo.converted > 0) {
+      result.warnings.unshift(
+        `Converted ${currencyInfo.converted} line(s) from ${currencyInfo.currencies.join(', ')} to USD`
+        + (currencyInfo.stale ? ' using cached/offline FX rates — refresh before sending the quote.' : ' at live FX rates.'),
+      );
+    }
+  }
+
+  // 6) Translate non-English text.
   let translations = [];
   if (translate && result.ok) {
     const out = await translateLines(result.lines, { onProgress });
     translations = out.translations;
   }
 
-  // 6) Surface template-version + sheet metadata + warnings.
+  // 7) Surface template-version + sheet metadata + warnings.
   if (templateOutdated) {
     result.warnings.unshift(`This sheet is template ${templateVersion}; the current template is ${TEMPLATE_VERSION}. It parsed fine, but download the latest template to avoid surprises.`);
   }
@@ -569,6 +644,9 @@ export async function ingestVendorFile(file, {
     templateOutdated,
     translations,
     aiMapped,
+    currencyConverted: currencyInfo.converted,
+    fxStale: currencyInfo.stale,
+    currencies: currencyInfo.currencies,
   };
 }
 

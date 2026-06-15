@@ -2,7 +2,7 @@
 
 **Source:** CTO Brief §3 (Locksmith / Helium replacements), §6 (account approval), §10 (auth & roles)
 **Owner:** Alex (CTO) + VP Sales
-**Status:** draft
+**Status:** partial (client-side) 2026-06-15 — pricing data layer extended with per-SKU tier contracts (`tier_pricing` table + `tierPriceOverride`) and default-open catalog visibility gating (`catalog_visibility` table + `isProductVisible`/`filterVisibleProducts`) in `src/lib/pricing.js`. Rep portal (`/rep/*`) and additional `/account/*` surfaces remain for a focused pass.
 **Depends on:** PRD-01 (Auth + DB), PRD-02 (QBO customer mirror), PRD-09 (invoice payment UI)
 **Replaces:** Shopify apps — Locksmith, Helium Customer Fields, AAA Custom Form Builder
 
