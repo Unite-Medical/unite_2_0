@@ -122,6 +122,7 @@ export function Dashboard() {
                 {[
                   ['Build a quote (self-serve)', '/portal/quote'],
                   ['Your quotes', '/account/quotes'],
+                  ['Team & access', '/account/team'],
                   ['Open the catalog', '/catalog'],
                   ['Account settings', '/account/settings'],
                   ['Invoices & receipts', '/account/invoices'],

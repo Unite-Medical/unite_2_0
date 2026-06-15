@@ -295,6 +295,7 @@ Carried over from `docs/ALEX_THINGS.md` and the PRDs:
 | 2026-06-15 | **Schema v13** — added `documents`, `webhook_events`, `fulfillment_pipeline`, `backorders`, `rmas`, `exchange_rates`, `tier_pricing`, `catalog_visibility`. New runtime verifier `scripts/verify_orchestration.mjs` (27 checks across PRD-17/20/22/24/16/19, all PASS); lint + build green. |
 | 2026-06-15 | **PRD-19 shipped: self-serve quoting portal** — `/portal/quote` (`src/lib/selfServeQuote.js`): customers search the stocked catalog, add SKUs+quantities priced at their account tier (role-based pricing + tier contracts), generate a real quote, and accept it online at `/q/:token` — no rep, no login required. Un-stocked needs become sourcing-desk leads. |
 | 2026-06-15 | **PRD-14 portals shipped** — customer `/account/quotes` (quote history with accept/view) and the 1099 rep portal at `/rep`: attributed revenue + commission by window (30d/90d/1y), book of business, open quotes, recent orders, payout history, and a one-click Calendly intro link. Verifier now at 33 checks (all PASS). |
+| 2026-06-15 | **PRD-14 team management** — `/account/team` + `src/lib/team.js`: org members with role-gated owner/buyer/viewer access, invite teammates (pending profile that activates on signup), change roles, remove access; owner-only controls. Verifier at 38 checks (all PASS). |
 
 ### 🔑 New actions for Alex (added 2026-06-11)
 

@@ -20,6 +20,7 @@ import { runFulfillment, createReturn, PIPELINE_STEPS } from '../src/lib/fulfill
 import { compareVendorOffers } from '../src/lib/quoting.js';
 import { acceptQuote } from '../src/lib/quoteAcceptance.js';
 import { buildSelfServeQuote, requestSourcing } from '../src/lib/selfServeQuote.js';
+import { inviteTeammate, updateMemberRole, removeMember, listTeam } from '../src/lib/team.js';
 import { db } from '../src/lib/db.js';
 import { uid } from '../src/lib/format.js';
 
@@ -142,6 +143,19 @@ section('PRD-19 · self-serve quoting');
   ok(acc.ok, 'self-serve quote is acceptable end-to-end');
   const src = requestSourcing({ description: '5000 nitrile gloves size L', org: { id: 'org_x', name: 'X' } });
   ok(src.ok && src.lead, 'sourcing request captured as lead');
+}
+
+// ── PRD-14: team management ────────────────────────────────────────────────
+section('PRD-14 · team management');
+{
+  const orgId = 'org_atlsurgical';
+  const before = listTeam(orgId).length;
+  const inv = inviteTeammate({ orgId, email: `teammate_${uid('x')}@atlanta-surgical.com`, name: 'New Buyer', org_role: 'buyer' });
+  ok(inv.ok && inv.profile.status === 'invited', 'teammate invited (pending)');
+  ok(listTeam(orgId).length === before + 1, 'team list grew by one');
+  ok(updateMemberRole(inv.profile.id, 'viewer').profile.org_role === 'viewer', 'member role updated');
+  ok(inviteTeammate({ orgId, email: 'not-an-email', name: 'x' }).reason === 'bad_email', 'bad email rejected');
+  ok(removeMember(inv.profile.id).ok && listTeam(orgId).length === before, 'member removed');
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

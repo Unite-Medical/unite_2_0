@@ -2,7 +2,7 @@
 
 **Source:** CTO Brief §3 (Locksmith / Helium replacements), §6 (account approval), §10 (auth & roles)
 **Owner:** Alex (CTO) + VP Sales
-**Status:** mostly shipped (client-side) 2026-06-15 — pricing data layer extended with per-SKU tier contracts (`tier_pricing` + `tierPriceOverride`) and default-open catalog visibility gating (`catalog_visibility` + `isProductVisible`/`filterVisibleProducts`). Customer `/account/quotes` history (accept/view) and a full rep portal at `/rep` (book of business, attributed revenue + commission by window, open quotes, recent orders, payout history, booking link) are live. Org user/team management UI deferred.
+**Status:** mostly shipped (client-side) 2026-06-15 — pricing data layer extended with per-SKU tier contracts (`tier_pricing` + `tierPriceOverride`) and default-open catalog visibility gating (`catalog_visibility` + `isProductVisible`/`filterVisibleProducts`). Customer `/account/quotes` history (accept/view), org team management at `/account/team` (members, role-gated owner/buyer/viewer, invite/role/remove via `src/lib/team.js`), and a full rep portal at `/rep` (book of business, attributed revenue + commission by window, open quotes, recent orders, payout history, booking link) are live.
 **Depends on:** PRD-01 (Auth + DB), PRD-02 (QBO customer mirror), PRD-09 (invoice payment UI)
 **Replaces:** Shopify apps — Locksmith, Helium Customer Fields, AAA Custom Form Builder
 

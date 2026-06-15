@@ -14,6 +14,7 @@ const QuotePrint = lazy(() => import('./pages/QuotePrint.jsx').then((m) => ({ de
 const QuoteAccept = lazy(() => import('./pages/QuoteAccept.jsx').then((m) => ({ default: m.QuoteAccept })));
 const PortalQuote = lazy(() => import('./pages/PortalQuote.jsx').then((m) => ({ default: m.PortalQuote })));
 const AccountQuotes = lazy(() => import('./pages/AccountQuotes.jsx').then((m) => ({ default: m.AccountQuotes })));
+const AccountTeam = lazy(() => import('./pages/AccountTeam.jsx').then((m) => ({ default: m.AccountTeam })));
 const RepPortal = lazy(() => import('./pages/RepPortal.jsx').then((m) => ({ default: m.RepPortal })));
 const Surplus = lazy(() => import('./pages/Surplus.jsx').then((m) => ({ default: m.Surplus })));
 const SurplusMarket = lazy(() => import('./pages/SurplusMarket.jsx').then((m) => ({ default: m.SurplusMarket })));
@@ -163,6 +164,7 @@ export default function App() {
           <Route path="/account/settings" element={<AccountSettings />} />
           <Route path="/account/invoices" element={<Invoices />} />
           <Route path="/account/quotes" element={<AccountQuotes />} />
+          <Route path="/account/team" element={<AccountTeam />} />
           <Route path="/invoices/:id/print" element={<InvoicePrint />} />
           <Route path="/portal/quote" element={<PortalQuote />} />
           <Route path="/rep" element={<RepPortal />} />
