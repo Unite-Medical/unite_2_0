@@ -24,14 +24,23 @@ Set the env var(s) in Vercel and redeploy. The surface is live immediately.
 | Service | Env var(s) | Lights up |
 |---|---|---|
 | Anthropic / Claude | `ANTHROPIC_API_KEY` | column mapping, translation, FDA/HTS classify, cover letters, CEO digest, surplus valuation, outreach |
+| **Resend (email)** | `RESEND_API_KEY` | **all outbound email** — order/shipping notices, invoices, dunning, POs, outreach, rep statements, customer confirmations |
 | Stripe | `STRIPE_SECRET_KEY` | invoices, payments, rep payouts (Connect) |
+| Calendly | `CALENDLY_API_KEY` | rep scheduling links + booking → CRM |
 | HubSpot | `HUBSPOT_PRIVATE_APP_TOKEN` | CRM sync, rep pipeline |
 | Cin7 Core | `CIN7_ACCOUNT_ID`, `CIN7_APPLICATION_KEY` | inventory / WMS source of truth |
 | GS1 US | `GS1_API_KEY`, `GS1_ACCOUNT_ID` | GTIN validation in product onboarding |
 | ImportGenius | `IMPORTGENIUS_API_KEY` | vendor discovery / trade intelligence |
 | ShipStation | `SHIPSTATION_API_KEY`, `SHIPSTATION_API_SECRET` | label creation + tracking |
-| Calendly | `CALENDLY_API_KEY` | rep scheduling links |
 | Persistence | `DATABASE_URL`, `DB_SYNC_TOKEN`, `VITE_DB_SYNC_TOKEN` | durable Neon-backed multi-device state |
+
+**Email:** `RESEND_API_KEY` is the only credential needed for outbound mail.
+The sender is a provider chain (`src/lib/mailer.js`): Resend → Gmail → local
+outbox. With no key set, mail queues in the outbox (nothing is lost); set the
+key and it sends for real — no code change.
+
+**Scheduling:** Calendly is the primary scheduler (booking links + webhook →
+`calendar_events` + CRM). Google Calendar is **not** required.
 
 ---
 
@@ -44,7 +53,10 @@ The code exists; you just need to mint a refresh token once.
 2. In the Intuit developer app, register redirect URI: `https://<deployment>/api/auth/qbo/callback`.
 3. Visit `https://<deployment>/api/auth/qbo/connect`, approve. The callback stores `QBO_REALM_ID` + `QBO_REFRESH_TOKEN` (or paste them into env).
 
-### Google (Gmail + Calendar — one consent covers both)
+### Google (Gmail + Calendar) — OPTIONAL
+Not needed for go-live: Resend covers outbound email and Calendly covers
+scheduling. Add Google only if you also want inbox reading (AI triage) or
+events mirrored into a Google Calendar. One consent covers both Gmail + Calendar.
 1. Set `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` (Google Cloud → OAuth consent → Web app).
 2. Register redirect URI: `https://<deployment>/api/auth/google/callback`.
 3. Visit `https://<deployment>/api/auth/google/connect`, approve. Save the returned `GOOGLE_REFRESH_TOKEN`.

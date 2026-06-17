@@ -30,6 +30,7 @@ import { stripe } from '../../lib/external/stripe.js';
 import { gs1 } from '../../lib/external/gs1.js';
 import { openfda } from '../../lib/external/openfda.js';
 import { hts } from '../../lib/external/hts.js';
+import { resend } from '../../lib/external/resend.js';
 import { gmail } from '../../lib/external/gmail.js';
 import { gcal } from '../../lib/external/gcal.js';
 import { calendly } from '../../lib/external/calendly.js';
@@ -142,8 +143,28 @@ const INTEGRATIONS = [
     tablesWatched: ['ai_usage'],
   },
   {
+    key: 'resend',
+    label: 'Resend · email (primary)',
+    prd: 'PRD-05',
+    client: resend,
+    envVars: ['RESEND_API_KEY'],
+    docsUrl: 'https://resend.com/docs/api-reference/emails/send-email',
+    sample: () => resend.ping(),
+    tablesWatched: ['gmail_outbox'],
+  },
+  {
+    key: 'calendly',
+    label: 'Calendly · scheduling (primary)',
+    prd: 'Brief §5',
+    client: calendly,
+    envVars: ['CALENDLY_API_KEY', 'CALENDLY_WEBHOOK_SECRET'],
+    docsUrl: 'https://developer.calendly.com/api-docs',
+    sample: () => calendly.listEventTypes(),
+    tablesWatched: ['calendar_events'],
+  },
+  {
     key: 'gmail',
-    label: 'Gmail API',
+    label: 'Gmail · inbox + email fallback (optional)',
     prd: 'PRD-05',
     client: gmail,
     envVars: ['GOOGLE_CLIENT_ID', 'GOOGLE_CLIENT_SECRET', 'GOOGLE_REFRESH_TOKEN'],
@@ -154,7 +175,7 @@ const INTEGRATIONS = [
   },
   {
     key: 'gcal',
-    label: 'Google Calendar',
+    label: 'Google Calendar · mirror (optional)',
     prd: 'PRD-05',
     client: gcal,
     envVars: ['(same Google grant as Gmail)'],
@@ -162,16 +183,6 @@ const INTEGRATIONS = [
     sample: () => gcal.listUpcoming({ limit: 1 }),
     tablesWatched: ['calendar_events'],
     connectUrl: '/api/auth/google/connect',
-  },
-  {
-    key: 'calendly',
-    label: 'Calendly',
-    prd: 'Brief §5',
-    client: calendly,
-    envVars: ['CALENDLY_API_KEY', 'CALENDLY_WEBHOOK_SECRET'],
-    docsUrl: 'https://developer.calendly.com/api-docs',
-    sample: () => calendly.listEventTypes(),
-    tablesWatched: ['calendar_events'],
   },
   {
     key: 'forecast',

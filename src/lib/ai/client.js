@@ -36,7 +36,7 @@ const PROXY_URL = API_BASE ? `${API_BASE}/proxy/anthropic/v1/messages` : '';
 // approximated; refresh from Anthropic pricing periodically.
 const MODEL_COSTS = {
   'claude-sonnet-4-6': { input: 3.00, output: 15.00 },
-  'claude-haiku-4':    { input: 0.80, output: 4.00 },
+  'claude-haiku-4-5-20251001': { input: 0.80, output: 4.00 },
 };
 
 function substitute(template, input = {}) {

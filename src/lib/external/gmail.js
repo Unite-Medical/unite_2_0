@@ -88,6 +88,22 @@ export const gmail = {
     });
   },
 
+  /**
+   * Real-only Gmail transport for the mailer provider chain
+   * (`src/lib/mailer.js`). Throws if the proxy/Google grant isn't
+   * configured so the chain falls through. Does NOT write the outbox —
+   * the mailer owns the single mirror.
+   * @returns {{ id: string }}
+   */
+  async sendRaw({ to, from, subject, body }) {
+    const resp = await callGmail({
+      method: 'POST',
+      path: '/gmail/v1/users/me/messages/send',
+      body: { raw: toRaw({ to, from, subject, body }) },
+    });
+    return { id: resp.id };
+  },
+
   /** Search the operational inbox (order notifications, vendor replies). */
   async listInbox({ q = 'in:inbox is:unread', limit = 10 } = {}) {
     return realOrStub({

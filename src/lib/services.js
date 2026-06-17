@@ -23,11 +23,25 @@ export { cin7 } from './external/cin7.js';
 export { gs1 } from './external/gs1.js';
 export { fathom } from './external/fathom.js';
 export { importgenius } from './external/importgenius.js';
-// PRD-05 / brief §5 — Google Workspace + Calendly clients. `gmail.send`
-// goes through the real Gmail API when the Google OAuth refresh token
-// is configured server-side, and mirrors every message into the local
-// `gmail_outbox` table either way.
-export { gmail } from './external/gmail.js';
+// PRD-05 / brief §5 — email + scheduling.
+//
+// Email: `gmail.send` is provider-agnostic via the mailer chain
+// (Resend primary → Gmail fallback → local outbox). Callers keep using
+// `gmail.send(...)`; the Gmail-specific inbox methods (listInbox,
+// getMessage) still come from the real Gmail client. Set RESEND_API_KEY
+// to send for real — no call-site changes.
+//
+// Calendar: Calendly is the primary scheduler (real booking, links, and
+// webhook → calendar_events/CRM). Google Calendar (`gcal`) is OPTIONAL
+// and only needed if you also want events mirrored into a Google
+// Calendar; nothing in the app requires it.
+import { gmail as gmailClient } from './external/gmail.js';
+import { mailer } from './mailer.js';
+
+export const gmail = { ...gmailClient, send: mailer.send };
+export const email = mailer;
+export { mailer };
+export { resend } from './external/resend.js';
 export { gcal } from './external/gcal.js';
 export { calendly } from './external/calendly.js';
 // PRD-12 Phase 2 — Prophet forecasting sidecar (forecasting/) via the

@@ -171,6 +171,16 @@ export const SERVICES = {
     }),
   },
 
+  resend: {
+    label: 'Resend (email)',
+    configured: () => Boolean(env('RESEND_API_KEY')),
+    buildUrl: (path, query) => withQuery(`https://api.resend.com${path}`, query),
+    headers: async () => ({
+      Authorization: `Bearer ${env('RESEND_API_KEY')}`,
+      'Content-Type': 'application/json',
+    }),
+  },
+
   hubspot: {
     label: 'HubSpot CRM',
     configured: () => Boolean(env('HUBSPOT_PRIVATE_APP_TOKEN')),

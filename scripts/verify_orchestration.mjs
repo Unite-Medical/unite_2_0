@@ -21,6 +21,7 @@ import { compareVendorOffers } from '../src/lib/quoting.js';
 import { acceptQuote } from '../src/lib/quoteAcceptance.js';
 import { buildSelfServeQuote, requestSourcing } from '../src/lib/selfServeQuote.js';
 import { inviteTeammate, updateMemberRole, removeMember, listTeam } from '../src/lib/team.js';
+import { mailer } from '../src/lib/mailer.js';
 import { db } from '../src/lib/db.js';
 import { uid } from '../src/lib/format.js';
 
@@ -156,6 +157,16 @@ section('PRD-14 · team management');
   ok(updateMemberRole(inv.profile.id, 'viewer').profile.org_role === 'viewer', 'member role updated');
   ok(inviteTeammate({ orgId, email: 'not-an-email', name: 'x' }).reason === 'bad_email', 'bad email rejected');
   ok(removeMember(inv.profile.id).ok && listTeam(orgId).length === before, 'member removed');
+}
+
+// ── PRD-05: email provider chain (Resend → Gmail → outbox) ──────────────────
+section('PRD-05 · mailer');
+{
+  // No proxy in Node → falls through to the durable outbox queue.
+  const row = await mailer.send({ to: 'buyer@example.com', subject: 'Test', body: 'Hello', template_key: 'verify/test' });
+  ok(row && row.subject === 'Test', 'mailer returns a mirrored outbox row');
+  ok(row.status === 'queued' && row.provider === 'outbox', 'queues when no provider configured (nothing lost)');
+  ok(db.list('gmail_outbox', { where: { id: row.id } }).length === 1, 'message persisted to unified outbox');
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

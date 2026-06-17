@@ -42,7 +42,7 @@ export const PROMPT_REGISTRY = {
   'vendor/recall_notice': { path: 'vendor/recall_notice.v1.md', model: 'claude-sonnet-4-6', maxTokens: 800, temperature: 0.1 },
 
   // ---- PRD-10 surplus ----
-  'surplus/line_normalize': { path: 'surplus/line_normalize.v1.md', model: 'claude-haiku-4', maxTokens: 1024, temperature: 0 },
+  'surplus/line_normalize': { path: 'surplus/line_normalize.v1.md', model: 'claude-haiku-4-5-20251001', maxTokens: 1024, temperature: 0 },
   'surplus/valuation': { path: 'surplus/valuation.v1.md', model: 'claude-sonnet-4-6', maxTokens: 2048, temperature: 0.1 },
 };
 
