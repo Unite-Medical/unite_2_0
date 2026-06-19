@@ -8,11 +8,13 @@
  *   /api/proxy/anthropic/v1/messages → Claude (server-held API key)
  *   ... see api/_lib/services.js for the full registry.
  *
- * Single catch-all: the first path segment selects the service, the
- * remainder is the upstream path. (A nested `[service]/[...path]` route
- * is NOT reliably registered by Vercel's file-system router, so we parse
- * the service here.) The flat `api/proxy/hts.js` file still wins for
- * `/api/proxy/hts` because static routes take precedence over catch-alls.
+ * This is a FLAT function (not a `[...path]` catch-all): Vercel's
+ * file-system router does not reliably register catch-all routes nested
+ * under `api/proxy/`, so a `vercel.json` rewrite maps
+ * `/api/proxy/:path*` → `/api/proxy?__proxypath=:path*` and we parse the
+ * service (first segment) + upstream path here. `/api/proxy/hts` still
+ * resolves to the flat `api/proxy/hts.js` function first, because
+ * filesystem routes take precedence over rewrites.
  *
  * The browser clients in src/lib/external/* call these paths with plain
  * JSON; secrets are injected here and never reach the client. When a
@@ -20,11 +22,13 @@
  * client can fall back to its local stub.
  */
 
-import { SERVICES } from '../_lib/services.js';
-import { readRawBody, sendJson, logEvent } from '../_lib/http.js';
+import { SERVICES } from './_lib/services.js';
+import { readRawBody, sendJson, logEvent } from './_lib/http.js';
 
 export default async function handler(req, res) {
-  const segments = Array.isArray(req.query.path) ? req.query.path : [req.query.path].filter(Boolean);
+  const raw = req.query.__proxypath;
+  const joined = Array.isArray(raw) ? raw[0] : (raw || '');
+  const segments = String(joined).split('/').filter(Boolean);
   const [service, ...rest] = segments;
   const svc = SERVICES[service];
   if (!svc) {
@@ -53,13 +57,13 @@ export default async function handler(req, res) {
 
   let body;
   if (req.method !== 'GET' && req.method !== 'HEAD') {
-    const raw = await readRawBody(req);
-    if (raw.length > 0) {
+    const rawBody = await readRawBody(req);
+    if (rawBody.length > 0) {
       if (svc.transformBody) {
-        const json = JSON.parse(raw.toString('utf8') || '{}');
+        const json = JSON.parse(rawBody.toString('utf8') || '{}');
         body = svc.transformBody(json);
       } else {
-        body = raw;
+        body = rawBody;
       }
     }
   }

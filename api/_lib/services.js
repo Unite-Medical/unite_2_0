@@ -308,7 +308,7 @@ export const SERVICES = {
 function withQuery(base, query = {}) {
   const url = new URL(base);
   for (const [k, v] of Object.entries(query)) {
-    if (v === undefined || v === null || k === 'service' || k === 'path') continue;
+    if (v === undefined || v === null || k === 'service' || k === 'path' || k === '__proxypath') continue;
     url.searchParams.set(k, String(v));
   }
   return url.toString();
