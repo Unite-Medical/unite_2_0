@@ -56,6 +56,8 @@ additions for foundation/safety work:
 | 22 | [Multi-Currency & Intl Vendor Comms](PRD-22-multi-currency-intl-vendor.md) | #7 | Currency conversion + translation for foreign vendors |
 | 23 | [Hospital Surplus Marketplace](PRD-23-surplus-marketplace.md) | #9 | Private marketplace with brokerage fees — new revenue |
 | 24 | [Zero-Touch Order Fulfillment](PRD-24-zero-touch-fulfillment.md) | north star | Order → tracking number with zero human data entry |
+| 25 | [Customer Order Management & Self-Service Ordering](PRD-25-customer-order-management.md) | founder directive | Per-customer pricing, pre-approved payment methods, auto-invoicing, quick/reorder, rep RBAC |
+| 26 | [Distributor / 3PL Ordering, Consignment & Blind Shipping](PRD-26-distributor-consignment-3pl.md) | founder directive | Owner-segregated consignment inventory, scan in/out, blind ship, custom packing slips, PO ingestion, third-party billing + rate markup |
 
 Read `Unite_Medical_CTO_Brief.docx` once before starting. It is the source
 of truth for the *why* behind everything here.
