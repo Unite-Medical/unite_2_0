@@ -57,6 +57,10 @@ async function main() {
     tables: {
       inventory: db.list('inventory'),
       stock_movements: db.list('stock_movements'),
+      reservations: db.list('reservations'),
+      lots: db.list('lots'),
+      purchase_orders: db.list('purchase_orders'),
+      lot_tracking: db.list('lot_tracking'),
     },
   };
   const file = outPath();

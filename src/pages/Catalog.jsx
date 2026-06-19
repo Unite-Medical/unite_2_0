@@ -9,6 +9,7 @@ import { Grad } from '../components/shared/Grad.jsx';
 import { Eyebrow } from '../components/shared/Eyebrow.jsx';
 import { cartStore } from '../store/cart.js';
 import { db } from '../lib/db.js';
+import { availability } from '../lib/wms/availability.js';
 import { fmt } from '../lib/format.js';
 import { useViewport } from '../lib/viewport.js';
 import { useSEO } from '../lib/seo.js';
@@ -22,10 +23,13 @@ export function Catalog() {
   const inventory = db.useTable('inventory');
   const cats = useMemo(() => ['All', ...new Set(PRODUCTS.map((p) => p.category))], [PRODUCTS]);
   const tiers = useMemo(() => [...new Set(PRODUCTS.map((p) => p.tier))], [PRODUCTS]);
+  // Storefront gates on available-to-promise (on_hand − reserved), not raw
+  // on_hand, so held stock can't be double-sold (PRD-25 Phase 1).
   const stockBySku = useMemo(() => {
     const map = new Map();
-    inventory.forEach((i) => map.set(i.sku, (map.get(i.sku) || 0) + i.on_hand));
+    for (const [sku, v] of availability.stockBySku()) map.set(sku, v.available);
     return map;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inventory]);
 
   const initialCat = (() => {

@@ -24,6 +24,9 @@ import { inviteTeammate, updateMemberRole, removeMember, listTeam } from '../src
 import { mailer } from '../src/lib/mailer.js';
 import { db } from '../src/lib/db.js';
 import { uid } from '../src/lib/format.js';
+import { ledger } from '../src/lib/wms/ledger.js';
+import { availability } from '../src/lib/wms/availability.js';
+import { reservations } from '../src/lib/wms/reservations.js';
 
 let pass = 0; let fail = 0;
 const ok = (cond, msg) => { if (cond) { pass += 1; } else { fail += 1; console.error('  ✗', msg); } };
@@ -167,6 +170,43 @@ section('PRD-05 · mailer');
   ok(row && row.subject === 'Test', 'mailer returns a mirrored outbox row');
   ok(row.status === 'queued' && row.provider === 'outbox', 'queues when no provider configured (nothing lost)');
   ok(db.list('gmail_outbox', { where: { id: row.id } }).length === 1, 'message persisted to unified outbox');
+}
+
+// ── PRD-25: UniteWMS ledger + reservations ──────────────────────────────────
+section('PRD-25 · WMS ledger + reservations');
+{
+  // Backfill opening balances so on_hand == SUM(movements), then assert it.
+  ledger.seedOpeningBalances({ actor_id: 'verifier' });
+  const sample = db.list('inventory').slice(0, 50);
+  const invariantOk = sample.every((r) => availability.ledgerOnHand(r.sku, r.warehouse_id) === (Number(r.on_hand) || 0));
+  ok(invariantOk, 'ledger invariant: on_hand == SUM(qty_delta) after backfill');
+
+  // Idempotency: re-posting the same key is a no-op.
+  const sku0 = sample[0].sku; const wh0 = sample[0].warehouse_id;
+  const before = availability.onHand(sku0, wh0);
+  ledger.post({ sku: sku0, warehouse_id: wh0, qty_delta: 5, reason: 'receipt', idempotency_key: 'verif_idem_1' });
+  ledger.post({ sku: sku0, warehouse_id: wh0, qty_delta: 5, reason: 'receipt', idempotency_key: 'verif_idem_1' });
+  ok(availability.onHand(sku0, wh0) === before + 5, 'idempotency-key replay is a no-op');
+
+  // Concurrency gate: two orders for the LAST unit — exactly one wins.
+  const lastSku = `WMS-LAST-${uid('x')}`;
+  db.insert('products', { id: lastSku, sku: lastSku, name: 'Single-unit test', price: 1, cogs: 0.5 });
+  ledger.post({ sku: lastSku, warehouse_id: 'wh_atl', qty_delta: 1, reason: 'receipt', idempotency_key: `seed_${lastSku}` });
+  const r1 = reservations.reserve({ id: `O1_${lastSku}`, items: [{ sku: lastSku, qty: 1 }] });
+  const r2 = reservations.reserve({ id: `O2_${lastSku}`, items: [{ sku: lastSku, qty: 1 }] });
+  const won = [r1, r2].filter((r) => r.shortfall === 0).length;
+  ok(won === 1, `exactly one order reserved the last unit (won=${won})`);
+  ok(availability.availableToPromise(lastSku, 'wh_atl') === 0, 'available-to-promise is 0 after the unit is held');
+  ok(availability.onHand(lastSku, 'wh_atl') === 1, 'on_hand unchanged by a hold (reserve != consume)');
+
+  // Commit the winner → on_hand drops via a ship movement; release the loser.
+  const winnerId = r1.shortfall === 0 ? `O1_${lastSku}` : `O2_${lastSku}`;
+  const loserId = r1.shortfall === 0 ? `O2_${lastSku}` : `O1_${lastSku}`;
+  reservations.commit(winnerId, { actor_id: 'verifier' });
+  reservations.release(loserId);
+  ok(availability.onHand(lastSku, 'wh_atl') === 0, 'commit posted a ship movement → on_hand == 0');
+  ok(availability.reserved(lastSku, 'wh_atl') === 0, 'reserved freed after commit + release');
+  ok(availability.ledgerOnHand(lastSku, 'wh_atl') === 0, 'ledger invariant holds through the ship');
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

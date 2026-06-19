@@ -21,6 +21,9 @@ import { db } from './db.js';
 import { uid } from './format.js';
 import { qbo, stripe, shipstation, gmail } from './services.js';
 import { generateDocument } from './documents.js';
+import { reservations } from './wms/reservations.js';
+import { availability } from './wms/availability.js';
+import { ledger } from './wms/ledger.js';
 
 export const PIPELINE_STEPS = ['validate', 'reserve', 'payment', 'invoice', 'shipping', 'packing_slip', 'notify', 'delivered'];
 
@@ -113,24 +116,9 @@ async function runStep(orderId, step, { integration, fn, onProgress, retries = 2
 // Inventory helpers
 // ---------------------------------------------------------------------------
 
+// Available-to-promise for a sku (on_hand − reserved), via the WMS read layer.
 function availableForSku(sku) {
-  return db.list('inventory', { where: { sku } }).reduce((a, r) => a + (Number(r.on_hand) || 0), 0);
-}
-
-function reserveSku(sku, qty) {
-  let remaining = qty;
-  const rows = db.list('inventory', { where: { sku }, orderBy: 'on_hand', dir: 'desc' });
-  let warehouse = rows[0]?.warehouse_id || 'wh_atl';
-  for (const r of rows) {
-    if (remaining <= 0) break;
-    const take = Math.min(r.on_hand, remaining);
-    if (take > 0) {
-      db.update('inventory', r.id, { on_hand: r.on_hand - take });
-      remaining -= take;
-      warehouse = r.warehouse_id;
-    }
-  }
-  return { reserved: qty - remaining, shortfall: remaining, warehouse };
+  return availability.availableToPromise(sku);
 }
 
 // ---------------------------------------------------------------------------
@@ -154,31 +142,29 @@ export async function runFulfillment(orderId, { onProgress = () => {} } = {}) {
     },
   });
 
-  // STEP 2 — reserve inventory (+ backorders for shortfalls)
+  // STEP 2 — reserve inventory through the WMS (held reservations; ATP-checked)
+  // + backorders for shortfalls. Stock is HELD, not consumed — on_hand only
+  // drops at ship (commit), so two orders can never sell the same unit.
   const backorders = [];
   await runStep(orderId, 'reserve', {
-    integration: 'cin7',
+    integration: 'wms',
     onProgress,
     fn: async () => {
-      const reserved = [];
-      for (const it of items) {
-        const avail = availableForSku(it.sku);
-        const r = reserveSku(it.sku, it.qty);
-        reserved.push({ sku: it.sku, reserved: r.reserved, warehouse: r.warehouse });
-        if (r.shortfall > 0) {
-          const existing = db.list('backorders', { where: { order_id: orderId, order_item_id: it.id, status: 'pending' } })[0];
-          if (!existing) {
-            const bo = db.insert('backorders', {
+      const res = reservations.reserve({ id: orderId, items: items.map((it) => ({ sku: it.sku, qty: it.qty })) });
+      for (const line of res.lines) {
+        if (line.shortfall > 0) {
+          const it = items.find((x) => x.sku === line.sku);
+          const existing = db.list('backorders', { where: { order_id: orderId, order_item_id: it?.id, status: 'pending' } })[0];
+          if (!existing && it) {
+            backorders.push(db.insert('backorders', {
               id: uid('bo'), order_id: orderId, order_item_id: it.id, sku: it.sku, product_name: it.name,
-              quantity: r.shortfall, status: 'pending',
+              quantity: line.shortfall, status: 'pending',
               estimated_restock: new Date(Date.now() + 21 * 86400000).toISOString(),
-            });
-            backorders.push(bo);
+            }));
           }
         }
-        void avail;
       }
-      return { reserved, backordered: backorders.length };
+      return { reserved: res.lines, backordered: backorders.length };
     },
   });
 
@@ -249,7 +235,10 @@ export async function runFulfillment(orderId, { onProgress = () => {} } = {}) {
         events: [{ ts: new Date().toISOString(), label: 'Label created (orchestrator)' }],
       });
       db.update('orders', orderId, { tracking_number: label.tracking_number, carrier: label.carrier, status: 'ready_to_ship' });
-      return { tracking_number: label.tracking_number, carrier: label.carrier };
+      // Goods are leaving: commit held reservations → ledger `ship` movements
+      // decrement on_hand and free `reserved` (idempotent per reservation).
+      const committed = reservations.commit(orderId, { actor_id: 'fulfillment' });
+      return { tracking_number: label.tracking_number, carrier: label.carrier, committed: committed.committed };
     },
   });
 
@@ -313,7 +302,11 @@ export async function fulfillBackorders(sku, { onProgress = () => {} } = {}) {
   const shipped = [];
   for (const bo of pending) {
     if (availableForSku(sku) < bo.quantity) continue;
-    reserveSku(sku, bo.quantity);
+    // Reserve then immediately commit (the backorder ships now) — both go
+    // through the WMS so on_hand only moves via the ledger.
+    const res = reservations.reserve({ id: bo.order_id, items: [{ sku, qty: bo.quantity }] });
+    if (res.shortfall > 0) { reservations.release(bo.order_id); continue; }
+    reservations.commit(bo.order_id, { actor_id: 'backorder' });
     db.update('backorders', bo.id, { status: 'shipped', shipped_at: new Date().toISOString() });
     shipped.push(bo.id);
     onProgress({ label: `Backorder ${bo.id} (${sku} ×${bo.quantity}) auto-shipped` });
@@ -340,10 +333,18 @@ export async function createReturn(orderId, returnItems, { reason = 'customer_re
     items: returnItems, refund_total: +refundTotal.toFixed(2), status: 'pending',
   });
 
-  // Restock
+  // Restock through the ledger (reason=return_restock) — never a direct
+  // on_hand write. Returns land in the warehouse that originally shipped.
   for (const it of returnItems) {
+    const qty = Number(it.qty) || 0;
+    if (!it.sku || qty <= 0) continue;
     const inv = db.list('inventory', { where: { sku: it.sku }, orderBy: 'on_hand', dir: 'desc' })[0];
-    if (inv) db.update('inventory', inv.id, { on_hand: (inv.on_hand || 0) + (Number(it.qty) || 0) });
+    const wh = inv?.warehouse_id || order.ship_from_warehouse || 'wh_atl';
+    ledger.post({
+      sku: it.sku, warehouse_id: wh, qty_delta: qty, reason: ledger.REASONS.RETURN_RESTOCK,
+      ref_type: 'order', ref_id: orderId, actor_id: 'returns',
+      idempotency_key: `restock:${rmaId}:${it.sku}`, note: `RMA ${rmaId} restock`,
+    });
   }
 
   // Credit memo (QBO) + refund (Stripe) — best effort.

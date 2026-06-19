@@ -136,6 +136,42 @@ def main():
             failures.append(f"negative on_hand: {sku}@{wh} = {oh}")
     print(f"  no negative on_hand: {len(inventory)} rows checked, {len(neg)} negative")
 
+    # ── Check 3: no oversell — available = on_hand - reserved >= 0 ──────────
+    oversold = 0
+    for row in inventory:
+        avail = num(row.get("on_hand")) - num(row.get("reserved"))
+        if avail < 0:
+            oversold += 1
+            if oversold <= 20:
+                failures.append(
+                    f"oversell: {sku_of(row)}@{row.get('warehouse_id')} available={avail} "
+                    f"(on_hand={num(row.get('on_hand'))} reserved={num(row.get('reserved'))})"
+                )
+    checks += 1
+    print(f"  no oversell (available >= 0): {len(inventory)} rows, {oversold} oversold")
+
+    # ── Check 4: reservation math — SUM(held.qty) == inventory.reserved ─────
+    reservations = tables.get("reservations", []) or []
+    held = defaultdict(int)
+    for r in reservations:
+        if r.get("status") == "held":
+            held[(sku_of(r), r.get("warehouse_id"))] += num(r.get("qty"))
+    reserved_proj = defaultdict(int)
+    for row in inventory:
+        reserved_proj[(sku_of(row), row.get("warehouse_id"))] += num(row.get("reserved"))
+    resv_fails = 0
+    for key in set(held) | set(reserved_proj):
+        if held.get(key, 0) != reserved_proj.get(key, 0):
+            resv_fails += 1
+            if resv_fails <= 20:
+                failures.append(
+                    f"reservation math: {key[0]}@{key[1]} SUM(held)={held.get(key, 0)} "
+                    f"!= inventory.reserved={reserved_proj.get(key, 0)}"
+                )
+    checks += 1
+    print(f"  reservation math (SUM held == reserved): "
+          f"{len(set(held) | set(reserved_proj))} pairs, {resv_fails} mismatched")
+
     # ── Report ─────────────────────────────────────────────────────────────
     print()
     if failures:

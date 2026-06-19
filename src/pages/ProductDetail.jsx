@@ -8,6 +8,7 @@ import { Icon } from '../components/shared/Icon.jsx';
 import { Lightbox } from '../components/shared/Lightbox.jsx';
 import { cartStore } from '../store/cart.js';
 import { db } from '../lib/db.js';
+import { availability } from '../lib/wms/availability.js';
 import { fmt } from '../lib/format.js';
 import { useViewport } from '../lib/viewport.js';
 import { PRODUCT_IMG, productThumbs } from '../lib/imageMap.js';
@@ -44,7 +45,10 @@ export function ProductDetail() {
   const padX = isMobile ? 20 : 40;
   const product = db.useRow('products', id);
   const inv = db.useTable('inventory', { where: { sku: id } });
-  const stock = inv.reduce((a, b) => a + b.on_hand, 0);
+  // Available-to-promise (on_hand − reserved) gates buy actions (PRD-25 Phase 1).
+  // `inv` is the reactive trigger; the helper reads the same projection.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const stock = useMemo(() => availability.availableToPromise(id), [id, inv]);
   const tiers = useMemo(() => db.list('pricing', { where: { sku: id }, orderBy: 'min_qty' }), [id]);
   const variants = useMemo(() => (product?.variants || []), [product?.variants]);
   const hasMultiVariants = variants.length > 1;
