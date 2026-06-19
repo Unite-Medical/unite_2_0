@@ -63,6 +63,7 @@ const AdminOverview = lazy(() => import('./pages/admin/AdminOverview.jsx').then(
 const AdminAnalytics = lazy(() => import('./pages/admin/AdminAnalytics.jsx').then((m) => ({ default: m.AdminAnalytics })));
 const AdminInventory = lazy(() => import('./pages/admin/AdminInventory.jsx').then((m) => ({ default: m.AdminInventory })));
 const AdminCRM = lazy(() => import('./pages/admin/AdminCRM.jsx').then((m) => ({ default: m.AdminCRM })));
+const AdminHubSpot = lazy(() => import('./pages/admin/AdminHubSpot.jsx').then((m) => ({ default: m.AdminHubSpot })));
 const AdminReps = lazy(() => import('./pages/admin/AdminReps.jsx').then((m) => ({ default: m.AdminReps })));
 const AdminOrders = lazy(() => import('./pages/admin/AdminOrders.jsx').then((m) => ({ default: m.AdminOrders })));
 const AdminCMS = lazy(() => import('./pages/admin/AdminCMS.jsx').then((m) => ({ default: m.AdminCMS })));
@@ -178,6 +179,7 @@ export default function App() {
           <Route path="/admin/analytics" element={<RequireAdmin><AdminAnalytics /></RequireAdmin>} />
           <Route path="/admin/inventory" element={<RequireAdmin><AdminInventory /></RequireAdmin>} />
           <Route path="/admin/crm"       element={<RequireAdmin><AdminCRM /></RequireAdmin>} />
+          <Route path="/admin/crm/hubspot" element={<RequireAdmin><AdminHubSpot /></RequireAdmin>} />
           <Route path="/admin/reps"      element={<RequireAdmin><AdminReps /></RequireAdmin>} />
           <Route path="/admin/customers" element={<RequireAdmin><AdminCustomers /></RequireAdmin>} />
           <Route path="/admin/quotes"    element={<RequireAdmin><AdminQuotes /></RequireAdmin>} />

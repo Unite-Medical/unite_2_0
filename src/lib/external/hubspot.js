@@ -69,6 +69,34 @@ function stringify(properties) {
   return out;
 }
 
+// Properties fetched on reads (GET list accepts a comma-separated set).
+const CONTACT_PROPS = [
+  'email', 'firstname', 'lastname', 'phone', 'company', 'jobtitle',
+  'lifecyclestage', 'hs_lead_status', 'createdate', 'lastmodifieddate',
+  'unite_role', 'unite_decision_authority', 'unite_last_call_at', 'unite_last_call_summary',
+];
+const COMPANY_PROPS = [
+  'name', 'domain', 'industry', 'city', 'state', 'country', 'phone',
+  'numberofemployees', 'lifecyclestage', 'createdate',
+  'unite_segment', 'unite_tier', 'unite_terms', 'unite_credit_limit',
+  'unite_total_spend_ytd', 'unite_account_rep', 'unite_last_order_at',
+  'unite_dea_number', 'unite_tax_exempt_status',
+];
+const DEAL_PROPS = [
+  'dealname', 'amount', 'dealstage', 'pipeline', 'closedate', 'createdate',
+  'hs_lastmodifieddate', 'hs_is_closed', 'hs_is_closed_won',
+  'unite_order_id', 'unite_quote_id', 'unite_segment',
+];
+
+const MIRROR_TABLE = { contacts: 'hubspot_contacts', companies: 'hubspot_companies', deals: 'hubspot_deals' };
+
+// GET a page of objects with selected properties. Pagination via `after`.
+async function listObjects(objectType, properties, { limit = 100, after } = {}) {
+  const qs = new URLSearchParams({ limit: String(limit), properties: properties.join(','), archived: 'false' });
+  if (after) qs.set('after', after);
+  return callHubSpot({ method: 'GET', path: `/crm/v3/objects/${objectType}?${qs.toString()}` });
+}
+
 export const hubspot = {
   /** Create or update a contact by email. */
   async upsertContact({ email, firstname, lastname, company, phone, lifecyclestage = 'lead', unite_role, unite_decision_authority }) {
@@ -112,13 +140,13 @@ export const hubspot = {
   },
 
   /** Create a deal linked to an existing contact + company. */
-  async createDeal({ dealname, amount, stage = 'qualifiedtobuy', contact_id, company_id, unite_order_id, unite_quote_id, unite_segment, close_date }) {
+  async createDeal({ dealname, amount, stage = 'qualifiedtobuy', pipeline = 'default', contact_id, company_id, unite_order_id, unite_quote_id, unite_segment, close_date }) {
     const properties = stringify({
       dealname,
       amount,
       dealstage: stage,
       closedate: close_date,
-      pipeline: 'unite_b2b_wholesale',
+      pipeline,
       unite_order_id,
       unite_quote_id,
       unite_segment,
@@ -234,9 +262,16 @@ export const hubspot = {
         const results = {};
         for (const [objectType, props] of Object.entries(propertyGroups)) {
           results[objectType] = [];
+          // Ensure a dedicated "unite" property group exists for this object
+          // type first (default HubSpot groups vary by portal). Idempotent.
+          try {
+            await callHubSpot({ method: 'POST', path: `/crm/v3/properties/${objectType}/groups`, body: { name: 'unite', label: 'Unite' } });
+          } catch (err) {
+            if (err.status !== 409) results[objectType].push({ name: '__group__', status: 'error', error: err.message });
+          }
           for (const p of props) {
             try {
-              await callHubSpot({ method: 'POST', path: `/crm/v3/properties/${objectType}`, body: { groupName: `${objectType}information`, ...p } });
+              await callHubSpot({ method: 'POST', path: `/crm/v3/properties/${objectType}`, body: { groupName: 'unite', ...p } });
               results[objectType].push({ name: p.name, status: 'created' });
             } catch (err) {
               if (err.status === 409) {
@@ -256,6 +291,100 @@ export const hubspot = {
           results[objectType] = props.map((p) => ({ name: p.name, status: 'stub' }));
         }
         return results;
+      },
+    });
+  },
+
+  /**
+   * Read a page of CRM objects (contacts | companies | deals) and mirror
+   * them into the local DB for reactive admin views. Returns
+   * `{ results, after }` where `after` is the next pagination cursor (or
+   * null). Stub mode returns whatever's already mirrored locally.
+   */
+  async list(objectType, opts = {}) {
+    const props = objectType === 'contacts' ? CONTACT_PROPS : objectType === 'companies' ? COMPANY_PROPS : DEAL_PROPS;
+    const table = MIRROR_TABLE[objectType];
+    if (!table) throw new Error(`hubspot.list: unsupported object "${objectType}"`);
+    return realOrStub({
+      scope: 'hubspot',
+      label: `list(${objectType})`,
+      predicate: () => isConfigured() || viaBackendProxy(),
+      real: async () => {
+        const data = await listObjects(objectType, props, opts);
+        const now = new Date().toISOString();
+        for (const r of data.results || []) {
+          db.upsert(table, { id: r.id, properties: r.properties || {}, hs_created_at: r.createdAt, hs_updated_at: r.updatedAt, last_synced_at: now });
+        }
+        return { results: data.results || [], after: data.paging?.next?.after || null };
+      },
+      stub: async () => {
+        await delay(120, 260);
+        return { results: db.list(table), after: null, stub: true };
+      },
+    });
+  },
+
+  /** Convenience wrappers. */
+  async listContacts(opts) { return this.list('contacts', opts); },
+  async listCompanies(opts) { return this.list('companies', opts); },
+  async listDeals(opts) { return this.list('deals', opts); },
+
+  /**
+   * Pull every page of an object type (bounded) and return the full set.
+   * Used by the admin "Sync now" action.
+   */
+  async syncAll(objectType, { maxPages = 20, limit = 100 } = {}) {
+    let after;
+    let pages = 0;
+    let total = 0;
+    do {
+      const { results, after: next } = await this.list(objectType, { limit, after });
+      total += results.length;
+      after = next;
+      pages += 1;
+    } while (after && pages < maxPages);
+    return { objectType, total, pages };
+  },
+
+  /** Deal pipelines + stage label map (for rendering stage names). */
+  async pipelines() {
+    return realOrStub({
+      scope: 'hubspot',
+      label: 'pipelines',
+      predicate: () => isConfigured() || viaBackendProxy(),
+      real: async () => {
+        const data = await callHubSpot({ method: 'GET', path: '/crm/v3/pipelines/deals' });
+        return data.results || [];
+      },
+      stub: async () => { await delay(80, 160); return []; },
+    });
+  },
+
+  /** Per-object totals via the search endpoint (returns `total`). */
+  async totals() {
+    return realOrStub({
+      scope: 'hubspot',
+      label: 'totals',
+      predicate: () => isConfigured() || viaBackendProxy(),
+      real: async () => {
+        const out = {};
+        for (const objectType of ['contacts', 'companies', 'deals']) {
+          try {
+            const data = await callHubSpot({ method: 'POST', path: `/crm/v3/objects/${objectType}/search`, body: { limit: 1 } });
+            out[objectType] = data.total ?? 0;
+          } catch {
+            out[objectType] = null;
+          }
+        }
+        return out;
+      },
+      stub: async () => {
+        await delay(100, 200);
+        return {
+          contacts: db.count('hubspot_contacts'),
+          companies: db.count('hubspot_companies'),
+          deals: db.count('hubspot_deals'),
+        };
       },
     });
   },

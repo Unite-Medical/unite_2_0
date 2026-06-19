@@ -24,6 +24,7 @@ const NAV = [
   ['Finance',       'finance',    '/admin/finance'],
   ['Customers',     'customers',  '/admin/customers'],
   ['CRM',           'crm',        '/admin/crm'],
+  ['HubSpot (live)', 'hubspot',   '/admin/crm/hubspot'],
   ['Reps',          'reps',       '/admin/reps'],
   ['Vendors',       'vendors',    '/admin/vendors'],
   ['Discovery',     'discovery',  '/admin/discovery'],
