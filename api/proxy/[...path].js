@@ -2,22 +2,30 @@
  * Generic authenticated upstream proxy — PRD-01.
  *
  *   /api/proxy/qbo/invoice           → Intuit QBO (OAuth, realm-scoped)
- *   /api/proxy/stripe/v1-less path   → Stripe (form-encoded, secret key)
+ *   /api/proxy/stripe/<path>         → Stripe (form-encoded, secret key)
  *   /api/proxy/flexport/shipments    → Flexport (Bearer + version header)
+ *   /api/proxy/hubspot/crm/v3/...    → HubSpot CRM (Bearer)
  *   /api/proxy/anthropic/v1/messages → Claude (server-held API key)
  *   ... see api/_lib/services.js for the full registry.
  *
- * The browser clients in src/lib/external/* call these paths with
- * plain JSON; secrets are injected here and never reach the client.
- * When a service's env vars are missing we return 503 with a typed
- * error so the client can fall back to its local stub.
+ * Single catch-all: the first path segment selects the service, the
+ * remainder is the upstream path. (A nested `[service]/[...path]` route
+ * is NOT reliably registered by Vercel's file-system router, so we parse
+ * the service here.) The flat `api/proxy/hts.js` file still wins for
+ * `/api/proxy/hts` because static routes take precedence over catch-alls.
+ *
+ * The browser clients in src/lib/external/* call these paths with plain
+ * JSON; secrets are injected here and never reach the client. When a
+ * service's env vars are missing we return 503 with a typed error so the
+ * client can fall back to its local stub.
  */
 
-import { SERVICES } from '../../_lib/services.js';
-import { readRawBody, sendJson, logEvent } from '../../_lib/http.js';
+import { SERVICES } from '../_lib/services.js';
+import { readRawBody, sendJson, logEvent } from '../_lib/http.js';
 
 export default async function handler(req, res) {
-  const { service, path = [] } = req.query;
+  const segments = Array.isArray(req.query.path) ? req.query.path : [req.query.path].filter(Boolean);
+  const [service, ...rest] = segments;
   const svc = SERVICES[service];
   if (!svc) {
     return sendJson(res, 404, { error: 'unknown_service', service, known: Object.keys(SERVICES) });
@@ -26,7 +34,7 @@ export default async function handler(req, res) {
     return sendJson(res, 503, { error: 'not_configured', service, hint: `Set the ${svc.label} env vars in Vercel to enable this proxy.` });
   }
 
-  const upstreamPath = '/' + (Array.isArray(path) ? path.join('/') : String(path));
+  const upstreamPath = '/' + rest.join('/');
   let url;
   try {
     url = svc.buildUrl(upstreamPath, req.query);
