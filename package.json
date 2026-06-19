@@ -9,7 +9,9 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "db:migrate": "node scripts/migrate.mjs",
-    "prerender": "node scripts/prerender.mjs"
+    "prerender": "node scripts/prerender.mjs",
+    "wms:seed": "node scripts/wms_seed_movements.mjs",
+    "wms:check": "node scripts/wms_seed_movements.mjs && python3 scripts/wms_check.py"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",

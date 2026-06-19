@@ -6,6 +6,8 @@ import { Icon } from '../../components/shared/Icon.jsx';
 import { db } from '../../lib/db.js';
 import { fmt } from '../../lib/format.js';
 import { useViewport } from '../../lib/viewport.js';
+import { availability } from '../../lib/wms/availability.js';
+import { ledger } from '../../lib/wms/ledger.js';
 
 export function AdminInventory() {
   const { isMobile } = useViewport();
@@ -14,21 +16,36 @@ export function AdminInventory() {
   const inventory = db.useTable('inventory');
   const warehouses = db.useTable('warehouses');
 
+  // Reads go through availability.js (the WMS read layer). `inventory` from
+  // useTable is the reactive trigger; the helpers read the same projection.
   const stockBySku = useMemo(() => {
-    const m = new Map();
-    inventory.forEach((i) => m.set(i.sku, (m.get(i.sku) || 0) + i.on_hand));
-    return m;
+    const bySku = availability.stockBySku();
+    return new Map([...bySku].map(([sku, v]) => [sku, v.on_hand]));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inventory]);
 
-  const totalUnits = inventory.reduce((a, b) => a + b.on_hand, 0);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const totals = useMemo(() => availability.summary(), [inventory]);
+  const totalUnits = totals.total_on_hand;
   const totalValue = products.reduce((a, p) => a + (stockBySku.get(p.sku) || 0) * (p.cogs || 0), 0);
-  const low = inventory.filter((i) => i.on_hand <= i.reorder_at).length;
-  const out = inventory.filter((i) => i.on_hand === 0).length;
+  const low = totals.low;
+  const out = totals.out;
 
   function reorder(sku) {
     const inv = inventory.find((i) => i.sku === sku && i.warehouse_id === 'wh_atl');
     if (!inv) return;
-    db.update('inventory', inv.id, { on_hand: inv.on_hand + (inv.reorder_qty || 100) });
+    // Stock only ever changes through the ledger (PRD §4.1) — never a direct
+    // on_hand write. This posts a receipt movement; the projection follows.
+    ledger.post({
+      sku,
+      warehouse_id: 'wh_atl',
+      qty_delta: inv.reorder_qty || 100,
+      reason: ledger.REASONS.RECEIPT,
+      ref_type: 'manual',
+      ref_id: `reorder_${sku}`,
+      actor_id: 'admin_inventory',
+      note: 'Manual reorder from /admin/inventory',
+    });
   }
 
   return (
