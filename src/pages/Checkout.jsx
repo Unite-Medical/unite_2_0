@@ -6,6 +6,7 @@ import { useCart, cartStore } from '../store/cart.js';
 import { auth } from '../lib/auth.js';
 import { db } from '../lib/db.js';
 import { placeOrder } from '../lib/orders.js';
+import { approvedMethodsFor, METHOD_LABEL, TERMS_METHODS } from '../lib/paymentMethods.js';
 import { fmt } from '../lib/format.js';
 import { useViewport } from '../lib/viewport.js';
 import { useSEO } from '../lib/seo.js';
@@ -25,13 +26,6 @@ const SHIPPING_OPTIONS = [
   { id: 'fedex_overnight', label: 'Same-day (Atlanta metro)', sub: 'By 6pm today', cost: 95 },
 ];
 
-const PAYMENT_OPTIONS = [
-  { id: 'net30', label: 'Net 30', sub: 'on file' },
-  { id: 'ach', label: 'ACH', sub: 'primary' },
-  { id: 'wire', label: 'Wire transfer', sub: '' },
-  { id: 'card', label: 'Credit card', sub: '**4412' },
-];
-
 export function Checkout() {
   const navigate = useNavigate();
   const session = auth.use();
@@ -45,9 +39,20 @@ export function Checkout() {
   const addresses = useMemo(() => db.list('addresses', { where: { org_id: orgId } }), [orgId]);
   const orgRow = useMemo(() => db.get('organizations', orgId), [orgId]);
 
+  // PRD-26 §6: render only the payment rails Unite pre-approved for this
+  // account. Selecting an off-list method is impossible in the UI and
+  // rejected server-side in placeOrder (defense in depth).
+  const paymentOptions = useMemo(() => {
+    return approvedMethodsFor(orgRow).map((m) => ({
+      id: m.method,
+      label: METHOD_LABEL[m.method] || m.method,
+      sub: TERMS_METHODS.has(m.method) && m.credit_limit != null ? `limit ${fmt.money(m.credit_limit, { cents: false })}` : (m.method === 'card' ? 'paid up front' : 'approved'),
+    }));
+  }, [orgRow]);
+
   const [activeAddrId, setActiveAddrId] = useState(addresses.find((a) => a.is_default)?.id || addresses[0]?.id);
   const [shipMethod, setShipMethod] = useState('fedex_ground');
-  const [paymentMethod, setPaymentMethod] = useState(orgRow?.terms === 'card' ? 'card' : 'net30');
+  const [paymentMethod, setPaymentMethod] = useState(paymentOptions[0]?.id || 'card');
   const [poNumber, setPoNumber] = useState('');
   const [placing, setPlacing] = useState(false);
   const [error, setError] = useState(null);
@@ -71,12 +76,14 @@ export function Checkout() {
         },
         address: addresses.find((a) => a.id === activeAddrId),
         items: items.map((it) => ({ sku: it.sku, name: it.name, qty: it.qty, unit_price: it.unit_price })),
-        payment_terms: paymentMethod === 'card' ? 'card' : paymentMethod === 'wire' ? 'wire' : paymentMethod === 'ach' ? 'ach' : 'net30',
+        payment_terms: paymentMethod,
         payment_method: paymentMethod,
+        order_source: 'catalog',
         po_number: poNumber || null,
         ship_method: shipMethod,
       });
       cartStore.clear();
+      if (result.held) { navigate('/account/invoices'); return; }
       navigate(`/orders/${result.order.id}/confirmed`);
     } catch (e) {
       setError(e?.message || 'Could not place the order. Try again.');
@@ -151,7 +158,7 @@ export function Checkout() {
 
             <Section title="03 · Payment">
               <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(4,1fr)', gap: 10 }}>
-                {PAYMENT_OPTIONS.map((p) => (
+                {paymentOptions.map((p) => (
                   <button key={p.id} onClick={() => setPaymentMethod(p.id)} style={{ padding: 16, borderRadius: 12, border: `1.5px solid ${paymentMethod === p.id ? D.plum : D.line}`, background: paymentMethod === p.id ? D.paperAlt : D.card, cursor: 'pointer', fontFamily: D.sans, textAlign: 'left', color: D.ink }}>
                     <div style={{ fontFamily: D.display, fontSize: 18, letterSpacing: -0.3 }}>{p.label}</div>
                     <div style={{ fontSize: 11, color: D.ink3, fontFamily: D.mono, marginTop: 4, letterSpacing: 0.8 }}>{p.sub.toUpperCase()}</div>

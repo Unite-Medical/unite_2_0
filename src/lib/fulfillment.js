@@ -25,6 +25,9 @@ import { reservations } from './wms/reservations.js';
 import { availability } from './wms/availability.js';
 import { ledger } from './wms/ledger.js';
 import { shipping } from './wms/shipping.js';
+import { notifyRecipients } from './notifications.js';
+import { blindShip } from './blindShip.js';
+import { consignment } from './consignment.js';
 
 export const PIPELINE_STEPS = ['validate', 'reserve', 'payment', 'invoice', 'shipping', 'packing_slip', 'notify', 'delivered'];
 
@@ -169,6 +172,20 @@ export async function runFulfillment(orderId, { onProgress = () => {} } = {}) {
     },
   });
 
+  // PRD-27 §4 — sell-through: a Unite sale (not placed on behalf of the
+  // distributor) of a `unite_sellable` distributor SKU draws down THAT
+  // distributor's consignment lots and records a settlement movement.
+  // Idempotent: only recorded once per order.
+  if (!order.on_behalf_of_org_id && !db.list('consignment_movements', { where: { order_id: orderId } }).length) {
+    for (const it of items) {
+      const dp = db.list('distributor_products', { where: { mapped_unite_sku: it.sku, unite_sellable: true } })[0];
+      if (!dp) continue;
+      const cost = db.get('products', it.sku)?.cogs ?? null;
+      const res = consignment.recordSellThrough({ owner_org_id: dp.owner_org_id, order_id: orderId, sku: it.sku, qty: it.qty, unit_cost: cost });
+      if (res.moved > 0) db.insert('audit_log', { id: uid('aud'), kind: 'consignment.sold_by_unite', ref_id: orderId, payload: { owner_org_id: dp.owner_org_id, sku: it.sku, qty: res.moved } });
+    }
+  }
+
   // STEP 3 — payment
   await runStep(orderId, 'payment', {
     integration: 'stripe',
@@ -203,12 +220,22 @@ export async function runFulfillment(orderId, { onProgress = () => {} } = {}) {
         items: items.map((i) => ({ qty: i.qty, unit_price: i.unit_price, name: i.name, product_sku: i.sku })),
         terms: order.payment_terms,
       });
+      let invoiceRow = existing;
       if (!existing) {
-        db.insert('invoices', {
+        invoiceRow = db.insert('invoices', {
           id: qboInvoice.doc_number, order_id: orderId, customer_id: order.customer_id,
           amount: order.total, terms: order.payment_terms, status: order.payment_status === 'paid' ? 'paid' : 'open',
           qbo_id: qboInvoice.qbo_invoice_id, due_date: qboInvoice.due_date,
         });
+      }
+      // PRD-26 §7: card orders paid up front — record the QBO payment + a
+      // canonical payment row + mark the invoice paid (idempotent).
+      if (order.payment_status === 'paid' && invoiceRow && invoiceRow.status !== 'paid') {
+        try { await qbo.recordPayment({ qbo_invoice_id: qboInvoice.qbo_invoice_id, amount: order.total, method: order.payment_method }); } catch { /* queued */ }
+        db.update('invoices', invoiceRow.id, { status: 'paid', balance: 0, paid_at: new Date().toISOString(), payment_method: order.payment_method });
+        if (!db.list('payments', { where: { order_id: orderId } }).length) {
+          db.insert('payments', { id: uid('pmt'), invoice_id: invoiceRow.id, order_id: orderId, amount: order.total, method: order.payment_method, source: 'stripe', received_at: new Date().toISOString() });
+        }
       }
       return { qbo_invoice_id: qboInvoice.qbo_invoice_id, doc_number: qboInvoice.doc_number };
     },
@@ -228,7 +255,12 @@ export async function runFulfillment(orderId, { onProgress = () => {} } = {}) {
         const cheapest = (rates?.rates || rates || []).slice().sort((a, b) => (a.shipmentCost ?? a.total ?? 0) - (b.shipmentCost ?? b.total ?? 0))[0];
         if (cheapest?.carrierCode || cheapest?.carrier) carrier = cheapest.serviceCode || cheapest.carrierCode || carrier;
       } catch { /* rate-shop best effort */ }
-      const label = await shipstation.createLabel({ order_id: orderId, carrier, warehouse_id: order.ship_from_warehouse || 'wh_atl', weight_lbs: +weight.toFixed(1) });
+      // PRD-27 §6/§8: blind/white-label ship-from identity + third-party billing.
+      const blind = blindShip.shipOptionsFor(order);
+      const label = await shipstation.createLabel({
+        order_id: orderId, carrier, warehouse_id: order.ship_from_warehouse || 'wh_atl', weight_lbs: +weight.toFixed(1),
+        ship_from: blind.shipFrom, bill_to_third_party: blind.billToThirdParty,
+      });
       db.insert('shipments', {
         id: `shp_${orderId}`, order_id: orderId, carrier: label.carrier, tracking_number: label.tracking_number,
         label_url: label.label_url, status: 'label_created', weight_lbs: +weight.toFixed(1),
@@ -244,32 +276,32 @@ export async function runFulfillment(orderId, { onProgress = () => {} } = {}) {
     },
   });
 
-  // STEP 6 — packing slip PDF
+  // STEP 6 — packing slip PDF (+ blind-ship paperwork / required inserts)
   await runStep(orderId, 'packing_slip', {
     onProgress,
     fn: async () => {
+      const docs = blindShip.packingDocsFor(order);
       const { record } = generateDocument({ type: 'packing_slip', ref_id: orderId, ref_type: 'order' });
-      return { document_id: record.id };
+      return { document_id: record.id, blind: docs.blind, template: docs.template, inserts: docs.inserts.map((d) => d.name) };
     },
   });
 
-  // STEP 7 — notify customer (order + shipping confirmation → outbox)
+  // STEP 7 — notify all CC recipients on the account (PRD-26 §8): order
+  // confirmation + invoice + shipping/tracking + any backorder note, fanned
+  // out to every subscribed recipient through the Resend-primary mailer.
   await runStep(orderId, 'notify', {
     integration: 'gmail',
     onProgress,
     fn: async () => {
       const ship = db.list('shipments', { where: { order_id: orderId } })[0];
-      const to = order.contact_email || `ap@${String(order.customer_name || 'customer').toLowerCase().replace(/[^a-z0-9]+/g, '')}.com`;
-      await gmail.send({
-        to,
-        subject: `Order ${orderId} confirmed`,
-        body: `Your order ${orderId} is confirmed (${items.length} line items, total $${(order.total || 0).toLocaleString()}).`
-          + (ship?.tracking_number ? `\n\nShipping via ${ship.carrier}. Tracking: ${ship.tracking_number}.` : '')
-          + (backorders.length ? `\n\nNote: ${backorders.length} item(s) are backordered and will ship when restocked.` : ''),
-        template_key: 'order_confirmation',
-        drafted_by: 'system',
-      });
-      return { notified: to };
+      const org = db.get('organizations', order.customer_id) || { id: order.customer_id, name: order.customer_name };
+      const fallback = order.contact_email || `ap@${String(order.customer_name || 'customer').toLowerCase().replace(/[^a-z0-9]+/g, '')}.com`;
+      const placed = await notifyRecipients(org, 'order_placed', { order, fallback });
+      const invoice = db.list('invoices', { where: { order_id: orderId } })[0];
+      if (invoice) await notifyRecipients(org, 'invoice', { order, fallback, body: `Invoice ${invoice.id} for order ${orderId} ($${(order.total || 0).toLocaleString()}) — terms ${order.payment_terms}.` });
+      if (ship?.tracking_number) await notifyRecipients(org, 'shipped', { order, fallback, carrier: ship.carrier, tracking: ship.tracking_number });
+      if (backorders.length) await notifyRecipients(org, 'backorder', { order, fallback });
+      return { notified: placed.recipients, count: placed.recipients.length };
     },
   });
 

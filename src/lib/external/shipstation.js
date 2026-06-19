@@ -98,7 +98,7 @@ export const shipstation = {
   },
 
   /** Create order + label in one shot (typical fulfillment path). */
-  async createLabel({ order_id, carrier = 'fedex', service = 'fedex_ground', warehouse_id = 'wh_atl', weight_lbs = 12, ship_to }) {
+  async createLabel({ order_id, carrier = 'fedex', service = 'fedex_ground', warehouse_id = 'wh_atl', weight_lbs = 12, ship_to, ship_from, bill_to_third_party }) {
     const body = {
       carrierCode: carrier,
       serviceCode: service,
@@ -106,7 +106,9 @@ export const shipstation = {
       confirmation: 'delivery',
       shipDate: new Date().toISOString().slice(0, 10),
       weight: { value: weight_lbs, units: 'pounds' },
-      shipFrom: {
+      // PRD-27 §6: ship-from identity may be a distributor's brand for blind
+      // shipments; defaults to Unite's warehouse.
+      shipFrom: ship_from || {
         name: 'Unite Medical',
         company: 'Unite Medical',
         street1: '1487 Trae Lane',
@@ -118,6 +120,15 @@ export const shipstation = {
       shipTo: ship_to || {
         name: 'Customer', street1: '1 Customer Way', city: 'Atlanta', state: 'GA', postalCode: '30301', country: 'US',
       },
+      // PRD-27 §8: third-party billing — charge the distributor's carrier
+      // account instead of Unite's.
+      ...(bill_to_third_party ? {
+        advancedOptions: {
+          billToParty: 'third_party',
+          billToAccount: bill_to_third_party.account_number,
+          billToPostalCode: bill_to_third_party.billing_zip,
+        },
+      } : {}),
       testLabel: !isConfigured(),
     };
     return realOrStub({

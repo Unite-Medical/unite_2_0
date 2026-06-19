@@ -5,6 +5,8 @@ import { db } from '../../lib/db.js';
 import { fmt } from '../../lib/format.js';
 import { useViewport } from '../../lib/viewport.js';
 import { contractPricing, resolveCustomerPrice } from '../../lib/customerPricing.js';
+import { PAYMENT_METHODS, METHOD_LABEL, TERMS_METHODS, paymentMethods, approvedMethodsFor } from '../../lib/paymentMethods.js';
+import { NOTIFY_EVENTS, notificationRecipients } from '../../lib/notifications.js';
 
 const TIER_COLOR = { A: '#3b8760', B: D.plum, C: D.terra };
 const TIERS = ['A', 'B', 'C'];
@@ -162,6 +164,8 @@ export function AdminCustomers() {
               </div>
 
               <ContractPricingPanel org={active} isMobile={isMobile} />
+              <PaymentMethodsPanel org={active} />
+              <NotificationsPanel org={active} />
             </>
           )}
         </div>
@@ -232,6 +236,79 @@ function ContractPricingPanel({ org, isMobile }) {
         </label>
         <button onClick={add} disabled={!sku || !price} style={{ background: D.plum, color: D.paper, border: 'none', padding: '9px 16px', borderRadius: 8, fontSize: 12, fontFamily: D.mono, letterSpacing: 0.6, cursor: sku && price ? 'pointer' : 'default', opacity: sku && price ? 1 : 0.5 }}>ADD CONTRACT PRICE</button>
         {preview && <span style={{ fontSize: 12, color: D.ink2, marginLeft: 4 }}>Resolves to <b>{fmt.money(preview.unit_price)}</b> ({preview.basis}{isMobile ? '' : `, list ${fmt.money(preview.list_price)}`})</span>}
+      </div>
+    </>
+  );
+}
+
+// PRD-26 §6 — per-account pre-approved payment methods allowlist.
+function PaymentMethodsPanel({ org }) {
+  const rows = db.useTable('account_payment_methods', { where: { org_id: org.id } });
+  const active = approvedMethodsFor(org);
+  const configured = rows.length > 0;
+  return (
+    <>
+      <div style={{ marginTop: 28, fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>PRE-APPROVED PAYMENT METHODS</div>
+      <div style={{ fontSize: 12, color: D.ink2, marginTop: 4 }}>
+        Only these rails appear at checkout — anything else is server-rejected. {configured ? '' : 'No explicit list yet (showing derived defaults from terms).'}
+      </div>
+      <div style={{ marginTop: 10, display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+        {PAYMENT_METHODS.map((m) => {
+          const row = rows.find((r) => r.method === m);
+          const on = row ? row.status === 'active' : active.some((a) => a.method === m && configured);
+          return (
+            <button key={m} onClick={() => (on && row ? paymentMethods.suspend(row.id) : paymentMethods.enable({ org_id: org.id, method: m, credit_limit: TERMS_METHODS.has(m) ? (org.credit_limit || null) : null, approved_by: 'usr_admin' }))}
+              style={{ padding: '8px 14px', borderRadius: 999, border: `1.5px solid ${on ? D.plum : D.line}`, background: on ? 'rgba(94,41,99,.06)' : D.paper, color: on ? D.plum : D.ink2, cursor: 'pointer', fontSize: 12, fontFamily: D.sans }}>
+              {on ? '✓ ' : ''}{METHOD_LABEL[m]}
+              {on && TERMS_METHODS.has(m) && row?.credit_limit != null ? ` · ${fmt.money(row.credit_limit, { cents: false })}` : ''}
+            </button>
+          );
+        })}
+      </div>
+      {rows.filter((r) => TERMS_METHODS.has(r.method) && r.status === 'active').map((r) => (
+        <label key={r.id} style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 10, fontSize: 12, color: D.ink2 }}>
+          {METHOD_LABEL[r.method]} credit limit
+          <input type="number" defaultValue={r.credit_limit || 0} onBlur={(e) => paymentMethods.setCreditLimit(r.id, Number(e.target.value) || 0)} style={inputStyle} />
+        </label>
+      ))}
+    </>
+  );
+}
+
+// PRD-26 §8 — multi-recipient order notifications.
+function NotificationsPanel({ org }) {
+  const rows = db.useTable('account_notification_recipients', { where: { org_id: org.id } });
+  const [email, setEmail] = useState('');
+  function add() {
+    if (!email.includes('@')) return;
+    notificationRecipients.add({ org_id: org.id, email });
+    setEmail('');
+  }
+  return (
+    <>
+      <div style={{ marginTop: 28, fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>NOTIFICATION RECIPIENTS (CC)</div>
+      <div style={{ fontSize: 12, color: D.ink2, marginTop: 4 }}>Order/ship/deliver/invoice/backorder emails fan out to every subscribed recipient.</div>
+      <div style={{ marginTop: 10, display: 'grid', gap: 8 }}>
+        {rows.length === 0 && <div style={{ fontSize: 12, color: D.ink3 }}>No recipients — the buyer on the order gets the default.</div>}
+        {rows.map((r) => (
+          <div key={r.id} style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 8, padding: '10px 12px', border: `1px solid ${D.line}`, borderRadius: 10, background: D.paper }}>
+            <div style={{ fontSize: 13, fontWeight: 600, minWidth: 200 }}>{r.email}</div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, flex: 1 }}>
+              {NOTIFY_EVENTS.map((ev) => {
+                const on = (r.events || NOTIFY_EVENTS).includes(ev);
+                return (
+                  <button key={ev} onClick={() => notificationRecipients.setEvents(r.id, on ? (r.events || NOTIFY_EVENTS).filter((x) => x !== ev) : [...(r.events || NOTIFY_EVENTS), ev])}
+                    style={{ padding: '4px 8px', borderRadius: 6, border: `1px solid ${on ? D.plum : D.line}`, background: on ? 'rgba(94,41,99,.06)' : 'transparent', color: on ? D.plum : D.ink3, cursor: 'pointer', fontSize: 10, fontFamily: D.mono }}>{ev}</button>
+                );
+              })}
+            </div>
+            <button onClick={() => notificationRecipients.remove(r.id)} style={{ background: 'transparent', color: D.terra, border: 'none', cursor: 'pointer', fontSize: 12 }}>remove</button>
+          </div>
+        ))}
+      </div>
+      <div style={{ marginTop: 10, display: 'flex', gap: 8 }}>
+        <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="add recipient email" style={{ ...inputStyle, flex: '0 1 280px' }} />
+        <button onClick={add} disabled={!email.includes('@')} style={{ background: D.plum, color: D.paper, border: 'none', padding: '9px 16px', borderRadius: 8, fontSize: 12, fontFamily: D.mono, letterSpacing: 0.6, cursor: email.includes('@') ? 'pointer' : 'default', opacity: email.includes('@') ? 1 : 0.5 }}>ADD</button>
       </div>
     </>
   );

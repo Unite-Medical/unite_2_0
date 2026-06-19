@@ -90,6 +90,10 @@ const AdminReceiving = lazy(() => import('./pages/admin/AdminReceiving.jsx').the
 const AdminLots = lazy(() => import('./pages/admin/AdminLots.jsx').then((m) => ({ default: m.AdminLots })));
 const AdminCount = lazy(() => import('./pages/admin/AdminCount.jsx').then((m) => ({ default: m.AdminCount })));
 const AdminTransfers = lazy(() => import('./pages/admin/AdminTransfers.jsx').then((m) => ({ default: m.AdminTransfers })));
+const AdminTeam = lazy(() => import('./pages/admin/AdminTeam.jsx').then((m) => ({ default: m.AdminTeam })));
+const AdminConsignment = lazy(() => import('./pages/admin/AdminConsignment.jsx').then((m) => ({ default: m.AdminConsignment })));
+const AccountOrder = lazy(() => import('./pages/AccountOrder.jsx').then((m) => ({ default: m.AccountOrder })));
+const DistributorPortal = lazy(() => import('./pages/DistributorPortal.jsx').then((m) => ({ default: m.DistributorPortal })));
 
 export default function App() {
   return (
@@ -170,7 +174,17 @@ export default function App() {
           <Route path="/account/settings" element={<AccountSettings />} />
           <Route path="/account/invoices" element={<Invoices />} />
           <Route path="/account/quotes" element={<AccountQuotes />} />
+          <Route path="/account/order" element={<AccountOrder />} />
+          <Route path="/account/reorder" element={<AccountOrder />} />
           <Route path="/account/team" element={<AccountTeam />} />
+
+          <Route path="/distributor" element={<DistributorPortal />} />
+          <Route path="/distributor/inventory" element={<DistributorPortal />} />
+          <Route path="/distributor/order" element={<DistributorPortal />} />
+          <Route path="/distributor/po-upload" element={<DistributorPortal />} />
+          <Route path="/distributor/shipping" element={<DistributorPortal />} />
+          <Route path="/distributor/settlement" element={<DistributorPortal />} />
+          <Route path="/distributor/documents" element={<DistributorPortal />} />
           <Route path="/invoices/:id/print" element={<InvoicePrint />} />
           <Route path="/portal/quote" element={<PortalQuote />} />
           <Route path="/rep" element={<RepPortal />} />
@@ -182,6 +196,8 @@ export default function App() {
           <Route path="/admin/crm/hubspot" element={<RequireAdmin><AdminHubSpot /></RequireAdmin>} />
           <Route path="/admin/reps"      element={<RequireAdmin><AdminReps /></RequireAdmin>} />
           <Route path="/admin/customers" element={<RequireAdmin><AdminCustomers /></RequireAdmin>} />
+          <Route path="/admin/team"      element={<RequireAdmin><AdminTeam /></RequireAdmin>} />
+          <Route path="/admin/consignment" element={<RequireAdmin><AdminConsignment /></RequireAdmin>} />
           <Route path="/admin/quotes"    element={<RequireAdmin><AdminQuotes /></RequireAdmin>} />
           <Route path="/admin/orders"    element={<RequireAdmin><AdminOrders /></RequireAdmin>} />
           <Route path="/admin/cms"       element={<RequireAdmin><AdminCMS /></RequireAdmin>} />

@@ -398,4 +398,45 @@ export function seed(db) {
       db.volume_breaks.push({ id: `vb_${p.sku}_100`, product_sku: p.sku, min_qty: 100, discount_pct: 15 });
     }
   });
+
+  // PRD-26 §6: pre-approved payment allowlist. Atlanta Surgical is approved
+  // for ACH + Net 30 only (so card/wire are hidden + server-rejected).
+  db.account_payment_methods.push({ id: 'apm_org_atlsurgical_ach', org_id: 'org_atlsurgical', method: 'ach', status: 'active', credit_limit: null, approved_by: 'usr_admin', approved_at: nowIso2 });
+  db.account_payment_methods.push({ id: 'apm_org_atlsurgical_net30', org_id: 'org_atlsurgical', method: 'net30', status: 'active', credit_limit: 60000, approved_by: 'usr_admin', approved_at: nowIso2 });
+  db.account_payment_methods.push({ id: 'apm_org_holloway_card', org_id: 'org_holloway', method: 'card', status: 'active', credit_limit: null, approved_by: 'usr_admin', approved_at: nowIso2 });
+  db.account_payment_methods.push({ id: 'apm_org_holloway_net15', org_id: 'org_holloway', method: 'net15', status: 'active', credit_limit: 15000, approved_by: 'usr_admin', approved_at: nowIso2 });
+
+  // PRD-26 §8: multi-recipient order notifications — buyer, AP, ops.
+  db.account_notification_recipients.push({ id: 'anr_atl_buyer', org_id: 'org_atlsurgical', email: 'sarah@atlanta-surgical.com', events: ['order_placed', 'shipped', 'delivered', 'backorder'], created_at: nowIso2 });
+  db.account_notification_recipients.push({ id: 'anr_atl_ap', org_id: 'org_atlsurgical', email: 'ap@atlanta-surgical.com', events: ['invoice', 'order_placed'], created_at: nowIso2 });
+  db.account_notification_recipients.push({ id: 'anr_atl_ops', org_id: 'org_atlsurgical', email: 'ops@atlanta-surgical.com', events: ['shipped', 'delivered'], created_at: nowIso2 });
+
+  // PRD-26 §9: rep order-entry authority. Ops lead is a junior rep
+  // (place_order + ≤10% discount); the founder has full authority.
+  db.rep_order_grants.push({ id: 'rog_usr_ops_place_order', rep_id: 'usr_ops', grant: 'place_order', granted_by: 'usr_admin', granted_at: nowIso2 });
+  db.rep_order_grants.push({ id: 'rog_usr_ops_discount', rep_id: 'usr_ops', grant: 'discount', max_discount_pct: 10, granted_by: 'usr_admin', granted_at: nowIso2 });
+  ['place_order', 'price_override', 'discount', 'shipping_override', 'add_payment_method', 'place_on_terms', 'override_credit_hold', 'override_payment_gate'].forEach((g) => {
+    db.rep_order_grants.push({ id: `rog_usr_admin_${g}`, rep_id: 'usr_admin', grant: g, max_discount_pct: g === 'discount' ? 100 : null, granted_by: 'usr_admin', granted_at: nowIso2 });
+  });
+
+  // PRD-27: distributor consignment demo for MedOne Distributors.
+  const dp = STATIC_PRODUCTS.slice(5, 7);
+  const today = new Date();
+  const expIso = (days) => new Date(today.getTime() + days * 86400000).toISOString().slice(0, 10);
+  if (dp[0]) {
+    // A storefront, Unite-sellable consignment SKU (mapped to a Unite product).
+    db.distributor_products.push({ id: 'dprod_medone_1', owner_org_id: 'org_medone', distributor_sku: 'MED-STERI-9000', name: `${dp[0].name} (MedOne label)`, mapped_unite_sku: dp[0].sku, visibility: 'storefront', unite_sellable: true, created_at: nowIso2 });
+    db.inventory_lots.push({ id: 'ilot_medone_1a', owner_type: 'distributor', owner_org_id: 'org_medone', product_sku: dp[0].sku, distributor_sku: 'MED-STERI-9000', lot_number: 'LOT-A23', expiration_date: expIso(120), qty_on_hand: 800, qty_reserved: 0, warehouse_id: 'wh_atl', bin_location: 'C-12-3', received_via_scan_id: 'scan_seed_1', created_at: nowIso2 });
+    db.inventory_lots.push({ id: 'ilot_medone_1b', owner_type: 'distributor', owner_org_id: 'org_medone', product_sku: dp[0].sku, distributor_sku: 'MED-STERI-9000', lot_number: 'LOT-A24', expiration_date: expIso(40), qty_on_hand: 240, qty_reserved: 0, warehouse_id: 'wh_atl', bin_location: 'C-12-4', received_via_scan_id: 'scan_seed_2', created_at: nowIso2 });
+  }
+  if (dp[1]) {
+    // A warehouse-only consignment SKU (never public; orderable by MedOne).
+    db.distributor_products.push({ id: 'dprod_medone_2', owner_org_id: 'org_medone', distributor_sku: 'MED-PRIVATE-22', name: 'MedOne Private Kit 22', mapped_unite_sku: null, visibility: 'warehouse_only', unite_sellable: false, created_at: nowIso2 });
+    db.inventory_lots.push({ id: 'ilot_medone_2a', owner_type: 'distributor', owner_org_id: 'org_medone', product_sku: null, distributor_sku: 'MED-PRIVATE-22', lot_number: 'LOT-PK1', expiration_date: expIso(300), qty_on_hand: 150, qty_reserved: 0, warehouse_id: 'wh_atl', bin_location: 'D-04-1', received_via_scan_id: 'scan_seed_3', created_at: nowIso2 });
+  }
+  db.distributor_ship_identities.push({ id: 'dsi_medone', owner_org_id: 'org_medone', brand_name: 'MedOne Distributors', return_address: { street1: '1487 Trae Lane', city: 'Lithia Springs', state: 'GA', postalCode: '30122', country: 'US' }, is_default: true, approved_by: 'usr_admin', created_at: nowIso2 });
+  db.distributor_documents.push({ id: 'ddoc_medone_slip', owner_org_id: 'org_medone', doc_type: 'packing_slip_template', name: 'MedOne Packing Slip', file_url: 'https://files.unite.local/medone/slip.pdf', include_on_every_order: false, created_at: nowIso2 });
+  db.distributor_documents.push({ id: 'ddoc_medone_coa', owner_org_id: 'org_medone', doc_type: 'coa', name: 'Certificate of Analysis', file_url: 'https://files.unite.local/medone/coa.pdf', include_on_every_order: true, created_at: nowIso2 });
+  db.distributor_carrier_accounts.push({ id: 'dca_medone_fedex', owner_org_id: 'org_medone', carrier: 'fedex', account_number: '511-22-9087', billing_zip: '30305', is_default: true, created_at: nowIso2 });
+  db.shipping_markup_config.push({ id: 'smc_global', scope: 'global', owner_org_id: null, markup_pct: 10, updated_by: 'usr_admin', updated_at: nowIso2 });
 }
