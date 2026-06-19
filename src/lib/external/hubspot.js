@@ -90,11 +90,24 @@ const DEAL_PROPS = [
 
 const MIRROR_TABLE = { contacts: 'hubspot_contacts', companies: 'hubspot_companies', deals: 'hubspot_deals' };
 
+// Real HubSpot object ids are numeric strings; local stub ids are prefixed.
+function isRealId(id) { return /^\d+$/.test(String(id)); }
+
 // GET a page of objects with selected properties. Pagination via `after`.
 async function listObjects(objectType, properties, { limit = 100, after } = {}) {
   const qs = new URLSearchParams({ limit: String(limit), properties: properties.join(','), archived: 'false' });
   if (after) qs.set('after', after);
   return callHubSpot({ method: 'GET', path: `/crm/v3/objects/${objectType}?${qs.toString()}` });
+}
+
+// Find a single object by an exact property match (used for upserts).
+async function searchOne(objectType, propertyName, value, properties = []) {
+  const data = await callHubSpot({
+    method: 'POST',
+    path: `/crm/v3/objects/${objectType}/search`,
+    body: { filterGroups: [{ filters: [{ propertyName, operator: 'EQ', value: String(value) }] }], properties, limit: 1 },
+  });
+  return data?.results?.[0] || null;
 }
 
 export const hubspot = {
@@ -166,6 +179,69 @@ export const hubspot = {
       stub: async () => {
         await delay(150, 320);
         return { id: `hs_deal_${uid().slice(3)}`, stub: true };
+      },
+    });
+  },
+
+  /** Create or update a company, keyed on domain (preferred) or exact name. */
+  async upsertCompany({ name, domain, ...rest }) {
+    if (!name && !domain) throw new Error('hubspot.upsertCompany requires name or domain');
+    const properties = stringify({ name, domain, ...rest });
+    return realOrStub({
+      scope: 'hubspot',
+      label: `upsertCompany(${name || domain})`,
+      predicate: () => isConfigured() || viaBackendProxy(),
+      real: async () => {
+        // Prefer the local mirror (avoids HubSpot search's indexing lag,
+        // which otherwise double-creates on rapid re-pushes), then search.
+        const matchKey = domain ? (r) => r.properties?.domain === domain : (r) => r.properties?.name === name;
+        let existingId = db.list('hubspot_companies').find((r) => isRealId(r.id) && matchKey(r))?.id || null;
+        if (!existingId) {
+          const [keyName, keyVal] = domain ? ['domain', domain] : ['name', name];
+          existingId = (await searchOne('companies', keyName, keyVal, ['name', 'domain']))?.id || null;
+        }
+        const data = existingId
+          ? await callHubSpot({ method: 'PATCH', path: `/crm/v3/objects/companies/${existingId}`, body: { properties } })
+          : await callHubSpot({ method: 'POST', path: '/crm/v3/objects/companies', body: { properties } });
+        db.upsert('hubspot_companies', { id: data.id, properties: data.properties, hs_updated_at: data.updatedAt, last_synced_at: new Date().toISOString() });
+        return { id: data.id, created: !existingId };
+      },
+      stub: async () => {
+        await delay(140, 300);
+        const id = `hs_co_${uid().slice(3)}`;
+        db.upsert('hubspot_companies', { id, properties: { ...properties }, last_synced_at: new Date().toISOString() });
+        return { id, created: true, stub: true };
+      },
+    });
+  },
+
+  /** Create or update a deal, keyed on the unique unite_order_id. */
+  async upsertDeal({ unite_order_id, dealname, amount, stage = 'closedwon', pipeline = 'default', unite_quote_id, unite_segment, close_date, contact_id, company_id }) {
+    const properties = stringify({ dealname, amount, dealstage: stage, pipeline, closedate: close_date, unite_order_id, unite_quote_id, unite_segment });
+    const associations = [];
+    if (contact_id) associations.push({ to: { id: contact_id }, types: [{ associationCategory: 'HUBSPOT_DEFINED', associationTypeId: 3 }] });
+    if (company_id) associations.push({ to: { id: company_id }, types: [{ associationCategory: 'HUBSPOT_DEFINED', associationTypeId: 5 }] });
+    return realOrStub({
+      scope: 'hubspot',
+      label: `upsertDeal(${dealname})`,
+      predicate: () => isConfigured() || viaBackendProxy(),
+      real: async () => {
+        let existingId = null;
+        if (unite_order_id) {
+          existingId = db.list('hubspot_deals').find((r) => isRealId(r.id) && r.properties?.unite_order_id === unite_order_id)?.id || null;
+          if (!existingId) existingId = (await searchOne('deals', 'unite_order_id', unite_order_id, ['dealname']))?.id || null;
+        }
+        const data = existingId
+          ? await callHubSpot({ method: 'PATCH', path: `/crm/v3/objects/deals/${existingId}`, body: { properties } })
+          : await callHubSpot({ method: 'POST', path: '/crm/v3/objects/deals', body: { properties, associations } });
+        db.upsert('hubspot_deals', { id: data.id, properties: data.properties, hs_updated_at: data.updatedAt, last_synced_at: new Date().toISOString() });
+        return { id: data.id, created: !existingId };
+      },
+      stub: async () => {
+        await delay(150, 320);
+        const id = `hs_deal_${uid().slice(3)}`;
+        db.upsert('hubspot_deals', { id, properties: { ...properties }, last_synced_at: new Date().toISOString() });
+        return { id, created: true, stub: true };
       },
     });
   },
@@ -333,7 +409,7 @@ export const hubspot = {
    * Pull every page of an object type (bounded) and return the full set.
    * Used by the admin "Sync now" action.
    */
-  async syncAll(objectType, { maxPages = 20, limit = 100 } = {}) {
+  async syncAll(objectType, { maxPages = 200, limit = 100, onPage } = {}) {
     let after;
     let pages = 0;
     let total = 0;
@@ -342,6 +418,7 @@ export const hubspot = {
       total += results.length;
       after = next;
       pages += 1;
+      if (onPage) onPage({ objectType, total, pages, done: !next });
     } while (after && pages < maxPages);
     return { objectType, total, pages };
   },

@@ -5,6 +5,7 @@ import { AdminCard } from '../../components/layout/AdminCard.jsx';
 import { db } from '../../lib/db.js';
 import { fmt } from '../../lib/format.js';
 import { hubspot } from '../../lib/services.js';
+import { hubspotSync } from '../../lib/hubspotSync.js';
 import { useViewport } from '../../lib/viewport.js';
 
 const TABS = [
@@ -42,7 +43,12 @@ export function AdminHubSpot() {
   const [search, setSearch] = useState('');
   const [error, setError] = useState(null);
   const [lastSync, setLastSync] = useState(null);
+  const [bulk, setBulk] = useState(null); // { busy, msg } for full pull/push
+  const [auto, setAuto] = useState(hubspotSync.isAuto());
+  const [autoCount, setAutoCount] = useState(0);
   const didInit = useRef(false);
+  const mounted = useRef(true);
+  useEffect(() => () => { mounted.current = false; }, []);
 
   const contacts = db.useTable('hubspot_contacts', { orderBy: 'last_synced_at', dir: 'desc' });
   const companies = db.useTable('hubspot_companies', { orderBy: 'last_synced_at', dir: 'desc' });
@@ -67,6 +73,33 @@ export function AdminHubSpot() {
       setSyncing(false);
     }
   }, [cursors]);
+
+  const refreshTotals = useCallback(async () => {
+    try { const t = await hubspot.totals(); if (mounted.current) setTotals(t); } catch { /* keep prior */ }
+  }, []);
+
+  const runBulk = useCallback(async (label, fn) => {
+    setBulk({ busy: true, msg: `${label}…` });
+    setError(null);
+    try {
+      await fn((p) => {
+        if (!mounted.current) return;
+        if (p.phase === 'pull') setBulk({ busy: true, msg: `Pulling ${p.objectType}: ${p.fetched} fetched…` });
+        else setBulk({ busy: true, msg: `Pushing ${p.objectType}: ${p.pushed}/${p.of}…` });
+      });
+      if (mounted.current) { setBulk({ busy: false, msg: `${label} complete.` }); setLastSync(new Date().toISOString()); }
+      refreshTotals();
+    } catch (err) {
+      if (mounted.current) setBulk({ busy: false, msg: `${label} failed: ${err.message}` });
+    }
+  }, [refreshTotals]);
+
+  const toggleAuto = useCallback(() => {
+    if (hubspotSync.isAuto()) { hubspotSync.stopAuto(); setAuto(false); }
+    else { hubspotSync.startAuto(() => { if (mounted.current) setAutoCount((n) => n + 1); }); setAuto(true); }
+  }, []);
+
+  const pushable = hubspotSync.pushableCounts();
 
   // Initial load: totals + pipeline stage labels + first page of each object.
   useEffect(() => {
@@ -117,6 +150,24 @@ export function AdminHubSpot() {
         {error && (
           <div style={{ marginBottom: 16, padding: '10px 14px', borderRadius: 10, background: 'rgba(180,90,40,.10)', border: '1px solid rgba(180,90,40,.25)', color: '#8a4b20', fontSize: 13 }}>{error}</div>
         )}
+
+        <div style={{ marginBottom: 18 }}>
+          <AdminCard title="Two-way sync">
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, alignItems: 'center' }}>
+              <button onClick={() => runBulk('Pull all from HubSpot', hubspotSync.pullAll.bind(hubspotSync))} disabled={bulk?.busy} style={btn(D, 'solid', bulk?.busy)}>↓ PULL ALL (HUBSPOT → UNITE)</button>
+              <button onClick={() => runBulk('Push Unite → HubSpot', hubspotSync.pushAll.bind(hubspotSync))} disabled={bulk?.busy} style={btn(D, 'outline', bulk?.busy)}>↑ PUSH UNITE → HUBSPOT</button>
+              <button onClick={() => runBulk('Two-way sync', hubspotSync.syncBoth.bind(hubspotSync))} disabled={bulk?.busy} style={btn(D, 'outline', bulk?.busy)}>⇅ SYNC BOTH WAYS</button>
+              <label style={{ display: 'flex', alignItems: 'center', gap: 8, marginLeft: 'auto', fontSize: 12, color: D.ink2, cursor: 'pointer' }}>
+                <input type="checkbox" checked={auto} onChange={toggleAuto} />
+                Auto-push local changes{auto && autoCount > 0 ? ` · ${autoCount} synced` : ''}
+              </label>
+            </div>
+            <div style={{ marginTop: 12, fontSize: 12, color: D.ink2 }}>
+              Push maps <b>{pushable.organizations}</b> organizations → companies, <b>{pushable.contacts}</b> customer contacts, <b>{pushable.orders}</b> orders → deals.
+              {bulk?.msg && <span style={{ marginLeft: 10, fontFamily: D.mono, fontSize: 11, color: bulk.busy ? D.plum : D.ink3 }}>{bulk.msg}</span>}
+            </div>
+          </AdminCard>
+        </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(4,1fr)', gap: 12, marginBottom: 18 }}>
           {tiles.map(([b, s, sub]) => (
@@ -170,6 +221,17 @@ export function AdminHubSpot() {
       </div>
     </AdminShell>
   );
+}
+
+function btn(d, variant, busy) {
+  const solid = variant === 'solid';
+  return {
+    fontFamily: d.mono, fontSize: 11, letterSpacing: 0.8, padding: '9px 14px', borderRadius: 8,
+    cursor: busy ? 'default' : 'pointer', opacity: busy ? 0.5 : 1,
+    border: solid ? 'none' : `1px solid ${d.line}`,
+    background: solid ? d.plum : 'transparent',
+    color: solid ? d.paper : d.ink2,
+  };
 }
 
 const TH = { textAlign: 'left', fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3, padding: '0 14px 10px 0', whiteSpace: 'nowrap' };
