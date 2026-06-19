@@ -17,6 +17,8 @@ const NAV = [
   ['Inventory',     'inventory',  '/admin/inventory'],
   ['Receiving',     'receiving',  '/admin/inventory/receive'],
   ['Lots & recall', 'lots',       '/admin/inventory/lots'],
+  ['Cycle count',   'count',      '/admin/inventory/count'],
+  ['Transfers',     'transfers',  '/admin/inventory/transfers'],
   ['Purchase orders', 'purchase-orders', '/admin/purchase-orders'],
   ['Replenishment', 'replenish',  '/admin/replenishment'],
   ['Finance',       'finance',    '/admin/finance'],

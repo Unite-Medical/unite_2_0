@@ -31,6 +31,9 @@ import { purchaseOrders } from '../src/lib/wms/purchaseOrders.js';
 import { lots as lotsApi } from '../src/lib/wms/lots.js';
 import { shipping } from '../src/lib/wms/shipping.js';
 import { picking } from '../src/lib/wms/picking.js';
+import { transfers } from '../src/lib/wms/transfers.js';
+import { counts } from '../src/lib/wms/counts.js';
+import { adjustments } from '../src/lib/wms/adjustments.js';
 
 let pass = 0; let fail = 0;
 const ok = (cond, msg) => { if (cond) { pass += 1; } else { fail += 1; console.error('  ✗', msg); } };
@@ -293,6 +296,42 @@ section('PRD-25 · ship FEFO + recall (<1s)');
   shipping.confirmShip(orderId);
   ok(availability.onHand(sku, 'wh_atl') === before, 're-confirming ship is idempotent');
   ok(availability.ledgerOnHand(sku, 'wh_atl') === availability.onHand(sku, 'wh_atl'), 'ledger invariant holds post-ship');
+}
+
+// ── PRD-25 Phase 4: transfers + counts + adjustments ────────────────────────
+section('PRD-25 · transfers + cycle counts + adjustments');
+{
+  const sku = `WMS-X4-${uid('x')}`;
+  db.insert('products', { id: sku, sku, name: 'Phase4 test', price: 3, cogs: 1 });
+  ledger.post({ sku, warehouse_id: 'wh_atl', qty_delta: 100, reason: 'receipt', idempotency_key: `seed_${sku}` });
+
+  // Transfer 40 ATL → RNO. Source on_hand drops on ship; dest rises on receive.
+  const t = transfers.createTransfer({ from_wh: 'wh_atl', to_wh: 'wh_reno', lines: [{ sku, qty: 40 }] });
+  ok(t.ok, 'transfer created');
+  transfers.shipTransfer(t.transfer.id);
+  ok(availability.onHand(sku, 'wh_atl') === 60, 'transfer ship dropped source on_hand to 60');
+  ok(availability.onHand(sku, 'wh_reno') === 0, 'dest on_hand still 0 while in transit');
+  transfers.receiveTransfer(t.transfer.id);
+  ok(availability.onHand(sku, 'wh_reno') === 40, 'transfer receive landed 40 at destination');
+  ok(availability.onHand(sku, 'wh_atl') + availability.onHand(sku, 'wh_reno') === 100, 'transfer conserved total units (60 + 40)');
+
+  // Cycle count: physical count of 55 at ATL (system 60) → −5 variance posted.
+  const c = counts.openCount({ warehouse_id: 'wh_atl', skus: [sku] });
+  ok(c.ok, 'count session opened');
+  counts.recordCount(c.session_id, sku, 55);
+  const posted = counts.postCount(c.session_id);
+  ok(posted.posted === 1 && posted.net_variance === -5, 'count posted a −5 variance movement');
+  ok(availability.onHand(sku, 'wh_atl') === 55, 'on_hand reconciled to the physical count (55)');
+
+  // Adjustment: damage 5 → on_hand 50; found 2 → 52.
+  adjustments.damage(sku, 'wh_atl', 5, 'crushed carton');
+  adjustments.found(sku, 'wh_atl', 2, 'misplaced units');
+  ok(availability.onHand(sku, 'wh_atl') === 52, 'damage(−5) + found(+2) → on_hand 52');
+  ok(availability.ledgerOnHand(sku, 'wh_atl') === 52, 'ledger invariant holds across count/adjust');
+
+  // Idempotent count re-post is a no-op.
+  const again = counts.postCount(c.session_id);
+  ok(again.noop === true && availability.onHand(sku, 'wh_atl') === 52, 'closed count re-post is a no-op');
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

@@ -68,7 +68,7 @@ const TABLES = [
   // PRD-04: Shopify headless commerce mirrors (orders + products)
   'shopify_orders', 'shopify_products',
   // PRD-25: UniteWMS — append-only ledger + projection support tables
-  'stock_movements', 'bins', 'lots', 'reservations',
+  'stock_movements', 'bins', 'lots', 'lot_tracking', 'reservations',
   'count_sessions', 'count_lines', 'transfers', 'transfer_lines',
 ];
 

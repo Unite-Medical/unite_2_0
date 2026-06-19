@@ -87,6 +87,8 @@ const AdminFulfillment = lazy(() => import('./pages/admin/AdminFulfillment.jsx')
 const AdminPurchaseOrders = lazy(() => import('./pages/admin/AdminPurchaseOrders.jsx').then((m) => ({ default: m.AdminPurchaseOrders })));
 const AdminReceiving = lazy(() => import('./pages/admin/AdminReceiving.jsx').then((m) => ({ default: m.AdminReceiving })));
 const AdminLots = lazy(() => import('./pages/admin/AdminLots.jsx').then((m) => ({ default: m.AdminLots })));
+const AdminCount = lazy(() => import('./pages/admin/AdminCount.jsx').then((m) => ({ default: m.AdminCount })));
+const AdminTransfers = lazy(() => import('./pages/admin/AdminTransfers.jsx').then((m) => ({ default: m.AdminTransfers })));
 
 export default function App() {
   return (
@@ -201,6 +203,8 @@ export default function App() {
           <Route path="/admin/purchase-orders"  element={<RequireAdmin><AdminPurchaseOrders /></RequireAdmin>} />
           <Route path="/admin/inventory/receive" element={<RequireAdmin><AdminReceiving /></RequireAdmin>} />
           <Route path="/admin/inventory/lots"   element={<RequireAdmin><AdminLots /></RequireAdmin>} />
+          <Route path="/admin/inventory/count"  element={<RequireAdmin><AdminCount /></RequireAdmin>} />
+          <Route path="/admin/inventory/transfers" element={<RequireAdmin><AdminTransfers /></RequireAdmin>} />
           <Route path="/admin/webhooks"         element={<RequireAdmin><AdminWebhooks /></RequireAdmin>} />
 
           <Route path="*" element={<Navigate to="/" replace />} />
