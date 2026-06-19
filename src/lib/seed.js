@@ -386,4 +386,16 @@ export function seed(db) {
     });
     i++;
   }
+
+  // PRD-26: demo per-customer contract pricing + SKU volume breaks so two
+  // orgs see two different prices for the same SKU, and a qty break re-prices.
+  const nowIso2 = new Date().toISOString();
+  STATIC_PRODUCTS.slice(0, 3).forEach((p, idx) => {
+    db.customer_contract_prices.push({ id: `ccp_atl_${p.sku}`, org_id: 'org_atlsurgical', product_sku: p.sku, unit_price: +(p.price * 0.88).toFixed(2), min_qty: 1, created_by: 'usr_admin', created_at: nowIso2 });
+    if (idx === 0) {
+      db.customer_contract_prices.push({ id: `ccp_medone_${p.sku}`, org_id: 'org_medone', product_sku: p.sku, unit_price: +(p.price * 0.80).toFixed(2), min_qty: 1, created_by: 'usr_admin', created_at: nowIso2 });
+      db.volume_breaks.push({ id: `vb_${p.sku}_50`, product_sku: p.sku, min_qty: 50, discount_pct: 10 });
+      db.volume_breaks.push({ id: `vb_${p.sku}_100`, product_sku: p.sku, min_qty: 100, discount_pct: 15 });
+    }
+  });
 }

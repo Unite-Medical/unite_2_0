@@ -17,7 +17,7 @@ import { seed } from './seed.js';
  */
 
 const STORAGE_KEY = 'um.db.v1';
-const SCHEMA_VERSION = 13;
+const SCHEMA_VERSION = 14;
 
 const TABLES = [
   'profiles', 'organizations', 'organization_users', 'addresses',
@@ -70,6 +70,17 @@ const TABLES = [
   // PRD-25: UniteWMS — append-only ledger + projection support tables
   'stock_movements', 'bins', 'lots', 'lot_tracking', 'reservations',
   'count_sessions', 'count_lines', 'transfers', 'transfer_lines', 'bundles',
+  // PRD-26: customer order management (per-customer pricing, payment allowlist,
+  // notifications, reorder lists, rep order-entry authority)
+  'customer_contract_prices', 'volume_breaks', 'account_payment_methods',
+  'account_notification_recipients', 'reorder_lists', 'reorder_list_items',
+  'rep_order_grants',
+  // PRD-27: distributor consignment / 3PL (owner-tagged stock, scan provenance,
+  // sell-through settlement, blind-ship identities, carrier accounts, markup,
+  // customer-PO ingestion)
+  'inventory_lots', 'distributor_products', 'scan_events', 'consignment_movements',
+  'distributor_ship_identities', 'distributor_documents', 'distributor_carrier_accounts',
+  'shipping_markup_config', 'distributor_po_uploads', 'distributor_sku_map',
 ];
 
 function load() {

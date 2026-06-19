@@ -4,6 +4,7 @@ import { AdminShell } from '../../components/layout/AdminShell.jsx';
 import { db } from '../../lib/db.js';
 import { fmt } from '../../lib/format.js';
 import { useViewport } from '../../lib/viewport.js';
+import { contractPricing, resolveCustomerPrice } from '../../lib/customerPricing.js';
 
 const TIER_COLOR = { A: '#3b8760', B: D.plum, C: D.terra };
 const TIERS = ['A', 'B', 'C'];
@@ -159,11 +160,80 @@ export function AdminCustomers() {
                 </tbody>
               </table>
               </div>
+
+              <ContractPricingPanel org={active} isMobile={isMobile} />
             </>
           )}
         </div>
       </div>
     </AdminShell>
+  );
+}
+
+// PRD-26 §5/§12 Phase 1 — per-customer contract pricing editor.
+function ContractPricingPanel({ org, isMobile }) {
+  const rows = db.useTable('customer_contract_prices', { where: { org_id: org.id }, orderBy: 'product_sku' });
+  const [sku, setSku] = useState('');
+  const [price, setPrice] = useState('');
+  const [minQty, setMinQty] = useState('1');
+
+  const preview = sku && price ? resolveCustomerPrice({ org, sku: sku.trim().toUpperCase(), qty: Number(minQty) || 1, basePrice: db.get('products', sku.trim().toUpperCase())?.price ?? Number(price) }) : null;
+
+  function add() {
+    const s = sku.trim().toUpperCase();
+    if (!s || !price) return;
+    contractPricing.setContract({ org_id: org.id, product_sku: s, unit_price: Number(price), min_qty: Number(minQty) || 1, created_by: 'usr_admin' });
+    setSku(''); setPrice(''); setMinQty('1');
+  }
+
+  return (
+    <>
+      <div style={{ marginTop: 28, fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>CONTRACT PRICING · {org.name.toUpperCase()}</div>
+      <div style={{ fontSize: 12, color: D.ink2, marginTop: 4 }}>Per-SKU negotiated prices for this account. Highest precedence — beats volume breaks and tier. Shown to this customer everywhere.</div>
+      <div className="um-scroll-x" style={{ marginTop: 10 }}>
+        <table style={{ width: '100%', minWidth: 520, borderCollapse: 'collapse', fontSize: 13 }}>
+          <thead>
+            <tr style={{ background: D.paperAlt, fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>
+              {['SKU', 'PRODUCT', 'MIN QTY', 'CONTRACT PRICE', 'LIST', ''].map((h) => <th key={h} style={{ padding: '10px 12px', textAlign: 'left' }}>{h}</th>)}
+            </tr>
+          </thead>
+          <tbody>
+            {rows.length === 0 && <tr><td colSpan={6} style={{ padding: '12px', color: D.ink3 }}>No contract prices yet — add one below.</td></tr>}
+            {rows.map((r) => {
+              const prod = db.get('products', r.product_sku);
+              return (
+                <tr key={r.id} style={{ borderTop: `1px solid ${D.line}` }}>
+                  <td style={{ padding: '10px 12px', fontFamily: D.mono, color: D.plum }}>{r.product_sku}</td>
+                  <td style={{ padding: '10px 12px', color: D.ink2 }}>{prod?.name || '—'}</td>
+                  <td style={{ padding: '10px 12px', fontFamily: D.mono }}>{r.min_qty || 1}+</td>
+                  <td style={{ padding: '10px 12px', fontFamily: D.mono, fontWeight: 600 }}>{fmt.money(r.unit_price)}</td>
+                  <td style={{ padding: '10px 12px', color: D.ink3 }}>{prod ? fmt.money(prod.price) : '—'}</td>
+                  <td style={{ padding: '10px 12px' }}>
+                    <button onClick={() => contractPricing.removeContract(r.id)} style={{ background: 'transparent', color: D.terra, border: 'none', cursor: 'pointer', fontSize: 12 }}>remove</button>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      <div style={{ marginTop: 12, display: 'flex', flexWrap: 'wrap', gap: 8, alignItems: 'end' }}>
+        <label style={{ flex: '1 1 160px' }}>
+          <div style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, color: D.ink3, marginBottom: 4 }}>SKU</div>
+          <input value={sku} onChange={(e) => setSku(e.target.value)} placeholder="e.g. UM-0001" style={inputStyle} />
+        </label>
+        <label style={{ flex: '0 1 110px' }}>
+          <div style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, color: D.ink3, marginBottom: 4 }}>MIN QTY</div>
+          <input type="number" min="1" value={minQty} onChange={(e) => setMinQty(e.target.value)} style={inputStyle} />
+        </label>
+        <label style={{ flex: '0 1 130px' }}>
+          <div style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, color: D.ink3, marginBottom: 4 }}>UNIT PRICE</div>
+          <input type="number" step="0.01" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="0.00" style={inputStyle} />
+        </label>
+        <button onClick={add} disabled={!sku || !price} style={{ background: D.plum, color: D.paper, border: 'none', padding: '9px 16px', borderRadius: 8, fontSize: 12, fontFamily: D.mono, letterSpacing: 0.6, cursor: sku && price ? 'pointer' : 'default', opacity: sku && price ? 1 : 0.5 }}>ADD CONTRACT PRICE</button>
+        {preview && <span style={{ fontSize: 12, color: D.ink2, marginLeft: 4 }}>Resolves to <b>{fmt.money(preview.unit_price)}</b> ({preview.basis}{isMobile ? '' : `, list ${fmt.money(preview.list_price)}`})</span>}
+      </div>
+    </>
   );
 }
 

@@ -10,7 +10,7 @@ import { useEffect, useSyncExternalStore } from 'react';
 import { db } from '../lib/db.js';
 import { auth } from '../lib/auth.js';
 import { uid } from '../lib/format.js';
-import { priceFor } from '../lib/pricing.js';
+import { resolveCustomerPrice } from '../lib/customerPricing.js';
 
 const subs = new Set();
 let activeCartId = 'cart_demo';
@@ -56,11 +56,11 @@ export const cartStore = {
     const lineName = variant?.title ? `${product.name} · ${variant.title}` : product.name;
     const existing = db.list('cart_items', { where: { cart_id: activeCartId, sku: lineSku } })[0];
     const nextQty = (existing?.qty || 0) + qty;
-    // Role-based pricing: qty breaks (product SKU) × org tier. Variants
-    // carry their own list price; tier discount still applies.
-    const priced = priceFor({ sku: product.sku, qty: nextQty, basePrice: variant?.price ?? product.price });
+    // PRD-26: one resolver — contract → volume break → tier → list.
+    // Variants carry their own list price; tier/contract still applies.
+    const priced = resolveCustomerPrice({ sku: product.sku, qty: nextQty, basePrice: variant?.price ?? product.price });
     const lineUnit = variant?.price != null
-      ? priceFor({ sku: '__variant__', qty: nextQty, basePrice: variant.price }).unit_price
+      ? resolveCustomerPrice({ sku: '__variant__', qty: nextQty, basePrice: variant.price }).unit_price
       : priced.unit_price;
     if (existing) {
       db.update('cart_items', existing.id, { qty: nextQty, unit_price: lineUnit, list_price: priced.list_price, pricing_tier: priced.tier });
@@ -90,8 +90,8 @@ export const cartStore = {
     // tiered account) changes the unit price. Variant lines keep their
     // own list price (no parent qty breaks), tier discount still applies.
     const priced = existing.variant_title
-      ? priceFor({ sku: '__variant__', qty: nextQty, basePrice: existing.list_price ?? existing.unit_price })
-      : priceFor({ sku: existing.product_id || sku, qty: nextQty, basePrice: existing.list_price ?? existing.unit_price });
+      ? resolveCustomerPrice({ sku: '__variant__', qty: nextQty, basePrice: existing.list_price ?? existing.unit_price })
+      : resolveCustomerPrice({ sku: existing.product_id || sku, qty: nextQty, basePrice: existing.list_price ?? existing.unit_price });
     db.update('cart_items', existing.id, { qty: nextQty, unit_price: priced.unit_price, list_price: priced.list_price, pricing_tier: priced.tier });
     notify();
   },
