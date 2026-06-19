@@ -1,10 +1,10 @@
-# PRD-25 — Customer Order Management & Self-Service Ordering
+# PRD-26 — Customer Order Management & Self-Service Ordering
 
 **Source:** CTO Brief §1 / §6 — "enter data once, sync everywhere"; founder directive (Damon, 2026-06-19): "Customer needs a way to process their orders via the website, once they are logged in. Each customer will have their own pricing, per product, volume discounts, and will be able to pay for their orders via a pre-approved (by Unite) manner."
 **Owner:** Alex (CTO)
 **Status:** draft
-**Depends on:** PRD-01 (platform/auth), PRD-02 (QBO), PRD-09 (Stripe B2B billing), PRD-14 (B2B portal + role-based pricing), PRD-04 (Cin7/WMS — inventory + ShipStation), PRD-24 (zero-touch fulfillment orchestrator), PRD-05 (Resend email)
-**Blocks:** PRD-26 (distributor / 3PL ordering builds on this ordering core)
+**Depends on:** PRD-01 (platform/auth), PRD-02 (QBO), PRD-09 (Stripe B2B billing), PRD-14 (B2B portal + role-based pricing), PRD-25 (UniteWMS — native inventory, reservations/ATP, ShipStation), PRD-24 (zero-touch fulfillment orchestrator), PRD-05 (Resend email)
+**Blocks:** PRD-27 (distributor / 3PL ordering builds on this ordering core)
 
 > "Ideally, the customers receive invoices automatically once an order is placed, for all order types, inventory is tracked, and order notifications are sent to customers." — Damon, 2026-06-19
 
@@ -41,14 +41,14 @@ This PRD owns the **front of the order**: who can order, at what price, paid how
 - **Automatic invoicing for all order types** — every placed order produces a QBO invoice + canonical AR row + (for terms/ACH) a Stripe collection invoice, with no manual step. Accounting sees it immediately.
 - **Order notifications**: order confirmation, shipping + tracking, delivery — to **multiple CC recipients** per account (AP, buyer, ops).
 - **Rep order entry with admin-granted authority (RBAC)**: a rep places orders for a customer, but price/discount/shipping/payment-method overrides are gated by the permission level admin assigned.
-- **Inventory tracking** is consumed from the WMS surface (PRD-04 / PRD-26), not reimplemented here.
+- **Inventory tracking** is consumed from the UniteWMS surface (PRD-25 — reservations/ATP, lots), not reimplemented here.
 
 ### Out of scope
 
-- Distributor / 3PL consignment inventory, blind shipping, custom packing slips, PO ingestion, third-party-account billing, carrier-rate markup — **all PRD-26**.
+- Distributor / 3PL consignment inventory, blind shipping, custom packing slips, PO ingestion, third-party-account billing, carrier-rate markup — **all PRD-27**.
 - The fulfillment execution pipeline itself — **PRD-24**.
 - Tax calculation engine (TaxJar/Avalara) — tracked in PRD-24 §12 open questions.
-- Lot/expiration capture mechanics (scan in/out) — **PRD-26**.
+- Lot/expiration capture mechanics (scan in/out) — **PRD-27** (consignment) / **PRD-25** (UniteWMS native capture).
 
 ---
 
@@ -178,8 +178,8 @@ Permission grants (per rep, assignable by admin):
 ## 10. Data model additions
 
 ```sql
--- Migration: 0019_customer_ordering.sql
--- (0020 reserved by PRD-24 fulfillment; this is the next free slot.)
+-- Migration: 0021_customer_ordering.sql
+-- (0019 = UniteWMS/PRD-25; 0020 reserved by PRD-24 fulfillment; this is next.)
 
 -- Per-customer contract pricing (highest precedence in the resolver).
 CREATE TABLE IF NOT EXISTS customer_contract_prices (

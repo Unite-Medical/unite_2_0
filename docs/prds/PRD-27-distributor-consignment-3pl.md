@@ -1,9 +1,9 @@
-# PRD-26 — Distributor / 3PL Ordering, Consignment Inventory & Blind Shipping
+# PRD-27 — Distributor / 3PL Ordering, Consignment Inventory & Blind Shipping
 
 **Source:** Founder directive (Damon, 2026-06-19): "We also have distributors who store product in our warehouse… need to account for this so these distributors can upload and attach any required paperwork that ships with their orders… the ability to blind ship… third-party shipping billing… show them a comparison of shipping costs… pull our shipping rates from our carriers and add a 10% mark up."
 **Owner:** Alex (CTO)
 **Status:** draft
-**Depends on:** PRD-25 (customer order core — pricing, payment, RBAC), PRD-04 (Cin7/WMS — inventory + ShipStation), PRD-24 (fulfillment orchestrator), PRD-17 (PDF document pipeline — packing slips), PRD-14 (B2B portal/accounts), the **in-flight WMS work** (scan stations, lot/expiration capture) Alex is currently wiring
+**Depends on:** PRD-26 (customer order core — pricing, payment, RBAC), PRD-25 (UniteWMS — native inventory ledger, lots/expiry, reservations/ATP, receiving + pick/pack/ship, barcode workflows), PRD-24 (fulfillment orchestrator), PRD-17 (PDF document pipeline — packing slips), PRD-14 (B2B portal/accounts)
 **Blocks:** distributor revenue (3PL fees, shipping markup) + listing distributor stock on the Unite storefront
 
 > "When a distributor ships something from Unite, they don't want their customers to see it came from Unite — they want it to appear like it came from them." — Damon, 2026-06-19
@@ -44,11 +44,11 @@ The same distributor can also buy **Unite's** products. And in some cases Unite 
 - **Customer-PO ingestion**: distributor uploads their customer's PO (PDF/xlsx); system parses items, quantities, ship-to; matches to known SKUs; produces a draft order for confirmation.
 - **Third-party shipping billing**: distributor ships on **their own carrier account** (bill-to-third-party) **or** on Unite's rates and Unite bills them.
 - **Carrier-rate markup + comparison**: pull live carrier rates, apply a **configurable markup (default 10%)**, and show **"Unite rate vs. your rate"** side by side.
-- **Quick orders, reorders, multi-email notifications** for distributors (reuses PRD-25 mechanics).
+- **Quick orders, reorders, multi-email notifications** for distributors (reuses PRD-26 mechanics).
 
 ### Out of scope
 
-- The customer ordering core (pricing resolver, payment allowlist, rep RBAC) — **PRD-25**.
+- The customer ordering core (pricing resolver, payment allowlist, rep RBAC) — **PRD-26**.
 - The fulfillment orchestrator internals — **PRD-24** (this PRD adds owner/blind/paperwork inputs to it).
 - International / customs documentation for distributor outbound (domestic v1).
 - Automated 3PL storage-fee billing run (tracked as open question — invoice hooks defined, billing cadence deferred).
@@ -76,7 +76,7 @@ Availability is always scoped:
 - A distributor never sees Unite's quantities as theirs, and vice-versa.
 - **Sell-through**: if a distributor SKU is flagged `unite_sellable`, a Unite storefront/rep sale reserves and decrements **that distributor's** lots, and writes a `consignment_movement` row (owner, qty, sale ref) for settlement.
 - **Listing visibility** per distributor product: `storefront` (public, Unite sells it) | `warehouse_only` (never public; distributor orders against it). Distributors order against either; only `storefront` items render on the site.
-- Distributors can also order **Unite-owned** catalog products (acting as a normal customer per PRD-25).
+- Distributors can also order **Unite-owned** catalog products (acting as a normal customer per PRD-26).
 
 ---
 
@@ -161,11 +161,11 @@ Distributors either ship on **their** carrier account or on **Unite's marked-up 
 - `/distributor/inventory` — **their** consignment stock: SKU, lot, expiration, qty on-hand/reserved, location, listing visibility (storefront vs warehouse-only). Near-expiry highlighting.
 - `/distributor/order` — quick order + catalog (their items + Unite items), blind-ship defaults.
 - `/distributor/po-upload` — upload customer PO → draft order.
-- `/distributor/reorder` — saved lists / past orders (PRD-25 mechanics).
+- `/distributor/reorder` — saved lists / past orders (PRD-26 mechanics).
 - `/distributor/shipping` — ship-from identities, carrier accounts (third-party), markup view, rate-comparison preferences.
 - `/distributor/documents` — upload packing-slip template + required inserts.
 - `/distributor/settlement` — sell-through report: what Unite sold from their stock, owed/settled.
-- Multi-email notification recipients (reuses PRD-25 `account_notification_recipients`).
+- Multi-email notification recipients (reuses PRD-26 `account_notification_recipients`).
 
 Admin: `/admin/consignment` — per-distributor stock, scan-event audit, markup overrides, blind-ship identity approval.
 
@@ -173,8 +173,19 @@ Admin: `/admin/consignment` — per-distributor stock, scan-event audit, markup 
 
 ## 10. Data model additions
 
+> **Reconciliation note (PRD-25 UniteWMS):** UniteWMS already owns an append-only
+> `stock_movements` ledger, a lot/expiry model, reservations/ATP, and barcode
+> receiving/picking. The tables below are written as standalone for clarity, but
+> the **preferred implementation is to extend the WMS ledger with an
+> `owner_type` / `owner_org_id` dimension** rather than create a parallel
+> inventory store — so distributor-owned stock is the same ledger, just
+> owner-scoped. `inventory_lots`, `scan_events`, and `consignment_movements`
+> below should fold into / reference the WMS equivalents where they exist (see
+> §14 open question 1). Treat the DDL as the *required fields*, not a mandate to
+> duplicate the WMS.
+
 ```sql
--- Migration: 0021_distributor_consignment.sql
+-- Migration: 0022_distributor_consignment.sql
 
 -- Owner-tagged, lot-level inventory. Supersedes the implicit "all stock is
 -- Unite's" assumption in 0003_inventory.sql for distributor pools.
@@ -364,7 +375,7 @@ ShipStation client (`external/shipstation.js`) extends to accept `shipFrom` iden
 **Exit:** Warehouse staff receives a pallet and picks an order entirely by scanning — lot + expiration captured with zero keyboard entry; near-dated lots picked first.
 
 ### Phase 3 — Distributor ordering + sell-through
-- Distributor quick order / reorder against their stock + Unite catalog (PRD-25 mechanics).
+- Distributor quick order / reorder against their stock + Unite catalog (PRD-26 mechanics).
 - `unite_sellable` storefront listing; a Unite sale decrements the distributor's lots + writes `consignment_movements`.
 
 **Exit:** A distributor places an order against their consignment stock; separately, a Unite storefront sale of a `unite_sellable` distributor SKU draws down that distributor's lots and shows in their settlement report.
@@ -404,7 +415,7 @@ ShipStation client (`external/shipstation.js`) extends to accept `shipFrom` iden
 
 ## 14. Open questions
 
-1. **WMS boundary** — is the in-flight WMS the **Cin7 integration (PRD-04)** or a separate/custom system? This PRD assumes the scan stations + lot capture land in that WMS and exposes the `scan_events` contract; confirm so we don't double-build the receive/pick UI. *(Flagged to Alex — WMS commits not yet on `origin/main`.)*
+1. **WMS integration boundary** — UniteWMS (PRD-25) shipped as the native warehouse system (append-only `stock_movements` ledger, lots/expiry, reservations/ATP, receiving + pick/pack/ship, barcode workflows). This PRD's consignment must be **owner-tagged extensions of that ledger**, not a parallel inventory store: `inventory_lots` here should reconcile to (or fold into) UniteWMS's lot + movement model with an `owner_type`/`owner_org_id` dimension, and `scan_events` should reuse the WMS receiving/picking capture rather than a second scanner UI. **Action for Alex:** confirm whether owner-tagging lands as columns on the existing WMS lot/movement tables (preferred — one ledger) vs. the separate tables sketched in §10, so we don't double-build receive/pick.
 2. **Barcode standard** — are distributor inbounds reliably GS1/UDI-marked, or do many arrive with non-standard / no barcodes (making photo-OCR or Unite-generated barcodes the common path, not the fallback)? Drives how much OCR effort to invest.
 3. **Settlement cadence** — how/when does Unite pay distributors for sell-through (and bill 3PL storage + the shipping markup)? Movements are recorded now; the billing run is deferred — needs its own cadence decision (monthly statement vs per-sale).
 4. **Blind-ship return address** — distributor's own address, Unite's warehouse, or a neutral PO box? Default assumed = distributor brand + Unite warehouse address (so returns reach the goods). Confirm per distributor.
@@ -415,8 +426,8 @@ ShipStation client (`external/shipstation.js`) extends to accept `shipFrom` iden
 
 ## 15. Out-of-band
 
-- The in-flight **WMS** (scan hardware/stations, Cin7 or custom) — its scan + lot-capture surface is the dependency this PRD builds on.
-- Warehouse scanner / tablet hardware + label printer (for Unite-generated lot barcodes).
+- **UniteWMS (PRD-25)** is the inventory/scan foundation — shipped. This PRD's consignment owner-tagging, scan reuse, and lot/expiry capture build on the WMS `stock_movements` ledger + lot model (see §10 reconciliation note + open question 1).
+- Warehouse scanner / tablet hardware + label printer (for Unite-generated lot barcodes) — shared with UniteWMS receiving.
 - ShipStation third-party-billing + `shipFrom` override confirmed on the live account.
 - Carrier rate API access for live rate pulls (ShipStation or direct FedEx/UPS).
 - OCR/AI extraction budget for PO + box-label parsing (reuses PRD-11 Claude + PRD-18 xlsx).
@@ -432,4 +443,4 @@ ShipStation client (`external/shipstation.js`) extends to accept `shipFrom` iden
 - Distributor orders **blind ship** under their brand with their packing slip + required inserts; the recipient never sees Unite.
 - Distributors ship on their own carrier account (third-party billed) or on Unite's marked-up rates, after seeing a "Unite rate vs. your rate" comparison; markup defaults to 10% and is adjustable globally and per distributor.
 - A distributor uploads their customer's PO and the system produces a correct draft order (items, quantities, ship-to), learning SKU mappings over time.
-- Every sell-through movement is recorded for settlement; multi-recipient notifications fire per PRD-25.
+- Every sell-through movement is recorded for settlement; multi-recipient notifications fire per PRD-26.
