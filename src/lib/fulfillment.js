@@ -24,6 +24,7 @@ import { generateDocument } from './documents.js';
 import { reservations } from './wms/reservations.js';
 import { availability } from './wms/availability.js';
 import { ledger } from './wms/ledger.js';
+import { shipping } from './wms/shipping.js';
 
 export const PIPELINE_STEPS = ['validate', 'reserve', 'payment', 'invoice', 'shipping', 'packing_slip', 'notify', 'delivered'];
 
@@ -235,10 +236,11 @@ export async function runFulfillment(orderId, { onProgress = () => {} } = {}) {
         events: [{ ts: new Date().toISOString(), label: 'Label created (orchestrator)' }],
       });
       db.update('orders', orderId, { tracking_number: label.tracking_number, carrier: label.carrier, status: 'ready_to_ship' });
-      // Goods are leaving: commit held reservations → ledger `ship` movements
-      // decrement on_hand and free `reserved` (idempotent per reservation).
-      const committed = reservations.commit(orderId, { actor_id: 'fulfillment' });
-      return { tracking_number: label.tracking_number, carrier: label.carrier, committed: committed.committed };
+      // Goods are leaving: FEFO-pick lots, post per-lot `ship` movements
+      // (on_hand drops via the ledger), record recall genealogy, and free the
+      // reservations — all idempotent per (order, reservation, lot).
+      const ship = shipping.confirmShip(orderId, { actor_id: 'fulfillment' });
+      return { tracking_number: label.tracking_number, carrier: label.carrier, ship_movements: ship.movements.length, lots_recorded: ship.genealogy.length };
     },
   });
 

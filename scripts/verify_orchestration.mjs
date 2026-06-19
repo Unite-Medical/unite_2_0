@@ -29,6 +29,8 @@ import { availability } from '../src/lib/wms/availability.js';
 import { reservations } from '../src/lib/wms/reservations.js';
 import { purchaseOrders } from '../src/lib/wms/purchaseOrders.js';
 import { lots as lotsApi } from '../src/lib/wms/lots.js';
+import { shipping } from '../src/lib/wms/shipping.js';
+import { picking } from '../src/lib/wms/picking.js';
 
 let pass = 0; let fail = 0;
 const ok = (cond, msg) => { if (cond) { pass += 1; } else { fail += 1; console.error('  ✗', msg); } };
@@ -248,6 +250,49 @@ section('PRD-25 · PO receiving + lots (FEFO)');
   const pick = lotsApi.pickFEFO(sku, 'wh_atl', 50);
   ok(pick.allocations[0].lot_number === 'LOTB', 'FEFO picks the earliest-expiry lot first');
   ok(pick.shortfall === 0, 'FEFO satisfied the pick');
+}
+
+// ── PRD-25 Phase 3: pick / ship FEFO + recall genealogy ─────────────────────
+section('PRD-25 · ship FEFO + recall (<1s)');
+{
+  const sku = `WMS-SHIP-${uid('x')}`;
+  db.insert('products', { id: sku, sku, name: 'Ship FEFO test', price: 5, cogs: 2 });
+  // Two lots: LATER (expires 2028) received first, SOONER (expires 2026) second.
+  lotsApi.receiveLot({ sku, lot_number: 'LATER', expiration_date: '2028-01-01', warehouse_id: 'wh_atl', qty: 30, ref_id: 'seed', idempotency_key: `r1_${sku}` });
+  lotsApi.receiveLot({ sku, lot_number: 'SOONER', expiration_date: '2026-03-01', warehouse_id: 'wh_atl', qty: 30, ref_id: 'seed', idempotency_key: `r2_${sku}` });
+
+  const orderId = `UM-SHIP-${uid('x')}`;
+  db.insert('orders', { id: orderId, customer_id: 'org_atlsurgical', customer_name: 'Recall Test ASC', status: 'processing', total: 100 });
+  db.insert('order_items', { id: uid('oi'), order_id: orderId, sku, name: 'Ship FEFO test', qty: 40, unit_price: 5 });
+
+  // Pick-list preview is FEFO (SOONER first).
+  const plan = picking.buildPickList(orderId);
+  ok(plan.lines[0].picks[0].lot_number === 'SOONER', 'pick list previews FEFO (earliest expiry first)');
+
+  reservations.reserve({ id: orderId, items: [{ sku, qty: 40 }] });
+  const onHandBefore = availability.onHand(sku, 'wh_atl');
+  const ship = shipping.confirmShip(orderId);
+  ok(availability.onHand(sku, 'wh_atl') === onHandBefore - 40, 'ship decremented on_hand by 40 via ledger');
+  ok(availability.reserved(sku, 'wh_atl') === 0, 'reserved freed on ship');
+
+  // FEFO: SOONER lot (30) fully consumed, LATER lot down to 20.
+  const sooner = db.list('lots', { where: { product_sku: sku, lot_number: 'SOONER' } })[0];
+  const later = db.list('lots', { where: { product_sku: sku, lot_number: 'LATER' } })[0];
+  ok(sooner.qty_remaining === 0, 'earliest-expiry lot fully consumed first (FEFO)');
+  ok(later.qty_remaining === 20, 'later lot only partially consumed');
+
+  // Recall query returns the customer in < 1s.
+  const t0 = performance.now();
+  const recall = shipping.recall('SOONER');
+  const ms = performance.now() - t0;
+  ok(recall.length >= 1 && recall[0].customer_id === 'org_atlsurgical', 'recall returns the affected customer');
+  ok(ms < 1000, `recall query < 1s (${ms.toFixed(2)}ms)`);
+
+  // Idempotent re-ship is a no-op.
+  const before = availability.onHand(sku, 'wh_atl');
+  shipping.confirmShip(orderId);
+  ok(availability.onHand(sku, 'wh_atl') === before, 're-confirming ship is idempotent');
+  ok(availability.ledgerOnHand(sku, 'wh_atl') === availability.onHand(sku, 'wh_atl'), 'ledger invariant holds post-ship');
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

@@ -180,4 +180,20 @@ export function heldQty(orderId_) {
   return heldFor(orderId_).reduce((a, r) => a + num(r.qty), 0);
 }
 
-export const reservations = { reserve, commit, release, heldQty };
+/** Held reservation rows for an order (used by Phase-3 shipping). */
+export function heldReservations(orderId_) {
+  return heldFor(orderId_);
+}
+
+/**
+ * Mark a single reservation committed and free its reserved units — WITHOUT
+ * posting a ledger movement. Phase-3 shipping posts per-lot `ship` movements
+ * itself (FEFO), then calls this to do the reserved bookkeeping.
+ */
+export function commitReservation(r) {
+  if (!r) return;
+  bumpReserved(r.sku, r.warehouse_id, -num(r.qty));
+  db.update('reservations', r.id, { status: 'committed', committed_at: new Date().toISOString() });
+}
+
+export const reservations = { reserve, commit, release, heldQty, heldReservations, commitReservation };
