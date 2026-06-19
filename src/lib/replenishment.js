@@ -21,7 +21,6 @@
 
 import { db } from './db.js';
 import { uid } from './format.js';
-import { cin7 } from './services.js';
 import { forecast } from './external/forecast.js';
 
 export const DEFAULTS = {
@@ -137,8 +136,9 @@ export function lowStockAlerts(opts = {}) {
 
 /**
  * Draft purchase orders from the current replenishment table, grouped
- * by vendor. Writes `purchase_orders` rows (status: draft) and pushes
- * each to the WMS as an AUTHORISED PO (stubbed until credentials land).
+ * by vendor. Writes `purchase_orders` rows (status: draft) owned by
+ * UniteWMS — the native WMS is now the system of record (no external
+ * Cin7 push). The PO lifecycle lives in wms/purchaseOrders.js.
  */
 export async function draftPurchaseOrders({ rows = null, created_by = 'run-rate-model' } = {}) {
   const need = (rows || lowStockAlerts()).filter((r) => r.suggested_qty > 0);
@@ -154,12 +154,6 @@ export async function draftPurchaseOrders({ rows = null, created_by = 'run-rate-
     const lineItems = lines.map((l) => ({ sku: l.sku, name: l.name, qty: l.suggested_qty, cost: l.cogs || 0, received_qty: 0 }));
     const vendorRow = db.list('vendors').find((v) => v.name === vendor);
 
-    const wms = await cin7.createPO({
-      vendor_name: vendor,
-      line_items: lineItems,
-      expected_delivery_date: new Date(Date.now() + DEFAULTS.lead_time_days * 86400000),
-    });
-
     const row = db.insert('purchase_orders', {
       id,
       vendor_name: vendor,
@@ -168,9 +162,10 @@ export async function draftPurchaseOrders({ rows = null, created_by = 'run-rate-
       created_by,
       line_items: lineItems,
       total_cost: total,
-      wms_po_id: wms?.id || null,
+      wms_po_id: id, // UniteWMS owns the PO; its own id is the WMS id
       qbo_po_id: null,
       qbo_bill_id: null,
+      warehouse_id: 'wh_atl',
       expected_delivery: new Date(Date.now() + DEFAULTS.lead_time_days * 86400000).toISOString(),
     });
     db.insert('audit_log', { id: uid('aud'), kind: 'replenish.po_drafted', ref_id: id, payload: { vendor, lines: lineItems.length, total } });

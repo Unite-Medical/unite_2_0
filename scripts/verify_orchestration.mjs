@@ -35,6 +35,7 @@ import { transfers } from '../src/lib/wms/transfers.js';
 import { counts } from '../src/lib/wms/counts.js';
 import { adjustments } from '../src/lib/wms/adjustments.js';
 import { bundles } from '../src/lib/wms/bundles.js';
+import { wmsCan } from '../src/lib/wms/access.js';
 
 let pass = 0; let fail = 0;
 const ok = (cond, msg) => { if (cond) { pass += 1; } else { fail += 1; console.error('  ✗', msg); } };
@@ -360,6 +361,37 @@ section('PRD-25 · bundles (kit explosion)');
 
   reservations.release(orderId);
   ok(availability.reserved(a, 'wh_atl') === 0 && availability.reserved(b, 'wh_atl') === 0, 'releasing the kit freed both components');
+}
+
+// ── PRD-25 Phase 6: reversal + reconcile + role access ──────────────────────
+section('PRD-25 · hardening (reverse / reconcile / roles)');
+{
+  const sku = `WMS-H6-${uid('x')}`;
+  db.insert('products', { id: sku, sku, name: 'Hardening test', price: 1, cogs: 0.5 });
+  const r = ledger.post({ sku, warehouse_id: 'wh_atl', qty_delta: 50, reason: 'receipt', idempotency_key: `h6_${sku}` });
+  ok(availability.onHand(sku, 'wh_atl') === 50, 'seed receipt → 50');
+
+  // Reversal posts a compensating movement (append-only) and is idempotent.
+  const rev = ledger.reverse(r.movement.id, { actor_id: 'verifier' });
+  ok(rev.ok && availability.onHand(sku, 'wh_atl') === 0, 'reverse undid the receipt → 0');
+  const rev2 = ledger.reverse(r.movement.id);
+  ok(rev2.duplicate === true && availability.onHand(sku, 'wh_atl') === 0, 'double-reverse is a no-op');
+  ok(ledger.reverse(rev.movement.id).ok === false, 'cannot reverse a reversal');
+
+  // Reconcile detects + repairs projection drift (corrupt on_hand then heal).
+  ledger.post({ sku, warehouse_id: 'wh_atl', qty_delta: 20, reason: 'receipt', idempotency_key: `h6b_${sku}` });
+  const invRow = db.list('inventory', { where: { sku, warehouse_id: 'wh_atl' } })[0];
+  db.update('inventory', invRow.id, { on_hand: 999 }); // simulate out-of-band tamper
+  const rec = ledger.reconcile();
+  ok(rec.drift >= 1, 'reconcile detected the injected drift');
+  ok(availability.onHand(sku, 'wh_atl') === 20, 'reconcile repaired on_hand from the ledger (20)');
+  ok(availability.ledgerOnHand(sku, 'wh_atl') === 20, 'ledger invariant restored');
+
+  // Role-based access.
+  ok(wmsCan('reverse', { role: 'admin' }) === true, 'admin can reverse');
+  ok(wmsCan('reverse', { role: 'admin', wms_role: 'operator' }) === false, 'operator cannot reverse');
+  ok(wmsCan('receive', { role: 'admin', wms_role: 'operator' }) === true, 'operator can receive');
+  ok(wmsCan('adjust', { role: 'customer' }) === false, 'customers have no WMS access');
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

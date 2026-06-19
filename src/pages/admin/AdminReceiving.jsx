@@ -4,8 +4,10 @@ import { AdminShell } from '../../components/layout/AdminShell.jsx';
 import { AdminCard } from '../../components/layout/AdminCard.jsx';
 import { db } from '../../lib/db.js';
 import { useViewport } from '../../lib/viewport.js';
+import { auth } from '../../lib/auth.js';
 import { purchaseOrders } from '../../lib/wms/purchaseOrders.js';
 import { lots as lotsApi } from '../../lib/wms/lots.js';
+import { wmsCan } from '../../lib/wms/access.js';
 
 const INPUT = { padding: '12px 14px', borderRadius: 10, border: `1px solid ${D.line}`, fontFamily: D.sans, fontSize: 15, color: D.ink, background: D.card, width: '100%', boxSizing: 'border-box' };
 const LABEL = { fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3, marginBottom: 6, display: 'block' };
@@ -13,6 +15,8 @@ const LABEL = { fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink
 /** Receiving workstation — mobile/tablet, barcode-first (camera or USB wedge). */
 export function AdminReceiving() {
   const { isMobile } = useViewport();
+  const session = auth.use();
+  const canReceive = wmsCan('receive', session);
   const padX = isMobile ? 16 : 40;
   const pos = db.useTable('purchase_orders');
   const openPos = useMemo(() => pos.filter((p) => p.status === 'sent' || p.status === 'partial'), [pos]);
@@ -37,6 +41,7 @@ export function AdminReceiving() {
 
   async function post() {
     if (queue.length === 0) return;
+    if (!canReceive) { setMsg({ kind: 'err', text: 'Your role cannot post receipts.' }); return; }
     setBusy(true);
     try {
       if (po) {
@@ -116,7 +121,7 @@ export function AdminReceiving() {
                   <span>× {r.qty}</span>
                 </div>
               ))}
-              <button onClick={post} disabled={busy} style={{ marginTop: 16, width: '100%', background: D.plum, color: D.paper, border: 'none', padding: 14, borderRadius: 999, cursor: busy ? 'wait' : 'pointer', fontSize: 15, fontWeight: 600 }}>
+              <button onClick={post} disabled={busy || !canReceive} title={canReceive ? '' : 'Insufficient role'} style={{ marginTop: 16, width: '100%', background: canReceive ? D.plum : D.ink3, color: D.paper, border: 'none', padding: 14, borderRadius: 999, cursor: busy ? 'wait' : canReceive ? 'pointer' : 'not-allowed', fontSize: 15, fontWeight: 600 }}>
                 {busy ? 'Posting…' : `Post receipt → ledger (${queue.reduce((a, r) => a + Number(r.qty), 0)} units)`}
               </button>
             </AdminCard>

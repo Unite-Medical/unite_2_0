@@ -4,13 +4,17 @@ import { AdminShell } from '../../components/layout/AdminShell.jsx';
 import { AdminCard } from '../../components/layout/AdminCard.jsx';
 import { db } from '../../lib/db.js';
 import { useViewport } from '../../lib/viewport.js';
+import { auth } from '../../lib/auth.js';
 import { counts } from '../../lib/wms/counts.js';
 import { adjustments } from '../../lib/wms/adjustments.js';
+import { wmsCan } from '../../lib/wms/access.js';
 
 const INPUT = { padding: '10px 12px', borderRadius: 8, border: `1px solid ${D.line}`, fontFamily: D.sans, fontSize: 14, color: D.ink, background: D.card };
 
 export function AdminCount() {
   const { isMobile } = useViewport();
+  const session = auth.use();
+  const canAdjust = wmsCan('adjust', session);
   const padX = isMobile ? 18 : 40;
   const sessions = db.useTable('count_sessions', { orderBy: 'started_at', dir: 'desc' });
   const [warehouse, setWarehouse] = useState('wh_atl');
@@ -34,6 +38,7 @@ export function AdminCount() {
     setSessionId('');
   }
   function postAdjustment() {
+    if (!canAdjust) { setMsg({ kind: 'err', text: 'Your role cannot post adjustments (manager+).' }); return; }
     const qty = Number(adj.qty);
     if (!adj.sku || !(qty > 0)) { setMsg({ kind: 'err', text: 'SKU and a positive qty required.' }); return; }
     const res = adjustments.adjust({ sku: adj.sku, warehouse_id: warehouse, qty_delta: qty, reason: adj.reason, note: 'Admin adjustment' });
@@ -96,7 +101,7 @@ export function AdminCount() {
               <option value="adjust_loss">Loss (−)</option>
               <option value="found">Found (+)</option>
             </select>
-            <button onClick={postAdjustment} style={{ background: D.ink, color: D.paper, border: 'none', padding: '11px 18px', borderRadius: 999, cursor: 'pointer', fontSize: 13, fontWeight: 600 }}>Post adjustment</button>
+            <button onClick={postAdjustment} disabled={!canAdjust} title={canAdjust ? '' : 'Manager role required'} style={{ background: canAdjust ? D.ink : D.ink3, color: D.paper, border: 'none', padding: '11px 18px', borderRadius: 999, cursor: canAdjust ? 'pointer' : 'not-allowed', fontSize: 13, fontWeight: 600 }}>Post adjustment</button>
           </div>
         </AdminCard>
       </div>

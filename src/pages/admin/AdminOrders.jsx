@@ -3,7 +3,8 @@ import { D } from '../../tokens.js';
 import { AdminShell } from '../../components/layout/AdminShell.jsx';
 import { db } from '../../lib/db.js';
 import { fmt } from '../../lib/format.js';
-import { shipstation, cin7 } from '../../lib/services.js';
+import { shipstation } from '../../lib/services.js';
+import { cin7 } from '../../lib/external/cin7.js';
 import { useViewport } from '../../lib/viewport.js';
 
 const FILTERS = ['All', 'net30', 'net60', 'card', 'mspv', 'wire'];

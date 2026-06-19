@@ -245,4 +245,77 @@ export function seedOpeningBalances({ actor_id = 'phase0_backfill' } = {}) {
   return { seeded, skipped, rebuilt };
 }
 
-export const ledger = { post, rebuildProjection, seedOpeningBalances, REASONS };
+/**
+ * Reverse a movement (undo) — PRD §11. The ledger is append-only, so an undo
+ * is a NEW compensating movement (qty_delta negated) that references the
+ * original, never a delete. Idempotent: `reverse:<movement_id>` guarantees a
+ * given movement is reversed at most once.
+ *
+ * @returns {{ok:boolean, reason?:string, duplicate?:boolean, movement?:object}}
+ */
+export function reverse(movementId, { actor_id = 'ops', note = null } = {}) {
+  const orig = db.get('stock_movements', movementId)
+    || db.list('stock_movements', { where: { id: movementId } })[0];
+  if (!orig) return { ok: false, reason: 'movement_not_found' };
+  if (orig.reverses_movement_id) return { ok: false, reason: 'cannot_reverse_a_reversal' };
+
+  const key = `reverse:${movementId}`;
+  const prior = findByIdempotencyKey(key);
+  if (prior) return { ok: true, duplicate: true, movement: prior };
+
+  const res = post({
+    sku: orig.sku || orig.product_sku,
+    warehouse_id: orig.warehouse_id,
+    qty_delta: -Number(orig.qty_delta),
+    reason: orig.reason,
+    ref_type: orig.ref_type,
+    ref_id: orig.ref_id,
+    bin_id: orig.bin_id || null,
+    lot_id: orig.lot_id || null,
+    unit_cost: orig.unit_cost ?? null,
+    actor_id,
+    idempotency_key: key,
+    note: note || `Reversal of ${movementId}`,
+  });
+  if (res.movement) db.update('stock_movements', res.movement.id, { reverses_movement_id: movementId });
+  audit('wms.reverse', movementId, { reversal_id: res.movement?.id, qty_delta: -Number(orig.qty_delta) });
+  return res;
+}
+
+/**
+ * Nightly reconciliation (PRD §11): assert on_hand == SUM(movements) for every
+ * (sku, warehouse) and repair any drift by rebuilding from the ledger (the
+ * source of truth). Returns a report; a healthy system reports drift: 0.
+ *
+ * @returns {{checked:number, drift:number, repaired:number, details:Array}}
+ */
+export function reconcile() {
+  const sums = new Map();
+  for (const mv of db.list('stock_movements')) {
+    const s = mv.sku || mv.product_sku; const wh = mv.warehouse_id;
+    if (!s || !wh) continue;
+    sums.set(`${s}|${wh}`, (sums.get(`${s}|${wh}`) || 0) + Number(mv.qty_delta || 0));
+  }
+  const details = [];
+  let checked = 0;
+  let drift = 0;
+  // Union of projection rows and ledger keys.
+  const keys = new Set(sums.keys());
+  for (const r of db.list('inventory')) keys.add(`${r.sku}|${r.warehouse_id}`);
+  for (const key of keys) {
+    const [s, wh] = key.split('|');
+    const ledgerSum = sums.get(key) || 0;
+    const row = inventoryRow(s, wh);
+    const projected = row ? (Number(row.on_hand) || 0) : 0;
+    checked += 1;
+    if (projected !== ledgerSum) {
+      drift += 1;
+      details.push({ sku: s, warehouse_id: wh, projected, ledger: ledgerSum, delta: ledgerSum - projected });
+    }
+  }
+  const repaired = drift > 0 ? rebuildProjection() : 0;
+  audit('wms.reconcile', 'nightly', { checked, drift, repaired });
+  return { checked, drift, repaired, details };
+}
+
+export const ledger = { post, reverse, reconcile, rebuildProjection, seedOpeningBalances, REASONS };

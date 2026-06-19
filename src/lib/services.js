@@ -20,7 +20,9 @@ export { shopify } from './external/shopify.js';
 export { qbo } from './external/qbo.js';
 export { stripe } from './external/stripe.js';
 export { hubspot } from './external/hubspot.js';
-export { cin7 } from './external/cin7.js';
+// PRD-25: UniteWMS replaces the Cin7 dependency as the system of record for
+// stock. The external/cin7.js client stays for legacy inventory-sync screens
+// but is NO LONGER re-exported here — import it directly where still needed.
 export { gs1 } from './external/gs1.js';
 export { fathom } from './external/fathom.js';
 export { importgenius } from './external/importgenius.js';
@@ -48,6 +50,22 @@ export { calendly } from './external/calendly.js';
 // PRD-12 Phase 2 — Prophet forecasting sidecar (forecasting/) via the
 // backend proxy; replenishment swaps run-rate math for these horizons.
 export { forecast } from './external/forecast.js';
+
+// PRD-25 — UniteWMS, the native warehouse management system. The ledger is the
+// single source of truth for stock; everything else reads availability.
+export { ledger } from './wms/ledger.js';
+export { availability } from './wms/availability.js';
+export { reservations } from './wms/reservations.js';
+export { lots } from './wms/lots.js';
+export { purchaseOrders } from './wms/purchaseOrders.js';
+export { picking } from './wms/picking.js';
+export { packing } from './wms/packing.js';
+export { shipping } from './wms/shipping.js';
+export { transfers } from './wms/transfers.js';
+export { counts } from './wms/counts.js';
+export { adjustments } from './wms/adjustments.js';
+export { bundles } from './wms/bundles.js';
+export { access as wmsAccess } from './wms/access.js';
 
 import { uid } from './format.js';
 import { ai } from './ai/client.js';
