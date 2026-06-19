@@ -15,6 +15,8 @@ const NAV = [
   ['Fulfillment',   'fulfillment', '/admin/fulfillment'],
   ['Quotes',        'quotes',     '/admin/quotes'],
   ['Inventory',     'inventory',  '/admin/inventory'],
+  ['Receiving',     'receiving',  '/admin/inventory/receive'],
+  ['Purchase orders', 'purchase-orders', '/admin/purchase-orders'],
   ['Replenishment', 'replenish',  '/admin/replenishment'],
   ['Finance',       'finance',    '/admin/finance'],
   ['Customers',     'customers',  '/admin/customers'],

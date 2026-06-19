@@ -20,6 +20,8 @@ import { db } from './db.js';
 import { uid } from './format.js';
 import { qbo } from './services.js';
 import { lowStockAlerts, recalcReorderPoints } from './replenishment.js';
+import { lots } from './wms/lots.js';
+import { ledger } from './wms/ledger.js';
 
 const PORT_TO_WAREHOUSE = {
   USATL: 'wh_atl',
@@ -43,25 +45,32 @@ export async function receiveClearedShipment(shipment, { line_items = null } = {
   const warehouseId = PORT_TO_WAREHOUSE[shipment.destination_port] || 'wh_atl';
   const result = { ok: true, shipment_id: shipment.id, received: 0, bill: null, reorder_rows: 0 };
 
-  // 1) Inventory receive ---------------------------------------------------
+  // 1) Inventory receive — through the WMS ledger (PRD-25). Lines that carry
+  //    lot/expiry land as lots (lot-tracked); the rest post a plain `receipt`
+  //    movement. on_hand only ever moves via ledger.post.
+  result.lots = [];
   for (const li of lines) {
     if (!li.sku || !li.qty) continue;
-    const inv = db.list('inventory', { where: { sku: li.sku, warehouse_id: warehouseId } })[0];
-    if (inv) {
-      db.update('inventory', inv.id, { on_hand: inv.on_hand + Number(li.qty) });
+    const qty = Number(li.qty);
+    if (li.lot_number || li.expiration_date) {
+      const r = lots.receiveLot({
+        sku: li.sku, lot_number: li.lot_number, expiration_date: li.expiration_date || null,
+        warehouse_id: warehouseId, qty, unit_cost: li.unit_cost ?? null,
+        received_from_shipment: shipment.id, received_by: 'flexport',
+        ref_type: 'flexport_shipment', ref_id: shipment.id,
+      });
+      if (r.lot) result.lots.push(r.lot.id);
     } else {
-      db.insert('inventory', {
-        id: `inv_${warehouseId.replace('wh_', '')}_${li.sku}`,
-        sku: li.sku,
-        warehouse_id: warehouseId,
-        on_hand: Number(li.qty),
-        reorder_at: 0,
-        reorder_qty: 0,
+      ledger.post({
+        sku: li.sku, warehouse_id: warehouseId, qty_delta: qty, reason: ledger.REASONS.RECEIPT,
+        ref_type: 'flexport_shipment', ref_id: shipment.id, unit_cost: li.unit_cost ?? null,
+        actor_id: 'flexport', idempotency_key: `flx:${shipment.id}:${li.sku}`,
+        note: 'Flexport clearance receipt',
       });
     }
-    result.received += Number(li.qty);
+    result.received += qty;
   }
-  log('receiving.inventory_received', shipment.id, { warehouse: warehouseId, units: result.received, lines: lines.length });
+  log('receiving.inventory_received', shipment.id, { warehouse: warehouseId, units: result.received, lines: lines.length, lots: result.lots.length });
 
   // 2) Landed-cost bill → QBO ----------------------------------------------
   try {

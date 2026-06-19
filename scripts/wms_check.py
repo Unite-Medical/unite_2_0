@@ -172,6 +172,51 @@ def main():
     print(f"  reservation math (SUM held == reserved): "
           f"{len(set(held) | set(reserved_proj))} pairs, {resv_fails} mismatched")
 
+    # ── Check 5: PO math — SUM(line.received_qty) == receipt movements ──────
+    purchase_orders = tables.get("purchase_orders", []) or []
+    po_recv_moves = defaultdict(int)  # (po_id, sku) -> sum of receipt qty
+    for mv in movements:
+        if mv.get("ref_type") == "purchase_order" and num(mv.get("qty_delta")) > 0:
+            po_recv_moves[(mv.get("ref_id"), sku_of(mv))] += num(mv.get("qty_delta"))
+    po_line_recv = defaultdict(int)
+    for po in purchase_orders:
+        for line in po.get("line_items", []) or []:
+            po_line_recv[(po.get("id"), line.get("sku"))] += num(line.get("received_qty"))
+    po_fails = 0
+    for key in set(po_recv_moves) | set(po_line_recv):
+        if po_recv_moves.get(key, 0) != po_line_recv.get(key, 0):
+            po_fails += 1
+            if po_fails <= 20:
+                failures.append(
+                    f"PO math: {key[0]}/{key[1]} received_qty={po_line_recv.get(key, 0)} "
+                    f"!= receipt movements={po_recv_moves.get(key, 0)}"
+                )
+    checks += 1
+    print(f"  PO math (received_qty == receipts): "
+          f"{len(set(po_recv_moves) | set(po_line_recv))} (po,sku) pairs, {po_fails} mismatched")
+
+    # ── Check 6: lot conservation — SUM(lots.qty_remaining) == lot moves ────
+    lots_rows = tables.get("lots", []) or []
+    lot_remaining = defaultdict(int)
+    for lot in lots_rows:
+        lot_remaining[(sku_of(lot), lot.get("warehouse_id"))] += num(lot.get("qty_remaining"))
+    lot_moves = defaultdict(int)
+    for mv in movements:
+        if mv.get("lot_id"):
+            lot_moves[(sku_of(mv), mv.get("warehouse_id"))] += num(mv.get("qty_delta"))
+    lot_fails = 0
+    for key in set(lot_remaining) | set(lot_moves):
+        if lot_remaining.get(key, 0) != lot_moves.get(key, 0):
+            lot_fails += 1
+            if lot_fails <= 20:
+                failures.append(
+                    f"lot conservation: {key[0]}@{key[1]} qty_remaining={lot_remaining.get(key, 0)} "
+                    f"!= lot movements={lot_moves.get(key, 0)}"
+                )
+    checks += 1
+    print(f"  lot conservation (qty_remaining == lot moves): "
+          f"{len(set(lot_remaining) | set(lot_moves))} pairs, {lot_fails} mismatched")
+
     # ── Report ─────────────────────────────────────────────────────────────
     print()
     if failures:

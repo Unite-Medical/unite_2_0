@@ -27,6 +27,8 @@ import { uid } from '../src/lib/format.js';
 import { ledger } from '../src/lib/wms/ledger.js';
 import { availability } from '../src/lib/wms/availability.js';
 import { reservations } from '../src/lib/wms/reservations.js';
+import { purchaseOrders } from '../src/lib/wms/purchaseOrders.js';
+import { lots as lotsApi } from '../src/lib/wms/lots.js';
 
 let pass = 0; let fail = 0;
 const ok = (cond, msg) => { if (cond) { pass += 1; } else { fail += 1; console.error('  ✗', msg); } };
@@ -207,6 +209,45 @@ section('PRD-25 · WMS ledger + reservations');
   ok(availability.onHand(lastSku, 'wh_atl') === 0, 'commit posted a ship movement → on_hand == 0');
   ok(availability.reserved(lastSku, 'wh_atl') === 0, 'reserved freed after commit + release');
   ok(availability.ledgerOnHand(lastSku, 'wh_atl') === 0, 'ledger invariant holds through the ship');
+}
+
+// ── PRD-25 Phase 2: purchase orders + receiving + lots ──────────────────────
+section('PRD-25 · PO receiving + lots (FEFO)');
+{
+  const sku = `WMS-PO-${uid('x')}`;
+  db.insert('products', { id: sku, sku, name: 'PO receive test', price: 2, cogs: 1 });
+  const po = purchaseOrders.create({ vendor_name: 'Test Vendor', line_items: [{ sku, name: 'PO receive test', qty: 100, cost: 1 }], warehouse_id: 'wh_atl' });
+  ok(po.status === 'draft', 'PO created in draft');
+  ok(purchaseOrders.approve(po.id).ok, 'PO approved');
+  await purchaseOrders.send(po.id);
+  ok(db.get('purchase_orders', po.id).status === 'sent', 'PO sent');
+
+  const onHandBefore = availability.onHand(sku, 'wh_atl');
+  // Partial receipt with a lot + expiry.
+  const r1 = await purchaseOrders.receive(po.id, [{ sku, qty: 40, lot_number: 'LOTA', expiration_date: '2027-01-01', unit_cost: 1 }], { warehouse_id: 'wh_atl' });
+  ok(r1.status === 'partial', `partial receipt leaves PO partial (got ${r1.status})`);
+  ok(availability.onHand(sku, 'wh_atl') === onHandBefore + 40, 'on_hand += 40 via ledger receipt');
+
+  // Idempotent replay of the same receipt is a no-op.
+  const dup = await purchaseOrders.receive(po.id, [{ sku, qty: 40, lot_number: 'LOTA', expiration_date: '2027-01-01', unit_cost: 1, idempotency_key: r1.lots[0] ? `po_recv:${po.id}:${sku}:LOTA:40` : undefined }]);
+  ok(availability.onHand(sku, 'wh_atl') === onHandBefore + 40, 'replayed receipt did not double on_hand');
+  void dup;
+
+  // Finish the PO with a second, earlier-expiring lot.
+  const r2 = await purchaseOrders.receive(po.id, [{ sku, qty: 60, lot_number: 'LOTB', expiration_date: '2026-09-01', unit_cost: 1 }], { warehouse_id: 'wh_atl' });
+  ok(r2.status === 'received', 'full receipt → PO received');
+  const line = db.get('purchase_orders', po.id).line_items[0];
+  ok(line.received_qty === 100, 'line.received_qty == 100 (PO math)');
+
+  // Lot conservation: qty_remaining sums to the lot-movement total.
+  const lotRows = db.list('lots', { where: { product_sku: sku, warehouse_id: 'wh_atl' } });
+  const remaining = lotRows.reduce((a, l) => a + l.qty_remaining, 0);
+  ok(remaining === 100, `lots hold all 100 units (got ${remaining})`);
+
+  // FEFO: earliest-expiry lot (LOTB, 2026-09) is consumed first.
+  const pick = lotsApi.pickFEFO(sku, 'wh_atl', 50);
+  ok(pick.allocations[0].lot_number === 'LOTB', 'FEFO picks the earliest-expiry lot first');
+  ok(pick.shortfall === 0, 'FEFO satisfied the pick');
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);
