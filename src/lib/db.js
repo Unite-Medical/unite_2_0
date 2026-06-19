@@ -69,7 +69,7 @@ const TABLES = [
   'shopify_orders', 'shopify_products',
   // PRD-25: UniteWMS — append-only ledger + projection support tables
   'stock_movements', 'bins', 'lots', 'lot_tracking', 'reservations',
-  'count_sessions', 'count_lines', 'transfers', 'transfer_lines',
+  'count_sessions', 'count_lines', 'transfers', 'transfer_lines', 'bundles',
 ];
 
 function load() {

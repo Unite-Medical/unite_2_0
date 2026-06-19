@@ -34,6 +34,7 @@ import { picking } from '../src/lib/wms/picking.js';
 import { transfers } from '../src/lib/wms/transfers.js';
 import { counts } from '../src/lib/wms/counts.js';
 import { adjustments } from '../src/lib/wms/adjustments.js';
+import { bundles } from '../src/lib/wms/bundles.js';
 
 let pass = 0; let fail = 0;
 const ok = (cond, msg) => { if (cond) { pass += 1; } else { fail += 1; console.error('  ✗', msg); } };
@@ -332,6 +333,33 @@ section('PRD-25 · transfers + cycle counts + adjustments');
   // Idempotent count re-post is a no-op.
   const again = counts.postCount(c.session_id);
   ok(again.noop === true && availability.onHand(sku, 'wh_atl') === 52, 'closed count re-post is a no-op');
+}
+
+// ── PRD-25 Phase 5: bundles / kits ──────────────────────────────────────────
+section('PRD-25 · bundles (kit explosion)');
+{
+  const a = `WMS-CMPA-${uid('x')}`;
+  const b = `WMS-CMPB-${uid('x')}`;
+  db.insert('products', { id: a, sku: a, name: 'Component A', price: 1, cogs: 0.5 });
+  db.insert('products', { id: b, sku: b, name: 'Component B', price: 1, cogs: 0.5 });
+  ledger.post({ sku: a, warehouse_id: 'wh_atl', qty_delta: 100, reason: 'receipt', idempotency_key: `seedA_${a}` });
+  ledger.post({ sku: b, warehouse_id: 'wh_atl', qty_delta: 30, reason: 'receipt', idempotency_key: `seedB_${b}` });
+
+  const kit = `KIT-${uid('x')}`;
+  db.insert('bundles', { id: uid('bndl'), bundle_sku: kit, name: 'Test Kit', components: [{ sku: a, qty: 2 }, { sku: b, qty: 1 }] });
+
+  // available = min(floor(100/2), floor(30/1)) = min(50, 30) = 30.
+  ok(bundles.availableToPromise(kit) === 30, `kit ATP is the binding component (got ${bundles.availableToPromise(kit)})`);
+
+  // Reserving 10 kits explodes to 20×A + 10×B.
+  const orderId = `UM-KIT-${uid('x')}`;
+  reservations.reserve({ id: orderId, items: [{ sku: kit, qty: 10 }] });
+  ok(availability.reserved(a, 'wh_atl') === 20, 'kit reserve held 20 of component A (2×10)');
+  ok(availability.reserved(b, 'wh_atl') === 10, 'kit reserve held 10 of component B (1×10)');
+  ok(bundles.availableToPromise(kit) === 20, 'kit ATP dropped to 20 after holding 10 kits');
+
+  reservations.release(orderId);
+  ok(availability.reserved(a, 'wh_atl') === 0 && availability.reserved(b, 'wh_atl') === 0, 'releasing the kit freed both components');
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

@@ -180,6 +180,30 @@ export async function draftPurchaseOrders({ rows = null, created_by = 'run-rate-
 }
 
 /**
+ * Close the Prophet reorder loop (PRD-25 Phase 5): pull forecast horizons →
+ * recompute reorder points → auto-draft POs for everything at/under the point.
+ * This is the single call that turns "demand changed" into "POs on the board"
+ * without a human in the loop. Falls back to run-rate math when the sidecar
+ * is down (computeReplenishmentSmart handles that).
+ *
+ * @returns {{rows:Array, prophet_skus:number, reorder_points_updated:number, pos_drafted:number}}
+ */
+export async function runReorderLoop({ autodraft = true } = {}) {
+  const { rows, prophet_skus } = await computeReplenishmentSmart();
+  const updated = recalcReorderPoints();
+  let drafted = [];
+  if (autodraft) {
+    const need = rows.filter((r) => r.suggested_qty > 0);
+    drafted = await draftPurchaseOrders({ rows: need });
+  }
+  db.insert('audit_log', {
+    id: uid('aud'), kind: 'replenish.reorder_loop', ref_id: null,
+    payload: { prophet_skus, reorder_points_updated: updated, pos_drafted: drafted.length },
+  });
+  return { rows, prophet_skus, reorder_points_updated: updated, pos_drafted: drafted.length };
+}
+
+/**
  * Recalculate + persist reorder points onto inventory rows so the rest
  * of the app (inventory page, digest) reads fresh thresholds. Called
  * after receiving events and on demand from the admin UI.

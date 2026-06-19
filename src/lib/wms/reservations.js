@@ -20,6 +20,7 @@ import { db } from '../db.js';
 import { uid } from '../format.js';
 import { availability } from './availability.js';
 import { ledger } from './ledger.js';
+import { bundles } from './bundles.js';
 
 // Greedy allocation order — nearest/primary warehouse first (PRD default).
 const WAREHOUSE_PRIORITY = ['wh_atl', 'wh_reno'];
@@ -65,9 +66,24 @@ function bumpReserved(sku, warehouse_id, delta) {
 }
 
 function lineItems(orderLike) {
-  if (orderLike && Array.isArray(orderLike.items)) return orderLike.items;
-  const orderId = typeof orderLike === 'string' ? orderLike : orderLike?.id;
-  return db.list('order_items', { where: { order_id: orderId } }).map((li) => ({ sku: li.sku, qty: li.qty }));
+  let raw;
+  if (orderLike && Array.isArray(orderLike.items)) {
+    raw = orderLike.items;
+  } else {
+    const orderId = typeof orderLike === 'string' ? orderLike : orderLike?.id;
+    raw = db.list('order_items', { where: { order_id: orderId } }).map((li) => ({ sku: li.sku, qty: li.qty }));
+  }
+  // Explode kit/bundle SKUs into their component demand so reservations draw
+  // down real component stock (oversell-proof for kits too).
+  const out = [];
+  for (const it of raw) {
+    if (bundles.isBundle(it.sku)) {
+      for (const c of bundles.explode(it.sku, it.qty)) out.push(c);
+    } else {
+      out.push(it);
+    }
+  }
+  return out;
 }
 
 function orderId(orderLike) {

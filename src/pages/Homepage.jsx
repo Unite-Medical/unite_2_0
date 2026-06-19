@@ -9,6 +9,8 @@ import { Eyebrow } from '../components/shared/Eyebrow.jsx';
 import { Reveal } from '../components/shared/Reveal.jsx';
 import { PartnerMarquee } from '../components/shared/PartnerMarquee.jsx';
 import { cartStore } from '../store/cart.js';
+import { db } from '../lib/db.js';
+import { availability } from '../lib/wms/availability.js';
 import { PRODUCTS, TRUST_METRICS } from '../data/index.js';
 import { TESTIMONIALS } from '../data/testimonials.js';
 import { IMG, PRODUCT_IMG, productCutout } from '../lib/imageMap.js';
@@ -381,6 +383,41 @@ function Featured() {
 /* plain editorial: headline left, three hairline fact rows right.     */
 /* No photography, no glass — procurement buyers want the numbers.     */
 /* ------------------------------------------------------------------ */
+/* Live inventory widget — reads the WMS availability projection (on_hand −
+   reserved) straight off the ledger-backed `inventory` table, so the homepage
+   shows the same truth as the storefront and admin. */
+function LiveInventoryWidget() {
+  const inv = db.useTable('inventory');
+  const s = availability.summary();
+  const inStockSkus = availability.stockBySku();
+  let live = 0;
+  for (const v of inStockSkus.values()) if (v.available > 0) live += 1;
+  void inv;
+  const stats = [
+    { v: s.total_available.toLocaleString(), l: 'Units available now' },
+    { v: live.toLocaleString(), l: 'SKUs in stock' },
+    { v: s.total_reserved.toLocaleString(), l: 'Units reserved' },
+  ];
+  return (
+    <Reveal>
+      <div style={{ border: `1px solid ${D.line}`, borderRadius: 14, padding: 20, marginBottom: 18, background: D.card }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
+          <span style={{ width: 8, height: 8, borderRadius: 4, background: '#3b8760', boxShadow: '0 0 0 4px rgba(59,135,96,.18)' }} />
+          <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1.4, color: D.plum }}>LIVE INVENTORY · WMS</span>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
+          {stats.map((st) => (
+            <div key={st.l}>
+              <div style={{ fontFamily: D.display, fontSize: 28, letterSpacing: -0.5, color: D.ink }}>{st.v}</div>
+              <div style={{ fontSize: 11, color: D.ink2, marginTop: 4, lineHeight: 1.3 }}>{st.l}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </Reveal>
+  );
+}
+
 function OwnedInventory() {
   const navigate = useNavigate();
   const { isMobile } = useViewport();
@@ -419,6 +456,7 @@ function OwnedInventory() {
           </button>
         </Reveal>
         <div>
+          <LiveInventoryWidget />
           {facts.map((f, i) => (
             <Reveal key={f.label} delay={i * 90}>
               <div style={{

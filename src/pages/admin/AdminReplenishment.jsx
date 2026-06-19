@@ -15,7 +15,7 @@ import { AdminShell } from '../../components/layout/AdminShell.jsx';
 import { db } from '../../lib/db.js';
 import { fmt } from '../../lib/format.js';
 import { useViewport } from '../../lib/viewport.js';
-import { computeReplenishment, draftPurchaseOrders, recalcReorderPoints, DEFAULTS } from '../../lib/replenishment.js';
+import { computeReplenishment, draftPurchaseOrders, recalcReorderPoints, runReorderLoop, DEFAULTS } from '../../lib/replenishment.js';
 import { forecast } from '../../lib/external/forecast.js';
 import { simulateInboundShipment } from '../../lib/receiving.js';
 import { approvePurchaseOrder, sendPurchaseOrderToVendor, receivePurchaseOrder, cancelPurchaseOrder, threeWayMatch, outstandingLines } from '../../lib/purchaseOrders.js';
@@ -91,6 +91,14 @@ export function AdminReplenishment() {
   function handleRecalc() {
     const n = recalcReorderPoints();
     setNotice(`${n} warehouse reorder points recalculated from the trailing ${DEFAULTS.window_days}-day run rate.`);
+  }
+
+  async function handleReorderLoop() {
+    setBusy('loop'); setNotice(null);
+    try {
+      const r = await runReorderLoop();
+      setNotice(`Reorder loop closed — ${r.reorder_points_updated} reorder points refreshed (${r.prophet_skus} on Prophet) and ${r.pos_drafted} PO(s) auto-drafted.`);
+    } finally { setBusy(null); }
   }
 
   async function handleProphetRun() {
@@ -173,6 +181,7 @@ export function AdminReplenishment() {
           <button onClick={handleRecalc} disabled={busy} style={btn(false)}>Recalculate reorder points</button>
           <button onClick={handleSimulate} disabled={busy} style={btn(false)}>{busy === 'sim' ? 'Receiving…' : 'Simulate inbound container clearing'}</button>
           <button onClick={handleProphetRun} disabled={busy} style={btn(false)}>{busy === 'prophet' ? 'Queuing…' : 'Run Prophet forecast'}</button>
+          <button onClick={handleReorderLoop} disabled={busy} style={btn(true)}>{busy === 'loop' ? 'Closing loop…' : 'Close reorder loop (forecast → POs)'}</button>
           <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: D.ink2, marginLeft: 'auto', cursor: 'pointer' }}>
             <input type="checkbox" checked={onlyAction} onChange={(e) => setOnlyAction(e.target.checked)} />
             Needs attention only
