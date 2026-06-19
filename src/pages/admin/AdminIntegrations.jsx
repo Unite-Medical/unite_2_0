@@ -25,6 +25,7 @@ import { qbo } from '../../lib/external/qbo.js';
 import { flexport } from '../../lib/external/flexport.js';
 import { cin7 } from '../../lib/external/cin7.js';
 import { shipstation } from '../../lib/external/shipstation.js';
+import { shopify } from '../../lib/external/shopify.js';
 import { hubspot } from '../../lib/external/hubspot.js';
 import { stripe } from '../../lib/external/stripe.js';
 import { gs1 } from '../../lib/external/gs1.js';
@@ -79,6 +80,16 @@ const INTEGRATIONS = [
     docsUrl: 'https://docs.shipstation.com/apis/shipstation-v1/openapi',
     sample: () => shipstation.getRates({ weight_lbs: 12 }),
     tablesWatched: ['shipstation_labels'],
+  },
+  {
+    key: 'shopify',
+    label: 'Shopify (headless commerce)',
+    prd: 'PRD-04',
+    client: shopify,
+    envVars: ['SHOPIFY_STORE_DOMAIN', 'SHOPIFY_CLIENT_ID', 'SHOPIFY_CLIENT_SECRET', 'VITE_SHOPIFY_STOREFRONT_TOKEN'],
+    docsUrl: 'https://shopify.dev/docs/api/admin-rest',
+    sample: () => shopify.ping(),
+    tablesWatched: ['shopify_orders', 'shopify_products'],
   },
   {
     key: 'hubspot',

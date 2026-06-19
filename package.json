@@ -13,9 +13,12 @@
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",
+    "@react-email/components": "^1.0.12",
+    "@react-email/render": "^2.0.9",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
-    "react-router-dom": "^7.14.1"
+    "react-router-dom": "^7.14.1",
+    "resend": "^6.14.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
@@ -26,6 +29,7 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.5.0",
+    "tsx": "^4.22.4",
     "vite": "^8.0.9"
   }
 }

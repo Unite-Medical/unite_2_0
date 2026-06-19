@@ -21,6 +21,7 @@ import { warn } from './external/_http.js';
 import { stripe } from './external/stripe.js';
 import { flexport } from './external/flexport.js';
 import { shipstation } from './external/shipstation.js';
+import { shopify } from './external/shopify.js';
 import { fathom } from './external/fathom.js';
 import { calendly } from './external/calendly.js';
 import { markDelivered } from './fulfillment.js';
@@ -48,6 +49,7 @@ async function dispatch(evt) {
     if (isDelivered && orderId) { try { markDelivered(orderId); } catch { /* non-fatal */ } }
     return res;
   }
+  if (source === 'shopify') return shopify.handleWebhookEvent(payload);
   if (source === 'fathom') return fathom.handleCallCompleted(payload);
   if (source === 'calendly') return calendly.handleWebhookEvent(payload);
   throw new Error(`unknown_source_${source}`);

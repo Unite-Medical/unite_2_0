@@ -65,6 +65,8 @@ const TABLES = [
   'exchange_rates',
   // PRD-14: per-tier SKU pricing + per-segment catalog visibility
   'tier_pricing', 'catalog_visibility',
+  // PRD-04: Shopify headless commerce mirrors (orders + products)
+  'shopify_orders', 'shopify_products',
 ];
 
 function load() {

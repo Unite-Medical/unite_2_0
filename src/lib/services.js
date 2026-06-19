@@ -16,6 +16,7 @@ export { openfda } from './external/openfda.js';
 export { hts } from './external/hts.js';
 export { flexport } from './external/flexport.js';
 export { shipstation } from './external/shipstation.js';
+export { shopify } from './external/shopify.js';
 export { qbo } from './external/qbo.js';
 export { stripe } from './external/stripe.js';
 export { hubspot } from './external/hubspot.js';

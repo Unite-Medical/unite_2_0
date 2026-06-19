@@ -27,3 +27,12 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+.vercel
+
+# Sensitive internal docs (secrets / accounts / decisions)
+*.docx
+~$*
+docs/Unite_Medical_Keys_and_Accounts.pdf
+
+# Generated email previews
+emails/preview/

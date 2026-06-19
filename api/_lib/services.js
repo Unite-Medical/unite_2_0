@@ -68,6 +68,30 @@ async function googleAccessToken() {
   });
 }
 
+/** Shopify: client-credentials grant for Dev Dashboard apps.
+ *  Legacy custom apps (static shpat_ tokens) were deprecated Jan 2026;
+ *  new apps exchange Client ID/Secret for a ~24h Admin API token. Works
+ *  when the app + store are in the same Shopify org (our single-store case).
+ *  A manually-set SHOPIFY_ADMIN_TOKEN (legacy or offline-OAuth) wins if present. */
+async function shopifyAccessToken() {
+  if (env('SHOPIFY_ADMIN_TOKEN')) return env('SHOPIFY_ADMIN_TOKEN');
+  return cachedToken('shopify', async () => {
+    const shop = env('SHOPIFY_STORE_DOMAIN');
+    const res = await fetch(`https://${shop}/admin/oauth/access_token`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({
+        client_id: env('SHOPIFY_CLIENT_ID'),
+        client_secret: env('SHOPIFY_CLIENT_SECRET'),
+        grant_type: 'client_credentials',
+      }),
+    });
+    if (!res.ok) throw new Error(`Shopify token grant failed: ${res.status} ${await res.text()}`);
+    const json = await res.json();
+    return { token: json.access_token, expiresInSec: json.expires_in || 86400 };
+  });
+}
+
 /** Flexport: permanent key, or client-credentials JWT. */
 async function flexportToken() {
   const direct = env('FLEXPORT_API_KEY');
@@ -168,6 +192,23 @@ export const SERVICES = {
     headers: async () => ({
       Authorization: `Basic ${Buffer.from(`${env('SHIPSTATION_API_KEY')}:${env('SHIPSTATION_API_SECRET')}`).toString('base64')}`,
       'Content-Type': 'application/json',
+    }),
+  },
+
+  shopify: {
+    label: 'Shopify (Admin API)',
+    // Browser calls /proxy/shopify/admin/api/<ver>/<resource>; we mint a
+    // token from Client ID/Secret (or use a manual token) and forward to
+    // the shop's myshopify domain.
+    configured: () => Boolean(
+      env('SHOPIFY_STORE_DOMAIN')
+      && (env('SHOPIFY_ADMIN_TOKEN') || (env('SHOPIFY_CLIENT_ID') && env('SHOPIFY_CLIENT_SECRET'))),
+    ),
+    buildUrl: (path, query) => withQuery(`https://${env('SHOPIFY_STORE_DOMAIN')}${path}`, query),
+    headers: async () => ({
+      'X-Shopify-Access-Token': await shopifyAccessToken(),
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
     }),
   },
 
@@ -293,6 +334,7 @@ export function configSnapshot() {
     flexport: Boolean(env('FLEXPORT_WEBHOOK_SECRET')),
     fathom: Boolean(env('FATHOM_WEBHOOK_SECRET')),
     calendly: Boolean(env('CALENDLY_WEBHOOK_SECRET')),
+    shopify: Boolean(env('SHOPIFY_WEBHOOK_SECRET') || env('SHOPIFY_CLIENT_SECRET') || env('SHOPIFY_API_SECRET')),
   };
   return out;
 }
