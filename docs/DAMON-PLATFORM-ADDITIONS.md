@@ -242,6 +242,39 @@ This makes a large catalog look full and credible, every item is purchasable som
 
 ---
 
+## SITE-WIDE CONSISTENCY CLEANUP (existing copy that today's decisions contradict)
+
+> This section tracks **existing copy that must change** because of decisions made in the 2026-06-29 review — separate from the forward-looking feature asks above. As Damon reviews, new contradictions get added here. **Note:** "landed cost" language is CORRECT and should stay in the sourcing/quoting flow (Quote, QuoteNew, PortalQuote, ShortageMatch, Services source-card, and all backend WMS/quoting internals) — it is only wrong when applied to stocked/wholesale goods. Don't strip it from the sourcing path.
+
+### C1. Homepage "OWNED INVENTORY" fact band — contradicts multiple decisions (`Homepage.jsx` ~382–444)
+
+The whole `OwnedInventory` band is built on the old "we own & warehouse everything, zero middlemen" story and conflicts with today's positioning:
+
+- **Line 427 — FACTUAL ERROR (highest priority):** `'2', 'Warehouses', 'Lithia Springs, GA and Las Vegas, NV — coverage on both coasts.'` → Unite has ONE warehouse (Lithia Springs, GA). This was missed in the 2026-06-29 Nevada→Georgia sweep (commit d74325b). Fix to a single Georgia warehouse; drop "both coasts" / "Las Vegas, NV". **Las Vegas, NV is a new variant of the Nevada error — confirms the sweep needs to be exhaustive.**
+- **Line 426 — `'0', 'Middlemen', 'Inventory owned and shipped from Unite-operated distribution centers.'`** → contradicts the reality that Unite sometimes sources & sells without ever stocking, and is a distributor within multi-tier chains (e.g. Restore Robotics). "0 middlemen / all owned" overclaims.
+- **Line 440 — headline `'Most supplies cross four distributors before they reach you. Ours cross zero.'`** → the "zero distributors / zero middlemen" claim conflicts with the global-sourcing + quoting model and with Unite being a distributor/rep in programs like Restore. Reframe.
+- **Lines 443–444 — `'We buy direct from manufacturers, hold the stock in our own buildings, and ship it ourselves. No brokered inventory, no surprise substitutions, no third-party markups.'`** → "hold the stock in our own buildings" + "no brokered inventory" contradicts source-and-never-stock and the wholesale/global-supply-chain repositioning.
+
+**Direction:** rework this band so it celebrates Unite's genuine strengths (direct relationships, owned stock on core categories, fast domestic re-source, transparency) WITHOUT claiming it owns/warehouses everything or has zero middlemen. Keep it truthful to the two-model reality (stock + source).
+
+### C2. Homepage hero — "source, stock, and ship" + "Landed cost" on stocked goods (`Homepage.jsx` ~75–77)
+
+`'We source, stock, and ship Class 1 and Class 2 medical devices… warehouse everything we sell. No minimum orders on stocked items. Landed cost, transparent.'` → already flagged in Homepage-copy decisions: "warehouse everything we sell" is false; "Landed cost" must not describe stocked/wholesale goods (Unite is a wholesaler by design, not selling stock at landed cost). Replace with the new wholesale/global-supply-chain hero blurb.
+
+### C3. Segment/services gaps (existing pages don't reflect new scope)
+
+- Services + segments do not surface **Hospitals, Retailers, Brand Owners** (see A1), **Diagnostic tests as a category** (see M4), or the **Restore Robotics program** (see Restore section) — all now core. Existing Services/Segments copy will need expansion, not just new pages.
+
+### C4. Sweep still to do (Damon will keep flagging; Alex/agent to do exhaustive pass)
+
+Recurring themes to grep the WHOLE site for before launch, since today's review keeps surfacing stragglers one screenshot at a time:
+- Any remaining **"Nevada / Las Vegas / Reno / two warehouses / both coasts / west warehouse"** in customer-facing copy.
+- Any **"own/warehouse everything / zero middlemen / no brokered / no third-party"** absolute claims.
+- Any **"source, stock, and ship"** or **landed-cost** language applied to stocked/wholesale goods (vs. the sourcing flow, where it's correct).
+- Any **"no minimums"** stated globally rather than scoped to stocked items (sourcing/quoting has MOQs).
+
+---
+
 ## Homepage copy (related decision)
 
 - New hero blurb positions Unite as a **global supply chain company, specialty in medical**, and explicitly as a **wholesale distributor** — separating the two models: **stocked catalog (fast reorder)** vs. **sourced-to-spec (quoting engine, minimums apply)**. Avoids implying we stock everything we sell.
