@@ -7,26 +7,25 @@ import { IMG } from '../lib/imageMap.js';
 import { useViewport } from '../lib/viewport.js';
 import { useSEO } from '../lib/seo.js';
 
-// Two-warehouse footprint per spec §4k. SKU counts come from Shopify later;
+// Single-warehouse footprint (Lithia Springs, GA). SKU counts come from Shopify later;
 // sqft awaits real numbers from Alex (Open Question §10.3).
 const hubs = [
   { city: 'Lithia Springs, GA', type: 'HQ + main warehouse', skus: '—', sqft: '—', lat: 62, lng: 58, img: IMG.WAREHOUSE_GA },
-  { city: 'Nevada', type: 'West warehouse', skus: '—', sqft: '—', lat: 52, lng: 18, img: IMG.WAREHOUSE_NV },
 ];
 
 export function Locations() {
   const { isMobile } = useViewport();
   const padX = isMobile ? 20 : 40;
   useSEO({
-    title: 'Locations — 2 US warehouses, same-day shipping',
+    title: 'Locations — US warehouse, same-day shipping',
     description:
-      'Two US warehouses in Georgia and Nevada. Same-day shipping on orders before 2pm EST. Ships to all 50 states and territories.',
+      'US warehouse in Lithia Springs, Georgia. Same-day shipping on orders before 2pm EST. Ships to all 50 states and territories.',
     canonical: '/locations',
   });
   return (
     <div style={{ background: D.paper, fontFamily: D.sans, color: D.ink, minHeight: '100vh' }}>
       <Nav />
-      <PageHead eyebrow="2 US WAREHOUSES · NATIONWIDE SHIPPING"
+      <PageHead eyebrow="US WAREHOUSE · NATIONWIDE SHIPPING"
         title={<>Close to <em>every</em> dock.</>}
         sub="Same-day shipping on orders before 2pm EST. Ships to all 50 states and territories." />
       <div style={{ maxWidth: 1360, margin: '0 auto', padding: `24px ${padX}px ${isMobile ? 56 : 64}px`, display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 360px', gap: isMobile ? 18 : 28 }}>
@@ -42,11 +41,7 @@ export function Locations() {
               <div style={{ position: 'absolute', top: 18, left: '50%', transform: 'translateX(-50%)', background: D.ink, color: D.paper, fontSize: 11, padding: '4px 8px', borderRadius: 4, whiteSpace: 'nowrap' }}>{h.city}</div>
             </div>
           ))}
-          <svg viewBox="0 0 100 100" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }} preserveAspectRatio="none">
-            <path d="M 58 62 Q 40 20 18 52" fill="none" stroke={D.plum} strokeWidth="0.2" strokeDasharray="1,1" />
-            <path d="M 58 62 Q 55 40 40 68" fill="none" stroke={D.plum} strokeWidth="0.2" strokeDasharray="1,1" />
-            <path d="M 58 62 L 56 61" fill="none" stroke={D.plum} strokeWidth="0.2" />
-          </svg>
+
         </div>
         <div>
           {hubs.map((h, i) => (

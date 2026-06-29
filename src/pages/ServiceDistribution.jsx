@@ -30,7 +30,7 @@ export function ServiceDistribution() {
   useSEO({
     title: 'Distribution — 2 US warehouses, same-day shipping, nationwide coverage · Unite Medical',
     description:
-      'Two US warehouses in Georgia and Nevada. Same-day shipping on orders before 2pm EST. Routed by proximity, picked within 2 hours, tracking returned to your portal automatically.',
+      'Our US warehouse in Lithia Springs, Georgia. Same-day shipping on orders before 2pm EST. Routed by proximity, picked within 2 hours, tracking returned to your portal automatically.',
     canonical: '/services/distribution',
   });
   return (

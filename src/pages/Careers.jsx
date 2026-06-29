@@ -13,7 +13,6 @@ const ROLES = [
   { title: 'Account Executive · ASCs (Southeast)', dept: 'Sales', loc: 'Atlanta, GA', type: 'Full-time · 1099 OK' },
   { title: 'Compliance Lead · FDA + GUDID', dept: 'Operations', loc: 'Lithia Springs, GA', type: 'Full-time' },
   { title: 'Government Capture Manager', dept: 'Sales', loc: 'Remote · DC preferred', type: 'Full-time' },
-  { title: 'Warehouse Lead · Reno DC', dept: 'Operations', loc: 'Reno, NV', type: 'Full-time' },
   { title: 'Brand Designer', dept: 'Marketing', loc: 'Atlanta, GA · hybrid', type: 'Full-time' },
 ];
 

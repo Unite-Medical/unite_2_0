@@ -104,7 +104,7 @@ function Hero() {
           <span style={{ opacity: .35 }}>/</span>
           <span>STOCKED &amp; WAREHOUSED</span>
           <span style={{ opacity: .35 }}>/</span>
-          <span>GEORGIA &amp; NEVADA</span>
+          <span>LITHIA SPRINGS, GA</span>
           {!isMobile && <>
             <span style={{ opacity: .35 }}>/</span>
             <span>SAME-DAY SHIPPING · ORDERS BEFORE 2PM EST</span>
@@ -667,7 +667,7 @@ export function Homepage() {
   useSEO({
     title: 'The supply chain your suppliers use',
     description:
-      'Veteran-owned, FDA-registered wholesale medical supply for surgery centers, pharmacies, health systems, government, and regional distributors. No minimums on stocked items. Same-day shipping on orders before 2pm EST from Georgia & Nevada.',
+      'Veteran-owned, FDA-registered wholesale medical supply for surgery centers, pharmacies, health systems, government, and regional distributors. No minimums on stocked items. Same-day shipping on orders before 2pm EST from our Georgia warehouse.',
     canonical: '/',
     type: 'website',
     jsonLd: [organizationSchema(), websiteSchema()],

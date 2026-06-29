@@ -122,7 +122,7 @@ export function Shipping() {
       eyebrow="POLICIES · SHIPPING"
       title={<>Shipping <Grad>policy</Grad>.</>}
       sections={[
-        { title: 'Standard ground', body: 'Free on orders above $500. Ships from the closest of our four DCs (Georgia & Nevada, Lithia Springs). Median delivery: 4 business days.' },
+        { title: 'Standard ground', body: 'Free on orders above $500. Ships from our warehouse in Lithia Springs, Georgia. Median delivery: 4 business days.' },
         { title: 'Expedited & overnight', body: 'Expedited 2-day from $38; standard overnight from $95. Cut-off is 2:00 PM local DC time for same-day pick.' },
         { title: 'Same-day (Atlanta metro)', body: 'Available for stocked items inside the Atlanta metro perimeter. $95 flat. Delivered by 6 PM if ordered by 2 PM.' },
         { title: 'Drop-ship', body: 'For dealers and pharmacies, we drop-ship to your patient or store with your packing slip and your branding.' },

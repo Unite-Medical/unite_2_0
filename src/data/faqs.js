@@ -9,7 +9,7 @@ export const FAQS = [
   {
     question: 'How fast do you ship?',
     answer:
-      'Same-day shipping on all orders placed before 2pm EST, Monday\u2013Friday. We ship from two US warehouses in Georgia and Nevada to all 50 states and territories.',
+      'Same-day shipping on all orders placed before 2pm EST, Monday\u2013Friday. We ship from our US warehouse in Georgia to all 50 states and territories.',
   },
   {
     question: 'Do you bill net-30?',
