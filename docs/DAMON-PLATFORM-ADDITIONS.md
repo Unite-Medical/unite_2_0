@@ -245,6 +245,8 @@ This makes a large catalog look full and credible, every item is purchasable som
 ## SITE-WIDE CONSISTENCY CLEANUP (existing copy that today's decisions contradict)
 
 > This section tracks **existing copy that must change** because of decisions made in the 2026-06-29 review — separate from the forward-looking feature asks above. As Damon reviews, new contradictions get added here. **Note:** "landed cost" language is CORRECT and should stay in the sourcing/quoting flow (Quote, QuoteNew, PortalQuote, ShortageMatch, Services source-card, and all backend WMS/quoting internals) — it is only wrong when applied to stocked/wholesale goods. Don't strip it from the sourcing path.
+>
+> **WORKING STANDARD (decided 2026-06-29):** For every page Damon reviews, the agent does two things: (1) log Damon's explicit flags, AND (2) proactively scan that page's copy for contradictions with the running decisions below and add them here. Don't wait for Damon to spot each one. Recurring decision checklist to scan against: single Georgia warehouse (no Nevada/Las Vegas/Reno/two-warehouse/both-coasts); no "own/warehouse everything / zero middlemen / no brokered / no third-party" absolutes; wholesaler positioning (no landed-cost on stocked goods); "no minimums" scoped to stocked items only; segments include Hospitals/Retailers/Brand Owners; Diagnostics broken out; Restore Robotics program present; stocked-&-ready core = bracing, diagnostics, American-made PPE, syringes, supplements.
 
 ### C1. Homepage "OWNED INVENTORY" fact band — contradicts multiple decisions (`Homepage.jsx` ~382–444)
 
