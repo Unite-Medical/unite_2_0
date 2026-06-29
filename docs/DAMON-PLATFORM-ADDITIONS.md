@@ -167,6 +167,56 @@ These copy/data edits were made directly and are already committed + pushed to `
 
 ---
 
+## MERCHANDISING & AVAILABILITY STRATEGY (catalog presentation — core business problem)
+
+**The core problem Damon is solving:** Unite is genuinely deep in a few categories but can't deep-stock everything as a smaller company. A site that only shows a handful of "in stock" SKUs makes Unite look thin / like it stocks "a few things here and there." We need the catalog to look full and credible WITHOUT either (a) falsely claiming deep stock, or (b) hiding items that are temporarily out.
+
+**Stock reality (what Unite actually carries):**
+- **Heavily stocked (main movers):** Orthopedic **bracing** items — historically the #1 category.
+- **Second largest mover:** **Diagnostic tests** — both POC (point-of-care) and OTC.
+- **Stocked at lower levels (sometimes go out of stock):** **PPE** (gloves, syringes), **Medava** products, and **supplements**. These are commonly-stocked items Unite can reliably source from the manufacturer domestically — NOT long-lead overseas sourcing — so a stockout is short and low-risk.
+
+### M1. Never hide an item for being out of stock (at least not on the home page)
+
+**The ask:** Do **not** remove/hide a product just because it's currently out of stock — at minimum never on the home page. Out-of-stock commonly-stocked items should still show, with a path to **"Quick Quote"** or **"order anyway,"** messaged around the fact that it's a commonly-stocked item Unite can source from the manufacturer quickly (no supply-chain issue, no long overseas delay). Hiding the OOS state more aggressively (only showing it once logged in, etc.) is acceptable for deeper catalog pages, but the home page should always look full.
+
+**Why / context:** A small "in stock" SKU list makes Unite look like a tiny operation. The breadth of the catalog and the reliability of quick re-sourcing are just as credible as raw stock depth. PPE/Medava/supplements stock out at low levels but Unite can refill fast from domestic manufacturers — so an "order anyway / quick quote" path keeps the sale and the credibility instead of showing an empty shelf.
+
+### M2. Honest multi-tier availability model (not binary in/out)
+
+**The ask:** Replace binary "IN STOCK / nothing" with an honest availability status per item, e.g.:
+- **In Stock — Ships Today** (bracing + diagnostics depth)
+- **Quick-Ship / Stocked to Order** (carried at lower levels or fast-replenished — "ships in X days"; covers PPE, Medava, supplements when low/out)
+- **Available to Source / Quote** (catalog item Unite will source + quote — the resiliency play)
+
+This makes a large catalog look full and credible, every item is purchasable some way, and Unite never falsely claims deep stock. (Ties to bug B2 — the hardcoded "IN STOCK" badge must be wired to real inventory for this to be truthful.)
+
+**Why / context:** Lets Unite list a broad catalog (credibility + SEO) while only tying up cash in proven movers. Standard distributor "long tail, shallow shelf" model — quoting engine + vendor network powers the tail.
+
+### M3. Demand-driven stocking (use the site as the signal)
+
+**The ask:** Track which items get **requested / quoted often** and surface that as data. When an un-stocked (or low-stocked) item is repeatedly requested, that's the data-backed trigger to bring it into stock (or deepen it). Use quote requests + "source this" clicks + reorder patterns as the demand signal (ties to existing PRD-12 run-rate replenishment / forecasting).
+
+**Why / context:** As a smaller company Damon wants to grow the stocked range on **proven demand, not guesses** — capital-efficient. The site becomes the instrument that tells Unite what to deep-stock next, with real data behind every stocking decision.
+
+### M4. Dedicated Diagnostic Tests page (brand-neutral, SEO-focused) — HIGH PRIORITY
+
+**The ask:** Build a **standalone page dedicated to Diagnostic Tests** (separate from the general catalog), positioned around Unite being **brand-neutral** on diagnostics. Key elements:
+- **Brand-neutral messaging:** "Don't see your brand? Just ask" — Unite can source across brands, not locked to one.
+- **Highlight all test categories covered:** COVID, flu, HIV, strep, etc. (full menu of what we can supply).
+- **Highlight supply capabilities:** wholesale; **retail (EDI, bulk orders, bulk discounts)**; **private label**; POC + OTC.
+- **SEO-optimized** so **retail buyers** searching for diagnostic tests find Unite and come to us.
+
+**Why / context:** Diagnostics is Unite's #2 mover and a major growth lane, especially into **retail**. A dedicated, brand-neutral, SEO-strong page targets retail buyers looking for test supply (bulk, EDI, private label) — a different and larger audience than the medical-provider segments. "Don't see your brand, just ask" reinforces the sourcing/resiliency model specifically for diagnostics. Damon explicitly wants to rank in search here to pull in new retail buyers.
+
+### M5. Lead with category strength (Bracing + Diagnostics as hero "Stocked & Ready")
+
+**The ask:** Merchandise **Bracing/Orthotics** and **Diagnostics (POC + OTC)** as the hero "Stocked & Ready — ships today" categories. Consider category tiles (e.g. "Bracing — deep stock," "Diagnostics — POC & OTC," "PPE / supplements — quick-ship," "Need something else? We'll source it") instead of relying only on a small "in stock" product rail to carry credibility.
+
+**Why / context:** Owning two categories deeply reads as **focused and expert**, not thin. Category breadth + sourcing capability should carry the homepage's credibility, not a 4-card stock list (this also addresses why the current featured rail makes Unite look thin).
+
+---
+
 ## Homepage copy (related decision)
 
 - New hero blurb positions Unite as a **global supply chain company, specialty in medical**, and explicitly as a **wholesale distributor** — separating the two models: **stocked catalog (fast reorder)** vs. **sourced-to-spec (quoting engine, minimums apply)**. Avoids implying we stock everything we sell.
