@@ -28,7 +28,7 @@ const LEADERS = [
 // unsubstantiated SBA-certification tiles, no fabricated SKU counts.
 const CREDENTIALS = [
   ['FDA Registered', '3015727296', 'Device distribution'],
-  ['BPA', '36F79725D0203', 'Via authorized SDVOSB partner'],
+  ['MSPV BPA', '36C24123A0077', 'Via authorized SDVOSB partner'],
   ['CAGE Code', '8MK70', 'Federal contracting'],
   ['DUNS', '117553945', 'SAM registered'],
   ['Veteran-Owned', 'DD214 Verified', 'ID.me verified'],

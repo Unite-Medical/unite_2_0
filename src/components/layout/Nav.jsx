@@ -83,7 +83,7 @@ export function Nav({ overlay = false }) {
           <div style={{ padding: `7px ${padX}px`, display: 'flex', gap: 20, alignItems: 'center' }}>
             <span>FDA · 3015727296</span>
             <span style={{ opacity: .4 }}>/</span>
-            <span>BPA · 36F79725D0203</span>
+            <span>MSPV BPA · 36C24123A0077</span>
             <span style={{ opacity: .4 }}>/</span>
             <span>CAGE · 8MK70</span>
             <span style={{ opacity: .4 }}>/</span>

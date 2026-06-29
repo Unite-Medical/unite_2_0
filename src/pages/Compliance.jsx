@@ -18,7 +18,7 @@ import { useSEO } from '../lib/seo.js';
 // the unverified PDAC SKU count have been removed.
 const CREDENTIALS = [
   { label: 'FDA Registered', val: '3015727296', sub: 'Device distribution', anchor: 'fda' },
-  { label: 'BPA', val: '36F79725D0203', sub: 'Via authorized SDVOSB partner', anchor: 'bpa' },
+  { label: 'MSPV BPA', val: '36C24123A0077', sub: 'Via authorized SDVOSB partner', anchor: 'bpa' },
   { label: 'CAGE Code', val: '8MK70', sub: 'Federal contracting identifier', anchor: 'cage' },
   { label: 'DUNS', val: '117553945', sub: 'SAM.gov registered', anchor: 'duns' },
   { label: 'Veteran-Owned', val: 'DD214 Verified', sub: 'ID.me verified', anchor: 'veteran' },
@@ -86,7 +86,7 @@ export function Compliance() {
   useSEO({
     title: 'Compliance — FDA, BPA, CAGE, DUNS, TAA, Berry, PDAC',
     description:
-      'FDA Establishment Registration #3015727296. BPA 36F79725D0203. CAGE 8MK70. DUNS 117553945. Veteran-owned. TAA, Berry, and PDAC documentation on request.',
+      'FDA Establishment Registration #3015727296. MSPV BPA 36C24123A0077. CAGE 8MK70. DUNS 117553945. Veteran-owned. TAA, Berry, and PDAC documentation on request.',
     canonical: '/compliance',
   });
   return (

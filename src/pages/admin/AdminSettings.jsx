@@ -29,7 +29,7 @@ const DEFAULTS = {
   company_name: 'Unite Medical Supply',
   company_address: '1487 Trae Lane, Lithia Springs, GA 30122',
   fda_registration: '3015727296',
-  bpa: '36F79725D0203',
+  bpa: '36C24123A0077',
   cage: '8MK70',
   duns: '117553945',
   sales_phone: '833.868.6483',
@@ -123,7 +123,7 @@ export function AdminSettings() {
           <Card title="Compliance & registrations">
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
               <Field label="FDA registration"><input value={settings.fda_registration} onChange={(e) => patch({ fda_registration: e.target.value })} style={inputStyle} /></Field>
-              <Field label="BPA"><input value={settings.bpa} onChange={(e) => patch({ bpa: e.target.value })} style={inputStyle} /></Field>
+              <Field label="MSPV BPA"><input value={settings.bpa} onChange={(e) => patch({ bpa: e.target.value })} style={inputStyle} /></Field>
               <Field label="CAGE code"><input value={settings.cage} onChange={(e) => patch({ cage: e.target.value })} style={inputStyle} /></Field>
               <Field label="DUNS"><input value={settings.duns} onChange={(e) => patch({ duns: e.target.value })} style={inputStyle} /></Field>
             </div>
