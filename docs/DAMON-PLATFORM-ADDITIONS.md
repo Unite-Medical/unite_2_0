@@ -310,7 +310,9 @@ The whole `OwnedInventory` band is built on the old "we own & warehouse everythi
 
 **The problem:** This section's CTA button is **"Start a quote"** (→ `/quote`), but the supporting copy describes the **order-fulfillment** pipeline ("Order placed → inventory updates → invoice auto-creates → label prints → tracking returns to your portal. Zero manual touchpoints."). The text should describe the **quoting** flow to match the button.
 
-**Reword direction (keep the headline "Enter data once. / Sync everything."; keep "Start a quote" button):** Sell the OUTCOME, not the method. Do NOT name the internal pipeline steps/tools on customer-facing copy (see IP rule below). Recommended: "Request a quote → get a fully landed, compliance-checked price you can trust — then accept online and it becomes an order. No guesswork, no surprises, no back-and-forth." (Alts: confidence/speed, or resilience "the hard part is ours" framing.)
+**Reword direction (keep the headline "Enter data once. / Sync everything."; keep "Start a quote" button):** Sell the OUTCOME + SPEED, not the method. **Highlight that the quote is INSTANT.** Do NOT name the internal pipeline steps/tools on customer-facing copy (see IP rule below). Recommended: "Request a quote → get an instant, fully landed, compliance-checked price you can trust. Accept online and it becomes an order. No guesswork, no waiting, no back-and-forth." (Alts: speed-forward, or "quotes that used to take days, in seconds" contrast hook.)
+
+**HONESTY NUANCE on "instant":** "Instant" is true for quotes the engine prices automatically (items already in the vendor database with known FOB/duty/freight). It is NOT instant for the open-RFQ / brand-name / "source-anything" path, where Unite must manually source + price. Keep "instant" tied to the engine-priced path; don't let it imply instant turnaround on items that require manual sourcing (same discipline as the real-time-stock claim in C3).
 
 **Consistency note:** "landed cost / fully landed" is CORRECT here (sourcing/quoting flow).
 
