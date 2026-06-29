@@ -263,11 +263,24 @@ The whole `OwnedInventory` band is built on the old "we own & warehouse everythi
 
 `'We source, stock, and ship Class 1 and Class 2 medical devices… warehouse everything we sell. No minimum orders on stocked items. Landed cost, transparent.'` → already flagged in Homepage-copy decisions: "warehouse everything we sell" is false; "Landed cost" must not describe stocked/wholesale goods (Unite is a wholesaler by design, not selling stock at landed cost). Replace with the new wholesale/global-supply-chain hero blurb.
 
-### C3. Segment/services gaps (existing pages don't reflect new scope)
+### C3. Shortage-list matching — overclaims real-time stock matching Unite can't actually do (3 places)
+
+**The problem:** The "Backordered somewhere else? Paste your shortage list" section claims Unite **matches every line against stocked inventory in real time and surfaces in-stock equivalents**. That overstates current capability and frames it as "Unite (or a 3rd party) has it in stock right now." Reality today: a customer uploads their shortage list and **Unite comes back with a QUOTE** — we do **not** have live APIs into other companies' sellable stock. Damon does not want to claim real-time stock matching we can't deliver.
+
+**Appears in 3 places (all need the same reframe):**
+- `src/pages/Homepage.jsx` ~496–503 — "Backordered somewhere else? / Paste your shortage list." + "We match every line against stocked inventory in real time, surface in-stock equivalents, and route the rest to our sourcing network."
+- `src/pages/ShortageMatch.jsx` ~98 + ~168–170 — same "match against stocked inventory in real time / in-stock equivalents" copy (meta description + hero sub).
+- `src/pages/SupplyRisk.jsx` ~154 — "Paste your shortage list. We'll match it against live stock."
+
+**Reframe direction:** Lead with **"upload/paste your shortage list → Unite returns a quote."** Position it as the resiliency play (the partner you turn to when your usual channel is backordered) and our sourcing network — NOT as a real-time in-stock lookup across third parties. Keep it honest: we source and quote, we don't (yet) show live third-party stock. (Unite's OWN stock can legitimately be matched in real time via the WMS — fine to say we check our own inventory and quote/source the rest. The overclaim is specifically "real-time in-stock equivalents" implying broad live availability.)
+
+**NOTE / QUESTION FOR ALEX (capability research):** Is there a supply-chain data source/API that exposes **other companies' real-time sellable stock** (e.g. distributor availability feeds, marketplace inventory APIs) that we could port into Unite? **Reference the Cato site** — figure out how they appear to match/quote against broad inventory. If we CAN get real-time availability via API, great — then this copy could truthfully claim real-time matching. Until then, copy must stay at "upload → we quote." Don't claim it before we can do it. (Ties directly to the Cato-style open RFQ ask above — same underlying data question.)
+
+### C4. Segment/services gaps (existing pages don't reflect new scope)
 
 - Services + segments do not surface **Hospitals, Retailers, Brand Owners** (see A1), **Diagnostic tests as a category** (see M4), or the **Restore Robotics program** (see Restore section) — all now core. Existing Services/Segments copy will need expansion, not just new pages.
 
-### C4. Sweep still to do (Damon will keep flagging; Alex/agent to do exhaustive pass)
+### C5. Sweep still to do (Damon will keep flagging; Alex/agent to do exhaustive pass)
 
 Recurring themes to grep the WHOLE site for before launch, since today's review keeps surfacing stragglers one screenshot at a time:
 - Any remaining **"Nevada / Las Vegas / Reno / two warehouses / both coasts / west warehouse"** in customer-facing copy.
