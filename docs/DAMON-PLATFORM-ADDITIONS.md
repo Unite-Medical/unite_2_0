@@ -172,9 +172,9 @@ These copy/data edits were made directly and are already committed + pushed to `
 **The core problem Damon is solving:** Unite is genuinely deep in a few categories but can't deep-stock everything as a smaller company. A site that only shows a handful of "in stock" SKUs makes Unite look thin / like it stocks "a few things here and there." We need the catalog to look full and credible WITHOUT either (a) falsely claiming deep stock, or (b) hiding items that are temporarily out.
 
 **Stock reality (what Unite actually carries):**
-- **Heavily stocked (main movers):** Orthopedic **bracing** items — historically the #1 category.
-- **Second largest mover:** **Diagnostic tests** — both POC (point-of-care) and OTC.
-- **Stocked at lower levels (sometimes go out of stock):** **PPE** (gloves, syringes), **Medava** products, and **supplements**. These are commonly-stocked items Unite can reliably source from the manufacturer domestically — NOT long-lead overseas sourcing — so a stockout is short and low-risk.
+- **Stocked & Ready at all times (always in stock):** Orthopedic **bracing**, **diagnostic tests** (POC + OTC), **American-made PPE**, **syringes**, and **supplements**. These are the core always-available categories and should be merchandised as reliably in stock.
+- **Heavily stocked (main movers):** Bracing — historically the #1 category. Diagnostic tests — #2 mover.
+- **Stocked at lower levels (can briefly go out of stock):** other PPE / Medava items that occasionally dip — but Unite can reliably re-source these from the manufacturer **domestically** (NOT long-lead overseas), so a stockout is short and low-risk.
 
 ### M1. Never hide an item for being out of stock (at least not on the home page)
 
@@ -214,6 +214,31 @@ This makes a large catalog look full and credible, every item is purchasable som
 **The ask:** Merchandise **Bracing/Orthotics** and **Diagnostics (POC + OTC)** as the hero "Stocked & Ready — ships today" categories. Consider category tiles (e.g. "Bracing — deep stock," "Diagnostics — POC & OTC," "PPE / supplements — quick-ship," "Need something else? We'll source it") instead of relying only on a small "in stock" product rail to carry credibility.
 
 **Why / context:** Owning two categories deeply reads as **focused and expert**, not thin. Category breadth + sourcing capability should carry the homepage's credibility, not a 4-card stock list (this also addresses why the current featured rail makes Unite look thin).
+
+---
+
+## SERVICE / REVENUE AREA: Restore Robotics — Remanufactured Da Vinci Robotic Instruments (NEW — major, missing from site)
+
+**The ask:** Add a dedicated service area (its own tab/page, likely 1–2 pages) for Unite's role as an authorized **distributor/representative of the Restore Robotics / Encore Medical** remanufactured robotic-instrument program. This is currently **missing entirely** from the Services / capabilities on the site, yet it is now a **significant part of Unite's annual revenue**. It needs prominent placement plus clear contact paths for new hospitals and sub-distributors.
+
+**Reference for structure (do NOT copy content):** One of Unite's own sub-distributors built a site around the program — https://rocuvexmed.com/ — which is a good structural model (hero "reduce the cost of robotic surgery," how-it-works steps, FDA-clearance trust block, savings stats, sustainability angle, contact CTAs). Recreate something to this effect on Unite's site, but written for **Unite's role** and original to Unite — not a copy of the Rocuvex copy.
+
+**What the page(s) should cover (program facts — already verified in the Restore Robotics session/briefing):**
+- **What it is:** FDA **510(k)-cleared remanufactured** robotic instruments + certified pre-owned inventory for Intuitive **da Vinci Xi & DV5** surgical systems. Restore Robotics is the **manufacturer of record** and holds the industry's only FDA 510(k) clearance to remanufacture these instruments; **Encore Medical** is the master distributor. **Unite Medical is an authorized distributor/representative** in this chain.
+- **The value prop:** hospitals access remanufactured / certified pre-owned instruments at materially lower cost — **~20% savings (remanufactured), ~25% (certified pre-owned)** — with full warranty coverage (manufacturer of record), no compromise to clinical performance.
+- **How it works (collection → remanufacture loop):** free collection trays + reusable shipping containers provided to the hospital at no cost → used instruments shipped back free → multi-step evaluation, cleaning, testing, QC, electrical verification under the 510(k) → certified instruments returned to market. Minimal disruption to existing surgical workflow.
+- **Trust / compliance block:** FDA 510(k) clearance, manufacturer-of-record warranty, quality-control steps (visual inspection, functional performance testing, electrical verification, QC validation).
+- **Sustainability angle:** remanufacturing reduces surgical waste + carbon footprint vs. new instruments (a real selling point to hospital sustainability initiatives).
+- **Unite's role specifically:** authorized regional distributor/representative — single point of contact for hospitals to get onboarded, place orders, manage collection logistics, and realize the savings. (Internally Unite uses the Restore distributor portal for orders/tracking/payments.)
+
+**Contact / conversion paths needed:**
+- **For hospitals:** "Request a Savings Analysis" + "Schedule a Consultation" (or similar) CTAs → capture lead (facility, contact, da Vinci system model, instrument volume).
+- **For new sub-distributors:** a path for interested distributors to contact Unite about repping the program under Unite.
+- Route these leads into the CRM (HubSpot) like other Unite inquiries.
+
+**Why / context:** This program is a **significant and growing share of Unite's annual revenue**, but the website says nothing about it — a major gap between what Unite actually does and what the site represents. Unite is a **representative/distributor for the Restore Robotics program**, and we want new hospitals and potential sub-distributors to find this capability on the Unite site and reach out. The Rocuvex site shows a sub-distributor already marketing it well; Unite (higher in the chain) should have an equally strong or stronger presence. This also reinforces Unite's broader positioning (cost-reduction partner, resiliency, sustainability) to the hospital audience we're trying to win (ties to the A1 Hospitals segment + A4 resiliency asks).
+
+*(Implementation notes for Alex: new Services sub-area + nav entry; lead-capture forms → HubSpot; likely its own page route(s) under /services. Keep all claims tied to verified program facts (FDA 510(k), 20%/25% savings, manufacturer-of-record warranty) — same truthfulness standard as the rest of the site. Source material: the Restore Robotics program briefing in Damon's Unite_Medical/Restore_Robotics library.)*
 
 ---
 
