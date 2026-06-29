@@ -298,6 +298,14 @@ The whole `OwnedInventory` band is built on the old "we own & warehouse everythi
 
 - Services + segments do not surface **Hospitals, Retailers, Brand Owners** (see A1), **Diagnostic tests as a category** (see M4), or the **Restore Robotics program** (see Restore section) — all now core. Existing Services/Segments copy will need expansion, not just new pages.
 
+### C6. Testimonial reword — "Berry compliant products" (`src/data/testimonials.js` ~22)
+
+**The ask:** Reword the "D. V. · Procurement Lead · Regional Health System" testimonial to center **Berry compliant products** instead of "Berry compliance documentation."
+- FROM: "Berry compliance documentation ready on day one, same-day shipping, and a rep who knows our procurement process. Unite came in as a secondary source and earned a primary spot inside 90 days."
+- TO: "Berry compliant products in stock when we needed them, same-day shipping, and a rep who knows our procurement process. Unite came in as a secondary source and earned a primary spot inside 90 days."
+
+**Note:** Damon confirmed the other testimonials (fabricated) are OK to keep as-is; only this one needs the reword. Everything else in this entry (name, title, org) stays.
+
 ### C5. Sweep still to do (Damon will keep flagging; Alex/agent to do exhaustive pass)
 
 Recurring themes to grep the WHOLE site for before launch, since today's review keeps surfacing stragglers one screenshot at a time:
