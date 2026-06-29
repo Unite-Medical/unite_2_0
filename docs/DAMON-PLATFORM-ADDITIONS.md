@@ -286,10 +286,10 @@ Two parts:
 
 **The ask:** Rework the About page — Damon isn't happy with it. Plus specific fixes:
 
-**1. People / Leadership section — explain Unite Pharma and Clyne Health.** Damon's bio mentions he "also operates Unite Pharma and Clyne Health" but the page never says what those ARE. Add a short, clear description of each:
-- **Unite Pharma:** [DAMON TO CONFIRM exact description — what it does]
-- **Clyne Health:** [DAMON TO CONFIRM — precision telehealth / GLP-1 platform; confirm public-facing wording]
-Consider a small "Unite family of companies" / portfolio block so a visitor understands the related ventures, not just a passing name-drop in the founder bio.
+**1. People / Leadership section — explain Unite Pharma and Clyne Health.** Damon's bio mentions he "also operates Unite Pharma and Clyne Health" but the page never says what those ARE. Add a short, clear description of each (Damon-confirmed wording, kept brief to highlight his supply-chain + healthcare expertise):
+- **Unite Pharma:** A multi-state licensed wholesale pharmacy and FDA-registered third-party logistics (3PL) provider.
+- **Clyne Health:** A precision telehealth platform (physician-led GLP-1 / weight-management care backed by compounding-pharmacy fulfillment).
+Consider a small "Unite family of companies" / portfolio block so a visitor understands the related ventures, not just a passing name-drop in the founder bio. Goal: reinforce Damon's expertise across supply chain + healthcare — keep it brief.
 
 **2. RegeniCool™ — always add the trademark symbol** after the word "RegeniCool" everywhere it appears on the site. On About: credentials grid "All orthotics + RegeniCool Pro" → "All orthotics + RegeniCool™ Pro". (Site-wide rule — see consistency C9.)
 
