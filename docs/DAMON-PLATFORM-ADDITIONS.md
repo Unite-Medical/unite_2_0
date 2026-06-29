@@ -258,6 +258,24 @@ This makes a large catalog look full and credible, every item is purchasable som
 
 **Consistency check (passed):** page correctly says single "Georgia warehouse," private-label framing is accurate, no Nevada/own-everything/landed-cost-on-stock contradictions. Verify all specific claims are true before expanding (Force Therapeutics integration, "manufactures the bracing/recovery products," same-day processing) — same truthfulness standard as the rest of the site.
 
+### M6. Classify all current stock into product categories (taxonomy)
+
+**The ask:** Group **every SKU in Unite's current catalog** into one of Unite's core product categories. Working category set:
+- **Bracing / Orthotics**
+- **Diagnostic Tests** (POC + OTC; sub-categories by test type — COVID, flu, HIV, strep, etc.)
+- **American-made PPE**
+- **Syringes**
+- **Supplements**
+- (plus a catch-all / "Other" for anything that doesn't fit, and room to add categories — Medava, etc.)
+
+Two parts:
+1. **One-time classification pass** over the existing catalog — assign each current SKU to a category.
+2. **Required field going forward** — category is a mandatory attribute when adding/uploading a new product, so the catalog stays organized (ties to A2 auto-generated product pages: capture category at upload).
+
+**Why / context:** These are Unite's real product families and the "Stocked & Ready" core (bracing, diagnostics, American-made PPE, syringes, supplements). Categorizing all stock enables: category-based browsing/merchandising (M5 hero category tiles), the dedicated Diagnostics page (M4), clean filtering in the catalog, and category-level SEO. Right now stock isn't reliably grouped — every item needs to live in a category so the site can present breadth by family rather than a flat list.
+
+*(Implementation notes for Alex: product taxonomy field on the product model; backfill existing catalog; expose as catalog filter + drives category landing pages. Diagnostics needs test-type sub-categories. Confirm final category list with Damon before backfilling.)*
+
 ---
 
 ## SITE-WIDE CONSISTENCY CLEANUP (existing copy that today's decisions contradict)
