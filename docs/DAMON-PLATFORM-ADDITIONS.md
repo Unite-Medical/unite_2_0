@@ -242,6 +242,24 @@ This makes a large catalog look full and credible, every item is purchasable som
 
 ---
 
+## CONTENT UPGRADE: TJS Case Study page — sell the capability, not just report it (`/case-studies/tjs`)
+
+**The ask:** Rework the Total Joint Specialists case study (`src/pages/CaseStudyTJS.jsx`) to do two jobs much better: (1) **showcase Unite's full capability** to stand up a branded store end-to-end, and (2) **sell the solution to NEW potential customers** who could want the same thing. Current page is thin — just 3 short paragraphs (challenge / solution / result) + two buttons. It documents what happened but doesn't market the capability or help a prospect picture "Unite could do this for me."
+
+**What to add / improve:**
+- **Lead with the capability story, framed for prospects:** Unite turns an idea into a live, branded, fulfilled e-commerce store with no internal supply-chain/fulfillment team required by the partner. Make TJS the proof, not just the subject.
+- **Spell out the end-to-end capabilities demonstrated** (this is the selling part) — e.g.: store build/design, **private-label manufacturing** (bracing + recovery products under the partner's brand), catalog + pricing, **Force Therapeutics** integration into the patient pathway, **direct-to-patient fulfillment** from the GA warehouse, same-day processing, inventory/WMS, branded-everything (surgeon's brand on every touchpoint), ongoing reorders/analytics.
+- **Quantify results where real data exists** — orders, processing time, conversion, units, reorder rate (Damon has TJS analytics from prior reporting; use real numbers, do not fabricate). Stats sell.
+- **Add a "Could this be your store?" / who-it's-for block** — explicitly invite other orthopedic groups, physician practices, brand owners, retailers who want a turnkey branded recovery/e-commerce store. Clear CTA to contact Unite to build theirs.
+- **Tie to the broader positioning:** this is a flagship example of Unite as a turnkey supply-chain + private-label + fulfillment partner (supports the Brand Owners / Retailers segments in A1 and the private-label service).
+- Keep the existing CTAs (visit TJS store, private-label/manufacturing) but add a primary **"Build my store / talk to us"** lead-capture CTA → HubSpot.
+
+**Why / context:** Damon wants this page to actively **bring the TJS store to market AND sell the solution to new customers**. Right now it under-sells what is actually a powerful, differentiated capability (idea → manufactured-under-your-brand → live store → direct-to-patient fulfillment, all by Unite). A prospect should leave this page understanding the full scope and wanting the same for their brand.
+
+**Consistency check (passed):** page correctly says single "Georgia warehouse," private-label framing is accurate, no Nevada/own-everything/landed-cost-on-stock contradictions. Verify all specific claims are true before expanding (Force Therapeutics integration, "manufactures the bracing/recovery products," same-day processing) — same truthfulness standard as the rest of the site.
+
+---
+
 ## SITE-WIDE CONSISTENCY CLEANUP (existing copy that today's decisions contradict)
 
 > This section tracks **existing copy that must change** because of decisions made in the 2026-06-29 review — separate from the forward-looking feature asks above. As Damon reviews, new contradictions get added here. **Note:** "landed cost" language is CORRECT and should stay in the sourcing/quoting flow (Quote, QuoteNew, PortalQuote, ShortageMatch, Services source-card, and all backend WMS/quoting internals) — it is only wrong when applied to stocked/wholesale goods. Don't strip it from the sourcing path.
