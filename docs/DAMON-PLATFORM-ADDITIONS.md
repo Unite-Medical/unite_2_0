@@ -306,6 +306,14 @@ The whole `OwnedInventory` band is built on the old "we own & warehouse everythi
 
 **Note:** Damon confirmed the other testimonials (fabricated) are OK to keep as-is; only this one needs the reword. Everything else in this entry (name, title, org) stays.
 
+### C7. Homepage "Enter data once. Sync everything." CTA — copy mismatched to the "Start a quote" button (`src/pages/Homepage.jsx` ~650–658)
+
+**The problem:** This section's CTA button is **"Start a quote"** (→ `/quote`), but the supporting copy describes the **order-fulfillment** pipeline ("Order placed → inventory updates → invoice auto-creates → label prints → tracking returns to your portal. Zero manual touchpoints."). The text should describe the **quoting** flow to match the button.
+
+**Reword direction (keep the headline "Enter data once. / Sync everything."):** Replace the supporting line with quoting-engine copy. Recommended (Option A): "Request a quote → we validate FDA codes, pull live duty rates, compare freight, and return a transparent landed-cost quote. Accept online and it flows straight to a confirmed order." (Alt options exist; B adds the "minimums apply on sourced orders" nuance.) Keep "Start a quote" button.
+
+**Consistency note:** "landed cost" is CORRECT here (sourcing/quoting flow). This aligns the section with the quoting engine's actual pipeline (FDA validation → USITC duty → freight comparison → landed cost → quote → accept → order) rather than implying instant fulfillment.
+
 ### C5. Sweep still to do (Damon will keep flagging; Alex/agent to do exhaustive pass)
 
 Recurring themes to grep the WHOLE site for before launch, since today's review keeps surfacing stragglers one screenshot at a time:
