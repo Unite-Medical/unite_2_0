@@ -191,6 +191,8 @@ These copy/data edits were made directly and are already committed + pushed to `
 
 This makes a large catalog look full and credible, every item is purchasable some way, and Unite never falsely claims deep stock. (Ties to bug B2 — the hardcoded "IN STOCK" badge must be wired to real inventory for this to be truthful.)
 
+**Every stocked SKU must be assigned its availability tier (decided 2026-06-29):** Unite's current stock needs to be grouped into one of these tiers — it's a required attribute per SKU, distinct from product category (M6). The always-Stocked-&-Ready core — **bracing, diagnostic tests, American-made PPE, syringes, supplements** — maps to the **"In Stock — Ships Today"** tier. Other lower-level / occasionally-out items map to **Quick-Ship**, and catalog items Unite doesn't physically carry map to **Available to Source / Quote**. So every SKU carries TWO classifications: (1) product category [M6] + (2) availability tier [this]. The tier drives the badge shown on the site (must read real inventory per B2).
+
 **Why / context:** Lets Unite list a broad catalog (credibility + SEO) while only tying up cash in proven movers. Standard distributor "long tail, shallow shelf" model — quoting engine + vendor network powers the tail.
 
 ### M3. Demand-driven stocking (use the site as the signal)
@@ -271,6 +273,8 @@ This makes a large catalog look full and credible, every item is purchasable som
 Two parts:
 1. **One-time classification pass** over the existing catalog — assign each current SKU to a category.
 2. **Required field going forward** — category is a mandatory attribute when adding/uploading a new product, so the catalog stays organized (ties to A2 auto-generated product pages: capture category at upload).
+
+**Note — two separate classifications per SKU:** (1) this **product category** [what it is], AND (2) the **availability tier** from M2 [how it's available — In Stock / Quick-Ship / Available-to-Source]. They are independent fields. The always-stocked core (bracing, diagnostics, American-made PPE, syringes, supplements) is the "In Stock" tier in M2; that is a different attribute from the product family here.
 
 **Why / context:** These are Unite's real product families and the "Stocked & Ready" core (bracing, diagnostics, American-made PPE, syringes, supplements). Categorizing all stock enables: category-based browsing/merchandising (M5 hero category tiles), the dedicated Diagnostics page (M4), clean filtering in the catalog, and category-level SEO. Right now stock isn't reliably grouped — every item needs to live in a category so the site can present breadth by family rather than a flat list.
 
