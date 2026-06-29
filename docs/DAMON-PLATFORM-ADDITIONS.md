@@ -306,6 +306,12 @@ The whole `OwnedInventory` band is built on the old "we own & warehouse everythi
 
 **Note:** Damon confirmed the other testimonials (fabricated) are OK to keep as-is; only this one needs the reword. Everything else in this entry (name, title, org) stays.
 
+### C8. Footer credentials line missing MSPV BPA (`src/components/layout/Footer.jsx` ~103)
+
+**The ask:** The footer brand block shows "FDA 3015727296 · CAGE 8MK70 · DUNS 117553945" but omits the **MSPV BPA** number, even though it was added site-wide elsewhere (nav, About, Government, Compliance, invoice/quote footers). Add it for consistency: "FDA 3015727296 · CAGE 8MK70 · MSPV BPA 36C24123A0077 · DUNS 117553945" (or whatever order reads cleanly).
+
+**Why / context:** Consistency — the credential set should be uniform wherever it appears. (Confirmed by Damon during footer review.)
+
 ### C7. Homepage "Enter data once. Sync everything." CTA — copy mismatched to the "Start a quote" button (`src/pages/Homepage.jsx` ~650–658)
 
 **The problem:** This section's CTA button is **"Start a quote"** (→ `/quote`), but the supporting copy describes the **order-fulfillment** pipeline ("Order placed → inventory updates → invoice auto-creates → label prints → tracking returns to your portal. Zero manual touchpoints."). The text should describe the **quoting** flow to match the button.
