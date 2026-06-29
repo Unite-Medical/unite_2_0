@@ -282,6 +282,25 @@ Two parts:
 
 ---
 
+## CONTENT UPGRADE: About page — Damon not in love with it; do better (`src/pages/About.jsx`)
+
+**The ask:** Rework the About page — Damon isn't happy with it. Plus specific fixes:
+
+**1. People / Leadership section — explain Unite Pharma and Clyne Health.** Damon's bio mentions he "also operates Unite Pharma and Clyne Health" but the page never says what those ARE. Add a short, clear description of each:
+- **Unite Pharma:** [DAMON TO CONFIRM exact description — what it does]
+- **Clyne Health:** [DAMON TO CONFIRM — precision telehealth / GLP-1 platform; confirm public-facing wording]
+Consider a small "Unite family of companies" / portfolio block so a visitor understands the related ventures, not just a passing name-drop in the founder bio.
+
+**2. RegeniCool™ — always add the trademark symbol** after the word "RegeniCool" everywhere it appears on the site. On About: credentials grid "All orthotics + RegeniCool Pro" → "All orthotics + RegeniCool™ Pro". (Site-wide rule — see consistency C9.)
+
+**3. Confirm all paperwork/credentials details are current.** Audited About credentials grid against Damon's screenshot — all correct in code EXCEPT the BPA, which is ALREADY fixed to MSPV BPA 36C24123A0077 (screenshot was pre-deploy/cached). Fields verified: FDA 3015727296, CAGE 8MK70, DUNS 117553945, DD214 Verified, TAA Prioritized, Berry/Medava PPE, PDAC (orthotics + RegeniCool™ Pro). No other changes needed beyond the ™.
+
+**4. Overall "do better" — content direction.** The page (hero + founder letter + leadership + credentials) reads as the old "we own & warehouse everything" story. Refresh to reflect today's positioning: global supply chain co. w/ medical specialty, wholesale + sourcing/quoting two-model, the new segments (hospitals/retailers/brand owners), diagnostics, and the Restore Robotics program. Make it less generic and more distinctly Unite. (See C-items below for the specific contradicting lines in the founder letter.)
+
+**Why / context:** About is a key trust page; Damon wants it to actually represent the business as it is now (multiple ventures, two-model supply chain, real credentials) and read better. Unite Pharma + Clyne Health are real related companies that currently appear as unexplained names.
+
+---
+
 ## SITE-WIDE CONSISTENCY CLEANUP (existing copy that today's decisions contradict)
 
 > This section tracks **existing copy that must change** because of decisions made in the 2026-06-29 review — separate from the forward-looking feature asks above. As Damon reviews, new contradictions get added here. **Note:** "landed cost" language is CORRECT and should stay in the sourcing/quoting flow (Quote, QuoteNew, PortalQuote, ShortageMatch, Services source-card, and all backend WMS/quoting internals) — it is only wrong when applied to stocked/wholesale goods. Don't strip it from the sourcing path.
@@ -319,6 +338,17 @@ The whole `OwnedInventory` band is built on the old "we own & warehouse everythi
 ### C4. Segment/services gaps (existing pages don't reflect new scope)
 
 - Services + segments do not surface **Hospitals, Retailers, Brand Owners** (see A1), **Diagnostic tests as a category** (see M4), or the **Restore Robotics program** (see Restore section) — all now core. Existing Services/Segments copy will need expansion, not just new pages.
+
+### C9. RegeniCool™ trademark symbol — site-wide rule
+
+**The rule (decided 2026-06-29):** Always render **RegeniCool™** with the trademark symbol everywhere "RegeniCool" appears in copy (e.g. "RegeniCool™ Pro"). Apply going forward to any new copy too. Current occurrences to fix (4): `src/pages/About.jsx` ~37, `src/pages/Compliance.jsx` ~27, `src/data/faqs.js` ~32, `src/pages/ServicePDAC.jsx` ~67 — all read "RegeniCool Pro" → "RegeniCool™ Pro".
+
+### C10. About founder letter — old "own everything" story contradicts positioning (`src/pages/About.jsx` ~107–119)
+
+The "letter from Damon" leans on the outdated owned-inventory framing:
+- **~113 "We own every unit we sell."** → contradicts source-and-never-stock; Unite sometimes sources & sells without ever stocking. Soften/reframe.
+- **~107–110** "moved over 500 million units" + "one of the largest direct-to-patient drop shippers in the country" → claims to VERIFY before keeping (substantiation).
+- The letter omits today's positioning (two-model wholesale + sourcing/quoting, new segments, diagnostics, Restore Robotics) — part of the broader About rewrite. Keep voice/authenticity; fix the absolute ownership claim + verify the stats.
 
 ### C6. Testimonial reword — "Berry compliant products" (`src/data/testimonials.js` ~22)
 
