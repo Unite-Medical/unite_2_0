@@ -282,6 +282,30 @@ This makes a large catalog look full and credible, every item is purchasable som
 
 **Consistency check (passed):** page correctly says single "Georgia warehouse," private-label framing is accurate, no Nevada/own-everything/landed-cost-on-stock contradictions. Claims CONFIRMED true by Damon (OK to lean on / expand): Unite manufactures the bracing/recovery products, Force Therapeutics integration, same-day processing.
 
+---
+
+## CONTENT: Compliance page — corrections (Damon-approved) (`src/pages/Compliance.jsx`)
+
+All Damon-confirmed during 2026-06-30 review.
+
+1. **ISO 13485 — add an "IN PROGRESS" status button/badge.** Damon wants ISO 13485 listed with a small pill/badge that says **"IN PROGRESS"** — styled like the product "IN STOCK" badge (rounded pill, brand colors). Currently it's only mentioned in the Policies text ("Pursuing ISO 13485 certification"). Surface it visibly as a credential-style item with the in-progress badge. (ISO pursuit CONFIRMED active by Damon.) ALEX: reuse the in-stock pill component/pattern for a generic status badge.
+
+2. **"Veteran-Owned · DD214 Verified · ID.me verified" tile (line 24) — KEEP, accurate.** Damon confirmed via ID.me wallet: Military status VERIFIED 12/14/2020. (Note: keep as "veteran-owned" descriptor — NOT a VOSB cert claim.)
+
+3. **PDAC tile (line 27) — fix scope + trademark:** "All orthotics + RegeniCool Pro" → **"All Unite Medical orthotics + RegeniCool™ Pro"** (scope to Unite Medical line; add ™ per C9).
+
+4. **"MDR-eligible reports filed to FDA on the customer's behalf when requested" (line 35) — CORRECT THE CLAIM.** Damon: Unite files MDRs **on behalf of Unite and its OWN products — NOT on behalf of customers and their products.** Reword to: "Lot-level traceability for recall management. As the manufacturer/distributor of record, we file MDR-eligible reports to the FDA for our own products." Remove "on the customer's behalf."
+
+5. **"Audit-ready. Inspector-friendly... State board, DEA, FDA, JCAHO... before they finish their second cup of coffee" (lines 172–176) — CHEESY + INACCURATE, edit or drop.** Damon: drop the cheesy "cup of coffee" bravado. Also DEA reference is questionable (Unite doesn't handle controlled substances) — drop DEA. Reframe to a straight, factual statement about supplier-qualification documentation being available to regulators/health-system auditors. (Note: this is Unite Medical's site; Unite Pharma is unrelated to it — don't pull pharma/DEA framing in here.)
+
+6. **ISO 13485 "Pursuing" in Policies (line 33) — KEEP** (confirmed actively pursuing) — and tie to the new IN PROGRESS badge from #1.
+
+7. **BAA / HIPAA (doc library, line 58) — KEEP.** Damon confirmed: Unite has a BAA on file, available if needed.
+
+8. **Email routing — standardize to support@unitemedical.net.** Doc-request handler currently sends to `info@unitemedical.net` (line 46). Damon: use **support@** in ALL email instances site-wide unless there's an industry-standard reason otherwise (info@ is real but no reason to use it). ALEX: sweep site for any `info@` / other addresses → standardize to support@unitemedical.net. (Site-wide, not just this page.)
+
+9. **Consistency scan:** FDA/BPA/CAGE/DUNS numbers correct; "via authorized SDVOSB partner" accurate; ISO honestly "pursuing." No warehouse/own-everything/landed-cost issues.
+
 ### M6. Classify all current stock into product categories (taxonomy)
 
 **The ask:** Group **every SKU in Unite's current catalog** into one of Unite's core product categories. Working category set:
