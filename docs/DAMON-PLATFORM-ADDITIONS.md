@@ -396,14 +396,16 @@ Source PDF: `Desktop/Unite Medical/Capabilities Statement/Unite Team/Unite Group
 **Key differentiators (updated):**
 - Veteran-owned & Georgia-based
 - Full-spectrum medical, pharmaceutical, diagnostics, and PPE supply under one point of contact
-- Domestic manufacturing of orthopedic bracing (PDAC-approved Unite Medical line)
+- Manufacturer-direct orthopedic bracing (PDAC-approved Unite Medical line) — NOTE: ortho is manufacturer-DIRECT, NOT domestically sourced; don't claim domestic manufacturing for the ortho line
 - Restore Robotics remanufactured da Vinci instrument program — FDA 510(k), 20–25% savings (hospital cost-reduction door-opener)
 - Diagnostics: brand-neutral sourcing + forthcoming Unite private-label line
 - Emergency sourcing with rapid fulfillment; private/white-label flexibility
-- Investing in technology + AI for a scalable, transparent, resilient supply chain
+- A tech-forward supply chain company integrating AI across every part of the business
 - Trusted by hospitals, pharmacies, schools, clinics, big-box retail, and government nationwide
 
 **Codes / contracts (verify still current):** Primary NAICS 423450 / 424210 / 339113; Secondary 339113, 325413, 325412, 325411, 315240; SIC 5047, 3842, 5122; FDA 3015727296; CAGE 8MK70; DUNS 117553945; **MSPV BPA 36C24123A0077.**
+
+**Diagnostics NAICS note (Damon Q 2026-06-30):** No diagnostics-SPECIFIC code was added — and one isn't needed for distribution: **423450** (primary) already covers distributing/selling diagnostic tests (COVID/flu/strep/RSV kits). **325413 (In-Vitro Diagnostic Substance Mfg)** is already in the secondary list but is a MANUFACTURING code — only lead with it once Unite's OWN private-label diagnostics line is actually being made. Optional future add: 334516 (Analytical Lab Instrument Mfg) only if Unite makes test instruments (unlikely). Action: leave codes as-is now; elevate 325413 when private-label diagnostics launches.
 
 **Contact:** Damon Reed · 404-502-5317 · damon@unitemedical.net · www.unitemedical.net · Medava USA www.medavausa.com
 **HQ:** 1487 Trae Lane, Lithia Springs, GA 30122
