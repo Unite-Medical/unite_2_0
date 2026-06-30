@@ -384,13 +384,14 @@ All copy below is **Damon-approved** during the 2026-06-29/30 review.
 
 Source PDF: `Desktop/Unite Medical/Capabilities Statement/Unite Team/Unite Group Capability Statement_Damon.pdf` (last saved 2025-04, now dated). Damon approved a refresh. Updated content below — ready for design layout (keep to a clean 1–2 page gov/procurement leave-behind; do not bloat).
 
-**Unite Group overview (updated):** Unite Group is a veteran-owned alliance of healthcare companies — **Unite Medical®, Unite Pharma, Medava®, and Clyne Health** — delivering full-spectrum medical support to hospitals, retailers, pharmacies, and government healthcare providers. Based in Georgia, we combine domestic manufacturing, agile sourcing, advanced technology, and personalized service to meet the urgent and ongoing needs of the healthcare community.
+**Unite Group overview (updated):** Unite Group is a veteran-owned alliance of healthcare companies — **Unite Medical®, Unite Pharma, and Medava®** — delivering full-spectrum medical support to hospitals, retailers, pharmacies, and government healthcare providers. Based in Georgia, we combine domestic manufacturing, agile sourcing, advanced technology, and personalized service to meet the urgent and ongoing needs of the healthcare community.
 
 **Companies + what each does:**
 - **Unite Medical®** — FDA-registered medical supply + global supply-chain partner. Manufacturer-direct orthopedic bracing (standard + custom, Unite Medical line is PDAC-approved), diagnostics (POC + OTC, brand-neutral sourcing + forthcoming Unite private-label line), American-made PPE, syringes, supplements. Sourcing/quoting engine for virtually any hospital-use item; private and white-label flexibility; **authorized distributor of the Restore Robotics FDA 510(k) remanufactured da Vinci instrument program (20–25% hospital savings).**
 - **Unite Pharma** — A multi-state licensed wholesale pharmacy and FDA-registered third-party logistics (3PL) provider. Sources and distributes a broad portfolio of prescription and OTC medications, IV solutions (saline, dextrose), and injectables to pharmacies, hospitals, clinics, and government providers; provides FDA-registered warehousing and DSCSA-compliant fulfillment/logistics on behalf of manufacturers. Responsive sourcing for routine, hard-to-find, and backordered items, multi-state delivery. (NO controlled substances at this time. Cold-chain capacity intentionally NOT claimed — scalable on demand; do not state on the doc.)
 - **Medava®** — American-made PPE line (nitrile gloves, 3-ply masks, N95 respirators, etc.); Berry-compliant; consistent domestic supply chain for state/local/federal/hospital procurement. (Named for Damon's daughter Ava.)
-- **Clyne Health** — An AI-powered concierge medicine platform unifying a patient's care team, labs, and treatment into one personalized health system. (Demonstrates Unite Group's investment in healthcare technology/AI.)
+
+**Clyne Health — REMOVED from this cap statement (Damon decision 2026-06-30).** It's a B2C-leaning telehealth brand and doesn't fit a wholesale/product-supply gov-procurement leave-behind. See the separate "Clyne — future B2G opportunity" note below.
 
 **Key differentiators (updated):**
 - Veteran-owned & Georgia-based
@@ -408,7 +409,13 @@ Source PDF: `Desktop/Unite Medical/Capabilities Statement/Unite Team/Unite Group
 **HQ:** 1487 Trae Lane, Lithia Springs, GA 30122
 **Unite Pharma address:** 1487 Trae Lane, Suite 1, Lithia Springs, GA 30122
 
-**Open verifications for Damon before publishing the cap statement:** (a) NAICS/SIC codes still accurate with Clyne added? (b) confirm Medava Berry-compliant wording; (c) confirm Clyne belongs on a gov-procurement doc (it's a B2C-leaning telehealth brand — included per Damon's instruction, but worth a final eyeball).
+**Open verifications for Damon before publishing the cap statement:** (a) NAICS/SIC codes still accurate (confirm against current SAM.gov registration). (b) Medava Berry-compliant wording — CONFIRMED OK by Damon. (c) Clyne — CONFIRMED REMOVED from this doc.
+
+**Field #5 (vendor data) — CONFIRMED by Damon:** quoting engine captures per vendor item: Incoterm/FOB port, certifications (ISO 13485 / CE / 510(k) / ASTM) per item, and HTS/origin per alternate factory. "That is our intent with each manufacturer." Keep all three in the onboarding spec.
+
+**Clyne — codes (for Clyne's OWN records, NOT Unite's gov cap statement):** Telehealth/virtual-care classifications — NAICS **621999** (All Other Misc Ambulatory Health Care Services — explicitly includes telemedicine; primary fit), secondary **621111** (Offices of Physicians); SIC **8011** / **8099**. VERIFY against Clyne's actual SBA/SAM registration before treating as official — a registered entity may already have codes on file.
+
+**Clyne — FUTURE B2G OPPORTUNITY (logged per Damon, 2026-06-30 — not for the current cap statement):** Possible scenario where Clyne provides **direct-to-patient telehealth + medication fulfillment** to government employees / beneficiaries (e.g., federal-employee health benefit, VA, or government health-plan populations) — a legitimate B2G2C play that ties to the "land-and-expand" strategy. Decision: keep OFF the current wholesale/product-supply cap statement (would muddy the procurement message + raise licensure/payer questions not yet answered). Revisit as its OWN Clyne-specific gov capability one-pager once the model (multi-state licensure, payer contracts) is defined.
 
 ---
 
