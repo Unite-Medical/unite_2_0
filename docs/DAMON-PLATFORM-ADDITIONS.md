@@ -219,6 +219,21 @@ This makes a large catalog look full and credible, every item is purchasable som
 
 ---
 
+## A5. "Start a quote" → multi-path quote router (APPROVED by Damon)
+
+**The ask:** Today a single "Start a quote" button sends every visitor into one generic form, but Unite has ~3 distinct quote types for ~3 customer types. Replace the single destination with a **chooser/router**: the first question is "What do you need?" with clear paths, then each path asks only its relevant fields and tags the lead by type in HubSpot. Keep the button label "Start a quote."
+
+**The 3 paths (starting point — refine as needed):**
+1. **Source a specific product / brand** (provider/customer RFQ — the Cato-style "find me this item") 
+2. **Private-label / bulk sourcing** (distributor / brand owner — quoting engine, FOB, MOQs)
+3. **I have a shortage list** (resiliency buyer — shortage-list upload → quote)
+
+**Why / context:** One generic form makes every buyer answer irrelevant questions and hands the team an untyped lead. Routing up front = higher completion, cleaner CRM segmentation, and each customer feels the page was built for them. Ties to the Cato-style open RFQ, Quick Quote (A3), and the shortage matcher (C3). Sell capability/outcome on each path; never expose the engine's mechanism (IP rule).
+
+*(Implementation for Alex: interstitial chooser or dropdown on the /quote entry; per-path field sets; lead-type tag → HubSpot. Damon approved the chooser approach 2026-06-29.)*
+
+---
+
 ## SERVICE / REVENUE AREA: Restore Robotics — Remanufactured Da Vinci Robotic Instruments (NEW — major, missing from site)
 
 **The ask:** Add a dedicated service area (its own tab/page, likely 1–2 pages) for Unite's role as an authorized **distributor/representative of the Restore Robotics / Encore Medical** remanufactured robotic-instrument program. This is currently **missing entirely** from the Services / capabilities on the site, yet it is now a **significant part of Unite's annual revenue**. It needs prominent placement plus clear contact paths for new hospitals and sub-distributors.
@@ -240,7 +255,13 @@ This makes a large catalog look full and credible, every item is purchasable som
 
 **Why / context:** This program is a **significant and growing share of Unite's annual revenue**, but the website says nothing about it — a major gap between what Unite actually does and what the site represents. Unite is a **representative/distributor for the Restore Robotics program**, and we want new hospitals and potential sub-distributors to find this capability on the Unite site and reach out. The Rocuvex site shows a sub-distributor already marketing it well; Unite (higher in the chain) should have an equally strong or stronger presence. This also reinforces Unite's broader positioning (cost-reduction partner, resiliency, sustainability) to the hospital audience we're trying to win (ties to the A1 Hospitals segment + A4 resiliency asks).
 
-*(Implementation notes for Alex: new Services sub-area + nav entry; lead-capture forms → HubSpot; likely its own page route(s) under /services. Keep all claims tied to verified program facts (FDA 510(k), 20%/25% savings, manufacturer-of-record warranty) — same truthfulness standard as the rest of the site. Source material: the Restore Robotics program briefing in Damon's Unite_Medical/Restore_Robotics library.)*
+**STRATEGIC DIRECTION (Damon, confirmed — this is NOT an afterthought, build real structural pages):** The Restore Robotics program is a **one-of-a-kind "trojan horse"** to get Unite Medical into large hospital systems. The hardest part of Unite's business is getting added as an approved vendor (A4 resiliency). The robotics program is a high-value, low-friction way in: **earn the system's trust by saving them money on robotic instruments first, then expand into supplying them with Unite's full range of capabilities (bracing, diagnostics, PPE, sourcing/quoting, private label, 3PL, etc.) over time.** The site must be the VEHICLE for this land-and-expand play. So:
+- Build **dedicated structural page(s)** for the program — a real, standalone marketing destination (not a single buried page). Treat it with the same weight as a flagship service.
+- **Reference site for Alex:** https://rocuvexmed.com/ (a Unite sub-distributor's program site). Share with Alex and get his thoughts on how Unite can properly build a site of this caliber/structure — and BETTER — that drives interested hospitals to engage. Unite sits ABOVE Rocuvex in the chain, so Unite's presence should be stronger.
+- Optimize to **drive new hospitals into the program** (savings-analysis / consultation lead capture → HubSpot), positioned as the entry point to a broader Unite relationship.
+- Keep the long game explicit internally: robotics is the door-opener; the goal is to become these systems' broader medical supply partner. (Public copy sells the robotics value honestly; the land-and-expand intent is strategy, not a public claim.)
+
+*(Implementation notes for Alex: new Services sub-area + nav entry; lead-capture forms → HubSpot; likely its own page route(s) under /services or a dedicated /robotics path. Keep all claims tied to verified program facts (FDA 510(k), 20%/25% savings, manufacturer-of-record warranty) — same truthfulness standard as the rest of the site. Source material: the Restore Robotics program briefing in Damon's Unite_Medical/Restore_Robotics library. Damon confirmed 20%/25% savings + "manufacturer of record / only 510(k)" OK to publish.)*
 
 ---
 
@@ -258,7 +279,7 @@ This makes a large catalog look full and credible, every item is purchasable som
 
 **Why / context:** Damon wants this page to actively **bring the TJS store to market AND sell the solution to new customers**. Right now it under-sells what is actually a powerful, differentiated capability (idea → manufactured-under-your-brand → live store → direct-to-patient fulfillment, all by Unite). A prospect should leave this page understanding the full scope and wanting the same for their brand.
 
-**Consistency check (passed):** page correctly says single "Georgia warehouse," private-label framing is accurate, no Nevada/own-everything/landed-cost-on-stock contradictions. Verify all specific claims are true before expanding (Force Therapeutics integration, "manufactures the bracing/recovery products," same-day processing) — same truthfulness standard as the rest of the site.
+**Consistency check (passed):** page correctly says single "Georgia warehouse," private-label framing is accurate, no Nevada/own-everything/landed-cost-on-stock contradictions. Claims CONFIRMED true by Damon (OK to lean on / expand): Unite manufactures the bracing/recovery products, Force Therapeutics integration, same-day processing.
 
 ### M6. Classify all current stock into product categories (taxonomy)
 
@@ -288,14 +309,20 @@ Two parts:
 
 **1. People / Leadership section — explain Unite Pharma and Clyne Health.** Damon's bio mentions he "also operates Unite Pharma and Clyne Health" but the page never says what those ARE. Add a short, clear description of each (Damon-confirmed wording, kept brief to highlight his supply-chain + healthcare expertise):
 - **Unite Pharma:** A multi-state licensed wholesale pharmacy and FDA-registered third-party logistics (3PL) provider.
-- **Clyne Health:** A physician-led telehealth platform for GLP-1 and longevity care, powered by a multi-channel pharmacy and fulfillment network.
+- **Clyne Health:** An AI-driven precision medicine platform delivering personalized GLP-1 and longevity care.
 Consider a small "Unite family of companies" / portfolio block so a visitor understands the related ventures, not just a passing name-drop in the founder bio. Goal: reinforce Damon's expertise across supply chain + healthcare — keep it brief.
 
 **2. RegeniCool™ — always add the trademark symbol** after the word "RegeniCool" everywhere it appears on the site. On About: credentials grid "All orthotics + RegeniCool Pro" → "All orthotics + RegeniCool™ Pro". (Site-wide rule — see consistency C9.)
 
 **3. Confirm all paperwork/credentials details are current.** Audited About credentials grid against Damon's screenshot — all correct in code EXCEPT the BPA, which is ALREADY fixed to MSPV BPA 36C24123A0077 (screenshot was pre-deploy/cached). Fields verified: FDA 3015727296, CAGE 8MK70, DUNS 117553945, DD214 Verified, TAA Prioritized, Berry/Medava PPE, PDAC (orthotics + RegeniCool™ Pro). No other changes needed beyond the ™.
 
-**4. Overall "do better" — content direction.** The page (hero + founder letter + leadership + credentials) reads as the old "we own & warehouse everything" story. Refresh to reflect today's positioning: global supply chain co. w/ medical specialty, wholesale + sourcing/quoting two-model, the new segments (hospitals/retailers/brand owners), diagnostics, and the Restore Robotics program. Make it less generic and more distinctly Unite. (See C-items below for the specific contradicting lines in the founder letter.)
+**4. Hero + leadership (Damon-reviewed, decisions locked):**
+- **Hero headline** — KEEP as-is: "Built on discipline. Driven by demand."
+- **Hero sub** — REPLACE current with: **"Built by a veteran supply-chain operator and a practicing physician — the medical supply partner the industry was missing."** (Damon disliked the original; this is approved.)
+- **Leadership bios** — keep INITIALS (Damon R. / Jackie S.), not full names.
+- **Jackie's bio** — copy is fine as-is. **NOTE FOR ALEX (contingency):** Jackie's bio / co-founder listing may need to be REMOVED entirely. Her current employer is Kaiser Permanente; if they push back on her being listed as Unite co-owner/co-founder, we pull it. Build the leadership section so a single leader (Jackie) can be cleanly removed without breaking the layout, and don't hard-bake "co-founder" anywhere that's painful to undo.
+- **Revenue figures** ($34K→$39M, $1.4M) — KEEP OFF all public pages (confirmed). 500M units is OK to keep.
+- **Overall direction:** refresh page tone to today's positioning (global supply chain co. w/ medical specialty, wholesale + sourcing/quoting two-model, new segments, diagnostics, Restore Robotics) — but the hero, letter (C10), people descriptions, and credentials above are the concrete approved changes.
 
 **Why / context:** About is a key trust page; Damon wants it to actually represent the business as it is now (multiple ventures, two-model supply chain, real credentials) and read better. Unite Pharma + Clyne Health are real related companies that currently appear as unexplained names.
 
