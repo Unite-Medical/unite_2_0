@@ -306,7 +306,31 @@ All Damon-confirmed during 2026-06-30 review.
 
 9. **Consistency scan:** FDA/BPA/CAGE/DUNS numbers correct; "via authorized SDVOSB partner" accurate; ISO honestly "pursuing." No warehouse/own-everything/landed-cost issues.
 
-### M6. Classify all current stock into product categories (taxonomy)
+---
+
+## CONTENT: Catalog page — corrections (Damon-approved) (`src/pages/Catalog.jsx`)
+
+1. **Hero "Everything in stock" + eyebrow "STOCKED & SHIPPING SAME DAY" (lines 87, 90) — reword.** Don't claim everything is in stock (contradicts M1/M2 — catalog should show items across availability states, including OOS). Damon: "go with wording that makes the most sense." Recommended hero → **"The Unite catalog"** (or "Everything we carry"); eyebrow → **"CATALOG · STOCKED + SOURCED"**. Agent to finalize wording that fits the 3-supply-state model below.
+
+2. **"updated 04 min ago" (line 92) — REMOVE.** Hardcoded fake freshness string. Damon confirmed: drop it (keep the results count, drop the "· updated 04 min ago").
+
+3. **🔴 BIG ONE — replace the binary IN STOCK/LOW badge with the 3 REAL supply states (TAG ALEX: structure + confirm capabilities, model after Cato's site cato.com).** Damon confirmed there are **3 genuinely different supply situations** — NOT a vague "quick-ship" middle. Reframe the middle tier around the **Cato sourcing model** ("Cato finds out-of-stock, backordered, and on-allocation medical supplies"). The 3 states:
+   - **(1) In Stock** — Unite stocks it deeply, ships today (core: bracing, diagnostics, American-made PPE, syringes, supplements).
+   - **(2) Source / Resiliency (the Cato model)** — items that are out-of-stock / backordered / on-allocation in the broader market that Unite can **find and source** for the customer. This REPLACES the fuzzy "quick-ship" label. It's the supply-gap-solver / resiliency play (ties to A4 resiliency, C3 shortage-list, Cato-style RFQ).
+   - **(3) Available to Quote** — open RFQ on items not in Unite's catalog (the broadest "source anything" path).
+   **ALEX:** Damon wants your help on the STRUCTURE of this (how the 3 states are modeled/displayed) and to CONFIRM what's technically/operationally capable — especially the Cato-style "find disrupted supply" data. Reference Cato's site (https://cato.com or the screenshot: "What Supply Gap Can We Help You Solve Today?" + "Disrupted Medical Supplies Recently Sourced" live catalog). This overlaps the earlier Cato-style open-RFQ + real-time-stock-API question (C3) — same underlying capability question. Per M1, out-of-stock items should still SHOW (not vanish) with a path to source/quote.
+
+4. **Category filters (line 24, auto-derived from product data) — wire to the M6 product taxonomy** (Bracing, Diagnostics, American-made PPE, Syringes, Supplements, etc.) so filters are clean/canonical, not arbitrary data strings.
+
+5. **Compliance filter checkboxes (lines 131–133, 148–150) — non-functional.** "PDAC-approved / Berry compliant / TAA compliant / MSPV listed" have no onChange/state — decorative only. ALEX: wire them up to actually filter, or remove. (Filtering by these is genuinely useful for procurement buyers — recommend wiring, not removing.)
+
+6. **"no minimums on stocked items" SEO copy (lines 61–62) — KEEP, correctly scoped** to stocked items (matches the earlier no-minimums decision).
+
+7. **Consistency scan:** real stock gating (available-to-promise, not raw on-hand) is GOOD; no warehouse/own-everything/landed-cost issues. The IN STOCK/LOW badge ties to bug B2 (must read real inventory — it does here, good) and now expands to the 3-state model above.
+
+---
+
+## M6. Classify all current stock into product categories (taxonomy)
 
 **The ask:** Group **every SKU in Unite's current catalog** into one of Unite's core product categories. Working category set:
 - **Bracing / Orthotics**
