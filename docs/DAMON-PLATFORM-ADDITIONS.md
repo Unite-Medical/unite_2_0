@@ -349,6 +349,69 @@ All copy below is **Damon-approved** during the 2026-06-29/30 review.
 
 ---
 
+## CONTENT: Procurement page — REWRITE (premise was backwards) (`src/pages/Procurement.jsx`)
+
+**CRITICAL correction:** The live page implies **Unite itself is veteran-owned / SDVOSB with "certified diverse suppliers behind our catalog."** This is WRONG. **Unite is NOT SDVOSB and has never claimed to be.** Damon's actual intent is the INVERSE: Unite is the **product/supply-chain partner BEHIND diverse businesses** — Unite supplies the products + logistics, and **certified diverse resellers/distributors (MBE/WBE/VOSB/etc.) buy from Unite and supply the end customer**, so THEY meet their customers' supplier-diversity requirements. Unite makes ZERO diversity-status claims about itself.
+
+**Approved hero:**
+> **Headline:** A supply partner for diverse businesses.
+> **Sub:** Unite Medical helps certified diverse suppliers win and fulfill healthcare contracts. We supply the products and the supply-chain muscle; you carry the relationship and the diversity certification your customers require.
+
+(Keep hero clean — do NOT crowd it with the acronym list. Put the full category list lower on the page per below.)
+
+**Approved body section:**
+> **Headline:** Behind your diversity certification.
+> **Body:** Health systems, GPOs, and government buyers increasingly require supplier-diversity spend. Unite Medical sits behind diverse distributors as a reliable, FDA-registered product and fulfillment partner — domestic manufacturing, agile sourcing, and same-day shipping — so you can confidently bid, win, and deliver. Your certification, your customer relationship; our catalog, compliance, and logistics doing the heavy lifting.
+
+**Diverse-supplier categories (list LOWER on the page, not in hero) — common ones Damon approved:**
+- Women-Owned (WBE / WOSB)
+- Minority-Owned (MBE)
+- Veteran-Owned (VOSB)
+- Service-Disabled Veteran-Owned (SDVOSB)
+- LGBTQ+-Owned (LGBTBE)
+- Disability-Owned (DOBE)
+- HUBZone
+- 8(a) / Small Disadvantaged Business
+(Phrase as "We support distributors across the diversity classifications your customers track — including…" so it's inclusive without implying Unite holds these certs.)
+
+**Credentials grid:** ADD a 5th tile **MSPV BPA · 36C24123A0077** (confirmed in cap statement). Existing tiles (Veteran-Owned/DD214, CAGE, DUNS, FDA) — NOTE: the "Veteran-Owned · DD214 Verified" tile refers to DAMON being a veteran (true), NOT to Unite holding an SDVOSB set-aside cert. Keep wording careful so it doesn't read as a federal SDVOSB certification claim.
+
+**NOTE FOR ALEX (contingency — woman-owned):** If Jackie is listed as an owner and Unite pursues WBE certification, this page can later flip to ALSO position **Unite itself as a (certified, once obtained) woman-owned business**. Until certified, claim nothing. Tied to the same Kaiser-Permanente pushback caveat as the About page (Jackie's listing may need removal entirely).
+
+---
+
+## DELIVERABLE: Updated Unite Group Capability Statement (refresh of the April-2025 PDF)
+
+Source PDF: `Desktop/Unite Medical/Capabilities Statement/Unite Team/Unite Group Capability Statement_Damon.pdf` (last saved 2025-04, now dated). Damon approved a refresh. Updated content below — ready for design layout (keep to a clean 1–2 page gov/procurement leave-behind; do not bloat).
+
+**Unite Group overview (updated):** Unite Group is a veteran-owned alliance of healthcare companies — **Unite Medical®, Unite Pharma, Medava®, and Clyne Health** — delivering full-spectrum medical support to hospitals, retailers, pharmacies, and government healthcare providers. Based in Georgia, we combine domestic manufacturing, agile sourcing, advanced technology, and personalized service to meet the urgent and ongoing needs of the healthcare community.
+
+**Companies + what each does:**
+- **Unite Medical®** — FDA-registered medical supply + global supply-chain partner. Manufacturer-direct orthopedic bracing (standard + custom, Unite Medical line is PDAC-approved), diagnostics (POC + OTC, brand-neutral sourcing + forthcoming Unite private-label line), American-made PPE, syringes, supplements. Sourcing/quoting engine for virtually any hospital-use item; private and white-label flexibility; **authorized distributor of the Restore Robotics FDA 510(k) remanufactured da Vinci instrument program (20–25% hospital savings).**
+- **Unite Pharma** — A multi-state licensed wholesale pharmacy and FDA-registered third-party logistics (3PL) provider. Sources and distributes a broad portfolio of prescription and OTC medications, IV solutions (saline, dextrose), and injectables to pharmacies, hospitals, clinics, and government providers; provides FDA-registered warehousing and DSCSA-compliant fulfillment/logistics on behalf of manufacturers. Responsive sourcing for routine, hard-to-find, and backordered items, multi-state delivery. (NO controlled substances at this time. Cold-chain capacity intentionally NOT claimed — scalable on demand; do not state on the doc.)
+- **Medava®** — American-made PPE line (nitrile gloves, 3-ply masks, N95 respirators, etc.); Berry-compliant; consistent domestic supply chain for state/local/federal/hospital procurement. (Named for Damon's daughter Ava.)
+- **Clyne Health** — An AI-powered concierge medicine platform unifying a patient's care team, labs, and treatment into one personalized health system. (Demonstrates Unite Group's investment in healthcare technology/AI.)
+
+**Key differentiators (updated):**
+- Veteran-owned & Georgia-based
+- Full-spectrum medical, pharmaceutical, diagnostics, and PPE supply under one point of contact
+- Domestic manufacturing of orthopedic bracing (PDAC-approved Unite Medical line)
+- Restore Robotics remanufactured da Vinci instrument program — FDA 510(k), 20–25% savings (hospital cost-reduction door-opener)
+- Diagnostics: brand-neutral sourcing + forthcoming Unite private-label line
+- Emergency sourcing with rapid fulfillment; private/white-label flexibility
+- Investing in technology + AI for a scalable, transparent, resilient supply chain
+- Trusted by hospitals, pharmacies, schools, clinics, big-box retail, and government nationwide
+
+**Codes / contracts (verify still current):** Primary NAICS 423450 / 424210 / 339113; Secondary 339113, 325413, 325412, 325411, 315240; SIC 5047, 3842, 5122; FDA 3015727296; CAGE 8MK70; DUNS 117553945; **MSPV BPA 36C24123A0077.**
+
+**Contact:** Damon Reed · 404-502-5317 · damon@unitemedical.net · www.unitemedical.net · Medava USA www.medavausa.com
+**HQ:** 1487 Trae Lane, Lithia Springs, GA 30122
+**Unite Pharma address:** 1487 Trae Lane, Suite 1, Lithia Springs, GA 30122
+
+**Open verifications for Damon before publishing the cap statement:** (a) NAICS/SIC codes still accurate with Clyne added? (b) confirm Medava Berry-compliant wording; (c) confirm Clyne belongs on a gov-procurement doc (it's a B2C-leaning telehealth brand — included per Damon's instruction, but worth a final eyeball).
+
+---
+
 ## CONTENT UPGRADE: About page — Damon not in love with it; do better (`src/pages/About.jsx`)
 
 **The ask:** Rework the About page — Damon isn't happy with it. Plus specific fixes:
