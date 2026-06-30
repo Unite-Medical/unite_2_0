@@ -345,25 +345,23 @@ The whole `OwnedInventory` band is built on the old "we own & warehouse everythi
 
 ### C10. About founder letter — REWRITTEN (replace existing letter `src/pages/About.jsx` ~95–121)
 
-**Status: corrected copy ready for Alex to implement.** Replaces the old founder letter (which used the "we own every unit we sell" framing that contradicts source-and-never-stock). New letter keeps Damon's voice/origin story, fixes the ownership contradiction, leans on trust + scale (not "just me"), and reflects today's positioning + AI investment. The 500M-units figure is CONFIRMED accurate by Damon (keep it).
+**Status: corrected copy ready for Alex to implement.** Replaces the old founder letter (which used the "we own every unit we sell" framing that contradicts source-and-never-stock). Professional, less-personal tone (origin autobiography intentionally omitted — kept the credibility spine + conviction). The 500M-units figure is CONFIRMED accurate by Damon (keep it).
 
 **New letter copy:**
 
-> I've spent my career in supply chain. I started in 2016, learning how a product actually moves from a factory floor to the person who needs it — and how often that chain breaks. In 2019, I started Unite Medical to build the partner I kept wishing existed.
+> I've spent my career in supply chain. Since 2016 I've worked every link of it — sourcing, manufacturing, private label, logistics, fulfillment — and I learned early how often the chain breaks and what it costs the people depending on it. In 2019 I founded Unite Medical to be the partner I kept wishing existed: disciplined, accountable, and built to deliver when it matters most.
 >
-> I didn't come from much. I grew up in a small town, working Saturdays at the local Pizza Hut as a kid and putting in hours in the yard to help my parents make ends meet. I was the first in my family to go to college and earn a degree. I served in the military. The lessons that stuck — show up, keep your word, find a way to win — are the same ones this company runs on today.
+> That conviction was tested during the pandemic. When the traditional supply chain failed, Unite became one of the largest direct-to-patient drop shippers in the country, moving over 500 million units of tests, PPE, and critical supplies to the labs, hospitals, pharmacies, and retailers who needed them. We didn't just survive that period — we proved what a focused, vertically capable supply chain partner could do under pressure.
 >
-> When COVID hit, I bet everything on Unite. I risked bankruptcy more than once, lost millions, and kept going. For a stretch we were one of the largest direct-to-patient drop shippers in the country, moving over 500 million units of tests, PPE, and supplies when the traditional supply chain fell apart. We went from $34,000 in revenue our first year to $39 million three years later — and for most of that, I was the entire operation. I processed the POs, did the invoicing, packed the boxes, shipped the pallets, drove the forklift, built the private labels, and ran every link of the supply chain myself. There was no mentor, no full-time team, no infrastructure to lean on. Everything Unite does today, I've done with my own hands — and learned from every mistake along the way.
+> What we built since has been earned the same way: by delivering and keeping our word. Surgery centers, hospitals, retailers, brand owners, and national partners work with Unite because we do what we say we'll do. It's the reason the leadership of a robotics company chose us to represent their program, and the reason customers who started with a single order stay with us for years. We've grown with one vision — to be the supply chain other companies can build on.
 >
-> That's why companies trust us. Surgery centers, hospitals, retailers, brand owners, and national partners came to Unite because we deliver and we keep our word. It's the same reason the CEO of a robotics company chose us to represent his program — trust, earned one shipment at a time. We've scaled with a single vision: be the supply chain other companies can build on.
+> The market has changed, and we've changed with it. The pandemic-driven demand that once came to our door is gone; today we earn every order, and we don't take a single one for granted. We're investing heavily in technology and AI to build a more scalable, transparent, and resilient Unite — a company designed for how business will be done next, not how it was done last.
 >
-> This past year was our hardest in three. The COVID wave that once brought business to our door is over — now we earn every order, and we don't take a single one for granted. I'm grateful for every customer we have; they're the reason we're still here. And I'm investing heavily in AI to build Unite into a company made for how business will be done next, not how it was done last.
->
-> My drive comes from my family — my wife Jackie and our two kids, Ava and Beckett. (Our Medava line carries Ava's name.) They're my why. Everything I build, I build for them, and for the customers who trusted us enough to let us build it.
+> We are grateful for every customer who trusts us with their supply chain. They are the reason Unite exists, and everything we build, we build to serve them better.
 >
 > — Damon R., Founder & CEO
 
-**Open for Damon's final call:** (a) keep the specific revenue figures ($34K→$39M) public or remove; (b) military mention currently one line — keep subtle vs. expand.
+**Open for Damon's final call:** (a) keep the specific 500M-units / pandemic claims (confirmed accurate); (b) tune length/warmth as desired.
 
 ### C6. Testimonial reword — "Berry compliant products" (`src/data/testimonials.js` ~22)
 
