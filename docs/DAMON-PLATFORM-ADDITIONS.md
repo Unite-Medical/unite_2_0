@@ -343,12 +343,27 @@ The whole `OwnedInventory` band is built on the old "we own & warehouse everythi
 
 **The rule (decided 2026-06-29):** Always render **RegeniCool™** with the trademark symbol everywhere "RegeniCool" appears in copy (e.g. "RegeniCool™ Pro"). Apply going forward to any new copy too. Current occurrences to fix (4): `src/pages/About.jsx` ~37, `src/pages/Compliance.jsx` ~27, `src/data/faqs.js` ~32, `src/pages/ServicePDAC.jsx` ~67 — all read "RegeniCool Pro" → "RegeniCool™ Pro".
 
-### C10. About founder letter — old "own everything" story contradicts positioning (`src/pages/About.jsx` ~107–119)
+### C10. About founder letter — REWRITTEN (replace existing letter `src/pages/About.jsx` ~95–121)
 
-The "letter from Damon" leans on the outdated owned-inventory framing:
-- **~113 "We own every unit we sell."** → contradicts source-and-never-stock; Unite sometimes sources & sells without ever stocking. Soften/reframe.
-- **~107–110** "moved over 500 million units" + "one of the largest direct-to-patient drop shippers in the country" → claims to VERIFY before keeping (substantiation).
-- The letter omits today's positioning (two-model wholesale + sourcing/quoting, new segments, diagnostics, Restore Robotics) — part of the broader About rewrite. Keep voice/authenticity; fix the absolute ownership claim + verify the stats.
+**Status: corrected copy ready for Alex to implement.** Replaces the old founder letter (which used the "we own every unit we sell" framing that contradicts source-and-never-stock). New letter keeps Damon's voice/origin story, fixes the ownership contradiction, leans on trust + scale (not "just me"), and reflects today's positioning + AI investment. The 500M-units figure is CONFIRMED accurate by Damon (keep it).
+
+**New letter copy:**
+
+> I've spent my career in supply chain. I started in 2016, learning how a product actually moves from a factory floor to the person who needs it — and how often that chain breaks. In 2019, I started Unite Medical to build the partner I kept wishing existed.
+>
+> I didn't come from much. I grew up in a small town, working Saturdays at the local Pizza Hut as a kid and putting in hours in the yard to help my parents make ends meet. I was the first in my family to go to college and earn a degree. I served in the military. The lessons that stuck — show up, keep your word, find a way to win — are the same ones this company runs on today.
+>
+> When COVID hit, I bet everything on Unite. I risked bankruptcy more than once, lost millions, and kept going. For a stretch we were one of the largest direct-to-patient drop shippers in the country, moving over 500 million units of tests, PPE, and supplies when the traditional supply chain fell apart. We went from $34,000 in revenue our first year to $39 million three years later — and for most of that, I was the entire operation. I processed the POs, did the invoicing, packed the boxes, shipped the pallets, drove the forklift, built the private labels, and ran every link of the supply chain myself. There was no mentor, no full-time team, no infrastructure to lean on. Everything Unite does today, I've done with my own hands — and learned from every mistake along the way.
+>
+> That's why companies trust us. Surgery centers, hospitals, retailers, brand owners, and national partners came to Unite because we deliver and we keep our word. It's the same reason the CEO of a robotics company chose us to represent his program — trust, earned one shipment at a time. We've scaled with a single vision: be the supply chain other companies can build on.
+>
+> This past year was our hardest in three. The COVID wave that once brought business to our door is over — now we earn every order, and we don't take a single one for granted. I'm grateful for every customer we have; they're the reason we're still here. And I'm investing heavily in AI to build Unite into a company made for how business will be done next, not how it was done last.
+>
+> My drive comes from my family — my wife Jackie and our two kids, Ava and Beckett. (Our Medava line carries Ava's name.) They're my why. Everything I build, I build for them, and for the customers who trusted us enough to let us build it.
+>
+> — Damon R., Founder & CEO
+
+**Open for Damon's final call:** (a) keep the specific revenue figures ($34K→$39M) public or remove; (b) military mention currently one line — keep subtle vs. expand.
 
 ### C6. Testimonial reword — "Berry compliant products" (`src/data/testimonials.js` ~22)
 
