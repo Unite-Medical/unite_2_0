@@ -383,11 +383,11 @@ Use the real, documented TJS story (ties to the TJS case-study page). **ALEX: pu
 ### REAL flagship case #2 — Restore Robotics savings (NEW)
 - **Stat: "$900K+"** · label "saved for hospital systems to date" (Restore Robotics remanufactured da Vinci program — real, current total savings Unite has delivered to hospitals using the program).
 - **Blurb:** total savings Unite Medical has generated for hospital systems utilizing the Restore Robotics program — over **$900,000 to date** (20–25% per-instrument savings, FDA 510(k) remanufactured da Vinci instruments).
-- **Image:** Restore Robotics / da Vinci instrument photo. NOTE: Rocuvex (a sub-distributor) uses these on rocuvexmed.com (e.g. framerusercontent.com images) — but ALEX should source an OFFICIAL Restore Robotics image, not scrape a competitor-distributor's site.
+- **Image + program content:** ✅ Damon CONFIRMED — OK to scrape the Rocuvex site (rocuvexmed.com) for images AND program content; that's the reference Alex should use to build out the Restore Robotics program pages on Unite's site (structure, how-it-works, images, savings framing). (Earlier "don't scrape competitor" caution withdrawn per Damon — he wants Rocuvex used as the build template.)
 - **🔴 ALEX BUILD — LIVE SAVINGS CALCULATOR:** wire this $900K+ figure to a **live savings counter that keeps increasing from real data**. The data currently lives in the **Restore portal**. **ALEX: tell Damon when you're ready to speak with Brad at Restore so Brad can build the data bridge you need.** (Until wired, show the static "$900K+ to date" — do not fabricate a fake-live number.)
 
-### Optional real stat — Medava on MSPV
-- Consider a stat highlighting the **total # of Medava SKUs currently on the national MSPV contract** (real, verifiable number — Damon to provide the count). Strong gov-credibility proof point.
+### Real stat — Medava on MSPV (CONFIRMED)
+- Stat: **"7"** · label "Medava SKUs on the national MSPV contract" (Damon confirmed: 7 SKUs currently on MSPV). Use as a gov-credibility proof point (card or stat).
 
 ### Remaining cases — anonymized fabrications OK (NO NAMES)
 Damon OK with a few illustrative/fabricated cases AS LONG AS no real names. Rewrite the other 4 cards to remove ALL identifying names (no Medline, McKesson, named VA center, Cobb County, named ASCs/pharmacies/distributors). Use generic descriptors: "A 4-OR ambulatory surgery center," "An independent GA pharmacy," "A regional distributor," "A county EMS agency." Keep the stat/structure feel; frame as representative outcomes, not named-customer receipts. Don't name competitors at all.
