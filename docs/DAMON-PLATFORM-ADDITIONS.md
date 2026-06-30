@@ -371,6 +371,31 @@ Consistency scan: ✅ CLEAN on the warehouse footprint — already correctly sin
 
 ---
 
+## CONTENT: Portfolio page — REBUILD (all 6 current cases are FABRICATED) (`src/pages/Portfolio.jsx`)
+
+**🔴 SUBSTANTIATION:** All 6 current case studies are FAKE (Damon confirmed) yet presented as "Receipts. Real ones." / "Real numbers from real customers" — and they name real third parties (Medline, McKesson, a specific VA Medical Center, Cobb County EMS). Must fix. Damon LIKES the page structure/layout — KEEP the structure, replace the content. Plan = Option 2+3: real flagship cases + anonymized fabricated ones (NO names).
+
+**Header copy fix:** "Receipts. Real ones." + "Real numbers from real customers" overclaims once content is partly illustrative/anonymized. Soften so we don't assert "real" over anonymized/illustrative items (e.g., "Proven outcomes." / "The work, in plain numbers." — keep the vibe, drop the literal "real customers" assertion). Agent to finalize.
+
+### REAL flagship case #1 — TJS (Total Joint Specialists)
+Use the real, documented TJS story (ties to the TJS case-study page). **ALEX: pull a real TJS store/location photo** (not a placeholder). Blurb = the genuine TJS build (Unite built + manufactures private-label bracing + Force Therapeutics integration + direct-to-patient fulfillment from GA). Real outcome metric TBD from TJS data (use a true number or a qualitative win — do NOT fabricate).
+
+### REAL flagship case #2 — Restore Robotics savings (NEW)
+- **Stat: "$900K+"** · label "saved for hospital systems to date" (Restore Robotics remanufactured da Vinci program — real, current total savings Unite has delivered to hospitals using the program).
+- **Blurb:** total savings Unite Medical has generated for hospital systems utilizing the Restore Robotics program — over **$900,000 to date** (20–25% per-instrument savings, FDA 510(k) remanufactured da Vinci instruments).
+- **Image:** Restore Robotics / da Vinci instrument photo. NOTE: Rocuvex (a sub-distributor) uses these on rocuvexmed.com (e.g. framerusercontent.com images) — but ALEX should source an OFFICIAL Restore Robotics image, not scrape a competitor-distributor's site.
+- **🔴 ALEX BUILD — LIVE SAVINGS CALCULATOR:** wire this $900K+ figure to a **live savings counter that keeps increasing from real data**. The data currently lives in the **Restore portal**. **ALEX: tell Damon when you're ready to speak with Brad at Restore so Brad can build the data bridge you need.** (Until wired, show the static "$900K+ to date" — do not fabricate a fake-live number.)
+
+### Optional real stat — Medava on MSPV
+- Consider a stat highlighting the **total # of Medava SKUs currently on the national MSPV contract** (real, verifiable number — Damon to provide the count). Strong gov-credibility proof point.
+
+### Remaining cases — anonymized fabrications OK (NO NAMES)
+Damon OK with a few illustrative/fabricated cases AS LONG AS no real names. Rewrite the other 4 cards to remove ALL identifying names (no Medline, McKesson, named VA center, Cobb County, named ASCs/pharmacies/distributors). Use generic descriptors: "A 4-OR ambulatory surgery center," "An independent GA pharmacy," "A regional distributor," "A county EMS agency." Keep the stat/structure feel; frame as representative outcomes, not named-customer receipts. Don't name competitors at all.
+
+**Consistency scan:** the page otherwise reuses standard components; no warehouse/own-everything/landed-cost/veteran issues. The ONLY problem was fabricated-as-real content + named third parties.
+
+---
+
 ## M6. Classify all current stock into product categories (taxonomy)
 
 **The ask:** Group **every SKU in Unite's current catalog** into one of Unite's core product categories. Working category set:
