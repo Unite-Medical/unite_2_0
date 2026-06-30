@@ -351,6 +351,26 @@ All Damon-confirmed during 2026-06-30 review.
 
 ---
 
+## CONTENT: Locations page — corrections (Damon-approved) (`src/pages/Locations.jsx`)
+
+Consistency scan: ✅ CLEAN on the warehouse footprint — already correctly single Lithia Springs, GA (no Nevada/two-warehouse remnants). Fixes are content + one build item:
+
+1. **Hero/eyebrow/map-label — REWRITE for accuracy (Option A, Damon-approved).** Current "Close to every dock" + "COVERAGE · CONUS" implies distributed locations. Replace:
+   - **Eyebrow:** `GEORGIA WAREHOUSE · WE SHIP NATIONWIDE`
+   - **Headline:** "One warehouse. *Every* zip code."
+   - **Sub:** "Our Lithia Springs, Georgia warehouse ships to all 50 states and territories — same-day on orders placed before 2pm EST."
+   - **Map label** (line 37): "COVERAGE · CONUS" → **"SHIPPING · ALL 50 STATES"**
+
+2. **Remove the SKU count entirely** (lines 13, 60). Damon: remove SKUs stat. Drop "SKUs: {h.skus}" from the card and the `skus` field.
+
+3. **Square footage = "Over 10,000 sq ft"** (Damon confirmed). Replace the "—" sqft placeholder with **"Over 10,000 sq ft."** So the card stat line shows just the sqft (SKU count removed).
+
+4. **🔴 BUILD ITEM (Alex) — real hub-and-spoke US map.** The current "map" (lines 32–45) is a stylized CSS placeholder (a dot at hardcoded lat/lng percentages, coverage glow). Damon wants a **REAL US map** with the **Georgia warehouse as the origin point and lines radiating outward across the country** (to coasts/corners) — visually telling the "one location, nationwide reach" story (hub-and-spoke / distribution map). Static or subtly animated spoke lines from the GA pin to the 50 states. This accurately conveys *one origin → broad reach* (better than the vague coverage glow, and honest to the single-warehouse reality).
+
+5. **Consistency:** "same-day before 2pm EST · ships to all 50 states + territories" matches other pages — keep. SEO already correct (single GA warehouse).
+
+---
+
 ## M6. Classify all current stock into product categories (taxonomy)
 
 **The ask:** Group **every SKU in Unite's current catalog** into one of Unite's core product categories. Working category set:
