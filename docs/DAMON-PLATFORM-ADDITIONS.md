@@ -384,6 +384,13 @@ All copy below is **Damon-approved** during the 2026-06-29/30 review.
 
 Source PDF: `Desktop/Unite Medical/Capabilities Statement/Unite Team/Unite Group Capability Statement_Damon.pdf` (last saved 2025-04, now dated). Damon approved a refresh. Updated content below — ready for design layout (keep to a clean 1–2 page gov/procurement leave-behind; do not bloat).
 
+**✅ GENERATED DELIVERABLE (2026-06-30, Damon-approved):** A brand-matched 2-page PDF was generated and approved.
+- PDF: `Desktop/Unite Medical/Capabilities Statement/Unite Team/Unite_Group_Capability_Statement_2026.pdf`
+- Editable source: same folder, `Unite_Group_Capability_Statement_2026.html`
+- Built to the site brand system (tokens.js + Logo.jsx): plum #5e2963, terra #b8502c, gradient #f64f00→#c23b6a→#5e2963; Fraunces/Inter/IBM Plex Mono; UM gradient logo mark. Page 1: header + hero "The supply chain behind healthcare." + 3 company cards + dark differentiators band. Page 2: registrations (FDA/CAGE/MSPV BPA/DUNS) + NAICS/SIC + contact + HQ/Unite Pharma Suite 1 addresses.
+- Reflects all edits: ortho = manufacturer-direct (not domestic), AI tech-forward framing, Clyne removed, Unite Pharma broadened (no controlled substances / no cold-chain claim).
+- REMAINING before external use: verify NAICS/SIC vs current SAM.gov registration.
+
 **Unite Group overview (updated):** Unite Group is a veteran-owned alliance of healthcare companies — **Unite Medical®, Unite Pharma, and Medava®** — delivering full-spectrum medical support to hospitals, retailers, pharmacies, and government healthcare providers. Based in Georgia, we combine domestic manufacturing, agile sourcing, advanced technology, and personalized service to meet the urgent and ongoing needs of the healthcare community.
 
 **Companies + what each does:**
