@@ -303,6 +303,51 @@ Two parts:
 
 ---
 
+## CONTENT: Services page — corrections + new copy (Damon-approved) (`src/pages/Services.jsx` + `src/pages/ServicePDAC.jsx`)
+
+All copy below is **Damon-approved** during the 2026-06-29/30 review.
+
+**1. Distribution card — fix warehouse count (Nevada bug again).** Line 18 currently "Same-day shipping · 2 US warehouses · Ships to all 50 states + territories" →
+→ **"Same-day shipping · Georgia warehouse · Ships to all 50 states + territories"**
+
+**2. Quoting & Sourcing card — remove mechanism leak + "real-time" overclaim.** Line 31 →
+→ **"Tell us what you need and get an instant, fully landed, compliance-checked quote — sourced from our vetted manufacturer network."**
+(Do NOT call the quoting system "private label." Unite DOES offer private-label manufacturing as a separate real capability — keep that in the hero sub; just don't label the QUOTING engine private label.)
+
+**3. Hero sub — KEEP as-is** (private-label manufacturing is a real capability): "Distribution, PDAC consulting, private-label manufacturing, and a sourcing platform. Built because our customers kept asking us to do more."
+
+**4. NEW 5th service card — Restore Robotics.** Add a card for the Restore Robotics program → links to a dedicated **`/robotics` landing page** that gets the full multi-page build-out (see the Restore Robotics service section above; trojan-horse strategy). Damon confirmed: card → dedicated landing page with additional pages built out like the reference site.
+
+**6. NEW 6th service card — Diagnostics (Damon approved).** Add a Diagnostics card → links to the dedicated Diagnostics page (M4) once built. Rationale: diagnostics is Unite's #2 mover; leaving it off the Services page undersells a core capability.
+
+### PDAC value band (dark "PDAC & REIMBURSEMENT" section) — REWORKED (removes fabricated claims)
+
+**Problem:** The old band fabricated a Medicare audit-response SLA ("documentation checklist," "same-day audit response / verification letter same day") that Unite never offered, and claimed "100% of our orthopedic line" when PDAC approval only applies to the **Unite Medical** branded line (Unite private-labels ortho for some retail-only brands that are NOT taken through PDAC).
+
+**Headline — KEEP:** "Most braces stall at Medicare review. *Ours arrive billable.*"
+
+**Body — REPLACE with:** "Every product in our Unite Medical orthopedic line is PDAC-approved and carries verified HCPCS L-coding. The code travels with the SKU — on the listing and on your invoice — so your bracing claims are ready to bill."
+
+**Three stats — REPLACE with:**
+1. **100%** · *PDAC-approved Unite Medical bracing line* — "Every Unite Medical orthosis is PDAC-approved." (Scoped to the Unite Medical line — NOT retail brands Unite private-labels without PDAC.)
+2. **L-codes** · *On the listing and the invoice* — "Verified HCPCS L-code carried per Unite Medical bracing SKU and passed through to your invoice." **ALEX BUILD NOTE:** build the L-code into the product listings for Unite Medical bracing SKUs so it transfers onto the invoice via QuickBooks Online when invoiced. (Capability we can do; needs to be wired.)
+3. **Per SKU** · *PDAC approval letter on file* — "Download the current PDAC approval letter from any Unite Medical bracing product page." (Replaces the fabricated same-day audit SLA; ties to the existing per-product letter download.)
+
+**REMOVE entirely:** "documentation checklist," "same-day audit response," "verification letter same day" — fabricated, Unite does not offer these.
+
+### PDAC Consulting page (`/services/pdac`) — fresh copy (NOT verbatim from old site; old text was reference only)
+
+**Scope correction:** Unite consults on **durable medical equipment (DME) and orthotics ONLY** — NOT supplies, NOT prosthetics. (Do not use the full "DMEPOS" expansion implying all four.)
+
+**Approved copy:**
+> **PDAC Consulting — get your DME and orthotics coded right.**
+> Unite Medical helps manufacturers and suppliers identify the correct HCPCS code for their durable medical equipment (DME) and orthotics before billing Medicare. Many of these items require a coding verification review by the PDAC contractor — and claims are denied when products aren't on the PDAC Product Classification List. We guide you through verification so your products are coded correctly and audit-ready.
+> *Unite Medical makes no guarantee of reimbursement; medical necessity and payer documentation requirements remain the customer's responsibility.*
+
+**Important distinction (keep clear on the site):** PDAC **consulting** (helping OTHER companies code their DME/orthotics) is a SEPARATE offering from the fact that Unite's OWN Unite Medical bracing line carries PDAC approval. Don't conflate the two.
+
+---
+
 ## CONTENT UPGRADE: About page — Damon not in love with it; do better (`src/pages/About.jsx`)
 
 **The ask:** Rework the About page — Damon isn't happy with it. Plus specific fixes:
