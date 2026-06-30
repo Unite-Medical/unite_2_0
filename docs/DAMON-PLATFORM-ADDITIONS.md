@@ -330,6 +330,27 @@ All Damon-confirmed during 2026-06-30 review.
 
 ---
 
+## CONTENT: Contact page — corrections (Damon-approved) (`src/pages/Contact.jsx`)
+
+1. **Phone/email blocks — collapse the 4 redundant same-number blocks to 2 clean lines** (lines 128–141). Currently Sales/Support/General/Accounting all show the SAME number 833.868.6483 (redundant). Damon's structure:
+   - **Accounting & Billing** → `accounting@unitemedical.net` · **833.868.6483 ext. 3**
+   - **All other inquiries** (sales, support, general) → `support@unitemedical.net` · **833.868.6483** (general line, no extension)
+   Drop the separate `sales@` and `info@` blocks from this page. Two lines total.
+
+2. **Remove fake rep "Aidan Park"** (line 60 `owner: 'Aidan Park'`). There is NO Aidan Park rep — remove the fabricated name. ALEX: set lead owner to a real default/unassigned, or your actual routing owner.
+
+3. **Lead notification email (line 76)** currently goes to `sales@unitemedical.net` → change to **support@unitemedical.net** (per the standardize-to-support rule + dropping sales@ from the page). (Unless Alex has a real sales-inbox routing reason — confirm.)
+
+4. **SEO description (line 34)** "Sales, support, government, and billing all on 833.868.6483" — update to match the new 2-line structure (general line + accounting ext. 3).
+
+5. **Segment-tagging BUG (line 57):** logic checks `form.reason.toLowerCase().includes('dealer')` but the reason option is "Distributor program" (no "dealer"). Distributor leads fall through to 'asc' segment instead of 'distributors'. ALEX FIX: match on 'distributor', not 'dealer'.
+
+6. **Reason dropdown — align with the A5 quote-router + 3 supply states.** Current "Quote · stocked item" / "Quote · non-stocked / sourcing" should map to the same paths as A5 (source-a-brand / custom-quote / shortage-list) and the Catalog 3-state model, so leads tag consistently in HubSpot. ALEX/agent to reconcile the reason list with A5 once that's built.
+
+7. **Consistency scan:** real HubSpot + lead DB integration is good; "every inbound goes to a real person" fine; no warehouse/own-everything/landed-cost/veteran issues. Phone 833.868.6483 confirmed correct earlier.
+
+---
+
 ## M6. Classify all current stock into product categories (taxonomy)
 
 **The ask:** Group **every SKU in Unite's current catalog** into one of Unite's core product categories. Working category set:
