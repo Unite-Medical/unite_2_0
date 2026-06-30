@@ -225,7 +225,7 @@ This makes a large catalog look full and credible, every item is purchasable som
 
 **The 3 paths (starting point — refine as needed):**
 1. **Source a specific product / brand** (provider/customer RFQ — the Cato-style "find me this item") 
-2. **Private-label / bulk sourcing** (distributor / brand owner — quoting engine, FOB, MOQs)
+2. **Custom quote** — source a product to spec, the customer's label (private label) OR a Unite label (distributor / brand owner — quoting engine, FOB, MOQs). NOTE: avoid the bare term "private label" as the path name — the real service is custom sourcing + quoting where the product can carry the customer's brand OR Unite's; "Custom quote" captures that, "private label" is too narrow.
 3. **I have a shortage list** (resiliency buyer — shortage-list upload → quote)
 
 **Why / context:** One generic form makes every buyer answer irrelevant questions and hands the team an untyped lead. Routing up front = higher completion, cleaner CRM segmentation, and each customer feels the page was built for them. Ties to the Cato-style open RFQ, Quick Quote (A3), and the shortage matcher (C3). Sell capability/outcome on each path; never expose the engine's mechanism (IP rule).
@@ -309,7 +309,7 @@ Two parts:
 
 **1. People / Leadership section — explain Unite Pharma and Clyne Health.** Damon's bio mentions he "also operates Unite Pharma and Clyne Health" but the page never says what those ARE. Add a short, clear description of each (Damon-confirmed wording, kept brief to highlight his supply-chain + healthcare expertise):
 - **Unite Pharma:** A multi-state licensed wholesale pharmacy and FDA-registered third-party logistics (3PL) provider.
-- **Clyne Health:** An AI-driven precision medicine platform delivering personalized GLP-1 and longevity care.
+- **Clyne Health:** An AI-powered concierge medicine platform that unifies a patient's care team, labs, and treatment into one personalized health system.
 Consider a small "Unite family of companies" / portfolio block so a visitor understands the related ventures, not just a passing name-drop in the founder bio. Goal: reinforce Damon's expertise across supply chain + healthcare — keep it brief.
 
 **2. RegeniCool™ — always add the trademark symbol** after the word "RegeniCool" everywhere it appears on the site. On About: credentials grid "All orthotics + RegeniCool Pro" → "All orthotics + RegeniCool™ Pro". (Site-wide rule — see consistency C9.)
