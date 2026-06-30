@@ -377,8 +377,17 @@ Consistency scan: ✅ CLEAN on the warehouse footprint — already correctly sin
 
 **Header copy fix:** "Receipts. Real ones." + "Real numbers from real customers" overclaims once content is partly illustrative/anonymized. Soften so we don't assert "real" over anonymized/illustrative items (e.g., "Proven outcomes." / "The work, in plain numbers." — keep the vibe, drop the literal "real customers" assertion). Agent to finalize.
 
-### REAL flagship case #1 — TJS (Total Joint Specialists)
-Use the real, documented TJS story (ties to the TJS case-study page). **ALEX: pull a real TJS store/location photo** (not a placeholder). Blurb = the genuine TJS build (Unite built + manufactures private-label bracing + Force Therapeutics integration + direct-to-patient fulfillment from GA). Real outcome metric TBD from TJS data (use a true number or a qualitative win — do NOT fabricate).
+### REAL flagship case #1 — TJS (Total Joint Specialists) — DATA PULLED + COPY APPROVED
+Real data from the live TJS store DB (launched Apr 1 2026; pulled Jun 30 2026; source: `Damon_Test_2/TJS_Reports_2026-06-30/TJS_First90Days_Growth_CaseStudy.docx`). DECISION: lead with REVENUE GROWTH, not totals (totals are modest; store is only 90 days old). **ALEX: pull a real TJS store/location photo** (not a placeholder).
+
+**Approved card copy:**
+- Segment label: "Physician Group · Patient Recovery Store"
+- Customer: Total Joint Specialists
+- Headline stat: **+43%** · "revenue growth, launch month to month three"
+- Blurb: "Unite built Total Joint Specialists a complete, branded patient-recovery store from scratch — a 49-product catalog, private-label bracing we manufacture, and direct-to-patient fulfillment from our Georgia warehouse. In its first 90 days, revenue grew every single month — up 43% from launch to month three ($5,278 → $7,547), on a rising average order value. The surgeon's brand stays on every touchpoint; we run everything behind it."
+- Optional mini-stats (safe): "$19.3K revenue, first 90 days" · "49-product catalog, live at launch" · "Revenue up every month."
+
+**DO NOT PUBLISH (per data-pack flags — keep off the page):** monthly ORDER count (June dipped 35→31 — lead with revenue), reorder/repeat rate (tiny 6-customer sample), margin/gross-profit % (incomplete COGS). Frame catalog as "launched with 49 products" NOT "added SKUs over time" (latter is false). If asked why June revenue rose while orders dipped: AOV rose +31% — honest answer ready.
 
 ### REAL flagship case #2 — Restore Robotics savings (NEW)
 - **Stat: "$900K+"** · label "saved for hospital systems to date" (Restore Robotics remanufactured da Vinci program — real, current total savings Unite has delivered to hospitals using the program).
