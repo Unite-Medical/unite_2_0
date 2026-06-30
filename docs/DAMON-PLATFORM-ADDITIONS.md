@@ -349,6 +349,31 @@ All copy below is **Damon-approved** during the 2026-06-29/30 review.
 
 ---
 
+## CONTENT: Government page — corrections (Damon-approved) (`src/pages/Government.jsx`)
+
+**🔴 CRITICAL — veteran-status accuracy (Damon's actual situation):** Damon served honorably in the **Alabama Army National Guard (honorable discharge, DD214 on file)** but does **NOT hold VOSB or SDVOSB certification** — the VA determined he didn't meet the active-duty service requirement. RULE (strict, non-negotiable, government-facing): Unite may say **"veteran-owned" / "founded and led by a U.S. Army National Guard veteran"** — but must **NEVER claim VOSB or SDVOSB certification**, nor imply Unite holds a federal veteran set-aside. Claiming an uncertified set-aside on a gov page risks suspension/debarment.
+
+**The accurate model (Damon confirmed):** Unite/Medava partnered with an **authorized SDVOSB** for the MSPV award. The **SDVOSB partner holds the certification/set-aside; Unite is the brand/product supplier behind them.** (This is the same "brand behind the partner" model as the Procurement page.)
+
+**Fixes:**
+1. **Hero headline** — currently "Veteran-owned. On contract." → change to **"Veteran-owned. Government-ready."** (drops any implication Unite holds its own set-aside contract).
+2. **Set-Asides section** (lines ~108–111) — REPLACE with: *"Unite Medical is a veteran-owned company. Through our partnership with an authorized SDVOSB, Medava products are available to federal buyers via SDVOSB set-aside contract channels — including the MSPV BPA (36C24123A0077). Unite supplies the products; our certified partner holds the set-aside."* — REMOVE the current line "Unite Medical is a veteran-owned small business (CAGE 8MK70, SAM registered)" because "veteran-owned small business" reads as a VOSB set-aside claim. CAGE 8MK70 / SAM-registered can stay as plain facts, just not framed as a veteran set-aside.
+3. **Credentials tile "MSPV BPA · via authorized SDVOSB partner"** (line 13) — KEEP (accurate); ensure it reads that the SDVOSB is the PARTNER, not Unite.
+4. **MSPV-NG mechanism** (line 23, "via SDVOSB partner contract") — KEEP (accurate).
+5. **GSA Advantage mechanism** — Damon-provided link: https://www.gsaadvantage.gov/advantage/ws/search/advantage_search?q=0:8MEDAVA&db=0&searchType=0 — VERIFY it loads Medava products (agent could not render GSA Advantage — bot-protected; Damon to confirm in normal browser).
+6. **"Request capability statements" CTA** (gov sales desk) — wire to the NEW 2026 cap statement (`Unite_Group_Capability_Statement_2026.pdf`) once hosted, instead of a generic doc request.
+
+**Consistency scan:** otherwise clean — MSPV BPA number correct, Berry/Medava correct, no warehouse/own-everything issues. The ONLY substantive problem was the VOSB/SDVOSB overclaim, now corrected.
+
+**SITE-WIDE veteran-status sweep (found via grep — fix everywhere, same rule):**
+- `src/pages/Government.jsx` ~110 — "Unite Medical is a veteran-owned small business" → fix per above (drop the set-aside implication).
+- `src/lib/documents.js` ~27 — quote/invoice FOOTER_TEXT says "Veteran-owned (SDVOSB partner)" — acceptable IF it reads as "veteran-owned; SDVOSB is a partner," but tighten to avoid implying Unite itself is SDVOSB. Also this footer has a STALE FDA number "#3012345678" (placeholder!) — should be FDA 3015727296. FLAG for Alex.
+- `src/pages/Procurement.jsx` ~28/38/60 — already covered by the Procurement rewrite (Unite is the supplier BEHIND diverse/SDVOSB resellers, not SDVOSB itself).
+- `src/pages/About.jsx` ~31 + `src/pages/Compliance.jsx` ~21 — "MSPV BPA · Via authorized SDVOSB partner" is ACCURATE — keep.
+- General rule: "veteran-owned" OK anywhere; "veteran-owned small business," "VOSB," "SDVOSB" (applied to Unite), or any Unite-held federal set-aside = REMOVE.
+
+---
+
 ## CONTENT: Procurement page — REWRITE (premise was backwards) (`src/pages/Procurement.jsx`)
 
 **CRITICAL correction:** The live page implies **Unite itself is veteran-owned / SDVOSB with "certified diverse suppliers behind our catalog."** This is WRONG. **Unite is NOT SDVOSB and has never claimed to be.** Damon's actual intent is the INVERSE: Unite is the **product/supply-chain partner BEHIND diverse businesses** — Unite supplies the products + logistics, and **certified diverse resellers/distributors (MBE/WBE/VOSB/etc.) buy from Unite and supply the end customer**, so THEY meet their customers' supplier-diversity requirements. Unite makes ZERO diversity-status claims about itself.
@@ -457,7 +482,7 @@ Consider a small "Unite family of companies" / portfolio block so a visitor unde
 
 > This section tracks **existing copy that must change** because of decisions made in the 2026-06-29 review — separate from the forward-looking feature asks above. As Damon reviews, new contradictions get added here. **Note:** "landed cost" language is CORRECT and should stay in the sourcing/quoting flow (Quote, QuoteNew, PortalQuote, ShortageMatch, Services source-card, and all backend WMS/quoting internals) — it is only wrong when applied to stocked/wholesale goods. Don't strip it from the sourcing path.
 >
-> **WORKING STANDARD (decided 2026-06-29):** For every page Damon reviews, the agent does two things: (1) log Damon's explicit flags, AND (2) proactively scan that page's copy for contradictions with the running decisions below and add them here. Don't wait for Damon to spot each one. Recurring decision checklist to scan against: single Georgia warehouse (no Nevada/Las Vegas/Reno/two-warehouse/both-coasts); no "own/warehouse everything / zero middlemen / no brokered / no third-party" absolutes; wholesaler positioning (no landed-cost on stocked goods); "no minimums" scoped to stocked items only; segments include Hospitals/Retailers/Brand Owners; Diagnostics broken out; Restore Robotics program present; stocked-&-ready core = bracing, diagnostics, American-made PPE, syringes, supplements; **IP protection — sell capability/outcome, never expose the quoting engine's mechanism/recipe (no FDA-code/USITC-duty/LCL-vs-FCL/6-component-landed-cost/Claude-letter specifics) on customer-facing copy.**
+> **WORKING STANDARD (decided 2026-06-29):** For every page Damon reviews, the agent does two things: (1) log Damon's explicit flags, AND (2) proactively scan that page's copy for contradictions with the running decisions below and add them here. Don't wait for Damon to spot each one. Recurring decision checklist to scan against: single Georgia warehouse (no Nevada/Las Vegas/Reno/two-warehouse/both-coasts); no "own/warehouse everything / zero middlemen / no brokered / no third-party" absolutes; wholesaler positioning (no landed-cost on stocked goods); "no minimums" scoped to stocked items only; segments include Hospitals/Retailers/Brand Owners; Diagnostics broken out; Restore Robotics program present; stocked-&-ready core = bracing, diagnostics, American-made PPE, syringes, supplements; **IP protection — sell capability/outcome, never expose the quoting engine's mechanism/recipe (no FDA-code/USITC-duty/LCL-vs-FCL/6-component-landed-cost/Claude-letter specifics) on customer-facing copy.** **VETERAN STATUS — Unite is 'veteran-owned' (Damon = Army National Guard, honorable discharge, DD214) but holds NO VOSB/SDVOSB certification; NEVER claim VOSB/SDVOSB or a Unite-held federal set-aside. The SDVOSB is a PARTNER (holds the MSPV set-aside); Unite is the brand behind them.**
 
 ### C1. Homepage "OWNED INVENTORY" fact band — contradicts multiple decisions (`Homepage.jsx` ~382–444)
 
