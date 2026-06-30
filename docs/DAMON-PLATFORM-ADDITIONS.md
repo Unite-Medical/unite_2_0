@@ -207,9 +207,10 @@ This makes a large catalog look full and credible, every item is purchasable som
 - **Brand-neutral messaging:** "Don't see your brand? Just ask" — Unite can source across brands, not locked to one.
 - **Highlight all test categories covered:** COVID, flu, HIV, strep, etc. (full menu of what we can supply).
 - **Highlight supply capabilities:** wholesale; **retail (EDI, bulk orders, bulk discounts)**; **private label**; POC + OTC.
+- **Unite's OWN private-label diagnostics line (IN PROGRESS — new 2026-06-30):** Unite is in the process of developing its own private-label diagnostic tests. The page should be built to feature a Unite-branded diagnostics line alongside the brand-neutral sourcing — i.e. "we supply every major brand AND our own line." (Don't over-claim until the line is live; build the structure so it's ready to feature when it launches. Confirm launch status with Damon before publishing specific Unite-branded products.)
 - **SEO-optimized** so **retail buyers** searching for diagnostic tests find Unite and come to us.
 
-**Why / context:** Diagnostics is Unite's #2 mover and a major growth lane, especially into **retail**. A dedicated, brand-neutral, SEO-strong page targets retail buyers looking for test supply (bulk, EDI, private label) — a different and larger audience than the medical-provider segments. "Don't see your brand, just ask" reinforces the sourcing/resiliency model specifically for diagnostics. Damon explicitly wants to rank in search here to pull in new retail buyers.
+**Why / context:** Diagnostics is Unite's #2 mover and a major growth lane, especially into **retail**. A dedicated, brand-neutral, SEO-strong page targets retail buyers looking for test supply (bulk, EDI, private label) — a different and larger audience than the medical-provider segments. "Don't see your brand, just ask" reinforces the sourcing/resiliency model specifically for diagnostics. Damon explicitly wants to rank in search here to pull in new retail buyers. Unite's forthcoming **own private-label diagnostics line** adds a second pillar: not just sourcing others' brands, but offering Unite-branded tests (higher margin, deeper differentiation).
 
 ### M5. Lead with category strength (Bracing + Diagnostics as hero "Stocked & Ready")
 
