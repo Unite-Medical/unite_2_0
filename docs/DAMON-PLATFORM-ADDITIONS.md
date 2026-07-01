@@ -919,3 +919,28 @@ Went through all 6 FAQs:
 4. **"Do you support EDI?" (850/810/856)** — CONFIRMED TRUE/live by Damon. Keep as-is.
 5. **"How does PDAC approval work?" — 2 fixes:** (a) **RegeniCool™** trademark (C9): "RegeniCool Pro" → "RegeniCool™ Pro". (b) The FAQ promises a downloadable PDAC letter on each product page — Damon confirms **the letters DO exist on the current site**, so this is NOT a fabrication; it's a MIGRATION/WIRING task. 🔴 ALEX: ensure the per-product PDAC letter download is actually wired/live on the new site (letters exist on current site — bring them over). Ties to the PDAC page CTA + RegeniCool™ Pro listing that still needs creating.
 6. **🔴 Category filters vs. FAQ coverage gap (Damon: build out the rest).** The page shows 7 category filters ("Ordering & MOQ, Shipping & freight, Billing & terms, Returns, Compliance, Integrations & EDI, Private label") but only 6 FAQs exist, all in ONE flat list — filters are non-functional AND most categories have no content. ALEX: (a) write/build out real FAQs for the remaining sections (Returns, Compliance, Private label, etc. — Damon approved expanding these), and (b) wire the category filters to actually filter by section. Keep all answers to the truthfulness standard (credit-based terms, single GA warehouse, EDI live, PDAC letters real, RegeniCool™).
+
+### CONTENT: Legal/Policy pages — corrections + migration (Damon-approved) (`src/pages/legal/Legal.jsx`)
+
+**🔴 ALEX — MIGRATION + COMPLIANCE REVIEW (top priority for legal pages):** Pull ALL the legal documents from the OLD site and move them to the new site. The current docs are roughly **10 years old** and may need updating. Run a **compliance check** to confirm Unite is properly covered (privacy, terms, returns, shipping, BAA, etc.). **Confirm the business address is correct** across all docs (HQ: 1487 Trae Lane, Lithia Springs, GA 30122). Treat the copy below as interim fixes; the authoritative move is migrating + legally reviewing the real documents.
+
+**Privacy (`/privacy`):**
+1. **🔴 CONFIRM WITH ALEX:** "SOC 2 Type II environments" (SEO desc + section) and "AES-256 encrypted backups" — confirm these are accurate (if it's the hosting provider that's SOC 2, word as "hosted in SOC 2 Type II data centers"; don't claim Unite itself is SOC 2 unless true).
+2. **🐛 BUG:** "our billing system Online, Stripe" (~56) reads broken — "QuickBooks Online" was mangled to just "Online." Fix to "QuickBooks Online and Stripe."
+3. "No PHI without a signed BAA" — consistent with the Compliance-page BAA confirmation. Keep.
+
+**Terms (`/terms`):**
+4. **Governing law (~83) — CHANGE:** currently "State of Georgia, exclusive venue in Douglas County" → **"State of Georgia, exclusive venue in Fulton County."** (Damon corrected: GA, Fulton County.)
+5. **Payment Terms (~79):** keep "Net-30 / Net-60 at our discretion based on credit review; past-due 1.5%/month." **DO NOT advertise Net-90 on the site** (Damon — even though offered to some clients, don't publish it).
+
+**Returns (`/returns`) — 🔴 POLICY CORRECTION (Damon):** Update to Unite's actual policy: **No returns EXCEPT manufacturer defect. If an item is UNOPENED, returns are allowed within 30 days of the original PO.** Rewrite the returns sections to reflect this — remove anything implying broader/easier returns. Keep the sterile/single-use + patient-safety framing consistent. (Current copy says "most products may be returned within 30 days in unopened original packaging" + "damaged/wrong replaced within 72 hrs" — tighten to: manufacturer-defect OR unopened-within-30-days-of-PO only.) Verify against the migrated real return doc.
+
+**Shipping (`/shipping`) — 🔴 REMOVE ALL PRICING + SPECIFICS (Damon):**
+6. **Remove ALL shipping prices** from the new site — no "free ground over $500," no "expedited from $38," no "overnight from $95," no "$95 same-day flat." Unite does NOT currently offer blanket free shipping over $500.
+7. **Remove the Atlanta-metro same-day specifics** — that's old-site content.
+8. **Do NOT mention shipping lead times** — remove "median delivery: 4 business days" and any transit-time claims.
+9. **What shipping CAN say:** Unite offers **same-day order processing and shipping** per the established standard (orders before 2pm EST ship same day, from the Georgia warehouse, to all 50 states + territories). Keep it to that; no prices, no lead times, no Atlanta specifics.
+10. **🔴 "dealers" ×2 (~128-129)** → "distributors" (dealer→distributor cleanup): "For dealers and pharmacies" → "distributors and pharmacies"; "our dealer team" → "distributor team."
+11. "International: currently US-only" — consistent (ships to 50 states + territories). Keep.
+
+**Also:** the "prepaid return label for Net-30 vs. self-generate for card customers" detail — reconcile with the corrected returns policy (manufacturer-defect / unopened-30-day only) during Alex's rewrite.
