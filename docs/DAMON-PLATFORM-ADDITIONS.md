@@ -797,3 +797,23 @@ CLEAN — well-built, no fake stats/testimonials, no warehouse/Nevada/veteran/me
 ### CONTENT: EMS segment page — corrections (`src/pages/segments/SegmentEMS.jsx`)
 
 CLEAN — no fake stats/testimonials, no warehouse/Nevada/veteran/mechanism/dealer issues. "If you need it in the field, we can source it" is on-brand (sourcing/resiliency). Tags appropriate for EMS. No changes needed.
+
+### CONTENT + BUILD: Shortage-list matcher — corrections + major feature expansion (Damon-approved) (`src/pages/ShortageMatch.jsx`, `src/lib/matching.js`)
+
+**Page model is honest** (matches against Unite's OWN catalog + routes rest to sourcing — NOT a fake third-party live-stock view). But Damon wants a significant expansion + integrity fixes:
+
+1. **🔴 Match against ALL 3 supply-chain options, not just in-stock (Damon — core requirement).** Today the matcher checks stocked inventory. It must check all three of Unite's supply states (ties to the Catalog 3-state model §5.1): (1) **In Stock** (real available inventory — on-hand − reserved, per B2), (2) **Source/Resiliency** — Unite's product lists from **vetted manufacturers in the custom quoting engine**, and (3) **Available to Quote** (open RFQ). Do NOT limit to in-stock. A line should match if Unite can supply it via ANY of the three paths.
+
+2. **🔴 "IN STOCK" badge must read REAL available inventory** (not mere catalog presence) — same fix as bug B2. Only show "IN STOCK" when genuinely in stock; otherwise show the correct supply-state badge (Source / Quote).
+
+3. **🆕 STRATEGIC — build a cross-reference SKU database from uploaded shortage lists (Damon, high-value).** When clients upload shortage lists, Unite should capture and build a **cross-reference SKU database** (customer's item ↔ Unite's stocked/manufacturer equivalent). Damon: "this is a great way for Unite to build a database of cross-reference SKUs — that's been a MISSING PIECE to our manufacturer product sheet." Every uploaded list becomes training data that makes the matcher smarter and enriches the manufacturer product data. **→ NOTE FOR LATER (Damon flagged, don't lose):** add a cross-reference-SKU field/table to the manufacturer product sheet / vendor data model (ties to the quoting-engine vendor fields + vendor portal). This is a durable data-moat asset.
+
+4. **🔴 Equivalents guardrails (medical safety — Damon).** "EQUIVALENTS" suggestions must NOT be loose keyword matches — wrong equivalents on a medical item are a real risk. Guardrails needed. Damon's approach: **ask/require the client to upload or provide their list of ACCEPTABLE cross-SKUs** — i.e. get the customer's up-front approval on which substitutes they'll accept. This (a) gives Unite approved, workable options, (b) removes the liability of Unite guessing an equivalent, and (c) feeds the cross-SKU database with customer-validated pairs. Add a field/step for the client to specify acceptable substitutes.
+
+5. **→ NOTE FOR ALEX (research):** investigate whether there are **purchasable cross-reference SKU database lists in the medical space** (commercial cross-reference/equivalency data — e.g. GUDID-based, distributor cross-ref files, or third-party medical product equivalency datasets) that Unite could license to seed the cross-SKU database with real data rather than building entirely from scratch.
+
+6. **Copy tightening (until 1–2 are wired, keep claims airtight):**
+   - SEO title (~97) "Match your shortage list against live stock" → **"Match your shortage list against our full supply chain — instantly."** (reflects all 3 options, not just stock)
+   - Hero sub (~170) + SEO desc (~98): reword from "match every line against stocked inventory in real time, surface in-stock equivalents" → **"We instantly check each line against our stock, our vetted manufacturer network, and our sourcing desk — then come back with what we can supply and a quote for the rest."** (honest across all 3 paths; only says "in stock" when real)
+
+7. **Keep (strong/honest):** non-stocked → "WE SOURCE IT" → quoting; "landed-cost pricing from vetted manufacturer network" (correct in sourcing flow); professional-email capture; "list never shared"; the no-EDI/no-formatting UX is a genuinely strong resiliency play.
