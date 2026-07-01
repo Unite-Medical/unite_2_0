@@ -883,3 +883,10 @@ CLEAN — no fake stats/testimonials, no warehouse/Nevada/veteran/mechanism/deal
 - **Headline "Help us run like a soldier."** — Damon didn't object; can keep the veteran-owned tone, but pair it with the simplified contact framing. Agent to write clean short copy: e.g. eyebrow "CAREERS," a brief "We're a veteran-owned medical supply + supply-chain company, always interested in great people — engineering, sales, ops, compliance. Don't see a posting? Reach out anyway," + one contact CTA.
 - **SEO/prerender:** update the careers meta to drop "three coasts"/headcount implications; keep "veteran-owned, remote-friendly" if remote roles are genuinely offered (confirm), else just "veteran-owned."
 - Ties to the broader truthfulness standard + single-Georgia-location rule.
+
+### CONTENT: Blog / Field Notes page — mostly OK (`src/pages/Blog.jsx`, seed data)
+
+- **Blog is intentionally EMPTY** — `SAMPLE_BLOG_POSTS` in `src/lib/seed.js` was deliberately cleared (placeholder articles removed; "real content being coordinated with Jill"). Page renders no posts, category filters + JSON-LD still work. This is the honest state — GOOD, no fabricated posts. No fix needed now.
+- **When real posts land:** confirm authorship is real (the AdminCMS default author is literally "You" — real posts should have a real byline). Keep the same truthfulness standard (no fabricated stats/claims in articles).
+- **Empty-state polish (optional):** with zero posts, the page shows only the hero + filters + nothing. Consider a friendly empty state ("Field notes coming soon — subscribe / check back") so it doesn't look broken. Low priority.
+- **Consistency:** hero "written by people who do the work" / "from the warehouse floor" is fine. No warehouse-count/veteran/mechanism issues.
