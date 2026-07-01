@@ -793,3 +793,7 @@ Page is mostly CLEAN — already rebuilt to remove prior fake-stat/fake-testimon
 CLEAN — well-built, no fake stats/testimonials, no warehouse/Nevada/veteran/mechanism/dealer issues. "PDAC-approved orthotics" tag consistent (Unite Medical line). "Same-day" accurate (tags are stocked core). Only optional enhancement:
 1. **(Optional) Link the diagnostics tags** ("OTC rapid tests," "Point-of-care diagnostics") to the future dedicated Diagnostics page (M4) once built — strong tie-in for the pharmacy/front-of-store audience and Unite's #2 mover. Low priority.
 2. **Prerender meta** — review for the standard sweep (assumed clean; confirm during Alex's meta pass).
+
+### CONTENT: EMS segment page — corrections (`src/pages/segments/SegmentEMS.jsx`)
+
+CLEAN — no fake stats/testimonials, no warehouse/Nevada/veteran/mechanism/dealer issues. "If you need it in the field, we can source it" is on-brand (sourcing/resiliency). Tags appropriate for EMS. No changes needed.
