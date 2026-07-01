@@ -890,3 +890,22 @@ CLEAN — no fake stats/testimonials, no warehouse/Nevada/veteran/mechanism/deal
 - **When real posts land:** confirm authorship is real (the AdminCMS default author is literally "You" — real posts should have a real byline). Keep the same truthfulness standard (no fabricated stats/claims in articles).
 - **Empty-state polish (optional):** with zero posts, the page shows only the hero + filters + nothing. Consider a friendly empty state ("Field notes coming soon — subscribe / check back") so it doesn't look broken. Low priority.
 - **Consistency:** hero "written by people who do the work" / "from the warehouse floor" is fine. No warehouse-count/veteran/mechanism issues.
+
+### CONTENT + BUILD: Resources (HCPCS reference) page — WIRE TO REAL DATA (Damon-approved: Option A) (`src/pages/Resources.jsx`)
+
+**Problem:** the page is a half-built feature dressed as finished — it OVERPROMISES. Fake/non-functional elements live today:
+- "Search 4,820 codes" (~39) is a static div, NOT a working search input.
+- "Download PDF" button (~41) has no handler — downloads nothing.
+- Family counts (~47: L 1240 / A 820 / E 380 / K 290 / V 180 / T 420) and "4,820 codes" appear FABRICATED — the table only has 8 hardcoded rows (~10-19).
+- Per-code "SKUS" counts (e.g. L1832→48, A4649→340) appear invented; "VIEW SKUS →" (~69) and family filters are styled clickable but have NO handlers.
+- "Current through the April 2026 CMS update" (~35) — date claim to verify/make dynamic.
+
+**🔴 DECISION — Damon chose Option A: BUILD IT REAL (don't ship the current fake, don't cosmetically patch).** ALEX:
+1. Wire to the **real public HCPCS Level II dataset** (CMS publishes it) — real codes + descriptions + families with TRUE counts.
+2. Make **search actually work** (functional input filtering the dataset).
+3. Cross-link each code to **real Unite catalog SKUs** with true per-code SKU counts; "VIEW SKUS →" navigates to filtered catalog results.
+4. Make **family filters** functional.
+5. Make **"Download PDF"** produce a real PDF (or remove the button until it does).
+6. Make the **"current through … CMS update"** date real/dynamic (tie to the dataset version).
+**Why (agent + Damon):** it's a genuine SEO magnet (procurement buyers search HCPCS codes) and a STICKY utility (working code→SKU reference gets bookmarked). But until wired, the fake search/download/counts must NOT ship as-is — worse than no page, since a buyer who clicks a dead "Download PDF" loses trust in the real claims too.
+7. **`/resources/coding`** — review alongside (likely same pattern); apply the same real-data standard.
