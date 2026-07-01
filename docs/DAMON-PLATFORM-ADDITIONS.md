@@ -787,3 +787,9 @@ Page is mostly CLEAN — already rebuilt to remove prior fake-stat/fake-testimon
 1. **Hero sub (~36) "sourced, stocked, and shipped — same day"** — light reword so "same day" doesn't imply same-day on SOURCED items (sourcing takes longer than stocked). e.g. **"Procedure-specific products — stocked and shipped same-day, with sourcing for everything else. We supply ASCs of any size, with no minimum orders on stocked items."** Low priority; the "no minimums on stocked items" clause already keeps it mostly honest.
 2. **Prerender meta (~75-76)** — CLEAN ("Case-cart-ready supply programs… same-day shipping"). No change.
 3. **Consistency:** no warehouse/Nevada/veteran/mechanism/dealer issues; no fake stats. Good shape.
+
+### CONTENT: Pharmacy segment page — corrections (Damon-approved) (`src/pages/segments/SegmentPharmacy.jsx`)
+
+CLEAN — well-built, no fake stats/testimonials, no warehouse/Nevada/veteran/mechanism/dealer issues. "PDAC-approved orthotics" tag consistent (Unite Medical line). "Same-day" accurate (tags are stocked core). Only optional enhancement:
+1. **(Optional) Link the diagnostics tags** ("OTC rapid tests," "Point-of-care diagnostics") to the future dedicated Diagnostics page (M4) once built — strong tie-in for the pharmacy/front-of-store audience and Unite's #2 mover. Low priority.
+2. **Prerender meta** — review for the standard sweep (assumed clean; confirm during Alex's meta pass).
