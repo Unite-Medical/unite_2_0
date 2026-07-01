@@ -726,4 +726,17 @@ Recurring themes to grep the WHOLE site for before launch, since today's review 
 
 **Terms (~24):** "Invoice auto-creates, Net-30 with approved credit" → Damon offers terms pending credit approval, and sometimes 60- or 90-day terms to certain clients. Reword to make it about **credit availability, not a fixed 30**: **"Invoice auto-creates; flexible terms available with approved credit."** (Drop the hard "Net-30.")
 
-**Confirmed OK / clean:** "Same-day orders by 2pm EST," "100% US + territories," "0 MOQ · stocked items" (correctly scoped), two-way CTA (browse in-stock / quote non-stock). Net terms offered = confirmed (credit-approval based).
+**Confirmed OK / clean:** "Same-day orders by 2pm EST," "100% US + territories," "0 MOQ · stocked items" (correctly scoped), two-way CTA (browse in-stock / quote non-stock). Net terms offered = confirmed (credit-approval based). **Fill rate: use "99%+ FILL RATE" (Damon confirmed).**
+
+### CONTENT: PDAC Consulting page — corrections (Damon-approved) (`src/pages/ServicePDAC.jsx`)
+
+1. **Scope: "DMEPOS" → "DME and orthotics" everywhere** (SEO title ~38, description ~40, hero sub ~49). Unite consults on DME + orthotics ONLY — NOT prosthetics or supplies. "DMEPOS" overstates scope. (Same scope decision as the Services PDAC copy.)
+2. **RegeniCool™ trademark (~67):** "RegeniCool Pro" → **"RegeniCool™ Pro"** (C9).
+3. **"All Unite Medical orthotics and our RegeniCool™ Pro product line are PDAC credentialed" (~67-69)** — KEEP (correctly scoped to Unite Medical line); just add ™.
+4. **"95%+ success rate on targeted code submissions" (~84)** — KEEP (Damon OK). Confident claim on submissions Unite chooses to target.
+5. **Hero sub "difference between getting paid and eating the cost"** — KEEP (Damon OK).
+6. **Service = full submission management** (prepare + submit + resubmit) — CONFIRMED accurate.
+7. **🔴 FIX overclaim — STEP 3 "Decision & Resubmission" (~28-31):** current copy "If PDAC requests additional documentation or assigns an alternate code, we handle the revision and resubmit until you have your code." OVERSTATES — Unite does NOT control PDAC or the code PDAC assigns. Reword to reflect that Unite manages the revision/resubmission process but the decision/code is PDAC's. Approved rewrite: **"If PDAC requests additional documentation, we handle the revision and resubmit. Coding decisions rest with PDAC — we manage the process to give your product its best shot at the right code."** (agent to finalize tone; the key fix: don't promise "until you have your code" / don't imply we control the assigned code).
+8. **CTA wiring (~90-92):** "Browse PDAC-approved products →" currently → `/catalog?filter=pdac`. Damon: drive the client to **Unite's braces + the RegeniCool™ Pro listing** specifically. NOTE: the **RegeniCool™ Pro listing does NOT exist yet** — ALEX must create the RegeniCool™ Pro product listing, then point this CTA at the braces category + that listing. (Ties to Services PDAC band stat #3 "PDAC approval letter downloadable per product page" and the L-code-on-listing build.)
+
+**Consistency:** old unverifiable volume/pricing/rebate claims already removed (per file header) — good. Unite Medical PDAC scoping correct.
