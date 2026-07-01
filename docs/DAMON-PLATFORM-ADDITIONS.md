@@ -780,3 +780,10 @@ Recurring themes to grep the WHOLE site for before launch, since today's review 
 - **~56 `/services` description:** "…dealer programs…" → "…distributor programs…" (part of the dealer→distributor cleanup).
 - **~70-72 `/services/private-label`:** title "Private labeling" + desc are OK; ensure any "manufactures" phrasing site-wide reflects manufacturer-direct, not owned factories.
 - **GENERAL (new scan rule):** the prerender.mjs meta layer must be reviewed alongside each page — it carries the customer-facing `<title>`/description search engines + social show. Sweep it for the same standards (warehouse, manufacturing-ownership, dealer, mechanism, veteran).
+
+### CONTENT: ASC segment page — corrections (Damon-approved) (`src/pages/segments/SegmentASC.jsx`)
+
+Page is mostly CLEAN — already rebuilt to remove prior fake-stat/fake-testimonial content. Only item:
+1. **Hero sub (~36) "sourced, stocked, and shipped — same day"** — light reword so "same day" doesn't imply same-day on SOURCED items (sourcing takes longer than stocked). e.g. **"Procedure-specific products — stocked and shipped same-day, with sourcing for everything else. We supply ASCs of any size, with no minimum orders on stocked items."** Low priority; the "no minimums on stocked items" clause already keeps it mostly honest.
+2. **Prerender meta (~75-76)** — CLEAN ("Case-cart-ready supply programs… same-day shipping"). No change.
+3. **Consistency:** no warehouse/Nevada/veteran/mechanism/dealer issues; no fake stats. Good shape.
