@@ -756,3 +756,12 @@ Recurring themes to grep the WHOLE site for before launch, since today's review 
 4. **Wholesale card "No minimums on stocked items" (~34)** — KEEP (correctly scoped).
 5. **Hero "Your catalog. Our import desk." + "logistics partner, not a competitor"** — KEEP (strong).
 6. **Consistency:** no warehouse/Nevada issues on this page.
+
+**🔴 SITE-WIDE "dealer" → "distributor" cleanup (Damon flagged — the page was renamed but "dealer" survived in the SEO/prerender + misc layers).** The customer-facing program is "Distributor Program," but stale "dealer" language is still live in these spots:
+- **`scripts/prerender.mjs` ~67-68** — the prerendered `<title>` is literally **"Dealer & distributor program"** (this is the title Damon saw) + description "regional medical supply dealers and distributors." → retitle to **"Distributor Program · Unite Medical"** + update description to drop "dealer."
+- **`scripts/prerender.mjs` ~56** — services description "Wholesale distribution, PDAC consulting, dealer programs, and private labeling…" → "…distributor programs…"
+- **`src/pages/legal/Legal.jsx` ~128-129** — "For dealers and pharmacies, we drop-ship…" and "Talk to our dealer team about white-label…" → "distributors," "distributor team."
+- **`src/pages/SurplusMarket.jsx` ~5** — "Buyers (clinics, dealers, exporters)" → "distributors."
+- **Admin/pricing internals** (`AdminAnalytics.jsx` "Regional dealers", `AdminMarginPolicy.jsx` "regional dealers", `marginPolicy.js`, `pricing.js` comments, `QuoteNew.jsx` "Mid ASC / Dealer") — INTERNAL, lower priority, but recommend aligning to "distributor" for consistency. Not customer-facing, so optional.
+- Note: `SegmentDealers.jsx` component NAME can stay (internal), but its content already uses "distributors" correctly. The `/services/dealer` and `/pages/dealer-program` → `/services/distributors` redirects (vercel.json) are fine to keep for old-link SEO.
+- ALEX: after edits, re-run the prerender so the static title/meta regenerate.
