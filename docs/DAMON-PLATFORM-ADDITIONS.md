@@ -862,3 +862,13 @@ CLEAN — no fake stats/testimonials, no warehouse/Nevada/veteran/mechanism/deal
 6. **Fix "dealers" (~5 comment / any UI)** → "distributors" per the site-wide dealer→distributor cleanup (already logged).
 
 **Why (Damon):** Unite's value is the TECHNOLOGY + the network that connects excess supply to willing demand — not warehousing dead stock and hoping for a buyer. Broker model = capital-light, fee up front, no speculative inventory risk; with an explicit OPTION to buy/sell direct when a SKU is genuinely worth owning.
+
+**FEE STRUCTURE (agent recommendation, Damon-approved) — tiered, not flat:**
+- **10–15%** on straightforward in-date, easy-to-move lots (e.g. medical→medical where the buyer was easy to find — Unite mostly just connected).
+- **20–30%** on hard-to-place inventory (expired, needs a non-medical / vet / research / export channel, or regulatory hoops) — here Unite isn't just connecting, it's CREATING the only viable exit for product the seller would otherwise pay to destroy, so the value created (and fee) is higher.
+- **Minimum fee floor** (~$250–500/transaction) so small deals still cover the tech/effort.
+- Principle: the fee scales with how much value Unite actually created (ease of finding the buyer + how much of a market Unite had to make). Benchmarks: pure brokerage/finder 5–15%; B2B liquidation 10–20%; secondary/surplus medical + hard-to-move goods 20–35%.
+
+**GUARDRAILS (agent-flagged, Damon-approved — build/legal must address before launch):**
+1. **Disintermediation on REPEAT business.** Up-front fee protects deal #1, but once buyer & seller know each other, deal #2 can route around Unite. Mitigations: keep identities masked until the fee clears (already the plan for deal #1), AND make the platform itself sticky (logistics, compliance docs, payment handling, the buyer network) so going around Unite is more hassle than value. The fee protects the transaction; the value-add protects the relationship.
+2. **Regulatory / liability on expired + regulated goods.** Brokering expired medical products into non-medical/vet/research/export channels has real rules (expired sterile devices must NOT re-enter patient care; some exports need clearance; "research use only" labeling). As a pure connector Unite's exposure is lower than a reseller's, but REQUIRE: (a) terms placing compliance responsibility on buyer + seller, (b) channel guardrails in the system (e.g. an expired lot cannot be purchased by a medical-use buyer), (c) legal review before launch. This is why the broker model (vs. taking title) is also the safer model.
