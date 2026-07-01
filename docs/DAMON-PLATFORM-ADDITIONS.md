@@ -740,3 +740,19 @@ Recurring themes to grep the WHOLE site for before launch, since today's review 
 8. **CTA wiring (~90-92):** "Browse PDAC-approved products →" currently → `/catalog?filter=pdac`. Damon: drive the client to **Unite's braces + the RegeniCool™ Pro listing** specifically. NOTE: the **RegeniCool™ Pro listing does NOT exist yet** — ALEX must create the RegeniCool™ Pro product listing, then point this CTA at the braces category + that listing. (Ties to Services PDAC band stat #3 "PDAC approval letter downloadable per product page" and the L-code-on-listing build.)
 
 **Consistency:** old unverifiable volume/pricing/rebate claims already removed (per file header) — good. Unite Medical PDAC scoping correct.
+
+### CONTENT: Distributor Program page — corrections (Damon-approved) (`src/pages/ServiceDistributors.jsx`)
+
+1. **🔴 Custom Sourcing card (~42) — remove mechanism leak + "real-time" overclaim** (IP rule + C3). "Real-time pricing, landed cost, compliance verified." → **"Need products we don't stock? Use our quoting engine to source from our vetted manufacturer network — get an all-in landed price with compliance handled."**
+
+2. **Reciprocal catalog exposure = OPTION, not requirement (Damon flag).** Both directions of catalog sharing must read as optional: (a) listing the distributor's products in Unite's catalog, and (b) offering Unite's products to the distributor's customers. Reword cards 01 & 02 so this is clearly opt-in / distributor-controlled.
+   - **Card 01 · 3PL & Warehousing — REPLACE:** "We stock and ship your products from our facilities — your inventory lives in our warehouse and ships on your schedule, like it's your own. Optionally, list your products in our catalog to reach new buyers. Manage it all from your own distributor dashboard: stock levels, orders, shipments, and reporting, as if you owned the warehouse."
+   - **Card 02 · Drop-Ship Integration — REPLACE:** "Integrate our catalog into your site and we fulfill on your behalf — blind-shipped, discreetly, under your brand. Your customers never see us. Offering our catalog to your customers is optional — you control what you list and what stays private. Track every order from your distributor dashboard in real time."
+
+3. **🆕 Showcase the custom Distributor Dashboard (Damon ask — highlight as a differentiator).** Add a dedicated card (recommend a 5th card or a highlighted band) selling the dashboard: distributors manage their business "as if they owned the warehouse." Approved copy:
+   > **Run your business like you own the warehouse.** Every distributor gets a custom dashboard to manage inventory, place and track orders, handle drop-ship and blind-ship fulfillment, pull reporting, and control exactly which products you list — and which of ours you offer your customers. Full visibility, full control, zero warehouse overhead.
+   (ALEX: this maps to the existing DistributorPortal — `/distributor` + sub-routes. Link the card CTA to a "See the distributor dashboard" demo/contact or the portal login as appropriate.)
+
+4. **Wholesale card "No minimums on stocked items" (~34)** — KEEP (correctly scoped).
+5. **Hero "Your catalog. Our import desk." + "logistics partner, not a competitor"** — KEEP (strong).
+6. **Consistency:** no warehouse/Nevada issues on this page.
