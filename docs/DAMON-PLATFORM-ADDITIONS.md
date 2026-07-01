@@ -909,3 +909,13 @@ CLEAN — no fake stats/testimonials, no warehouse/Nevada/veteran/mechanism/deal
 6. Make the **"current through … CMS update"** date real/dynamic (tie to the dataset version).
 **Why (agent + Damon):** it's a genuine SEO magnet (procurement buyers search HCPCS codes) and a STICKY utility (working code→SKU reference gets bookmarked). But until wired, the fake search/download/counts must NOT ship as-is — worse than no page, since a buyer who clicks a dead "Download PDF" loses trust in the real claims too.
 7. **`/resources/coding`** — review alongside (likely same pattern); apply the same real-data standard.
+
+### CONTENT: Support / FAQ page — corrections (Damon-approved) (`src/pages/Support.jsx`, `src/data/faqs.js`)
+
+Went through all 6 FAQs:
+1. **"Minimum order quantities?"** — CLEAN (no MOQ on stocked items, correctly scoped). Keep.
+2. **"How fast do you ship?"** — CLEAN (same-day <2pm EST, single GA warehouse, 50 states + territories). Keep.
+3. **"Do you bill net-30?" — REVISE (Damon-confirmed).** Current: "Net-30 available for approved accounts. New accounts start with credit card at checkout. Net-60 on request for gov/public." → Update to Damon's actual policy: **"New accounts start with credit card, wire, or ACH. Terms (Net-30 and, for qualifying/government accounts, Net-60 or Net-90) require prior credit approval."** (Consistent with the Distribution-page credit-based-terms fix.)
+4. **"Do you support EDI?" (850/810/856)** — CONFIRMED TRUE/live by Damon. Keep as-is.
+5. **"How does PDAC approval work?" — 2 fixes:** (a) **RegeniCool™** trademark (C9): "RegeniCool Pro" → "RegeniCool™ Pro". (b) The FAQ promises a downloadable PDAC letter on each product page — Damon confirms **the letters DO exist on the current site**, so this is NOT a fabrication; it's a MIGRATION/WIRING task. 🔴 ALEX: ensure the per-product PDAC letter download is actually wired/live on the new site (letters exist on current site — bring them over). Ties to the PDAC page CTA + RegeniCool™ Pro listing that still needs creating.
+6. **🔴 Category filters vs. FAQ coverage gap (Damon: build out the rest).** The page shows 7 category filters ("Ordering & MOQ, Shipping & freight, Billing & terms, Returns, Compliance, Integrations & EDI, Private label") but only 6 FAQs exist, all in ONE flat list — filters are non-functional AND most categories have no content. ALEX: (a) write/build out real FAQs for the remaining sections (Returns, Compliance, Private label, etc. — Damon approved expanding these), and (b) wire the category filters to actually filter by section. Keep all answers to the truthfulness standard (credit-based terms, single GA warehouse, EDI live, PDAC letters real, RegeniCool™).
