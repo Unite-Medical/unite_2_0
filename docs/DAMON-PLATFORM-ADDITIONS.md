@@ -709,3 +709,21 @@ Recurring themes to grep the WHOLE site for before launch, since today's review 
 ---
 
 *More additions to come — Damon is continuing this list.*
+
+---
+
+## BATCH 2 — Services sub-pages, Segment pages, sourcing/resiliency, content & legal
+
+### CONTENT: Distribution service page — corrections (Damon-approved) (`src/pages/ServiceDistribution.jsx`)
+
+🔴 Nevada/two-warehouse bug is live in 4 spots here — fix all (single Lithia Springs, GA warehouse):
+1. **SEO title (~31):** "Distribution — 2 US warehouses, same-day shipping, nationwide coverage" → **"Distribution — Georgia warehouse, same-day shipping, nationwide coverage."**
+2. **Hero title (~41):** "Your *forward* warehouse." ("forward warehouse" implies distributed network) → reword, e.g. **"One warehouse. Every dock."** (match Locations voice) — agent to finalize.
+3. **Hero sub (~42):** "Two US warehouses, one routing engine. We stock to your rolling 30-day run rate, not last year's forecast." → **"One Georgia warehouse, tuned to your rolling 30-day run rate — not last year's forecast."** (drops two-warehouse + the now-nonsensical routing-engine line)
+4. **STEPS (~21):** "Routing engine picks nearest warehouse with full fill" → **"Order routed and allocated for a complete, single-shipment fill."** (no "nearest warehouse" with one location)
+
+**Fill-rate stat (~15):** "98.6% FILL RATE" is fabricated but Damon confirms Unite fills at a genuinely very high rate — OK to keep a strong fill-rate claim. Recommend rounding to **"99%+ FILL RATE"** (avoids false-precision of a decimal that implies a measured metric). [Damon to pick 99%+ vs keep 98.6%.]
+
+**Terms (~24):** "Invoice auto-creates, Net-30 with approved credit" → Damon offers terms pending credit approval, and sometimes 60- or 90-day terms to certain clients. Reword to make it about **credit availability, not a fixed 30**: **"Invoice auto-creates; flexible terms available with approved credit."** (Drop the hard "Net-30.")
+
+**Confirmed OK / clean:** "Same-day orders by 2pm EST," "100% US + territories," "0 MOQ · stocked items" (correctly scoped), two-way CTA (browse in-stock / quote non-stock). Net terms offered = confirmed (credit-approval based).
