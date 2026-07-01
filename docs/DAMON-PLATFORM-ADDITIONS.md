@@ -765,3 +765,18 @@ Recurring themes to grep the WHOLE site for before launch, since today's review 
 - **Admin/pricing internals** (`AdminAnalytics.jsx` "Regional dealers", `AdminMarginPolicy.jsx` "regional dealers", `marginPolicy.js`, `pricing.js` comments, `QuoteNew.jsx` "Mid ASC / Dealer") — INTERNAL, lower priority, but recommend aligning to "distributor" for consistency. Not customer-facing, so optional.
 - Note: `SegmentDealers.jsx` component NAME can stay (internal), but its content already uses "distributors" correctly. The `/services/dealer` and `/pages/dealer-program` → `/services/distributors` redirects (vercel.json) are fine to keep for old-link SEO.
 - ALEX: after edits, re-run the prerender so the static title/meta regenerate.
+
+### CONTENT: Private Label & Manufacturing page — corrections (Damon-approved) (`src/pages/ServicePrivateLabel.jsx`)
+
+1. **🔴 Manufacturing-claim accuracy (~14).** Card 01 says "We manufacture domestically and overseas across vetted facilities" — implies Unite OWNS manufacturing plants. Reality (per cap-statement standard): Unite is **manufacturer-DIRECT / works with vetted manufacturers**, does not own factories. REPLACE with: **"Diagnostics, PPE, orthotics — produced under your brand through our network of vetted domestic and overseas manufacturers, with the QA paperwork to back it up."**
+2. **"Request samples" CTA (~57)** — KEEP (Damon default; provides samples for private-label inquiries).
+3. **Diagnostics private-label** (card 01 lists Diagnostics) — fine; ties to the forthcoming Unite private-label diagnostics line (M4).
+4. **Hero "Your brand. Our supply chain." + TJS as proof** — KEEP (strong, ties to Portfolio TJS flagship).
+5. **White-label storefront card (~19)** — accurate to the TJS playbook. KEEP.
+6. **Consistency:** no warehouse/Nevada/veteran/mechanism issues on the page body.
+
+**🔴 PRERENDER/SEO meta fixes (scripts/prerender.mjs) — same manufacturing overclaim + dealer language in the SEO layer:**
+- **~108 `/portfolio` description:** "The brands and product lines Unite Medical **manufactures**, imports, and distributes." → drop/soften "manufactures" (Unite doesn't own manufacturing) → e.g. "The brands and product lines Unite Medical produces (via vetted manufacturers), imports, and distributes." or simpler "…Unite Medical brings to market."
+- **~56 `/services` description:** "…dealer programs…" → "…distributor programs…" (part of the dealer→distributor cleanup).
+- **~70-72 `/services/private-label`:** title "Private labeling" + desc are OK; ensure any "manufactures" phrasing site-wide reflects manufacturer-direct, not owned factories.
+- **GENERAL (new scan rule):** the prerender.mjs meta layer must be reviewed alongside each page — it carries the customer-facing `<title>`/description search engines + social show. Sweep it for the same standards (warehouse, manufacturing-ownership, dealer, mechanism, veteran).
