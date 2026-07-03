@@ -944,3 +944,34 @@ Went through all 6 FAQs:
 11. "International: currently US-only" — consistent (ships to 50 states + territories). Keep.
 
 **Also:** the "prepaid return label for Net-30 vs. self-generate for card customers" detail — reconcile with the corrected returns policy (manufacturer-defect / unopened-30-day only) during Alex's rewrite.
+
+### CONTENT + LEGAL: 3 core legal docs reviewed (Privacy, Purchase, Terms) — Damon-approved edits (`src/pages/legal/Legal.jsx`)
+
+Agent reviewed the 3 legacy legal docs (pulled from current live site into Desktop/Unite Medical/Site Migration for Alex/01_Legal Documents/). They are ~10 yrs old. Damon's decisions below.
+
+**🔴 ALEX — PROCESS QUESTION FOR DAMON:** Alex, can you run these updates through your legal-LLM access and update the docs, OR does Damon need to send them to Unite's outside counsel? Damon is asking you to advise. The edits below are the substance; the open question is who executes the legally-authoritative version.
+
+**PRIVACY POLICY:**
+1. **🔴 Remove dead frameworks (legally stale):** "U.S.–EU Safe Harbor" + "U.S.–Swiss Safe Harbor" (struck down 2015; Privacy Shield struck down 2020). Replace with the current **EU-US Data Privacy Framework (2023)** if EU data is handled. Remove the dead "BBB EU Safe Harbor" complaint link/process.
+2. **🔴 Add modern privacy law:** doc only cites CA Civil Code §1798.83 ("Shine the Light") — add **CCPA/CPRA** (governing CA law since 2018/2020) and GDPR language if serving EU. Currently missing entirely.
+3. **Mobile Apps (§ geolocation):** Unite has NO mobile app today. DAMON: KEEP the mobile-app language (in case we build one) but make sure it's accurate/up to date — word it so it only applies "if/when Unite offers a mobile app."
+4. **Email:** `info@unitemedical.net` → **`support@unitemedical.net`** (both occurrences).
+5. **Password guidance "at least 6 characters"** — dated; update to modern standard.
+6. **Children:** doc says under 13 (COPPA). New-site draft said "business use only / under 16." Pick one and keep consistent site-wide.
+
+**PURCHASE POLICY:**
+7. **DAMON: mirror the OLD policy** (keep the existing 30-day / non-defective returnable / 10% restocking fee / RMA-required structure) — with the fixes below.
+   - **🔴 RECONCILE CONFLICT (flag for Damon):** the Returns *page* was set to "no returns except manufacturer defect; unopened within 30 days of PO" (PRD-29 §7.4), but Purchase Policy mirrors the old "30-day/10% restocking/unopened returnable." These will contradict on the live site. Damon to pick ONE authoritative return policy (or Alex reconciles the wording so the Returns page and Purchase Policy match). NOT silently resolved — Damon's call.
+8. **Distributor-sales clause (§ "prohibit sales to dealers, distributors, manufacturers, wholesale"):** DAMON — KEEP it. Unite reserves the right to decline a sale at its discretion (yes/no is Unite's call); it does NOT contradict the Distributor Program (that's opt-in, this is a reservation of right). Keep as a discretion clause. (Update "dealers"→"distributors" wording per site-wide sweep.)
+9. **Payment methods:** update to **Stripe** (site's processor). Replace the "AMEX/Discover/MC/Visa/JCB/Diners + ACH wire" list with Stripe-based wording (Stripe covers those networks).
+10. **FOB:** "FOB our plant" → **"FOB our warehouse/facility"** (Unite is manufacturer-direct, does NOT own a plant). Agreed by Damon.
+11. **International orders:** UPDATE — doc says international shipping available (7–10 days), but the new site is **US-only (50 states + territories)**. Update to reflect US-only (or current intl policy). Damon: "update this."
+12. **Warranty claim window "within 7 days":** UPDATE — 7 days too short. Agent recommendation (Damon asked for industry standard): TWO-TIER — report **visible damage / DOA / wrong item within ~30 days of receipt**; **latent manufacturing defects** covered for the **manufacturer's warranty period (typically 1 year)**. Aligns with Terms ("products carry original manufacturer warranty") + the manufacturer-defect return stance.
+13. **Email:** `info@` → `support@` (all occurrences).
+
+**TERMS OF USE:**
+14. **Venue/dispute:** Georgia law + AAA binding arbitration + class-action & jury waiver. DAMON CONFIRMED this arbitration framework IS the intent (keep). Reconcile with the new-site Terms "GA / Fulton County" venue so arbitration clause + court-venue don't conflict (counsel/legal-LLM to align which governs).
+15. **Email:** `info@` → `support@` (§ Customer Service, § Copyright Agent contact).
+16. **Keep:** "Not Healthcare Advice," IP/DMCA, indemnification, limitation of liability, "subsidiaries & affiliated companies" (useful now w/ Unite Pharma/Medava/Clyne family). Terms is the healthiest of the 3.
+
+**Overall:** Privacy = most stale (Safe Harbor/CCPA) → highest priority. Purchase = mirror old + the fixes + reconcile returns conflict. Terms = solid, minor tweaks. All should be legally reviewed (Alex's legal-LLM or outside counsel — see process question above) before publishing.
