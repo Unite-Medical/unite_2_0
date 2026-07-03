@@ -6,6 +6,11 @@
  * On acceptance we create the order + line items, mark the quote
  * accepted, and (optionally) kick the fulfillment orchestrator so the
  * downstream chain (payment → invoice → shipping → notify) runs itself.
+ *
+ * PRD-16 Phase 7 adds the other three verbs a customer has:
+ *   counterQuote    — per-line counter prices → desk review queue
+ *   declineQuote    — decline with reason capture
+ *   requestRefresh  — expired quote → rep re-runs freight + validity
  */
 
 import { db } from './db.js';
@@ -82,4 +87,72 @@ export async function acceptQuote(token, { runPipeline = false, acceptedBy = 'cu
   }
 
   return { ok: true, order: db.get('orders', orderId), quote: db.get('quotes', quote.id) };
+}
+
+/**
+ * Customer counters one or more lines. `counters`: [{ item_id, price }].
+ * Stores the ask on each line, flips the quote to 'countered', and drops
+ * a task in the desk queue so a human responds.
+ */
+export function counterQuote(token, { counters = [], note = '', counteredBy = 'customer' } = {}) {
+  const quote = findQuoteByToken(token);
+  if (!quote) return { ok: false, reason: 'not_found' };
+  if (quote.status === 'accepted') return { ok: false, reason: 'already_accepted', quote };
+  if (quoteIsExpired(quote)) return { ok: false, reason: 'expired', quote };
+
+  const valid = (counters || []).filter((c) => c.item_id && Number(c.price) > 0);
+  if (!valid.length) return { ok: false, reason: 'no_counters', quote };
+
+  for (const c of valid) {
+    const item = db.get('quote_items', c.item_id);
+    if (!item || item.quote_id !== quote.id) continue;
+    db.update('quote_items', c.item_id, { counter_price: +Number(c.price).toFixed(2), counter_applied: false });
+  }
+
+  db.update('quotes', quote.id, { status: 'countered', counter_note: note || null, countered_at: new Date().toISOString() });
+  db.insert('tasks', {
+    id: uid('task'),
+    kind: 'quote_counter',
+    ref_id: quote.id,
+    title: `Counter-offer on ${quote.id} — ${quote.customer_name}`,
+    detail: note || `${valid.length} line(s) countered.`,
+    status: 'open',
+  });
+  db.insert('audit_log', { id: uid('aud'), kind: 'quote.countered', ref_id: quote.id, payload: { by: counteredBy, lines: valid.length, note: (note || '').slice(0, 300) } });
+  return { ok: true, quote: db.get('quotes', quote.id) };
+}
+
+/** Customer declines the quote, with reason capture (PRD-16 Phase 7). */
+export function declineQuote(token, { reason = '', declinedBy = 'customer' } = {}) {
+  const quote = findQuoteByToken(token);
+  if (!quote) return { ok: false, reason: 'not_found' };
+  if (quote.status === 'accepted') return { ok: false, reason: 'already_accepted', quote };
+
+  db.update('quotes', quote.id, { status: 'declined', decline_reason: reason || null, declined_at: new Date().toISOString() });
+  db.insert('audit_log', { id: uid('aud'), kind: 'quote.declined', ref_id: quote.id, payload: { by: declinedBy, reason: (reason || '').slice(0, 300) } });
+  return { ok: true, quote: db.get('quotes', quote.id) };
+}
+
+/**
+ * Customer asks for refreshed pricing on an expired quote. Queues the
+ * refresh for the desk — the rep runs `refreshQuote` (new freight, new
+ * validity window) and the same acceptance link comes back to life.
+ */
+export function requestRefresh(token, { requestedBy = 'customer' } = {}) {
+  const quote = findQuoteByToken(token);
+  if (!quote) return { ok: false, reason: 'not_found' };
+  if (quote.status === 'accepted') return { ok: false, reason: 'already_accepted', quote };
+  if (quote.refresh_requested_at) return { ok: true, quote, alreadyRequested: true };
+
+  db.update('quotes', quote.id, { refresh_requested_at: new Date().toISOString() });
+  db.insert('tasks', {
+    id: uid('task'),
+    kind: 'quote_refresh',
+    ref_id: quote.id,
+    title: `Refresh requested on ${quote.id} — ${quote.customer_name}`,
+    detail: 'Customer requested updated pricing on an expired quote.',
+    status: 'open',
+  });
+  db.insert('audit_log', { id: uid('aud'), kind: 'quote.refresh_requested', ref_id: quote.id, payload: { by: requestedBy } });
+  return { ok: true, quote: db.get('quotes', quote.id) };
 }

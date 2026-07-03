@@ -197,10 +197,13 @@ export const ai = {
     let realError = null;
 
     if (canTryReal) {
-      const template = await loadPrompt(key);
-      const prompt = substitute(template, input);
       const tool = SCHEMA_BY_PROMPT_KEY[key];
+      let prompt = '';
       try {
+        // Inside the try: a prompt-loading failure must fall through to
+        // the stub like any other real-path failure, not kill the caller.
+        const template = await loadPrompt(key);
+        prompt = substitute(template, input);
         const resp = await callAnthropic({
           model: entry.model,
           maxTokens: entry.maxTokens,

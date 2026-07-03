@@ -7,15 +7,27 @@
  *   - Landed cost is now 6 real components (was fob*(1+duty) + $0.42 flat):
  *       fob + duty + ocean_freight + customs_brokerage + drayage
  *       + warehouse_receiving — every component stored + auditable.
- *   - Freight compares LCL vs FCL and picks the cheaper per-unit option.
+ *   - Freight compares LCL vs FCL vs AIR; all options are stored on the
+ *     quote (`freight_options`) so the desk can switch modes and reprice.
  *   - Margin resolves from the customer's tier (A/B/C/distributor/gov)
  *     via the margin policy, with a hard 10% floor enforced per line.
+ *
+ * PRD-16 Phase 5–7 (this pass):
+ *   - Tier auto-resolves from the customer's org record (`resolveOrgTier`).
+ *   - `repriceQuote` — rep margin override + freight-mode switch, floor
+ *     enforced, manager-approval flag when priced below tier default,
+ *     every change audit-logged.
+ *   - `refreshQuote` — expired quote → fresh freight + validity window.
+ *   - `applyCounterOffers` — accept a customer counter at the desk.
+ *   - Per-line compliance stored: fda_validated, device_class,
+ *     regulation_number, gtin_validated.
  */
 
 import { db } from './db.js';
 import { openfda, hts, flexport, claude } from './services.js';
 import { delay, uid } from './format.js';
 import { loadMarginPolicy, marginForTier, applyMargin } from './marginPolicy.js';
+import { isValidGtin } from './external/gs1.js';
 import { ai } from './ai/client.js';
 
 /**
@@ -69,25 +81,73 @@ function estimateCbm(lines) {
   return Math.max(1, +(units * 0.0008).toFixed(2));
 }
 
-/** Pick the cheapest freight rate across the offered modes, per total units. */
-function cheapestFreight(quotes) {
-  let best = null;
-  for (const q of quotes) {
-    const rate = (q?.data?.rates || [])
-      .slice()
-      .sort((a, b) => a.total_usd - b.total_usd)[0];
-    if (!rate) continue;
-    const candidate = { mode: q.data.mode, total_usd: rate.total_usd, transit_days: rate.transit_days, valid_until: rate.valid_until, quote_id: q.data.id };
-    if (!best || candidate.total_usd < best.total_usd) best = candidate;
+/** Normalize one Flexport quote response into a comparable option. */
+function toFreightOption(q) {
+  const rate = (q?.data?.rates || []).slice().sort((a, b) => a.total_usd - b.total_usd)[0];
+  if (!rate) return null;
+  return { mode: q.data.mode, total_usd: rate.total_usd, transit_days: rate.transit_days, valid_until: rate.valid_until, quote_id: q.data.id };
+}
+
+/**
+ * Select a freight option by preference:
+ *   'cheapest' (default) · 'fastest' · explicit mode ('LCL'|'FCL'|'AIR')
+ */
+export function selectFreightOption(options, preference = 'cheapest') {
+  const valid = (options || []).filter(Boolean);
+  if (!valid.length) return null;
+  if (preference === 'fastest') return valid.slice().sort((a, b) => a.transit_days - b.transit_days)[0];
+  const byMode = valid.find((o) => o.mode === preference);
+  if (byMode) return byMode;
+  return valid.slice().sort((a, b) => a.total_usd - b.total_usd)[0];
+}
+
+/**
+ * Resolve the customer's org record + tier (PRD-16 Phase 5). Matches by
+ * org id first, then exact name. Falls back to the supplied tier.
+ */
+export function resolveOrgTier({ org_id = null, customer_name = '', fallback_tier = 'C' } = {}) {
+  let org = null;
+  if (org_id) org = db.get('organizations', org_id) || null;
+  if (!org && customer_name) {
+    const needle = customer_name.trim().toLowerCase();
+    org = db.list('organizations').find((o) => (o.name || '').trim().toLowerCase() === needle) || null;
   }
-  return best;
+  if (org) {
+    // Government terms trump the letter tier — BPA pricing per policy.
+    const tier = org.terms === 'mspv' ? 'gov' : org.segment === 'distributors' ? 'distributor' : org.tier || fallback_tier;
+    return { org, tier, resolved: true };
+  }
+  return { org: null, tier: fallback_tier, resolved: false };
+}
+
+/** Per-unit freight components for a given freight option + unit count. */
+function freightComponents(option, totalUnits) {
+  const total = Number(option?.total_usd) || 0;
+  const units = Math.max(1, totalUnits);
+  return {
+    ocean_freight: +((total * FREIGHT_SPLIT.ocean) / units).toFixed(4),
+    customs_brokerage: +((total * FREIGHT_SPLIT.brokerage) / units).toFixed(4),
+    drayage: +((total * FREIGHT_SPLIT.drayage) / units).toFixed(4),
+  };
+}
+
+/** Price one line from its cost components at a margin, enforcing the floor. */
+function priceLine(components, margin) {
+  const landed = +Object.values(components).reduce((a, v) => a + (Number(v) || 0), 0).toFixed(4);
+  let sell = applyMargin(landed, margin);
+  const floor = +(landed * (1 + MARGIN_FLOOR)).toFixed(2);
+  const floored = sell < floor;
+  if (floored) sell = floor;
+  return { landed: +landed.toFixed(2), sell, floored };
 }
 
 export async function runQuotingEngine({
   vendor,
   customer_name = 'Atlanta Surgical Center',
   contact_name = 'Mariah Patel',
-  customer_tier = 'C',
+  customer_tier = null,
+  org_id = null,
+  freight_preference = 'cheapest',
   warehouse_receiving_per_unit = WAREHOUSE_RECEIVING_PER_UNIT,
   classifyFda = true,
   lines = [],
@@ -96,12 +156,21 @@ export async function runQuotingEngine({
   if (!Array.isArray(lines) || lines.length === 0) throw new Error('No lines to quote.');
 
   const policy = loadMarginPolicy();
-  const margin = marginForTier(customer_tier, policy);
+
+  // 0a) Tier — auto-resolve from the customer's org record (Phase 5);
+  //     an explicitly supplied tier wins over the fallback but a matched
+  //     org record wins over both.
+  const resolved = resolveOrgTier({ org_id, customer_name, fallback_tier: customer_tier || 'C' });
+  const tier = resolved.resolved ? resolved.tier : (customer_tier || 'C');
+  const margin = marginForTier(tier, policy);
+  if (resolved.resolved) {
+    onProgress({ step: 'tier', label: `Customer record matched — tier ${tier} (${Math.round(margin * 100)}% margin)` });
+  }
 
   onProgress({ step: 'parse', label: `Parsed ${lines.length} line items` });
   await delay(180, 300);
 
-  // 0) Fill missing FDA codes (PRD-19) before validation.
+  // 0b) Fill missing FDA codes (PRD-19) before validation.
   if (classifyFda) await classifyMissingFdaCodes(lines, { onProgress });
 
   // 1) FDA validation
@@ -116,48 +185,52 @@ export async function runQuotingEngine({
   const avgDuty = dutyRates.reduce((a, r) => a + r.mfn, 0) / dutyRates.length;
   onProgress({ step: 'hts', label: `Avg ${avgDuty.toFixed(1)}%` });
 
-  // 3) Freight — compare LCL vs FCL, pick cheapest
-  onProgress({ step: 'flexport', label: 'Requesting freight quotes (LCL + FCL)' });
+  // 3) Freight — LCL vs FCL vs AIR, all options kept for the desk.
+  onProgress({ step: 'flexport', label: 'Requesting freight quotes (LCL + FCL + AIR)' });
   const cbm = estimateCbm(lines);
   const totalUnits = Math.max(1, lines.reduce((a, l) => a + (l.target_qty || l.moq || 1), 0));
-  const [lcl, fcl] = await Promise.all([
-    flexport.getFreightQuote({ origin: 'CNSHA', destination: 'USATL', mode: 'LCL', cbm }),
-    flexport.getFreightQuote({ origin: 'CNSHA', destination: 'USATL', mode: 'FCL', cbm }),
+  const weightKg = Math.max(40, Math.round(totalUnits * 0.12));
+  const [lcl, fcl, air] = await Promise.all([
+    flexport.getFreightQuote({ origin: 'CNSHA', destination: 'USATL', mode: 'LCL', cbm, weight_kg: weightKg }),
+    flexport.getFreightQuote({ origin: 'CNSHA', destination: 'USATL', mode: 'FCL', cbm, weight_kg: weightKg }),
+    flexport.getFreightQuote({ origin: 'CNSHA', destination: 'USATL', mode: 'AIR', cbm, weight_kg: weightKg }),
   ]);
-  const freight = cheapestFreight([lcl, fcl]) || { mode: 'LCL', total_usd: 0, transit_days: 28, valid_until: null, quote_id: null };
-  onProgress({ step: 'flexport', label: `${freight.mode} $${Math.round(freight.total_usd).toLocaleString()} · ${freight.transit_days}d` });
+  const freightOptions = [lcl, fcl, air].map(toFreightOption).filter(Boolean);
+  const freight = selectFreightOption(freightOptions, freight_preference)
+    || { mode: 'LCL', total_usd: 0, transit_days: 28, valid_until: null, quote_id: null };
+  onProgress({ step: 'flexport', label: `${freight.mode} $${Math.round(freight.total_usd).toLocaleString()} · ${freight.transit_days}d (${freightOptions.length} modes compared)` });
 
   // Per-unit freight components (allocated across all units in the shipment).
-  const oceanPU = +((freight.total_usd * FREIGHT_SPLIT.ocean) / totalUnits).toFixed(4);
-  const brokeragePU = +((freight.total_usd * FREIGHT_SPLIT.brokerage) / totalUnits).toFixed(4);
-  const drayagePU = +((freight.total_usd * FREIGHT_SPLIT.drayage) / totalUnits).toFixed(4);
+  const { ocean_freight: oceanPU, customs_brokerage: brokeragePU, drayage: drayagePU } = freightComponents(freight, totalUnits);
   const receivingPU = +Number(warehouse_receiving_per_unit || 0).toFixed(4);
 
   // 4) Landed cost (6 components) + tier margin + floor
-  onProgress({ step: 'margin', label: `Applying ${Math.round(margin * 100)}% margin (tier ${customer_tier})` });
+  onProgress({ step: 'margin', label: `Applying ${Math.round(margin * 100)}% margin (tier ${tier})` });
   const priced = lines.map((l, i) => {
     const dutyPct = dutyRates[i].mfn / 100;
     const dutyPU = +(l.fob * dutyPct).toFixed(4);
-    const landed = +(l.fob + dutyPU + oceanPU + brokeragePU + drayagePU + receivingPU).toFixed(4);
-    let sell = applyMargin(landed, margin);
-    // Floor enforcement — never sell below landed × (1 + MARGIN_FLOOR).
-    const floor = +(landed * (1 + MARGIN_FLOOR)).toFixed(2);
-    let floored = false;
-    if (sell < floor) { sell = floor; floored = true; }
+    const components = {
+      fob: +l.fob.toFixed(4),
+      duty: dutyPU,
+      ocean_freight: oceanPU,
+      customs_brokerage: brokeragePU,
+      drayage: drayagePU,
+      warehouse_receiving: receivingPU,
+    };
+    const { landed, sell, floored } = priceLine(components, margin);
     const qty = l.target_qty || l.moq || 1;
+    const fdaHit = fda[i]?.results?.[0] || null;
     return {
       ...l,
       duty_pct: dutyRates[i].mfn,
       hts_desc: dutyRates[i].description,
-      cost_components: {
-        fob: +l.fob.toFixed(4),
-        duty: dutyPU,
-        ocean_freight: oceanPU,
-        customs_brokerage: brokeragePU,
-        drayage: drayagePU,
-        warehouse_receiving: receivingPU,
-      },
-      landed_per_unit: +landed.toFixed(2),
+      cost_components: components,
+      // Per-line compliance evidence (PRD-16 compliance panel).
+      fda_validated: Boolean(fdaHit),
+      device_class: fdaHit?.device_class || l.device_class || null,
+      regulation_number: fdaHit?.regulation_number || null,
+      gtin_validated: l.gtin ? isValidGtin(l.gtin) : null,
+      landed_per_unit: landed,
       margin_pct: margin,
       margin_floored: floored,
       sell_per_unit: sell,
@@ -185,17 +258,23 @@ export async function runQuotingEngine({
     vendor,
     customer_name,
     contact_name,
-    customer_tier,
+    customer_id: resolved.org?.id || null,
+    customer_tier: tier,
+    tier_resolved: resolved.resolved,
     line_count: priced.length,
     total,
     total_landed: totalLanded,
+    total_units: totalUnits,
     margin_target: margin,
     freight_mode: freight.mode,
     freight_total: +Number(freight.total_usd).toFixed(2),
     freight_quote_id: freight.quote_id,
     freight_valid_until: freight.valid_until,
+    freight_options: freightOptions,
+    warehouse_receiving_per_unit: receivingPU,
     cover_letter: letter.content,
     status: 'draft',
+    revision: 1,
     acceptance_token: `${uid('qt')}-${Math.random().toString(36).slice(2, 12)}`,
     valid_until: new Date(Date.now() + (policy.quote_validity_days || 14) * 86400000).toISOString(),
     eta: etaIso,
@@ -204,7 +283,184 @@ export async function runQuotingEngine({
 
   onProgress({ step: 'done', label: `Quote ${quoteId} drafted` });
 
-  return { quote, lines: priced, freight, dutyRates, fda };
+  return { quote, lines: priced, freight, freightOptions, dutyRates, fda };
+}
+
+// ---------------------------------------------------------------------------
+// Desk operations (PRD-16 Phase 5 + 7) — margin override, freight switch,
+// counter acceptance, refresh. All audit-logged; floor always enforced.
+// ---------------------------------------------------------------------------
+
+function quoteTotalsFromItems(items) {
+  const total = +items.reduce((a, it) => a + (Number(it.ext_sell) || 0), 0).toFixed(2);
+  const landed = +items.reduce((a, it) => a + (Number(it.landed_per_unit) || 0) * (it.target_qty || it.moq || 1), 0).toFixed(2);
+  return { total, landed };
+}
+
+/**
+ * Reprice a quote in place: change the margin (rep override) and/or the
+ * freight mode (from the stored `freight_options`). Recomputes every line
+ * from its stored cost components — nothing external is re-fetched.
+ *
+ * Overrides below the tier's default margin set `needs_approval` on the
+ * quote (manager gate, PRD-16 Phase 5). The 10% floor is non-negotiable.
+ *
+ * @returns {{ ok:boolean, reason?:string, quote?:object, items?:object[] }}
+ */
+export function repriceQuote(quoteId, { margin_pct = null, freight_mode = null, actor = 'rep', reason = '' } = {}) {
+  const quote = db.get('quotes', quoteId);
+  if (!quote) return { ok: false, reason: 'not_found' };
+  if (['accepted', 'declined'].includes(quote.status)) return { ok: false, reason: 'locked' };
+
+  const items = db.list('quote_items', { where: { quote_id: quoteId } });
+  if (!items.length) return { ok: false, reason: 'no_items' };
+
+  const policy = loadMarginPolicy();
+  const tierDefault = marginForTier(quote.customer_tier, policy);
+  const margin = margin_pct != null ? Math.min(0.95, Math.max(MARGIN_FLOOR, Number(margin_pct))) : (quote.margin_target ?? tierDefault);
+
+  // Freight switch — reallocate the per-unit freight components from the
+  // stored option so landed cost stays auditable.
+  let freight = null;
+  if (freight_mode && freight_mode !== quote.freight_mode) {
+    freight = (quote.freight_options || []).find((o) => o.mode === freight_mode) || null;
+    if (!freight) return { ok: false, reason: 'unknown_freight_mode' };
+  }
+  const totalUnits = Math.max(1, quote.total_units || items.reduce((a, it) => a + (it.target_qty || it.moq || 1), 0));
+  const newFreightPU = freight ? freightComponents(freight, totalUnits) : null;
+
+  for (const it of items) {
+    const components = { ...(it.cost_components || {}) };
+    if (newFreightPU) Object.assign(components, newFreightPU);
+    const { landed, sell, floored } = priceLine(components, margin);
+    const qty = it.target_qty || it.moq || 1;
+    db.update('quote_items', it.id, {
+      cost_components: components,
+      landed_per_unit: landed,
+      margin_pct: margin,
+      margin_floored: floored,
+      sell_per_unit: sell,
+      ext_sell: +(sell * qty).toFixed(2),
+    });
+  }
+
+  const fresh = db.list('quote_items', { where: { quote_id: quoteId } });
+  const { total, landed } = quoteTotalsFromItems(fresh);
+  const needsApproval = margin < tierDefault - 0.0001;
+  const etaIso = freight ? new Date(Date.now() + freight.transit_days * 86400000).toISOString() : quote.eta;
+
+  db.update('quotes', quoteId, {
+    total,
+    total_landed: landed,
+    margin_target: margin,
+    needs_approval: needsApproval,
+    ...(freight ? {
+      freight_mode: freight.mode,
+      freight_total: +Number(freight.total_usd).toFixed(2),
+      freight_quote_id: freight.quote_id,
+      freight_valid_until: freight.valid_until,
+      eta: etaIso,
+    } : {}),
+  });
+  db.insert('audit_log', {
+    id: uid('aud'),
+    kind: 'quote.repriced',
+    ref_id: quoteId,
+    payload: { actor, reason, margin_pct: margin, freight_mode: freight?.mode || quote.freight_mode, needs_approval: needsApproval, total },
+  });
+
+  return { ok: true, quote: db.get('quotes', quoteId), items: fresh };
+}
+
+/** Manager approval for a below-tier-default override (PRD-16 Phase 5). */
+export function approveQuoteMargin(quoteId, { approver = 'manager' } = {}) {
+  const quote = db.get('quotes', quoteId);
+  if (!quote) return { ok: false, reason: 'not_found' };
+  db.update('quotes', quoteId, { needs_approval: false, margin_approved_by: approver, margin_approved_at: new Date().toISOString() });
+  db.insert('audit_log', { id: uid('aud'), kind: 'quote.margin_approved', ref_id: quoteId, payload: { approver } });
+  return { ok: true, quote: db.get('quotes', quoteId) };
+}
+
+/**
+ * Refresh an expired (or aging) quote: re-run freight for all modes,
+ * reprice from stored components, restart the validity window, and bump
+ * the revision counter. FX and freight move — margin policy holds.
+ */
+export async function refreshQuote(quoteId, { actor = 'rep' } = {}) {
+  const quote = db.get('quotes', quoteId);
+  if (!quote) return { ok: false, reason: 'not_found' };
+  if (['accepted', 'declined'].includes(quote.status)) return { ok: false, reason: 'locked' };
+
+  const items = db.list('quote_items', { where: { quote_id: quoteId } });
+  const totalUnits = Math.max(1, quote.total_units || items.reduce((a, it) => a + (it.target_qty || it.moq || 1), 0));
+  const cbm = Math.max(1, +(totalUnits * 0.0008).toFixed(2));
+  const weightKg = Math.max(40, Math.round(totalUnits * 0.12));
+
+  const [lcl, fcl, air] = await Promise.all([
+    flexport.getFreightQuote({ origin: 'CNSHA', destination: 'USATL', mode: 'LCL', cbm, weight_kg: weightKg }),
+    flexport.getFreightQuote({ origin: 'CNSHA', destination: 'USATL', mode: 'FCL', cbm, weight_kg: weightKg }),
+    flexport.getFreightQuote({ origin: 'CNSHA', destination: 'USATL', mode: 'AIR', cbm, weight_kg: weightKg }),
+  ]);
+  const freightOptions = [lcl, fcl, air].map(toFreightOption).filter(Boolean);
+  const freight = selectFreightOption(freightOptions, quote.freight_mode) || freightOptions[0];
+  if (!freight) return { ok: false, reason: 'no_freight' };
+
+  const policy = loadMarginPolicy();
+  db.update('quotes', quoteId, {
+    freight_options: freightOptions,
+    status: 'sent',
+    revision: (quote.revision || 1) + 1,
+    refresh_requested_at: null,
+    valid_until: new Date(Date.now() + (policy.quote_validity_days || 14) * 86400000).toISOString(),
+  });
+  const repriced = repriceQuote(quoteId, { freight_mode: freight.mode, actor, reason: 'refresh' });
+  // repriceQuote skips the freight update when the mode is unchanged, so
+  // pin the fresh rate + validity explicitly.
+  db.update('quotes', quoteId, {
+    freight_mode: freight.mode,
+    freight_total: +Number(freight.total_usd).toFixed(2),
+    freight_quote_id: freight.quote_id,
+    freight_valid_until: freight.valid_until,
+    eta: new Date(Date.now() + freight.transit_days * 86400000).toISOString(),
+  });
+  db.insert('audit_log', { id: uid('aud'), kind: 'quote.refreshed', ref_id: quoteId, payload: { actor, freight_mode: freight.mode, revision: (quote.revision || 1) + 1 } });
+  return { ok: repriced.ok, quote: db.get('quotes', quoteId), items: repriced.items };
+}
+
+/**
+ * Desk accepts a customer counter-offer (PRD-16 Phase 7): set each
+ * countered line's sell to the counter price (floor still enforced),
+ * clear counters, and return the quote to 'sent' so the customer can
+ * accept the revised number.
+ */
+export function applyCounterOffers(quoteId, { actor = 'rep' } = {}) {
+  const quote = db.get('quotes', quoteId);
+  if (!quote) return { ok: false, reason: 'not_found' };
+  const items = db.list('quote_items', { where: { quote_id: quoteId } });
+  const countered = items.filter((it) => Number(it.counter_price) > 0);
+  if (!countered.length) return { ok: false, reason: 'no_counters' };
+
+  let flooredCount = 0;
+  for (const it of countered) {
+    const landed = Number(it.landed_per_unit) || 0;
+    const floor = +(landed * (1 + MARGIN_FLOOR)).toFixed(2);
+    let sell = +Number(it.counter_price).toFixed(2);
+    if (sell < floor) { sell = floor; flooredCount += 1; }
+    const qty = it.target_qty || it.moq || 1;
+    db.update('quote_items', it.id, {
+      sell_per_unit: sell,
+      ext_sell: +(sell * qty).toFixed(2),
+      margin_floored: sell === floor,
+      counter_price: null,
+      counter_applied: true,
+    });
+  }
+
+  const fresh = db.list('quote_items', { where: { quote_id: quoteId } });
+  const { total, landed } = quoteTotalsFromItems(fresh);
+  db.update('quotes', quoteId, { total, total_landed: landed, status: 'sent', counter_note: null, revision: (quote.revision || 1) + 1 });
+  db.insert('audit_log', { id: uid('aud'), kind: 'quote.counter_applied', ref_id: quoteId, payload: { actor, lines: countered.length, floored: flooredCount, total } });
+  return { ok: true, quote: db.get('quotes', quoteId), items: fresh, floored: flooredCount };
 }
 
 /**

@@ -13,7 +13,7 @@
  * Claude (when configured).
  */
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { D } from '../tokens.js';
 import { Nav } from '../components/layout/Nav.jsx';
@@ -22,8 +22,11 @@ import { PageHead } from '../components/layout/PageHead.jsx';
 import { Icon } from '../components/shared/Icon.jsx';
 import { useViewport } from '../lib/viewport.js';
 import { useSEO } from '../lib/seo.js';
+import { db } from '../lib/db.js';
+import { fmt } from '../lib/format.js';
 import { ingestVendorFile, parseVendorSheetText, CANONICAL_FIELDS } from '../lib/vendorSheet.js';
-import { runQuotingEngine } from '../lib/quoting.js';
+import { runQuotingEngine, resolveOrgTier, compareVendorOffers } from '../lib/quoting.js';
+import { loadMarginPolicy, marginForTier } from '../lib/marginPolicy.js';
 import { generateTemplateXlsx, generateTemplateCsv, TEMPLATE_VERSION } from '../lib/quoteTemplate.js';
 import { downloadBlob } from '../lib/xlsxWrite.js';
 
@@ -40,6 +43,14 @@ const TIERS = [
   { id: 'C', label: 'C · Small clinic (60%)' },
   { id: 'distributor', label: 'Distributor (25%)' },
   { id: 'gov', label: 'Government / BPA (20%)' },
+];
+
+const FREIGHT_PREFS = [
+  { id: 'cheapest', label: 'Cheapest mode (default)' },
+  { id: 'fastest', label: 'Fastest mode' },
+  { id: 'LCL', label: 'Ocean · LCL' },
+  { id: 'FCL', label: 'Ocean · FCL' },
+  { id: 'AIR', label: 'Air' },
 ];
 
 const VIA_BADGE = {
@@ -62,6 +73,7 @@ export function QuoteNew() {
   const [customerName, setCustomerName] = useState('Atlanta Surgical Center');
   const [contactName, setContactName] = useState('Mariah Patel');
   const [customerTier, setCustomerTier] = useState('A');
+  const [freightPref, setFreightPref] = useState('cheapest');
   const [csvText, setCsvText] = useState('');
   const [parsed, setParsed] = useState(null);
   const [parsing, setParsing] = useState(false);
@@ -69,8 +81,71 @@ export function QuoteNew() {
   const [progress, setProgress] = useState([]);
   const [error, setError] = useState(null);
   const [tplBusy, setTplBusy] = useState(false);
+  // Multi-vendor comparison (PRD-16 Phase 6): staged offers to compare.
+  const [offers, setOffers] = useState([]);
 
   const pushProgress = (s) => setProgress((p) => [...p, s]);
+
+  // Customer picker — orgs drive tier auto-resolution (PRD-16 Phase 5).
+  const orgs = db.useTable('organizations', { orderBy: 'name' });
+  const resolvedOrg = useMemo(
+    () => resolveOrgTier({ customer_name: customerName }),
+    [customerName],
+  );
+  const effectiveTier = resolvedOrg.resolved ? resolvedOrg.tier : customerTier;
+  const effectiveMargin = marginForTier(effectiveTier, loadMarginPolicy());
+
+  const comparison = useMemo(
+    () => (offers.length >= 2 ? compareVendorOffers(offers) : null),
+    [offers],
+  );
+
+  function addToComparison() {
+    if (!parsed?.ok || !parsed.lines.length) return;
+    const vendor = vendorName || parsed.vendor || `Vendor ${offers.length + 1}`;
+    setOffers((o) => [...o.filter((x) => x.vendor !== vendor), { vendor, lines: parsed.lines }]);
+    setParsed(null);
+    setCsvText('');
+    setVendorName('');
+  }
+
+  /** Merge each product's best-FOB line across staged offers into one line set. */
+  function bestPriceLines() {
+    if (!comparison) return [];
+    const merged = [];
+    for (const p of comparison.products) {
+      const offer = offers.find((o) => o.vendor === p.best_vendor);
+      const line = offer?.lines.find((l) => {
+        const key = (l.gtin || l.name || '').toString().trim().toLowerCase();
+        return key === (p.gtin || p.product || '').toString().trim().toLowerCase();
+      });
+      if (line) merged.push({ ...line, source_vendor: p.best_vendor });
+    }
+    return merged;
+  }
+
+  async function runCompareEngine() {
+    const lines = bestPriceLines();
+    if (!lines.length) return;
+    setRunning(true); setError(null); setProgress([]);
+    try {
+      const res = await runQuotingEngine({
+        vendor: `Multi-vendor · best landed (${offers.map((o) => o.vendor).join(' vs ')})`,
+        customer_name: customerName,
+        contact_name: contactName,
+        customer_tier: effectiveTier,
+        org_id: resolvedOrg.org?.id || null,
+        freight_preference: freightPref,
+        lines,
+        onProgress: pushProgress,
+      });
+      navigate(`/quotes/${res.quote.id}/print?view=internal`);
+    } catch (e) {
+      setError(e?.message || 'Quoting engine failed.');
+    } finally {
+      setRunning(false);
+    }
+  }
 
   async function handleFile(e) {
     const file = e.target.files?.[0];
@@ -129,7 +204,9 @@ export function QuoteNew() {
         vendor: vendorName || parsed.vendor,
         customer_name: customerName,
         contact_name: contactName,
-        customer_tier: customerTier,
+        customer_tier: effectiveTier,
+        org_id: resolvedOrg.org?.id || null,
+        freight_preference: freightPref,
         lines: parsed.lines,
         onProgress: pushProgress,
       });
@@ -214,6 +291,11 @@ export function QuoteNew() {
                     <span style={{ marginLeft: 'auto', fontFamily: D.mono, fontSize: 11, color: D.ink3 }}>
                       {parsed.totals.accepted}/{parsed.totals.rows} lines accepted
                     </span>
+                    {parsed.ok && parsed.lines.length > 0 && (
+                      <button type="button" onClick={addToComparison} style={btnGhost(D)} title="Stage this sheet and upload another vendor's to compare landed cost per product">
+                        + Add to vendor comparison
+                      </button>
+                    )}
                   </div>
 
                   {/* meta chips */}
@@ -311,6 +393,68 @@ export function QuoteNew() {
                 </div>
               )}
 
+              {/* Multi-vendor comparison (PRD-16 Phase 6) */}
+              {offers.length > 0 && (
+                <div style={{ marginTop: 18, background: D.card, border: `1px solid ${D.line}`, borderRadius: 14, padding: isMobile ? 22 : 28 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 10 }}>
+                    <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.plum }}>VENDOR COMPARISON · {offers.length} STAGED</div>
+                    <button type="button" onClick={() => setOffers([])} style={{ ...btnGhost(D), marginLeft: 'auto' }}>Clear</button>
+                  </div>
+                  <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 12 }}>
+                    {offers.map((o) => (
+                      <span key={o.vendor} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontSize: 12, border: `1px solid ${D.line}`, borderRadius: 4, padding: '6px 12px' }}>
+                        <strong>{o.vendor}</strong>
+                        <span style={{ fontFamily: D.mono, fontSize: 10, color: D.ink3 }}>{o.lines.length} lines</span>
+                        <button type="button" onClick={() => setOffers((prev) => prev.filter((x) => x.vendor !== o.vendor))} aria-label={`Remove ${o.vendor}`} style={{ background: 'none', border: 'none', color: D.ink3, cursor: 'pointer', padding: 0, fontSize: 14, lineHeight: 1 }}>×</button>
+                      </span>
+                    ))}
+                  </div>
+                  {offers.length < 2 && (
+                    <div style={{ marginTop: 14, fontSize: 13, color: D.ink2 }}>
+                      Upload a second vendor&apos;s sheet above and add it here — the engine finds the best FOB per product across vendors and quotes the winners.
+                    </div>
+                  )}
+                  {comparison && (
+                    <>
+                      <div className="um-scroll-x" style={{ marginTop: 16 }}>
+                        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12, minWidth: 560 }}>
+                          <thead>
+                            <tr style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>
+                              {['PRODUCT', 'BEST VENDOR', 'BEST FOB', 'SAVINGS/UNIT', 'VS'].map((h) => (
+                                <th key={h} style={{ textAlign: 'left', padding: '8px 6px', borderBottom: `1px solid ${D.line}` }}>{h}</th>
+                              ))}
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {comparison.products.map((p) => (
+                              <tr key={p.product} style={{ borderBottom: `1px solid ${D.line}` }}>
+                                <td style={{ padding: '8px 6px', fontWeight: 500 }}>{p.product}</td>
+                                <td style={{ padding: '8px 6px', color: D.plum, fontWeight: 600 }}>{p.best_vendor}</td>
+                                <td style={{ padding: '8px 6px', fontFamily: D.mono }}>${p.best_landed.toFixed(2)}</td>
+                                <td style={{ padding: '8px 6px', fontFamily: D.mono, color: p.savings_per_unit > 0 ? '#1f7a4d' : D.ink3 }}>
+                                  {p.savings_per_unit > 0 ? `$${p.savings_per_unit.toFixed(2)} (${p.savings_pct}%)` : '—'}
+                                </td>
+                                <td style={{ padding: '8px 6px', fontFamily: D.mono, fontSize: 10, color: D.ink3 }}>
+                                  {p.offers.map((o) => `${o.vendor} $${o.landed_per_unit.toFixed(2)}`).join(' · ')}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                      <div style={{ marginTop: 16, display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
+                        <button type="button" disabled={running} onClick={runCompareEngine} style={{ ...btnSolid(D), background: D.plum, padding: '11px 18px', fontSize: 13, opacity: running ? 0.6 : 1 }}>
+                          {running ? 'Running…' : 'Run engine on best-price lines'}
+                        </button>
+                        <span style={{ fontFamily: D.mono, fontSize: 11, color: D.ink2 }}>
+                          {comparison.products.length} products · est. savings {fmt.money(comparison.total_savings)} per unit-set vs worst offers
+                        </span>
+                      </div>
+                    </>
+                  )}
+                </div>
+              )}
+
               {progress.length > 0 && (
                 <div style={{ marginTop: 16, padding: 18, borderRadius: 14, background: D.paperAlt, border: `1px solid ${D.line}` }}>
                   <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.plum, marginBottom: 8 }}>{running ? 'RUNNING ENGINE' : 'PIPELINE'}</div>
@@ -336,16 +480,30 @@ export function QuoteNew() {
                 </label>
                 <label style={{ display: 'block', marginTop: 10 }}>
                   <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>CUSTOMER</div>
-                  <input value={customerName} onChange={(e) => setCustomerName(e.target.value)} style={fieldStyle} />
+                  <input value={customerName} onChange={(e) => setCustomerName(e.target.value)} list="quote-org-list" style={fieldStyle} />
+                  <datalist id="quote-org-list">
+                    {orgs.map((o) => <option key={o.id} value={o.name} />)}
+                  </datalist>
+                  {resolvedOrg.resolved && (
+                    <div style={{ marginTop: 6, fontFamily: D.mono, fontSize: 10, letterSpacing: 0.5, color: '#1d5c4d', background: '#e8f3ec', border: '1px solid #c8ddd2', borderRadius: 4, padding: '5px 9px', display: 'inline-block' }}>
+                      Account matched — tier {effectiveTier} · {Math.round(effectiveMargin * 100)}% margin auto-applied
+                    </div>
+                  )}
                 </label>
                 <label style={{ display: 'block', marginTop: 10 }}>
                   <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>CONTACT</div>
                   <input value={contactName} onChange={(e) => setContactName(e.target.value)} style={fieldStyle} />
                 </label>
                 <label style={{ display: 'block', marginTop: 10 }}>
-                  <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>CUSTOMER TIER</div>
-                  <select value={customerTier} onChange={(e) => setCustomerTier(e.target.value)} style={{ ...fieldStyle, cursor: 'pointer' }}>
+                  <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>CUSTOMER TIER{resolvedOrg.resolved ? ' · FROM ACCOUNT' : ''}</div>
+                  <select value={effectiveTier} disabled={resolvedOrg.resolved} onChange={(e) => setCustomerTier(e.target.value)} style={{ ...fieldStyle, cursor: resolvedOrg.resolved ? 'not-allowed' : 'pointer', opacity: resolvedOrg.resolved ? 0.7 : 1 }}>
                     {TIERS.map((t) => <option key={t.id} value={t.id}>{t.label}</option>)}
+                  </select>
+                </label>
+                <label style={{ display: 'block', marginTop: 10 }}>
+                  <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>FREIGHT PREFERENCE</div>
+                  <select value={freightPref} onChange={(e) => setFreightPref(e.target.value)} style={{ ...fieldStyle, cursor: 'pointer' }}>
+                    {FREIGHT_PREFS.map((f) => <option key={f.id} value={f.id}>{f.label}</option>)}
                   </select>
                 </label>
 

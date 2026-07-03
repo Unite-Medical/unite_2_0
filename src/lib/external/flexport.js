@@ -123,7 +123,10 @@ export const flexport = {
       },
       stub: async () => {
         await delay(280, 520);
-        const base = mode === 'FCL' ? 4200 : 412;
+        // AIR is priced per kg (chargeable weight), ocean per shipment+CBM.
+        const base = mode === 'FCL' ? 4200 : mode === 'AIR' ? Math.max(900, weight_kg * 5.8) : 412;
+        const std = mode === 'FCL' ? 32 : mode === 'AIR' ? 6 : 28;
+        const exp = mode === 'FCL' ? 22 : mode === 'AIR' ? 3 : 18;
         return {
           data: {
             id: uid('flx_quote'),
@@ -133,8 +136,8 @@ export const flexport = {
             cbm,
             weight_kg,
             rates: [
-              { service: 'standard',  total_usd: +(base * (1 + cbm / 25)).toFixed(2),       transit_days: mode === 'FCL' ? 32 : 28, valid_until: new Date(Date.now() + 7 * 86400000).toISOString() },
-              { service: 'expedited', total_usd: +(base * 1.4 * (1 + cbm / 25)).toFixed(2), transit_days: mode === 'FCL' ? 22 : 18, valid_until: new Date(Date.now() + 7 * 86400000).toISOString() },
+              { service: 'standard',  total_usd: +(base * (1 + cbm / 25)).toFixed(2),       transit_days: std, valid_until: new Date(Date.now() + 7 * 86400000).toISOString() },
+              { service: 'expedited', total_usd: +(base * 1.4 * (1 + cbm / 25)).toFixed(2), transit_days: exp, valid_until: new Date(Date.now() + 7 * 86400000).toISOString() },
             ],
           },
         };

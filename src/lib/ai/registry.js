@@ -13,13 +13,22 @@
 // In a backend (PRD-01) or a plain Node/test runtime, `import.meta.glob`
 // doesn't exist — guard it so the module is importable everywhere. In
 // those environments callers fall back to deterministic stubs.
-const promptUrls = (typeof import.meta !== 'undefined' && typeof import.meta.glob === 'function')
-  ? import.meta.glob('../../../prompts/**/*.v*.md', {
+//
+// NOTE: this must be a try/catch, not a `typeof import.meta.glob ===
+// 'function'` check — Vite replaces the CALL EXPRESSION statically at
+// build time but does not define `import.meta.glob` as a runtime
+// function, so the typeof check is false in production builds and the
+// map came back empty (loadPrompt then threw on every prompt).
+let promptUrls = {};
+try {
+  promptUrls = import.meta.glob('../../../prompts/**/*.v*.md', {
     query: '?raw',
     import: 'default',
     eager: false,
-  })
-  : {};
+  });
+} catch {
+  promptUrls = {}; // plain Node — no Vite transform; stubs take over
+}
 
 export const PROMPT_REGISTRY = {
   // ---- PRD-08 quoting ----
