@@ -60,7 +60,7 @@ function exportPdf(rows, { family, query, updated }) {
       doc.addPage();
       y = margin;
     }
-    doc.text(colCode, y, code, { size: 9, bold: true, color: [0.369, 0.161, 0.388] }); // brand plum #5e2963
+    doc.text(colCode, y, code, { size: 9, bold: true, color: [0.369, 0.161, 0.388] }); // brand plum #1d5c4d
     doc.text(colDesc, y, desc, { size: 9, maxWidth: descWidth, lineHeight: 12 });
     y += rowH;
   }
@@ -127,7 +127,7 @@ export function Resources() {
           : 'The full HCPCS Level II code set from the official CMS dataset, cross-linked to our catalog.'} />
       <div style={{ maxWidth: 1360, margin: '0 auto', padding: `24px ${padX}px ${isMobile ? 56 : 80}px` }}>
         <div style={{ display: 'flex', gap: 10, marginBottom: 20, flexWrap: 'wrap' }}>
-          <div style={{ flex: '1 1 240px', padding: '4px 18px', background: D.card, borderRadius: 999, border: `1px solid ${D.line}`, display: 'flex', alignItems: 'center', gap: 10 }}>
+          <div style={{ flex: '1 1 240px', padding: '4px 18px', background: D.card, borderRadius: 4, border: `1px solid ${D.line}`, display: 'flex', alignItems: 'center', gap: 10 }}>
             <Icon.search />
             <input
               value={q}
@@ -141,7 +141,7 @@ export function Resources() {
           <button
             onClick={() => exportPdf(filtered, { family, query: q.trim(), updated })}
             disabled={!data || filtered.length === 0}
-            style={{ background: D.plum, color: D.paper, border: 'none', padding: isMobile ? '12px 22px' : '0 24px', borderRadius: 999, cursor: data && filtered.length ? 'pointer' : 'default', fontSize: 14, fontWeight: 500, opacity: data && filtered.length ? 1 : 0.4 }}>
+            style={{ background: D.plum, color: D.paper, border: 'none', padding: isMobile ? '12px 22px' : '0 24px', borderRadius: 4, cursor: data && filtered.length ? 'pointer' : 'default', fontSize: 14, fontWeight: 500, opacity: data && filtered.length ? 1 : 0.4 }}>
             Download PDF{data && filtered.length ? ` (${filtered.length.toLocaleString()} codes)` : ''}
           </button>
         </div>
@@ -203,7 +203,7 @@ export function Resources() {
                                 {skusForCode(code).map((sku) => {
                                   const p = productForSku(sku);
                                   return (
-                                    <Link key={sku} to={`/products/${encodeURIComponent(sku)}`} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, margin: '10px 10px 0 0', padding: '8px 14px', borderRadius: 999, border: `1px solid ${D.line}`, background: D.paper, color: D.ink, fontSize: 12, textDecoration: 'none' }}>
+                                    <Link key={sku} to={`/products/${encodeURIComponent(sku)}`} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, margin: '10px 10px 0 0', padding: '8px 14px', borderRadius: 4, border: `1px solid ${D.line}`, background: D.paper, color: D.ink, fontSize: 12, textDecoration: 'none' }}>
                                       <span style={{ fontFamily: D.mono, color: D.plum, fontWeight: 600 }}>{sku}</span>
                                       <span>{p?.name}</span>
                                       {p?.pdac_approved && <span style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, color: '#3b8760' }}>PDAC</span>}
@@ -223,7 +223,7 @@ export function Resources() {
                 </div>
                 {filtered.length > limit && (
                   <div style={{ padding: 16, textAlign: 'center', borderTop: `1px solid ${D.line}` }}>
-                    <button onClick={() => setLimit(limit + PAGE_SIZE * 4)} style={{ background: 'transparent', color: D.plum, border: `1px solid ${D.plum}`, padding: '10px 24px', borderRadius: 999, cursor: 'pointer', fontSize: 13, fontWeight: 600 }}>
+                    <button onClick={() => setLimit(limit + PAGE_SIZE * 4)} style={{ background: 'transparent', color: D.plum, border: `1px solid ${D.plum}`, padding: '10px 24px', borderRadius: 4, cursor: 'pointer', fontSize: 13, fontWeight: 600 }}>
                       Show more ({(filtered.length - limit).toLocaleString()} remaining)
                     </button>
                   </div>

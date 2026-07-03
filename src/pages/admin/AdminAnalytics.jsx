@@ -8,7 +8,7 @@ import { fmt } from '../../lib/format.js';
 import { useViewport } from '../../lib/viewport.js';
 
 const SEGMENT_LABEL = { asc: 'Ambulatory surgery', gov: 'Gov/VA', pharmacy: 'Pharmacy', distributors: 'Regional distributors', ems: 'EMS', hospital: 'Hospital' };
-const SEGMENT_COLOR = { asc: '#5e2963', gov: '#b8502c', pharmacy: '#3b8760', distributors: '#8f8490', ems: '#b8a04a', hospital: '#564b5c' };
+const SEGMENT_COLOR = { asc: '#1d5c4d', gov: '#b3592b', pharmacy: '#3b8760', distributors: '#8b968d', ems: '#b8a04a', hospital: '#57635a' };
 
 export function AdminAnalytics() {
   const { isMobile } = useViewport();

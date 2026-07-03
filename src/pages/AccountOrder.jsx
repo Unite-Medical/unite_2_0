@@ -35,7 +35,7 @@ export function AccountOrder() {
 
         <div style={{ display: 'flex', gap: 8, marginBottom: 24, flexWrap: 'wrap' }}>
           {TABS.map(([id, label]) => (
-            <button key={id} onClick={() => setTab(id)} style={{ padding: '9px 16px', borderRadius: 999, border: `1.5px solid ${tab === id ? D.plum : D.line}`, background: tab === id ? D.plum : D.card, color: tab === id ? D.paper : D.ink2, cursor: 'pointer', fontSize: 13, fontWeight: 600 }}>{label}</button>
+            <button key={id} onClick={() => setTab(id)} style={{ padding: '9px 16px', borderRadius: 4, border: `1.5px solid ${tab === id ? D.plum : D.line}`, background: tab === id ? D.plum : D.card, color: tab === id ? D.paper : D.ink2, cursor: 'pointer', fontSize: 13, fontWeight: 600 }}>{label}</button>
           ))}
         </div>
 
@@ -160,5 +160,5 @@ function ReorderPreview({ title, lines, onAdd, navigate, onClose }) {
   );
 }
 
-const primaryBtn = (on) => ({ background: D.plum, color: D.paper, border: 'none', padding: '11px 18px', borderRadius: 999, fontSize: 13, fontWeight: 600, cursor: on ? 'pointer' : 'default', opacity: on ? 1 : 0.5 });
-const outlineBtn = { background: 'transparent', color: D.plum, border: `1.5px solid ${D.plum}`, padding: '9px 16px', borderRadius: 999, fontSize: 13, fontWeight: 600, cursor: 'pointer' };
+const primaryBtn = (on) => ({ background: D.plum, color: D.paper, border: 'none', padding: '11px 18px', borderRadius: 4, fontSize: 13, fontWeight: 600, cursor: on ? 'pointer' : 'default', opacity: on ? 1 : 0.5 });
+const outlineBtn = { background: 'transparent', color: D.plum, border: `1.5px solid ${D.plum}`, padding: '9px 16px', borderRadius: 4, fontSize: 13, fontWeight: 600, cursor: 'pointer' };

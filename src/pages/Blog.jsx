@@ -36,7 +36,7 @@ export function Blog() {
         <div style={{ maxWidth: 1360, margin: '0 auto', padding: `24px ${padX}px ${isMobile ? 56 : 80}px` }}>
           <div style={{ display: 'flex', gap: 8, marginBottom: 22, flexWrap: 'wrap' }}>
             {cats.map((t) => (
-              <button key={t} onClick={() => setCat(t)} style={{ background: cat === t ? D.plum : D.card, color: cat === t ? D.paper : D.ink2, border: `1px solid ${cat === t ? D.plum : D.line}`, padding: '8px 14px', borderRadius: 999, cursor: 'pointer', fontSize: 13, fontFamily: D.sans }}>{t}</button>
+              <button key={t} onClick={() => setCat(t)} style={{ background: cat === t ? D.plum : D.card, color: cat === t ? D.paper : D.ink2, border: `1px solid ${cat === t ? D.plum : D.line}`, padding: '8px 14px', borderRadius: 4, cursor: 'pointer', fontSize: 13, fontFamily: D.sans }}>{t}</button>
             ))}
           </div>
 

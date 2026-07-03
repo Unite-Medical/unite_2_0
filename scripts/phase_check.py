@@ -305,7 +305,7 @@ def check_phase_1() -> PhaseResult:
         require_in_file(nav, r"36F79725D0203", phase=1, rule="Nav: new BPA")
     )
     res.violations.extend(
-        require_in_file(nav, r"CAGE\s*·\s*8MK70", phase=1, rule="Nav: CAGE row")
+        require_in_file(nav, r"CAGE\s*[·]?\s*8MK70", phase=1, rule="Nav: CAGE row")
     )
     res.violations.extend(
         require_in_file(

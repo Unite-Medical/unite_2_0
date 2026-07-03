@@ -219,7 +219,7 @@ const INTEGRATIONS = [
 
 const BADGE = {
   real:       ['#2d6a4f', 'CONNECTED'],
-  stub:       ['#8f8490', 'STUB'],
+  stub:       ['#8b968d', 'STUB'],
   partial:    [D.terra, 'PARTIAL'],
   error:      ['#c3382d', 'ERROR'],
 };
@@ -287,8 +287,8 @@ export function AdminIntegrations() {
         <p style={{ fontSize: 14, color: D.ink2, marginTop: 10, maxWidth: 720, lineHeight: 1.55 }}>
           Every external service the platform talks to. Each row shows whether credentials are configured (Vercel/Doppler env vars), the last server event we received, and a button to ping the upstream.
         </p>
-        <div style={{ marginTop: 14, display: 'inline-flex', alignItems: 'center', gap: 10, padding: '8px 14px', borderRadius: 999, border: `1px solid ${D.line}`, background: D.card }}>
-          <span style={{ width: 8, height: 8, borderRadius: 4, background: serverHealth ? '#2d6a4f' : serverHealth === false ? '#c3382d' : '#8f8490' }} />
+        <div style={{ marginTop: 14, display: 'inline-flex', alignItems: 'center', gap: 10, padding: '8px 14px', borderRadius: 4, border: `1px solid ${D.line}`, background: D.card }}>
+          <span style={{ width: 8, height: 8, borderRadius: 4, background: serverHealth ? '#2d6a4f' : serverHealth === false ? '#c3382d' : '#8b968d' }} />
           <span style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 0.8, color: D.ink2 }}>
             {serverHealth ? `Serverless layer online · ${Object.values(serverHealth.services || {}).filter((s) => s.configured).length} services configured`
               : serverHealth === false ? 'Serverless layer unreachable (local dev — clients fall back to stubs)'
@@ -308,7 +308,7 @@ export function AdminIntegrations() {
               <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'minmax(0, 1fr) 280px', gap: 24, alignItems: 'start' }}>
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
-                    <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, padding: '4px 10px', borderRadius: 999, background: `${color}20`, color }}>{label}</span>
+                    <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, padding: '4px 10px', borderRadius: 4, background: `${color}20`, color }}>{label}</span>
                     <span style={{ fontFamily: D.mono, fontSize: 11, color: D.ink3 }}>{it.prd}</span>
                     <a href={it.docsUrl} target="_blank" rel="noreferrer" style={{ marginLeft: 'auto', fontFamily: D.mono, fontSize: 11, color: D.plum, textDecoration: 'underline' }}>docs ↗</a>
                   </div>
@@ -336,13 +336,13 @@ export function AdminIntegrations() {
                   <button
                     onClick={() => runPing(it)}
                     disabled={running === it.key}
-                    style={{ background: D.ink, color: D.paper, border: 'none', padding: '11px 18px', borderRadius: 999, fontSize: 13, fontWeight: 500, cursor: running === it.key ? 'wait' : 'pointer', opacity: running === it.key ? 0.6 : 1, display: 'inline-flex', alignItems: 'center', gap: 8, justifyContent: 'center' }}
+                    style={{ background: D.ink, color: D.paper, border: 'none', padding: '11px 18px', borderRadius: 4, fontSize: 13, fontWeight: 500, cursor: running === it.key ? 'wait' : 'pointer', opacity: running === it.key ? 0.6 : 1, display: 'inline-flex', alignItems: 'center', gap: 8, justifyContent: 'center' }}
                   >
                     {running === it.key ? 'Pinging…' : <>Run a ping <Icon.arrow /></>}
                   </button>
 
                   {it.connectUrl && (
-                    <a href={it.connectUrl} style={{ background: 'transparent', color: D.plum, border: `1px solid ${D.plum}`, padding: '10px 18px', borderRadius: 999, fontSize: 13, fontWeight: 500, textAlign: 'center', textDecoration: 'none' }}>
+                    <a href={it.connectUrl} style={{ background: 'transparent', color: D.plum, border: `1px solid ${D.plum}`, padding: '10px 18px', borderRadius: 4, fontSize: 13, fontWeight: 500, textAlign: 'center', textDecoration: 'none' }}>
                       Connect via OAuth ↗
                     </a>
                   )}

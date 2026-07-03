@@ -36,7 +36,7 @@ export function AccountSettings() {
         <Nav />
         <main style={{ maxWidth: 640, margin: '0 auto', padding: '120px 24px', textAlign: 'center' }}>
           <h1 style={{ fontFamily: D.display, fontSize: 56, fontWeight: 400, letterSpacing: -1.2, lineHeight: 1, margin: 0 }}>Sign in to view settings.</h1>
-          <button onClick={() => navigate('/login')} style={{ marginTop: 16, background: D.plum, color: D.paper, border: 'none', padding: '13px 22px', borderRadius: 999, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>Sign in</button>
+          <button onClick={() => navigate('/login')} style={{ marginTop: 16, background: D.plum, color: D.paper, border: 'none', padding: '13px 22px', borderRadius: 4, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>Sign in</button>
         </main>
       </div>
     );
@@ -78,7 +78,7 @@ export function AccountSettings() {
 
           <div style={{ display: 'grid', gap: 18 }}>
             {tab === 'Profile' && (
-              <Card title="Your profile" action={editing ? <button onClick={saveProfile} style={{ background: D.plum, color: D.paper, border: 'none', padding: '8px 16px', borderRadius: 999, fontSize: 12, cursor: 'pointer' }}>Save</button> : <button onClick={() => setEditing(true)} style={{ background: 'transparent', color: D.plum, border: `1px solid ${D.plum}`, padding: '8px 16px', borderRadius: 999, fontSize: 12, cursor: 'pointer' }}>Edit</button>}>
+              <Card title="Your profile" action={editing ? <button onClick={saveProfile} style={{ background: D.plum, color: D.paper, border: 'none', padding: '8px 16px', borderRadius: 4, fontSize: 12, cursor: 'pointer' }}>Save</button> : <button onClick={() => setEditing(true)} style={{ background: 'transparent', color: D.plum, border: `1px solid ${D.plum}`, padding: '8px 16px', borderRadius: 4, fontSize: 12, cursor: 'pointer' }}>Edit</button>}>
                 <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 20 }}>
                   <Cell label="Name">{editing ? <Input value={name} onChange={setName} /> : (profile?.name || '—')}</Cell>
                   <Cell label="Title">{editing ? <Input value={title} onChange={setTitle} /> : (profile?.title || '—')}</Cell>
@@ -118,7 +118,7 @@ export function AccountSettings() {
             )}
 
             {tab === 'Saved addresses' && (
-              <Card title="Addresses" action={<button onClick={addAddress} style={{ background: D.plum, color: D.paper, border: 'none', padding: '8px 16px', borderRadius: 999, fontSize: 12, cursor: 'pointer' }}>+ Add address</button>}>
+              <Card title="Addresses" action={<button onClick={addAddress} style={{ background: D.plum, color: D.paper, border: 'none', padding: '8px 16px', borderRadius: 4, fontSize: 12, cursor: 'pointer' }}>+ Add address</button>}>
                 <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 12 }}>
                   {addresses.map((a) => (
                     <button key={a.id} onClick={() => setDefault(a.id)} style={{ padding: 18, background: D.paper, borderRadius: 10, border: `${a.is_default ? 2 : 1}px solid ${a.is_default ? D.plum : D.line}`, cursor: 'pointer', textAlign: 'left', fontFamily: D.sans, color: D.ink }}>
@@ -155,7 +155,7 @@ export function AccountSettings() {
                       <div style={{ fontFamily: D.display, fontSize: 18, letterSpacing: -0.2 }}>{n}</div>
                       <div style={{ fontSize: 12, color: D.ink2, marginTop: 4 }}>{sub}</div>
                     </div>
-                    <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, padding: '4px 10px', borderRadius: 999, background: st === 'connected' ? 'rgba(94,41,99,.1)' : D.terraSoft, color: st === 'connected' ? D.plum : D.terra }}>{st.toUpperCase()}</span>
+                    <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, padding: '4px 10px', borderRadius: 4, background: st === 'connected' ? 'rgba(29,92,77,.1)' : D.terraSoft, color: st === 'connected' ? D.plum : D.terra }}>{st.toUpperCase()}</span>
                   </div>
                 ))}
               </Card>

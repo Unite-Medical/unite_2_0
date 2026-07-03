@@ -94,7 +94,7 @@ function BrandAskForm({ isMobile }) {
         <label><div style={label}>ORGANIZATION</div><input value={form.org} onChange={(e) => set('org', e.target.value)} style={input} /></label>
         <label><div style={label}>WORK EMAIL</div><input required type="email" value={form.email} onChange={(e) => set('email', e.target.value)} style={input} /></label>
       </div>
-      <button type="submit" disabled={busy} style={{ marginTop: 14, background: D.plum, color: D.paper, border: 'none', padding: '13px 22px', borderRadius: 999, fontSize: 14, fontWeight: 600, cursor: busy ? 'wait' : 'pointer', opacity: busy ? 0.7 : 1, fontFamily: D.sans }}>
+      <button type="submit" disabled={busy} style={{ marginTop: 14, background: D.plum, color: D.paper, border: 'none', padding: '13px 22px', borderRadius: 4, fontSize: 14, fontWeight: 600, cursor: busy ? 'wait' : 'pointer', opacity: busy ? 0.7 : 1, fontFamily: D.sans }}>
         {busy ? 'Sending…' : 'Ask about this brand →'}
       </button>
     </form>
@@ -128,10 +128,10 @@ export function Diagnostics() {
               Don&apos;t see your brand? Just ask.
             </p>
             <div style={{ display: 'flex', gap: 10, marginTop: 28, flexWrap: 'wrap' }}>
-              <button onClick={() => navigate('/catalog?cat=Diagnostics')} style={{ background: D.ink, color: D.paper, border: 'none', padding: isMobile ? '14px 22px' : '15px 26px', borderRadius: 999, fontSize: 14.5, fontWeight: 600, cursor: 'pointer', fontFamily: D.sans, display: 'inline-flex', alignItems: 'center', gap: 10 }}>
+              <button onClick={() => navigate('/catalog?cat=Diagnostics')} style={{ background: D.ink, color: D.paper, border: 'none', padding: isMobile ? '14px 22px' : '15px 26px', borderRadius: 4, fontSize: 14.5, fontWeight: 600, cursor: 'pointer', fontFamily: D.sans, display: 'inline-flex', alignItems: 'center', gap: 10 }}>
                 Browse stocked diagnostics <Icon.arrow />
               </button>
-              <a href="#brand-ask" style={{ background: 'transparent', color: D.ink, border: `1.5px solid ${D.ink}`, padding: isMobile ? '13px 22px' : '14px 26px', borderRadius: 999, fontSize: 14.5, fontWeight: 500 }}>
+              <a href="#brand-ask" style={{ background: 'transparent', color: D.ink, border: `1.5px solid ${D.ink}`, padding: isMobile ? '13px 22px' : '14px 26px', borderRadius: 4, fontSize: 14.5, fontWeight: 500 }}>
                 Ask about a brand
               </a>
             </div>
@@ -190,12 +190,12 @@ export function Diagnostics() {
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16, flexWrap: 'wrap' }}>
                 <span style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plumSoft }}>THE UNITE LINE</span>
-                {!UNITE_LINE_LIVE && <StatusPill dotColor={D.terra} style={{ background: 'rgba(247,242,234,.1)', color: 'rgba(247,242,234,.8)', border: '1px solid rgba(247,242,234,.25)' }}>COMING SOON</StatusPill>}
+                {!UNITE_LINE_LIVE && <StatusPill dotColor={D.terra} style={{ background: 'rgba(243,242,235,.1)', color: 'rgba(243,242,235,.8)', border: '1px solid rgba(243,242,235,.25)' }}>COMING SOON</StatusPill>}
               </div>
               <h2 style={{ fontFamily: D.display, fontSize: 'clamp(28px, 5vw, 52px)', fontWeight: 400, letterSpacing: '-0.03em', lineHeight: 1.05, margin: 0 }}>
                 Every major brand — <Grad>and our own line</Grad>.
               </h2>
-              <p style={{ fontSize: isMobile ? 14.5 : 16, lineHeight: 1.65, color: 'rgba(247,242,234,.78)', marginTop: 18, maxWidth: 560 }}>
+              <p style={{ fontSize: isMobile ? 14.5 : 16, lineHeight: 1.65, color: 'rgba(243,242,235,.78)', marginTop: 18, maxWidth: 560 }}>
                 Unite is bringing its own private-label diagnostics line to market — the same
                 proven test platforms, at wholesale economics only a manufacturer-direct line can
                 hit. Ask us for early access and launch pricing.
@@ -208,7 +208,7 @@ export function Diagnostics() {
               )}
             </div>
             <div>
-              <a href="#brand-ask" style={{ background: D.paper, color: D.ink, padding: '15px 28px', borderRadius: 999, fontSize: 15, fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 10 }}>
+              <a href="#brand-ask" style={{ background: D.paper, color: D.ink, padding: '15px 28px', borderRadius: 4, fontSize: 15, fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 10 }}>
                 Get early access <Icon.arrow />
               </a>
             </div>

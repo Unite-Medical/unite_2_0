@@ -1,3 +1,15 @@
+/* ======================================================================
+   Unite Medical — "Precision" base styles (redesign/precision-v3)
+
+   Voice: institutional procurement. Bone paper, green-black ink, one
+   surgical-green accent, hairline rules, mono data layer. Decoration is
+   typographic (scale, rules, numerals) — never gradient/glass/glow.
+
+   Legacy class names (.um-orb, .um-glass-card, .um-grad-shimmer, …) are
+   kept DEFINED but redefined or neutralized, so all pages retheme
+   without a call-site sweep.
+   ====================================================================== */
+
 *,
 *::before,
 *::after {
@@ -8,7 +20,7 @@ html,
 body {
   margin: 0;
   padding: 0;
-  background: #f7f2ea;
+  background: #f3f2eb;
   overflow-x: hidden;
 }
 
@@ -19,8 +31,8 @@ html {
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  color: #241a28;
+  font-family: 'Archivo', -apple-system, 'Helvetica Neue', sans-serif;
+  color: #16201a;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
@@ -30,14 +42,13 @@ body {
 
 button {
   font-family: inherit;
-  /* Reduce iOS tap-highlight flash but keep tap feedback elsewhere */
-  -webkit-tap-highlight-color: rgba(94, 41, 99, 0.18);
+  -webkit-tap-highlight-color: rgba(29, 92, 77, 0.16);
 }
 
 a {
   text-decoration: none;
   color: inherit;
-  -webkit-tap-highlight-color: rgba(94, 41, 99, 0.18);
+  -webkit-tap-highlight-color: rgba(29, 92, 77, 0.16);
 }
 
 /* iOS Safari zooms in on focus when input font-size < 16px. Force >= 16px. */
@@ -64,8 +75,13 @@ img {
   display: block;
 }
 
+::selection {
+  background: rgba(29, 92, 77, 0.22);
+  color: #16201a;
+}
+
 :focus-visible {
-  outline: 2px solid #5e2963;
+  outline: 2px solid #1d5c4d;
   outline-offset: 3px;
   border-radius: 2px;
 }
@@ -75,151 +91,158 @@ img {
   left: -9999px;
   top: 8px;
   z-index: 9999;
-  background: #241a28;
-  color: #f7f2ea;
+  background: #16201a;
+  color: #f3f2eb;
   padding: 10px 16px;
-  border-radius: 999px;
+  border-radius: 4px;
   font-size: 13px;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Archivo', sans-serif;
 }
 .um-skip-link:focus {
   left: 16px;
 }
 
-/* --- Design system (redesign pass) ------------------------------------ */
-
-::selection {
-  background: rgba(94, 41, 99, 0.18);
-  color: #241a28;
-}
-
-/* Floating glass nav — detached capsule that hovers over the page.
-   Wrapper is invisible and click-through; the capsule carries a deep
-   ink-plum glass (no brightness lift — it muddied photography), a
-   hairline border, top rim highlight, and a long soft drop so it
-   reads as floating rather than a full-width chrome slab. */
+/* ----------------------------------------------------------------------
+   Navigation — structured chrome, not floating glass.
+   A solid ink bar: utility row on top, primary row under it, a single
+   hairline at the bottom. Compresses slightly on scroll. No blur, no
+   capsule, no radius.
+   ---------------------------------------------------------------------- */
 .um-nav-wrap {
   position: sticky;
   top: 0;
   z-index: 30;
-  pointer-events: none;
-  /* The wrapper's padding animates 0 → inset as the bar detaches. */
-  transition: padding 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .um-nav-wrap--overlay {
   position: fixed;
   left: 0;
   right: 0;
 }
-.um-nav-glass {
-  pointer-events: auto;
-  overflow: hidden;
-  border-radius: 22px;
-  border: 1px solid rgba(247, 242, 234, 0.16);
-  background: linear-gradient(180deg, rgba(40, 22, 44, 0.82), rgba(24, 16, 27, 0.68));
-  -webkit-backdrop-filter: blur(22px) saturate(1.5);
-  backdrop-filter: blur(22px) saturate(1.5);
-  box-shadow:
-    inset 0 1px 0 rgba(247, 242, 234, 0.14),
-    inset 0 -1px 0 rgba(24, 16, 27, 0.4),
-    0 24px 60px -28px rgba(24, 16, 27, 0.65),
-    0 2px 10px rgba(24, 16, 27, 0.22);
-  transition:
-    border-radius 0.5s cubic-bezier(0.22, 1, 0.36, 1),
-    max-width 0.5s cubic-bezier(0.22, 1, 0.36, 1),
-    border-color 0.5s ease,
-    background 0.5s ease,
-    box-shadow 0.5s ease;
+.um-nav-bar {
+  background: #0e1713;
+  border-bottom: 1px solid rgba(243, 242, 235, 0.14);
+}
+.um-nav-link {
+  position: relative;
+  transition: color 0.15s ease;
+}
+.um-nav-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: #9dbcae;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.22s cubic-bezier(0.2, 0.6, 0.2, 1);
+}
+.um-nav-link:hover {
+  color: #f3f2eb;
+}
+.um-nav-link:hover::after,
+.um-nav-link[aria-current='page']::after {
+  transform: scaleX(1);
 }
 
-/* At the very top of the page the capsule is a full-bleed chrome bar —
-   square corners, edge to edge, merged with the masthead below. On
-   scroll it shrinks into the floating capsule (the form above). */
+/* Legacy nav-glass classes — neutralized (Nav no longer uses them, but
+   keep them harmless in case of stragglers). */
+.um-nav-glass,
 .um-nav-glass--top {
-  border-radius: 0;
-  border-color: rgba(247, 242, 234, 0.08);
-  background: linear-gradient(180deg, rgba(32, 18, 36, 0.92), rgba(24, 16, 27, 0.8));
-  box-shadow: inset 0 -1px 0 rgba(247, 242, 234, 0.07);
+  background: #0e1713;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .um-nav-wrap,
-  .um-nav-glass {
-    transition: none;
-  }
-}
-@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  .um-nav-glass {
-    background: #1e1322;
-  }
-}
-
-/* Glass pill button (on dark glass surfaces) */
+/* Outlined button on dark grounds (legacy .um-glass-btn call sites). */
 .um-glass-btn {
-  background: rgba(247, 242, 234, 0.12);
-  -webkit-backdrop-filter: blur(10px) saturate(1.4);
-  backdrop-filter: blur(10px) saturate(1.4);
-  border: 1px solid rgba(247, 242, 234, 0.38);
-  box-shadow: inset 0 1px 0 rgba(247, 242, 234, 0.2);
-  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  background: transparent;
+  border: 1px solid rgba(243, 242, 235, 0.35);
+  transition: background 0.18s ease, border-color 0.18s ease;
 }
 .um-glass-btn:hover {
-  background: rgba(247, 242, 234, 0.22);
-  border-color: rgba(247, 242, 234, 0.6);
-  transform: translateY(-1px);
+  background: rgba(243, 242, 235, 0.08);
+  border-color: rgba(243, 242, 235, 0.7);
 }
 
-/* Aurora orbs that drift behind the glass pane */
-.um-orb {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(46px);
-  pointer-events: none;
-}
-.um-orb-a { animation: um-orb-a 16s ease-in-out infinite alternate; }
-.um-orb-b { animation: um-orb-b 20s ease-in-out infinite alternate; }
-.um-orb-c { animation: um-orb-c 13s ease-in-out infinite alternate; }
-@keyframes um-orb-a {
-  from { transform: translate(0, 0) scale(1); }
-  to   { transform: translate(-70px, 50px) scale(1.15); }
-}
-@keyframes um-orb-b {
-  from { transform: translate(0, 0) scale(1); }
-  to   { transform: translate(90px, -40px) scale(1.1); }
-}
-@keyframes um-orb-c {
-  from { transform: translate(0, 0) scale(1); }
-  to   { transform: translate(-50px, -60px) scale(0.9); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .um-orb-a, .um-orb-b, .um-orb-c { animation: none; }
+/* ----------------------------------------------------------------------
+   Kill switches for the old decorative layer.
+   ---------------------------------------------------------------------- */
+
+/* Aurora orbs — gone, site-wide, without touching call sites. */
+.um-orb,
+.um-orb-a,
+.um-orb-b,
+.um-orb-c {
+  display: none !important;
 }
 
-/* Gradient-text shimmer — the ember→plum sweep drifts slowly so every
-   <Grad> headline feels alive without distracting. */
-@keyframes umGradShimmer {
-  0%, 100% { background-position: 0% center; }
-  50% { background-position: 100% center; }
-}
+/* Gradient-text shimmer — no animation; Grad renders italic accent now. */
 .um-grad-shimmer {
-  animation: umGradShimmer 7s ease-in-out infinite;
+  animation: none;
 }
+
+/* Film grain — retired. Flat ink panels read more like print. */
+.um-grain::after {
+  content: none;
+}
+
+/* Old liquid-glass card → solid panel on dark grounds: hairline border,
+   flat fill, no blur/bevel/sheen. */
+.um-glass-card {
+  position: relative;
+  border-radius: 6px;
+  overflow: hidden;
+  background: rgba(243, 242, 235, 0.04);
+  border: 1px solid rgba(243, 242, 235, 0.16);
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+.um-glass-card:hover {
+  border-color: rgba(243, 242, 235, 0.34);
+  background: rgba(243, 242, 235, 0.06);
+}
+.um-glass-card::before,
+.um-glass-card::after {
+  content: none;
+}
+
+/* ----------------------------------------------------------------------
+   Motion — restrained. Entrances are small and fast; hovers move 1–2px.
+   ---------------------------------------------------------------------- */
 
 /* Staggered entrance delays for masthead type (pairs with .um-fade-up) */
-.um-d1 { animation-delay: 0.08s; }
-.um-d2 { animation-delay: 0.18s; }
-.um-d3 { animation-delay: 0.3s; }
+.um-d1 { animation-delay: 0.05s; }
+.um-d2 { animation-delay: 0.12s; }
+.um-d3 { animation-delay: 0.2s; }
 
-/* Nav link hover (desktop pills, on dark chrome) */
-.um-nav-link {
-  transition: background 0.15s ease, color 0.15s ease;
+@keyframes umFadeUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
 }
-.um-nav-link:hover:not([aria-current='page']) {
-  background: rgba(247, 242, 234, 0.1);
-  color: #f7f2ea;
+.um-fade-up {
+  animation: umFadeUp 0.5s ease-out both;
 }
 
-/* Cinematic hero — full-bleed image + ink wash, slow Ken Burns drift */
+/* Scroll reveal — applied by <Reveal>, activated by IntersectionObserver */
+.um-reveal {
+  opacity: 0;
+  transform: translate3d(0, 14px, 0);
+  transition:
+    opacity 0.55s cubic-bezier(0.2, 0.6, 0.2, 1),
+    transform 0.55s cubic-bezier(0.2, 0.6, 0.2, 1);
+  will-change: opacity, transform;
+}
+.um-reveal.um-revealed {
+  opacity: 1;
+  transform: none;
+}
+
+/* Hero media — static editorial image, thin ink scrim. No Ken Burns. */
 .um-hero-media {
   position: absolute;
   inset: 0;
@@ -229,235 +252,88 @@ img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  animation: umHeroDrift 24s ease-out both;
-}
-@keyframes umHeroDrift {
-  from {
-    transform: scale(1.08);
-  }
-  to {
-    transform: scale(1);
-  }
 }
 .um-hero-scrim {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(to top, rgba(24, 16, 27, 0.94) 0%, rgba(24, 16, 27, 0.55) 45%, rgba(24, 16, 27, 0.35) 100%),
-    linear-gradient(105deg, rgba(24, 16, 27, 0.85) 0%, rgba(24, 16, 27, 0.25) 60%, rgba(94, 41, 99, 0.25) 100%);
-}
-@media (prefers-reduced-motion: reduce) {
-  .um-hero-media img {
-    animation: none;
-    transform: none;
-  }
+    linear-gradient(to top, rgba(14, 23, 19, 0.92) 0%, rgba(14, 23, 19, 0.5) 45%, rgba(14, 23, 19, 0.3) 100%);
 }
 
-/* CTA arrow nudge — any button/link hover slides its arrow icon */
+/* CTA arrow nudge */
 .um-arrow {
-  transition: transform 0.22s cubic-bezier(0.2, 0.6, 0.2, 1);
+  transition: transform 0.2s cubic-bezier(0.2, 0.6, 0.2, 1);
 }
 button:hover .um-arrow,
 a:hover .um-arrow {
   transform: translateX(3px);
 }
 
-/* Scroll reveal — applied by <Reveal>, activated by IntersectionObserver */
-.um-reveal {
-  opacity: 0;
-  transform: translate3d(0, 22px, 0);
-  transition:
-    opacity 0.7s cubic-bezier(0.2, 0.6, 0.2, 1),
-    transform 0.7s cubic-bezier(0.2, 0.6, 0.2, 1);
-  will-change: opacity, transform;
-}
-.um-reveal.um-revealed {
-  opacity: 1;
-  transform: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .um-reveal {
-    opacity: 1 !important;
-    transform: none !important;
-    transition: none !important;
-  }
-}
-
-/* --- Liquid glass — dark plum (homepage metrics) ----------------------- */
-/* Recipe: frosted base (blur + saturate so the backdrop enriches, not    */
-/* grays), a stacked box-shadow bevel (top rim / edge ring / bottom       */
-/* shade / drop), a static top gloss, and a cursor-glide sheen driven by  */
-/* --mx/--sheen from one delegated pointermove listener.                  */
-
-.um-glass-card {
-  position: relative;
-  border-radius: 24px;
-  overflow: hidden;
-  background: linear-gradient(135deg, rgba(120, 52, 126, 0.42), rgba(38, 14, 44, 0.6) 55%, rgba(74, 28, 80, 0.45));
-  backdrop-filter: blur(18px) saturate(180%) brightness(1.08);
-  -webkit-backdrop-filter: blur(18px) saturate(180%) brightness(1.08);
-  box-shadow:
-    inset 0 1px 0.5px rgba(255, 255, 255, 0.38),
-    inset 1px 0 0.5px rgba(255, 255, 255, 0.12),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.1),
-    inset 0 -14px 32px -16px rgba(0, 0, 0, 0.55),
-    0 28px 70px -20px rgba(0, 0, 0, 0.65);
-  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease;
-}
-.um-glass-card:hover {
-  transform: translateY(-4px);
-  box-shadow:
-    inset 0 1px 0.5px rgba(255, 255, 255, 0.5),
-    inset 1px 0 0.5px rgba(255, 255, 255, 0.16),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.16),
-    inset 0 -14px 32px -16px rgba(0, 0, 0, 0.55),
-    0 36px 90px -22px rgba(0, 0, 0, 0.75);
-}
-
-/* Static top gloss — the always-on sheen where light catches the pane */
-.um-glass-card::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.16), transparent 38%);
-}
-
-/* Reactive sheen — a diagonal band of light that GLIDES toward the      */
-/* cursor (transitioned background-position), not glued to it.           */
-.um-glass-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  opacity: var(--sheen, 0);
-  transition:
-    opacity 0.6s ease,
-    background-position 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-  background-image: linear-gradient(
-    105deg,
-    transparent 40%,
-    rgba(255, 255, 255, 0.1) 49%,
-    rgba(255, 255, 255, 0.17) 50%,
-    rgba(255, 255, 255, 0.1) 51%,
-    transparent 60%
-  );
-  background-size: 250% 100%;
-  background-repeat: no-repeat;
-  background-position: var(--mx, 50%) 0;
-}
-
-/* Film grain over the glass canvas — keeps big dark surfaces from       */
-/* looking sterile. One fixed compositor layer, pointer-transparent.     */
-.um-grain::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.05;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='7'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size: 160px 160px;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .um-glass-card::before {
-    display: none;
-  }
-  .um-glass-card,
-  .um-glass-card:hover {
-    transform: none;
-    transition: none;
-  }
-}
-
-/* Split panels that invert to plum on hover (homepage: Two ways to buy) */
+/* Split panels that invert on hover (homepage: Two ways to buy) */
 .um-flip-panel {
-  background: #fbf7ef;
-  color: #241a28;
-  border: 1px solid #e3dacd;
+  background: #fcfbf6;
+  color: #16201a;
+  border: 1px solid #dbd9cc;
   transition:
-    background 0.4s cubic-bezier(0.2, 0.6, 0.2, 1),
-    color 0.4s cubic-bezier(0.2, 0.6, 0.2, 1),
-    border-color 0.4s ease,
-    transform 0.3s ease,
-    box-shadow 0.3s ease;
+    background 0.3s cubic-bezier(0.2, 0.6, 0.2, 1),
+    color 0.3s cubic-bezier(0.2, 0.6, 0.2, 1),
+    border-color 0.3s ease;
 }
 .um-flip-panel .um-flip-numeral {
-  color: rgba(94, 41, 99, 0.1);
-  transition: color 0.4s ease;
+  color: rgba(29, 92, 77, 0.12);
+  transition: color 0.3s ease;
 }
 .um-flip-panel .um-flip-sub {
-  color: #564b5c;
-  transition: color 0.4s ease;
+  color: #57635a;
+  transition: color 0.3s ease;
 }
 .um-flip-panel .um-flip-cta {
-  background: #241a28;
-  color: #f7f2ea;
-  transition: background 0.4s ease, color 0.4s ease;
+  background: #16201a;
+  color: #f3f2eb;
+  transition: background 0.3s ease, color 0.3s ease;
 }
 .um-flip-panel:hover,
 .um-flip-panel:focus-visible {
-  background: #5e2963;
-  color: #f7f2ea;
-  border-color: #5e2963;
-  transform: translateY(-4px);
-  box-shadow: 0 30px 60px -28px rgba(94, 41, 99, 0.55);
+  background: #1d5c4d;
+  color: #f3f2eb;
+  border-color: #1d5c4d;
 }
 .um-flip-panel:hover .um-flip-numeral,
 .um-flip-panel:focus-visible .um-flip-numeral {
-  color: rgba(247, 242, 234, 0.14);
+  color: rgba(243, 242, 235, 0.16);
 }
 .um-flip-panel:hover .um-flip-sub,
 .um-flip-panel:focus-visible .um-flip-sub {
-  color: #e5d6e7;
+  color: #cfe0d7;
 }
 .um-flip-panel:hover .um-flip-cta,
 .um-flip-panel:focus-visible .um-flip-cta {
-  background: #f7f2ea;
-  color: #5e2963;
+  background: #f3f2eb;
+  color: #1d5c4d;
 }
 
-/* Product cutout imagery — background-removed PNGs floating over a
-   soft wash. The product "lifts" toward you on card hover. */
+/* Product cutout imagery — subtle lift only. */
 .um-cutout-img {
-  filter: drop-shadow(0 16px 22px rgba(36, 26, 40, 0.22));
-  transition:
-    transform 0.6s cubic-bezier(0.2, 0.6, 0.2, 1),
-    filter 0.6s ease;
+  filter: drop-shadow(0 12px 16px rgba(14, 23, 19, 0.18));
+  transition: transform 0.45s cubic-bezier(0.2, 0.6, 0.2, 1);
   will-change: transform;
 }
 .um-card:hover .um-cutout-img {
-  transform: translateY(-7px) scale(1.06) rotate(-1.2deg);
-  filter: drop-shadow(0 30px 38px rgba(36, 26, 40, 0.3));
+  transform: translateY(-4px);
 }
-
-/* The wash behind a cutout brightens slightly under the cursor */
 .um-cutout-stage {
-  transition: filter 0.5s ease;
+  transition: filter 0.4s ease;
 }
 .um-card:hover .um-cutout-stage {
-  filter: saturate(1.12) brightness(1.02);
+  filter: saturate(1.05);
 }
 
-/* Round add-to-cart button — inverts to plum and pops */
+/* Round add-to-cart button */
 .um-add-btn {
-  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  transition: background-color 0.18s ease;
 }
 .um-add-btn:hover {
-  background-color: #5e2963 !important;
-  transform: scale(1.1);
-  box-shadow: 0 10px 22px -8px rgba(94, 41, 99, 0.55);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .um-cutout-img,
-  .um-card:hover .um-cutout-img {
-    transition: none;
-    transform: none;
-  }
+  background-color: #1d5c4d !important;
 }
 
 /* Horizontal product rail — snap scrolling, hidden scrollbar */
@@ -469,72 +345,53 @@ a:hover .um-arrow {
   display: none;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .um-flip-panel,
-  .um-flip-panel * {
-    transition: none !important;
-  }
-  .um-flip-panel:hover {
-    transform: none;
-  }
-}
-
-/* --- Interaction polish (UI pass) ------------------------------------- */
+/* ----------------------------------------------------------------------
+   Interaction polish
+   ---------------------------------------------------------------------- */
 
 button {
   transition:
-    background-color 0.18s ease,
-    color 0.18s ease,
-    border-color 0.18s ease,
-    opacity 0.18s ease,
-    transform 0.12s ease;
-}
-button:active:not(:disabled) {
-  transform: scale(0.985);
+    background-color 0.16s ease,
+    color 0.16s ease,
+    border-color 0.16s ease,
+    opacity 0.16s ease;
 }
 
-/* Card hover: gentle lift + photo zoom. Opt-in via .um-card. */
+/* Card hover: border darkens; no levitation. */
 .um-card {
-  transition:
-    transform 0.25s ease,
-    box-shadow 0.25s ease,
-    border-color 0.25s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 .um-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 22px 44px -24px rgba(36, 26, 40, 0.3);
+  border-color: #16201a !important;
 }
 .um-card img {
-  transition: transform 0.7s cubic-bezier(0.2, 0.6, 0.2, 1);
+  transition: transform 0.5s cubic-bezier(0.2, 0.6, 0.2, 1);
 }
 .um-card:hover img {
-  transform: scale(1.045);
+  transform: scale(1.02);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .um-card,
-  .um-card img,
-  button {
-    transition: none !important;
-  }
-  .um-card:hover {
-    transform: none;
-  }
-  .um-card:hover img {
-    transform: none;
-  }
+/* Index-row hover (homepage segment index, list rows) */
+.um-index-row {
+  transition: background 0.18s ease, color 0.18s ease;
+}
+.um-index-row:hover {
+  background: #16201a;
+  color: #f3f2eb !important;
+}
+.um-index-row:hover * {
+  color: inherit !important;
 }
 
 /* Generic horizontal-scroll wrapper for wide tables on mobile. */
 .um-scroll-x {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
-  /* Pad the scroll-shadow visual cue */
   background:
-    linear-gradient(to right, #fbf7ef 30%, rgba(251, 247, 239, 0)) left center,
-    linear-gradient(to left, #fbf7ef 30%, rgba(251, 247, 239, 0)) right center,
-    radial-gradient(farthest-side at 0 50%, rgba(36, 26, 40, 0.12), transparent) left center,
-    radial-gradient(farthest-side at 100% 50%, rgba(36, 26, 40, 0.12), transparent) right center;
+    linear-gradient(to right, #fcfbf6 30%, rgba(252, 251, 246, 0)) left center,
+    linear-gradient(to left, #fcfbf6 30%, rgba(252, 251, 246, 0)) right center,
+    radial-gradient(farthest-side at 0 50%, rgba(14, 23, 19, 0.12), transparent) left center,
+    radial-gradient(farthest-side at 100% 50%, rgba(14, 23, 19, 0.12), transparent) right center;
   background-size: 24px 100%, 24px 100%, 12px 100%, 12px 100%;
   background-repeat: no-repeat;
   background-attachment: local, local, scroll, scroll;
@@ -548,22 +405,18 @@ button:active:not(:disabled) {
     transform: translate3d(-50%, 0, 0);
   }
 }
-
 .um-marquee {
   display: flex;
   width: max-content;
   animation: umMarquee 38s linear infinite;
   will-change: transform;
 }
-
 .um-marquee--reverse {
   animation-direction: reverse;
 }
-
 .um-marquee--slow {
   animation-duration: 60s;
 }
-
 .um-marquee-pause:hover .um-marquee {
   animation-play-state: paused;
 }
@@ -580,30 +433,14 @@ button:active:not(:disabled) {
   }
 }
 
-@keyframes umFadeUp {
-  from {
-    opacity: 0;
-    transform: translate3d(0, 12px, 0);
-  }
-  to {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-  }
-}
-
-.um-fade-up {
-  animation: umFadeUp 0.6s ease-out both;
-}
-
-/* Mobile drawer used by Nav + AdminShell */
+/* Mobile drawer used by Nav + AdminShell — solid paper, sharp edge. */
 .um-drawer-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(36, 26, 40, 0.46);
-  backdrop-filter: blur(2px);
+  background: rgba(14, 23, 19, 0.5);
   z-index: 60;
-  pointer-events: auto; /* wrapper is pointer-events:none */
-  animation: umFadeIn 0.18s ease-out;
+  pointer-events: auto;
+  animation: umFadeIn 0.16s ease-out;
 }
 @keyframes umFadeIn {
   from {
@@ -621,20 +458,11 @@ button:active:not(:disabled) {
   height: 100vh;
   height: 100dvh;
   width: min(86vw, 380px);
-  background: rgba(247, 242, 234, 0.88);
-  -webkit-backdrop-filter: blur(24px) saturate(1.5);
-  backdrop-filter: blur(24px) saturate(1.5);
+  background: #f3f2eb;
+  border-left: 1px solid #dbd9cc;
   z-index: 61;
   overflow-y: auto;
-  box-shadow:
-    inset 1px 0 0 rgba(255, 255, 255, 0.5),
-    -20px 0 60px -20px rgba(36, 26, 40, 0.4);
-  animation: umSlideIn 0.22s ease-out;
-}
-@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  .um-drawer {
-    background: #f7f2ea;
-  }
+  animation: umSlideIn 0.2s ease-out;
 }
 @keyframes umSlideIn {
   from {
@@ -660,5 +488,10 @@ button:active:not(:disabled) {
   .um-marquee {
     animation: none !important;
     transform: none !important;
+  }
+  .um-reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
   }
 }

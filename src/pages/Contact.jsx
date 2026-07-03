@@ -113,7 +113,7 @@ export function Contact() {
                   <input type="checkbox" checked={form.route_to_rep} onChange={(e) => set('route_to_rep', e.target.checked)} style={{ accentColor: D.plum, marginRight: 8 }} />
                   Route this to a sales rep (recommended)
                 </label>
-                <button type="submit" disabled={submitting} style={{ marginTop: 16, background: D.plum, color: D.paper, border: 'none', padding: '14px 22px', borderRadius: 999, fontSize: 14, fontWeight: 600, cursor: submitting ? 'wait' : 'pointer', opacity: submitting ? 0.7 : 1 }}>
+                <button type="submit" disabled={submitting} style={{ marginTop: 16, background: D.plum, color: D.paper, border: 'none', padding: '14px 22px', borderRadius: 4, fontSize: 14, fontWeight: 600, cursor: submitting ? 'wait' : 'pointer', opacity: submitting ? 0.7 : 1 }}>
                   {submitting ? 'Sending…' : 'Send message'}
                 </button>
               </>

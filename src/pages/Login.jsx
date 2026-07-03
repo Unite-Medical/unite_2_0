@@ -85,14 +85,14 @@ export function Login() {
               />
             </label>
             {error && <div style={{ marginTop: 12, padding: 10, borderRadius: 8, background: '#fbe9e1', color: '#7a2d10', fontSize: 13 }}>{error}</div>}
-            <button type="submit" disabled={submitting} style={{ marginTop: 18, width: '100%', background: D.plum, color: D.paper, border: 'none', padding: 14, borderRadius: 999, fontSize: 14, fontWeight: 600, cursor: submitting ? 'wait' : 'pointer', opacity: submitting ? 0.7 : 1 }}>
+            <button type="submit" disabled={submitting} style={{ marginTop: 18, width: '100%', background: D.plum, color: D.paper, border: 'none', padding: 14, borderRadius: 4, fontSize: 14, fontWeight: 600, cursor: submitting ? 'wait' : 'pointer', opacity: submitting ? 0.7 : 1 }}>
               {submitting ? 'Signing in…' : 'Sign in'}
             </button>
             <button
               type="button"
               onClick={handleDemoAdmin}
               disabled={submitting}
-              style={{ marginTop: 10, width: '100%', background: D.ink, color: D.paper, border: 'none', padding: 13, borderRadius: 999, fontSize: 13, fontWeight: 600, cursor: submitting ? 'wait' : 'pointer', opacity: submitting ? 0.7 : 1, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
+              style={{ marginTop: 10, width: '100%', background: D.ink, color: D.paper, border: 'none', padding: 13, borderRadius: 4, fontSize: 13, fontWeight: 600, cursor: submitting ? 'wait' : 'pointer', opacity: submitting ? 0.7 : 1, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
             >
               Open admin console <span aria-hidden="true">→</span>
             </button>

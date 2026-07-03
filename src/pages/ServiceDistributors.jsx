@@ -104,10 +104,10 @@ export function ServiceDistributors() {
             </p>
           </div>
           <div style={{ display: 'grid', gap: 10 }}>
-            <Link to="/contact?reason=Distributor%20program" style={{ background: D.paper, color: D.plum, padding: '13px 18px', borderRadius: 999, fontSize: 14, fontWeight: 600, textAlign: 'center' }}>
+            <Link to="/contact?reason=Distributor%20program" style={{ background: D.paper, color: D.plum, padding: '13px 18px', borderRadius: 4, fontSize: 14, fontWeight: 600, textAlign: 'center' }}>
               Request a dashboard demo →
             </Link>
-            <Link to="/distributor" style={{ background: 'transparent', color: D.paper, border: `1.5px solid ${D.paper}`, padding: '12px 18px', borderRadius: 999, fontSize: 14, fontWeight: 500, textAlign: 'center' }}>
+            <Link to="/distributor" style={{ background: 'transparent', color: D.paper, border: `1.5px solid ${D.paper}`, padding: '12px 18px', borderRadius: 4, fontSize: 14, fontWeight: 500, textAlign: 'center' }}>
               Distributor login →
             </Link>
           </div>

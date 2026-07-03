@@ -6,7 +6,7 @@ import { useViewport } from '../../lib/viewport.js';
 const linkStyle = {
   display: 'block',
   fontSize: 14,
-  color: D.plumSoft,
+  color: 'rgba(243,242,235,.62)',
   marginBottom: 10,
   cursor: 'pointer',
   transition: 'color .15s',
@@ -23,7 +23,7 @@ function FooterLink({ to, external, children }) {
         rel={isProtocolLink ? undefined : 'noreferrer'}
         style={linkStyle}
         onMouseEnter={(e) => (e.currentTarget.style.color = D.paper)}
-        onMouseLeave={(e) => (e.currentTarget.style.color = D.plumSoft)}
+        onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(243,242,235,.62)')}
       >
         {children}
       </a>
@@ -34,7 +34,7 @@ function FooterLink({ to, external, children }) {
       to={to}
       style={linkStyle}
       onMouseEnter={(e) => (e.currentTarget.style.color = D.paper)}
-      onMouseLeave={(e) => (e.currentTarget.style.color = D.plumSoft)}
+      onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(243,242,235,.62)')}
     >
       {children}
     </Link>
@@ -88,24 +88,21 @@ export function Footer() {
   const cols = isMobile ? '1fr' : isTablet ? '1fr 1fr' : '1.6fr 1fr 1fr 1fr';
 
   return (
-    <footer className="um-grain" style={{ background: D.plum, color: D.paper, padding: `${isMobile ? 44 : 64}px ${padX}px ${isMobile ? 24 : 32}px`, position: 'relative', overflow: 'hidden' }}>
-      {/* Aurora drift — the same living-light language as the glass sections */}
-      <div aria-hidden="true" className="um-orb um-orb-b" style={{ width: 520, height: 520, top: '-30%', right: '-8%', background: 'radial-gradient(circle, rgba(24,16,27,.55), rgba(24,16,27,0) 70%)' }} />
-      <div aria-hidden="true" className="um-orb um-orb-a" style={{ width: 420, height: 420, bottom: '-35%', left: '-6%', background: 'radial-gradient(circle, rgba(246,79,0,.22), rgba(246,79,0,0) 70%)' }} />
+    <footer style={{ background: D.inkDeep, color: D.paper, borderTop: `1px solid rgba(243,242,235,.14)`, padding: `${isMobile ? 44 : 72}px ${padX}px ${isMobile ? 24 : 32}px`, position: 'relative', overflow: 'hidden' }}>
       <div style={{ maxWidth: 1360, margin: '0 auto', position: 'relative' }}>
         <div style={{ display: 'grid', gridTemplateColumns: cols, gap: isMobile ? 32 : 48 }}>
           <div>
             <Link to="/" aria-label="Unite Medical home">
               <UMLogo size={30} color={D.paper} weight={500} />
             </Link>
-            <p style={{ marginTop: 18, maxWidth: 360, fontSize: 14, lineHeight: 1.6, color: D.plumSoft }}>
+            <p style={{ marginTop: 18, maxWidth: 360, fontSize: 14, lineHeight: 1.6, color: 'rgba(243,242,235,.62)' }}>
               Veteran-owned wholesale medical supply.
             </p>
-            <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1, color: D.plumSoft, marginTop: 24, lineHeight: 1.7 }}>
+            <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1, color: 'rgba(243,242,235,.5)', marginTop: 24, lineHeight: 1.8 }}>
               FDA 3015727296 · CAGE 8MK70 · MSPV BPA 36C24123A0077 · DUNS 117553945
             </div>
 
-            <div style={{ marginTop: 22 }}>
+            <div style={{ marginTop: 24 }}>
               <Link
                 to="/quote"
                 style={{
@@ -113,9 +110,9 @@ export function Footer() {
                   alignItems: 'center',
                   gap: 8,
                   background: D.paper,
-                  color: D.plum,
-                  padding: '11px 18px',
-                  borderRadius: 999,
+                  color: D.ink,
+                  padding: '12px 20px',
+                  borderRadius: 4,
                   fontSize: 13,
                   fontWeight: 600,
                   fontFamily: D.sans,
@@ -130,10 +127,14 @@ export function Footer() {
             <nav key={col.h} aria-label={col.h}>
               <div
                 style={{
-                  fontFamily: D.display,
-                  fontSize: 20,
-                  letterSpacing: -0.3,
+                  fontFamily: D.mono,
+                  fontSize: 11,
+                  letterSpacing: 2,
+                  textTransform: 'uppercase',
+                  color: D.plumSoft,
+                  paddingBottom: 12,
                   marginBottom: 14,
+                  borderBottom: '1px solid rgba(243,242,235,.14)',
                 }}
               >
                 {col.h}
@@ -155,8 +156,8 @@ export function Footer() {
               fontWeight: 400,
               fontSize: isMobile ? '15.5vw' : 'min(12.5vw, 172px)',
               lineHeight: 0.78,
-              letterSpacing: '-0.04em',
-              color: 'rgba(247,242,234,.16)',
+              letterSpacing: '-0.02em',
+              color: 'rgba(243,242,235,.1)',
               whiteSpace: 'nowrap',
               userSelect: 'none',
             }}
@@ -169,10 +170,10 @@ export function Footer() {
           style={{
             marginTop: isMobile ? 18 : 24,
             paddingTop: 20,
-            borderTop: '1px solid rgba(255,255,255,.14)',
+            borderTop: '1px solid rgba(243,242,235,.14)',
             fontFamily: D.mono,
             fontSize: 11,
-            color: D.plumSoft,
+            color: 'rgba(243,242,235,.5)',
             display: 'flex',
             flexDirection: isMobile ? 'column-reverse' : 'row',
             flexWrap: 'wrap',
@@ -182,15 +183,15 @@ export function Footer() {
           }}
         >
           <div>© 2026 Unite Medical Supply · 1487 Trae Lane · Lithia Springs, GA 30122</div>
-          <div style={{ display: 'flex', gap: isMobile ? 14 : 22, flexWrap: 'wrap' }}>
-            <Link to="/compliance" style={{ color: D.plumSoft }}>Compliance</Link>
-            <Link to="/compliance#docs" style={{ color: D.plumSoft }}>Documents</Link>
-            <Link to="/privacy" style={{ color: D.plumSoft }}>Privacy</Link>
-            <Link to="/terms" style={{ color: D.plumSoft }}>Terms</Link>
-            <Link to="/support" style={{ color: D.plumSoft }}>Support</Link>
+          <div style={{ display: 'flex', gap: isMobile ? 14 : 22, flexWrap: 'wrap', alignItems: 'center' }}>
+            <Link to="/compliance" style={{ color: 'inherit' }}>Compliance</Link>
+            <Link to="/compliance#docs" style={{ color: 'inherit' }}>Documents</Link>
+            <Link to="/privacy" style={{ color: 'inherit' }}>Privacy</Link>
+            <Link to="/terms" style={{ color: 'inherit' }}>Terms</Link>
+            <Link to="/support" style={{ color: 'inherit' }}>Support</Link>
             <Link
               to="/admin"
-              style={{ color: D.paper, background: 'rgba(255,255,255,.12)', padding: '3px 10px', borderRadius: 999, letterSpacing: 1.1 }}
+              style={{ color: D.paper, border: '1px solid rgba(243,242,235,.3)', padding: '3px 10px', borderRadius: 3, letterSpacing: 1.1 }}
               title="Admin Console"
             >
               ADMIN

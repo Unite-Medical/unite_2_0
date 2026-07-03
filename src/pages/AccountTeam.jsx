@@ -15,7 +15,7 @@ import { useViewport } from '../lib/viewport.js';
 import { useSEO } from '../lib/seo.js';
 import { inviteTeammate, updateMemberRole, removeMember, orgRoleOf, ORG_ROLES } from '../lib/team.js';
 
-const ROLE_COLOR = { owner: '#5e2963', buyer: '#3b8760', viewer: D.ink3 };
+const ROLE_COLOR = { owner: '#1d5c4d', buyer: '#3b8760', viewer: D.ink3 };
 
 export function AccountTeam() {
   const navigate = useNavigate();
@@ -83,10 +83,10 @@ export function AccountTeam() {
                               {ORG_ROLES.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
                             </select>
                           ) : (
-                            <span style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, padding: '3px 8px', borderRadius: 999, background: `${ROLE_COLOR[r]}20`, color: ROLE_COLOR[r] }}>{r.toUpperCase()}</span>
+                            <span style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, padding: '3px 8px', borderRadius: 4, background: `${ROLE_COLOR[r]}20`, color: ROLE_COLOR[r] }}>{r.toUpperCase()}</span>
                           )}
                         </td>
-                        <td style={{ padding: '12px 16px', color: u.status === 'invited' ? '#b8502c' : '#3b8760' }}>{(u.status || 'active').toUpperCase()}</td>
+                        <td style={{ padding: '12px 16px', color: u.status === 'invited' ? '#b3592b' : '#3b8760' }}>{(u.status || 'active').toUpperCase()}</td>
                         <td style={{ padding: '12px 16px' }}>
                           {canManage && !isSelf && (
                             <button type="button" onClick={() => removeMember(u.id)} style={{ background: 'none', border: 'none', color: '#c3382d', cursor: 'pointer', fontSize: 12 }}>Remove</button>
@@ -111,7 +111,7 @@ export function AccountTeam() {
                 <select value={role} onChange={(e) => setRole(e.target.value)} style={{ padding: '12px 14px', borderRadius: 10, border: `1.5px solid ${D.line}`, fontSize: 14, background: D.paper, color: D.ink }}>
                   {ORG_ROLES.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
                 </select>
-                <button type="button" onClick={invite} disabled={!email.trim()} style={{ background: D.plum, color: D.paper, border: 'none', padding: '12px 22px', borderRadius: 999, cursor: email.trim() ? 'pointer' : 'not-allowed', fontSize: 14, fontWeight: 600, opacity: email.trim() ? 1 : 0.5 }}>Invite</button>
+                <button type="button" onClick={invite} disabled={!email.trim()} style={{ background: D.plum, color: D.paper, border: 'none', padding: '12px 22px', borderRadius: 4, cursor: email.trim() ? 'pointer' : 'not-allowed', fontSize: 14, fontWeight: 600, opacity: email.trim() ? 1 : 0.5 }}>Invite</button>
               </div>
               {notice && <div style={{ marginTop: 12, fontSize: 13, color: D.ink2 }}>{notice}</div>}
               <div style={{ marginTop: 12, fontSize: 12, color: D.ink3 }}>

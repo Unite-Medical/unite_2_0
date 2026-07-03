@@ -159,7 +159,7 @@ export function About() {
             {LEADERS.map((l) => {
               const initials = l.name.split(' ').map((w) => w[0]).join('').replace('.', '');
               return (
-                <div key={l.name} className="um-card" style={{ border: `1px solid ${D.line}`, borderRadius: 24, padding: isMobile ? 24 : 36, background: D.card, display: 'flex', flexDirection: 'column' }}>
+                <div key={l.name} className="um-card" style={{ border: `1px solid ${D.line}`, borderRadius: 10, padding: isMobile ? 24 : 36, background: D.card, display: 'flex', flexDirection: 'column' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 18 }}>
                     <div aria-hidden="true" style={{
                       width: isMobile ? 56 : 68, height: isMobile ? 56 : 68, borderRadius: '50%',

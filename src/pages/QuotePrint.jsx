@@ -108,10 +108,10 @@ export function QuotePrint() {
           <button type="button" className="um-print-cta" onClick={() => window.print()} style={{ background: 'transparent', color: D.ink, border: `1.5px solid ${D.ink}` }}>
             Print
           </button>
-          <Link to={isInternal ? `/quotes/${id}/print` : `/quotes/${id}/print?view=internal`} style={{ padding: '10px 18px', borderRadius: 999, border: `1.5px solid ${D.ink}`, color: D.ink, textDecoration: 'none', fontSize: 14 }}>
+          <Link to={isInternal ? `/quotes/${id}/print` : `/quotes/${id}/print?view=internal`} style={{ padding: '10px 18px', borderRadius: 4, border: `1.5px solid ${D.ink}`, color: D.ink, textDecoration: 'none', fontSize: 14 }}>
             {isInternal ? 'Switch to customer view' : 'Switch to internal view'}
           </Link>
-          <Link to="/quote" style={{ padding: '10px 18px', borderRadius: 999, border: `1px solid ${D.line}`, color: D.ink2, textDecoration: 'none', fontSize: 14 }}>
+          <Link to="/quote" style={{ padding: '10px 18px', borderRadius: 4, border: `1px solid ${D.line}`, color: D.ink2, textDecoration: 'none', fontSize: 14 }}>
             ← back to quoting
           </Link>
           <div style={{ flex: 1 }} />

@@ -26,7 +26,7 @@ function Pill({ children, tone = 'plum' }) {
   const bg = tone === 'plum' ? 'rgba(108,42,92,.10)' : tone === 'green' ? 'rgba(59,135,96,.12)' : 'rgba(0,0,0,.05)';
   const fg = tone === 'plum' ? D.plum : tone === 'green' ? '#2f6b4c' : D.ink2;
   return (
-    <span style={{ display: 'inline-block', padding: '2px 8px', borderRadius: 20, fontSize: 11, fontFamily: D.mono, letterSpacing: 0.4, background: bg, color: fg }}>{children}</span>
+    <span style={{ display: 'inline-block', padding: '2px 8px', borderRadius: 8, fontSize: 11, fontFamily: D.mono, letterSpacing: 0.4, background: bg, color: fg }}>{children}</span>
   );
 }
 

@@ -118,7 +118,7 @@ export function Lightbox({ images, startIndex = 0, open, onClose }) {
           fontFamily: D.mono,
           fontSize: 11,
           letterSpacing: 1.2,
-          color: 'rgba(247,242,234,0.8)',
+          color: 'rgba(243,242,235,0.8)',
         }}
       >
         {(current.label || `${idx + 1}/${images.length}`).toUpperCase()}{multi && current.label ? ` · ${idx + 1}/${images.length}` : ''}

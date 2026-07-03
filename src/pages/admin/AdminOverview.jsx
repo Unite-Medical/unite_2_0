@@ -8,7 +8,7 @@ import { db } from '../../lib/db.js';
 import { fmt } from '../../lib/format.js';
 import { useViewport } from '../../lib/viewport.js';
 
-const STATUS_COLOR = { delivered: '#3b8760', in_transit: '#5e2963', shipped: '#5e2963', processing: '#b8502c', pending: '#b8502c' };
+const STATUS_COLOR = { delivered: '#3b8760', in_transit: '#1d5c4d', shipped: '#1d5c4d', processing: '#b3592b', pending: '#b3592b' };
 
 export function AdminOverview() {
   const navigate = useNavigate();

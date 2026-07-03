@@ -54,8 +54,8 @@ export function ServicePrivateLabel() {
         </div>
 
         <div style={{ marginTop: isMobile ? 48 : 72, display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-          <Link to="/contact?reason=Quote%20%C2%B7%20non-stocked%20%2F%20sourcing" style={{ background: D.plum, color: D.paper, padding: '13px 22px', borderRadius: 999, fontSize: 14, fontWeight: 600 }}>Request samples →</Link>
-          <Link to="/case-studies/tjs" style={{ background: 'transparent', color: D.ink, border: `1.5px solid ${D.ink}`, padding: '12px 22px', borderRadius: 999, fontSize: 14, fontWeight: 500 }}>See the TJS case study →</Link>
+          <Link to="/contact?reason=Quote%20%C2%B7%20non-stocked%20%2F%20sourcing" style={{ background: D.plum, color: D.paper, padding: '13px 22px', borderRadius: 4, fontSize: 14, fontWeight: 600 }}>Request samples →</Link>
+          <Link to="/case-studies/tjs" style={{ background: 'transparent', color: D.ink, border: `1.5px solid ${D.ink}`, padding: '12px 22px', borderRadius: 4, fontSize: 14, fontWeight: 500 }}>See the TJS case study →</Link>
         </div>
       </div>
       <Footer />

@@ -90,7 +90,7 @@ export function AdminReps() {
           <h1 style={{ fontFamily: D.display, fontSize: 'clamp(34px, 5.6vw, 56px)', fontWeight: 400, letterSpacing: -1.3, lineHeight: 1.02, margin: 0 }}>Rep network.</h1>
           <div style={{ display: 'flex', gap: 6 }}>
             {WINDOWS.map((w) => (
-              <button key={w} onClick={() => setWindowDays(w)} style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1, padding: '6px 14px', borderRadius: 999, cursor: 'pointer', border: `1px solid ${windowDays === w ? D.plum : D.line}`, background: windowDays === w ? D.plum : 'transparent', color: windowDays === w ? D.paper : D.ink2 }}>
+              <button key={w} onClick={() => setWindowDays(w)} style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1, padding: '6px 14px', borderRadius: 4, cursor: 'pointer', border: `1px solid ${windowDays === w ? D.plum : D.line}`, background: windowDays === w ? D.plum : 'transparent', color: windowDays === w ? D.paper : D.ink2 }}>
                 {w}D
               </button>
             ))}
@@ -127,7 +127,7 @@ export function AdminReps() {
                 <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.2fr 1fr 1fr auto', gap: 18, alignItems: 'start' }}>
                   <div>
                     <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
-                      <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, padding: '3px 10px', borderRadius: 999, background: rep.status === 'active' ? '#e8f5ed' : rep.status === 'ramping' ? '#fdf3e3' : `${D.plum}15`, color: rep.status === 'active' ? '#1d4731' : rep.status === 'ramping' ? '#7a5210' : D.plum }}>
+                      <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, padding: '3px 10px', borderRadius: 4, background: rep.status === 'active' ? '#e8f5ed' : rep.status === 'ramping' ? '#fdf3e3' : `${D.plum}15`, color: rep.status === 'active' ? '#1d4731' : rep.status === 'ramping' ? '#7a5210' : D.plum }}>
                         {rep.status.toUpperCase()}
                       </span>
                       <span style={{ fontSize: 12, color: D.ink3, fontFamily: D.mono }}>{rep.email}</span>
@@ -153,13 +153,13 @@ export function AdminReps() {
                   </div>
 
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 8, minWidth: 170 }}>
-                    <button onClick={() => payRep(rep)} disabled={busy === `pay_${rep.id}` || commission_usd <= 0} style={{ fontSize: 12, fontFamily: D.mono, letterSpacing: 0.8, padding: '9px 14px', background: commission_usd > 0 ? '#1d4731' : D.line, color: D.paper, border: 'none', borderRadius: 999, cursor: commission_usd > 0 ? 'pointer' : 'default', opacity: busy === `pay_${rep.id}` ? 0.6 : 1 }}>
+                    <button onClick={() => payRep(rep)} disabled={busy === `pay_${rep.id}` || commission_usd <= 0} style={{ fontSize: 12, fontFamily: D.mono, letterSpacing: 0.8, padding: '9px 14px', background: commission_usd > 0 ? '#1d4731' : D.line, color: D.paper, border: 'none', borderRadius: 4, cursor: commission_usd > 0 ? 'pointer' : 'default', opacity: busy === `pay_${rep.id}` ? 0.6 : 1 }}>
                       {busy === `pay_${rep.id}` ? 'PAYING…' : 'PAY VIA STRIPE'}
                     </button>
-                    <button onClick={() => emailStatement(rep)} disabled={busy === `stmt_${rep.id}`} style={{ fontSize: 12, fontFamily: D.mono, letterSpacing: 0.8, padding: '9px 14px', background: D.plum, color: D.paper, border: 'none', borderRadius: 999, cursor: 'pointer', opacity: busy === `stmt_${rep.id}` ? 0.6 : 1 }}>
+                    <button onClick={() => emailStatement(rep)} disabled={busy === `stmt_${rep.id}`} style={{ fontSize: 12, fontFamily: D.mono, letterSpacing: 0.8, padding: '9px 14px', background: D.plum, color: D.paper, border: 'none', borderRadius: 4, cursor: 'pointer', opacity: busy === `stmt_${rep.id}` ? 0.6 : 1 }}>
                       {busy === `stmt_${rep.id}` ? 'SENDING…' : 'EMAIL STATEMENT'}
                     </button>
-                    <button onClick={() => copyBookingLink(rep)} disabled={busy === `link_${rep.id}`} style={{ fontSize: 12, fontFamily: D.mono, letterSpacing: 0.8, padding: '9px 14px', background: 'transparent', color: D.plum, border: `1px solid ${D.plum}`, borderRadius: 999, cursor: 'pointer', opacity: busy === `link_${rep.id}` ? 0.6 : 1 }}>
+                    <button onClick={() => copyBookingLink(rep)} disabled={busy === `link_${rep.id}`} style={{ fontSize: 12, fontFamily: D.mono, letterSpacing: 0.8, padding: '9px 14px', background: 'transparent', color: D.plum, border: `1px solid ${D.plum}`, borderRadius: 4, cursor: 'pointer', opacity: busy === `link_${rep.id}` ? 0.6 : 1 }}>
                       {busy === `link_${rep.id}` ? 'FETCHING…' : 'BOOKING LINK'}
                     </button>
                   </div>
@@ -189,7 +189,7 @@ export function AdminReps() {
                     <td style={{ padding: 12, fontWeight: 600 }}>${(p.amount_usd || 0).toLocaleString()}</td>
                     <td style={{ padding: 12, color: D.ink2 }}>{p.window_days}d · {p.order_count} orders</td>
                     <td style={{ padding: 12 }}>
-                      <span style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, padding: '3px 8px', borderRadius: 999, background: p.status === 'paid' ? '#e8f5ed' : '#fdf3e3', color: p.status === 'paid' ? '#1d4731' : '#7a5210' }}>
+                      <span style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, padding: '3px 8px', borderRadius: 4, background: p.status === 'paid' ? '#e8f5ed' : '#fdf3e3', color: p.status === 'paid' ? '#1d4731' : '#7a5210' }}>
                         {(p.status || 'paid').toUpperCase()}
                       </span>
                     </td>

@@ -217,8 +217,8 @@ export function Surplus() {
             a bite. Reference: <code>{submittedId}</code>.
           </p>
           <div style={{ marginTop: 30, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-            <button onClick={() => navigate('/')} style={{ background: D.plum, color: D.paper, border: 'none', padding: '13px 22px', borderRadius: 999, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>Back home</button>
-            <button onClick={() => { setSubmittedId(null); setLines([EMPTY_LINE()]); }} style={{ background: 'transparent', color: D.ink, border: `1.5px solid ${D.ink}`, padding: '12px 22px', borderRadius: 999, fontSize: 14, cursor: 'pointer' }}>List another lot</button>
+            <button onClick={() => navigate('/')} style={{ background: D.plum, color: D.paper, border: 'none', padding: '13px 22px', borderRadius: 4, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>Back home</button>
+            <button onClick={() => { setSubmittedId(null); setLines([EMPTY_LINE()]); }} style={{ background: 'transparent', color: D.ink, border: `1.5px solid ${D.ink}`, padding: '12px 22px', borderRadius: 4, fontSize: 14, cursor: 'pointer' }}>List another lot</button>
           </div>
         </main>
         <Footer />
@@ -268,11 +268,11 @@ export function Surplus() {
                 it here. Our AI normalizes descriptions and matches against known products automatically.
               </div>
               <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 14 }}>
-                <label style={{ fontSize: 13, fontWeight: 600, color: D.ink, border: `1.5px solid ${D.ink}`, borderRadius: 999, padding: '8px 16px', cursor: 'pointer' }}>
+                <label style={{ fontSize: 13, fontWeight: 600, color: D.ink, border: `1.5px solid ${D.ink}`, borderRadius: 4, padding: '8px 16px', cursor: 'pointer' }}>
                   Upload CSV
                   <input type="file" accept=".csv,.txt" onChange={onCsvUpload} style={{ display: 'none' }} />
                 </label>
-                <button type="button" onClick={downloadTemplate} style={{ fontSize: 13, fontWeight: 500, color: D.ink2, background: 'none', border: `1px solid ${D.line}`, borderRadius: 999, padding: '8px 16px', cursor: 'pointer', fontFamily: D.sans }}>
+                <button type="button" onClick={downloadTemplate} style={{ fontSize: 13, fontWeight: 500, color: D.ink2, background: 'none', border: `1px solid ${D.line}`, borderRadius: 4, padding: '8px 16px', cursor: 'pointer', fontFamily: D.sans }}>
                   Download CSV template
                 </button>
               </div>
@@ -323,7 +323,7 @@ export function Surplus() {
               </div>
 
               <div style={{ marginTop: 12 }}>
-                <button type="button" onClick={addLine} style={{ background: 'transparent', color: D.plum, border: `1px solid ${D.line}`, padding: '8px 14px', borderRadius: 999, fontSize: 13, cursor: 'pointer' }}>
+                <button type="button" onClick={addLine} style={{ background: 'transparent', color: D.plum, border: `1px solid ${D.line}`, padding: '8px 14px', borderRadius: 4, fontSize: 13, cursor: 'pointer' }}>
                   + Add another line
                 </button>
               </div>
@@ -339,7 +339,7 @@ export function Surplus() {
               )}
 
               <div style={{ marginTop: 28, display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
-                <button type="submit" disabled={submitting} style={{ background: D.plum, color: D.paper, border: 'none', padding: '14px 24px', borderRadius: 999, fontSize: 14, fontWeight: 600, cursor: submitting ? 'wait' : 'pointer', opacity: submitting ? 0.7 : 1, display: 'inline-flex', alignItems: 'center', gap: 10 }}>
+                <button type="submit" disabled={submitting} style={{ background: D.plum, color: D.paper, border: 'none', padding: '14px 24px', borderRadius: 4, fontSize: 14, fontWeight: 600, cursor: submitting ? 'wait' : 'pointer', opacity: submitting ? 0.7 : 1, display: 'inline-flex', alignItems: 'center', gap: 10 }}>
                   {submitting ? 'Submitting…' : <>List my inventory <Icon.arrow /></>}
                 </button>
                 <div style={{ fontSize: 12, color: D.ink3 }}>No obligation. You approve every deal before it binds.</div>

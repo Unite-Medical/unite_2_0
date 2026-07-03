@@ -10,7 +10,7 @@ import { useViewport } from '../../lib/viewport.js';
 const TIERS = ['All', 'Bracing', 'POC', 'OTC', 'Consumable', 'Surgical', 'Wellness'];
 
 const CATEGORY_BG = {
-  Orthotics:    'rgba(94,41,99,.10)',
+  Orthotics:    'rgba(29,92,77,.10)',
   Diagnostics:  'rgba(60,120,90,.10)',
   PPE:          'rgba(184,80,44,.10)',
   Surgical:     'rgba(40,80,140,.10)',
@@ -111,7 +111,7 @@ export function AdminProducts() {
             Products · {products.length}
           </h1>
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-            <Link to="/admin/products/new" style={{ background: D.plum, color: D.paper, border: 'none', padding: '11px 18px', borderRadius: 999, fontSize: 13, textDecoration: 'none', fontWeight: 600 }}>
+            <Link to="/admin/products/new" style={{ background: D.plum, color: D.paper, border: 'none', padding: '11px 18px', borderRadius: 4, fontSize: 13, textDecoration: 'none', fontWeight: 600 }}>
               + Add product
             </Link>
             <button
@@ -121,7 +121,7 @@ export function AdminProducts() {
                 `That re-reads ALL_PRODUCTS_MASTER.csv, copies updated images, and rewrites src/data/realCatalog.js. ` +
                 `Restart the dev server to pick up the new data.`
               )}
-              style={{ background: 'transparent', color: D.ink, border: `1px solid ${D.line}`, padding: '10px 16px', borderRadius: 999, fontSize: 13, cursor: 'pointer' }}
+              style={{ background: 'transparent', color: D.ink, border: `1px solid ${D.line}`, padding: '10px 16px', borderRadius: 4, fontSize: 13, cursor: 'pointer' }}
             >
               Re-import from CSV
             </button>
@@ -137,7 +137,7 @@ export function AdminProducts() {
       </div>
 
       <div style={{ padding: `${isMobile ? 18 : 24}px ${padX}px`, display: 'flex', flexWrap: 'wrap', gap: 10, alignItems: 'center' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 14px', border: `1px solid ${D.line}`, borderRadius: 999, background: D.card, flex: '1 1 280px', maxWidth: 420 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 14px', border: `1px solid ${D.line}`, borderRadius: 4, background: D.card, flex: '1 1 280px', maxWidth: 420 }}>
           <Icon.search />
           <input
             value={q}
@@ -206,7 +206,7 @@ export function AdminProducts() {
                       </td>
                       <td style={{ ...tdStyle, color: D.ink2, fontSize: 12 }}>{p.vendor || '—'}</td>
                       <td style={tdStyle}>
-                        <span style={{ display: 'inline-block', padding: '3px 10px', borderRadius: 999, fontSize: 11, background: CATEGORY_BG[p.category] || D.paperAlt, color: D.ink2 }}>
+                        <span style={{ display: 'inline-block', padding: '3px 10px', borderRadius: 4, fontSize: 11, background: CATEGORY_BG[p.category] || D.paperAlt, color: D.ink2 }}>
                           {p.category}
                         </span>
                         <div style={{ fontFamily: D.mono, fontSize: 10, color: D.ink3, marginTop: 4 }}>{p.tier}</div>
@@ -237,7 +237,7 @@ export function AdminProducts() {
                         <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
                           {flags.length === 0 && <span style={{ color: D.ink3 }}>—</span>}
                           {flags.map((f) => (
-                            <span key={f} style={{ background: 'rgba(94,41,99,.1)', color: D.plum, padding: '2px 6px', borderRadius: 4 }}>{f}</span>
+                            <span key={f} style={{ background: 'rgba(29,92,77,.1)', color: D.plum, padding: '2px 6px', borderRadius: 4 }}>{f}</span>
                           ))}
                         </div>
                       </td>
@@ -301,6 +301,6 @@ function SortHeader({ k, label, sortKey, sortDir, onClick }) {
 
 const thStyle = { padding: '11px 14px', textAlign: 'left' };
 const tdStyle = { padding: '14px' };
-const selectStyle = { padding: '9px 14px', border: `1px solid ${D.line}`, borderRadius: 999, background: D.card, fontSize: 13, color: D.ink2, fontFamily: 'inherit', cursor: 'pointer' };
+const selectStyle = { padding: '9px 14px', border: `1px solid ${D.line}`, borderRadius: 4, background: D.card, fontSize: 13, color: D.ink2, fontFamily: 'inherit', cursor: 'pointer' };
 const textBtn = { background: 'transparent', color: D.plum, border: 'none', cursor: 'pointer', fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, letterSpacing: 0.8, padding: '4px 6px' };
 const iconBtn = { background: 'transparent', color: D.ink3, border: 'none', cursor: 'pointer', padding: 4, display: 'inline-flex', alignItems: 'center' };

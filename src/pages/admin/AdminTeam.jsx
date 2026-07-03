@@ -41,7 +41,7 @@ export function AdminTeam() {
       <div style={{ padding: isMobile ? 20 : 32, display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '260px 1fr', gap: 20 }}>
         <div style={{ background: D.card, borderRadius: 12, border: `1px solid ${D.line}`, overflow: 'hidden', height: 'fit-content' }}>
           {reps.map((r) => (
-            <button key={r.id} onClick={() => setActiveId(r.id)} style={{ width: '100%', textAlign: 'left', padding: '14px 16px', borderTop: `1px solid ${D.line}`, background: active?.id === r.id ? 'rgba(94,41,99,.06)' : 'transparent', cursor: 'pointer', fontFamily: D.sans, color: D.ink }}>
+            <button key={r.id} onClick={() => setActiveId(r.id)} style={{ width: '100%', textAlign: 'left', padding: '14px 16px', borderTop: `1px solid ${D.line}`, background: active?.id === r.id ? 'rgba(29,92,77,.06)' : 'transparent', cursor: 'pointer', fontFamily: D.sans, color: D.ink }}>
               <div style={{ fontSize: 13, fontWeight: 600 }}>{r.name}</div>
               <div style={{ fontSize: 12, color: D.ink2 }}>{r.title || r.role} · {grantRows.filter((g) => g.rep_id === r.id).length} grants</div>
             </button>
@@ -57,7 +57,7 @@ export function AdminTeam() {
                 {GRANTS.map((grant) => {
                   const on = has(active.id, grant);
                   return (
-                    <div key={grant} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px', borderRadius: 10, border: `1px solid ${on ? D.plum : D.line}`, background: on ? 'rgba(94,41,99,.05)' : D.paper }}>
+                    <div key={grant} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px', borderRadius: 10, border: `1px solid ${on ? D.plum : D.line}`, background: on ? 'rgba(29,92,77,.05)' : D.paper }}>
                       <button onClick={() => toggle(grant)} aria-pressed={on} style={{ width: 40, height: 22, borderRadius: 11, border: 'none', background: on ? D.plum : D.line, position: 'relative', cursor: 'pointer', flexShrink: 0 }}>
                         <span style={{ position: 'absolute', top: 2, left: on ? 20 : 2, width: 18, height: 18, borderRadius: 9, background: D.paper, transition: 'left .15s' }} />
                       </button>

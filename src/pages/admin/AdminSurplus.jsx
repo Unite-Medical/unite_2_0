@@ -21,9 +21,9 @@ import { gmail } from '../../lib/services.js';
 import { publishSubmissionLines, offersFor, acceptOffer, declineOffer, confirmFeePaid, BUYER_CHANNELS } from '../../lib/marketplace.js';
 
 const STATUS_COLOR = {
-  new:        ['#8f8490', 'NEW'],
+  new:        ['#8b968d', 'NEW'],
   reviewing:  [D.terra, 'REVIEWING'],
-  offer_sent: ['#5e2963', 'OFFER SENT'],
+  offer_sent: ['#1d5c4d', 'OFFER SENT'],
   accepted:   ['#2d6a4f', 'ACCEPTED'],
   declined:   ['#c3382d', 'DECLINED'],
   received:   ['#3b8760', 'RECEIVED'],
@@ -170,10 +170,10 @@ Founder, Unite Medical`,
           {submissions.map((s) => {
             const [color, label] = STATUS_COLOR[s.status] || STATUS_COLOR.new;
             return (
-              <button key={s.id} onClick={() => setActiveId(s.id)} style={{ width: '100%', textAlign: 'left', display: 'block', padding: '14px 16px', borderTop: `1px solid ${D.line}`, background: activeId === s.id ? 'rgba(94,41,99,.06)' : 'transparent', cursor: 'pointer', fontFamily: D.sans, color: D.ink }}>
+              <button key={s.id} onClick={() => setActiveId(s.id)} style={{ width: '100%', textAlign: 'left', display: 'block', padding: '14px 16px', borderTop: `1px solid ${D.line}`, background: activeId === s.id ? 'rgba(29,92,77,.06)' : 'transparent', cursor: 'pointer', fontFamily: D.sans, color: D.ink }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
                   <div style={{ fontSize: 14, fontWeight: 500 }}>{s.hospital_name || s.contact_name || 'Anonymous'}</div>
-                  <span style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, padding: '3px 8px', borderRadius: 999, background: `${color}20`, color }}>{label}</span>
+                  <span style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, padding: '3px 8px', borderRadius: 4, background: `${color}20`, color }}>{label}</span>
                 </div>
                 <div style={{ fontSize: 11, color: D.ink2, marginTop: 4 }}>
                   {s.total_lines} lines · {fmt.ago(s.submitted_at)}
@@ -205,13 +205,13 @@ Founder, Unite Medical`,
               </div>
 
               <div style={{ marginTop: 24, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-                <button onClick={runValuation} disabled={valuating} style={{ background: D.ink, color: D.paper, border: 'none', padding: '10px 18px', borderRadius: 999, fontSize: 13, fontWeight: 500, cursor: valuating ? 'wait' : 'pointer', opacity: valuating ? 0.6 : 1 }}>
+                <button onClick={runValuation} disabled={valuating} style={{ background: D.ink, color: D.paper, border: 'none', padding: '10px 18px', borderRadius: 4, fontSize: 13, fontWeight: 500, cursor: valuating ? 'wait' : 'pointer', opacity: valuating ? 0.6 : 1 }}>
                   {valuating ? 'Valuating…' : 'Run AI valuation'}
                 </button>
-                <button onClick={publishToMarketplace} disabled={!lines.some((l) => !l.listed)} style={{ background: D.plum, color: D.paper, border: 'none', padding: '10px 22px', borderRadius: 999, fontSize: 13, fontWeight: 600, cursor: 'pointer', opacity: lines.some((l) => !l.listed) ? 1 : 0.4 }}>
+                <button onClick={publishToMarketplace} disabled={!lines.some((l) => !l.listed)} style={{ background: D.plum, color: D.paper, border: 'none', padding: '10px 22px', borderRadius: 4, fontSize: 13, fontWeight: 600, cursor: 'pointer', opacity: lines.some((l) => !l.listed) ? 1 : 0.4 }}>
                   Publish listings (broker) ↗
                 </button>
-                <button onClick={sendOffer} disabled={!lines.some((l) => l.decision === 'want')} style={{ background: 'transparent', color: D.plum, border: `1px solid ${D.plum}`, padding: '10px 22px', borderRadius: 999, fontSize: 13, fontWeight: 600, cursor: 'pointer', opacity: lines.some((l) => l.decision === 'want') ? 1 : 0.4 }}>
+                <button onClick={sendOffer} disabled={!lines.some((l) => l.decision === 'want')} style={{ background: 'transparent', color: D.plum, border: `1px solid ${D.plum}`, padding: '10px 22px', borderRadius: 4, fontSize: 13, fontWeight: 600, cursor: 'pointer', opacity: lines.some((l) => l.decision === 'want') ? 1 : 0.4 }}>
                   Direct-buy offer (optional)
                 </button>
               </div>
@@ -304,15 +304,15 @@ Founder, Unite Medical`,
                         </div>
                         {o.status === 'open' ? (
                           <div style={{ display: 'flex', gap: 8 }}>
-                            <button onClick={() => decideOffer(o, true)} style={{ fontSize: 11, fontFamily: D.mono, letterSpacing: 0.8, padding: '6px 14px', background: '#2d6a4f', color: D.paper, border: 'none', borderRadius: 999, cursor: 'pointer' }}>ACCEPT (BINDS + FEE)</button>
-                            <button onClick={() => decideOffer(o, false)} style={{ fontSize: 11, fontFamily: D.mono, letterSpacing: 0.8, padding: '6px 14px', background: 'transparent', color: '#c3382d', border: '1px solid #c3382d', borderRadius: 999, cursor: 'pointer' }}>DECLINE</button>
+                            <button onClick={() => decideOffer(o, true)} style={{ fontSize: 11, fontFamily: D.mono, letterSpacing: 0.8, padding: '6px 14px', background: '#2d6a4f', color: D.paper, border: 'none', borderRadius: 4, cursor: 'pointer' }}>ACCEPT (BINDS + FEE)</button>
+                            <button onClick={() => decideOffer(o, false)} style={{ fontSize: 11, fontFamily: D.mono, letterSpacing: 0.8, padding: '6px 14px', background: 'transparent', color: '#c3382d', border: '1px solid #c3382d', borderRadius: 4, cursor: 'pointer' }}>DECLINE</button>
                           </div>
                         ) : o.status === 'accepted' ? (
-                          <button onClick={() => releaseConnection(o)} style={{ fontSize: 11, fontFamily: D.mono, letterSpacing: 0.8, padding: '6px 14px', background: D.plum, color: D.paper, border: 'none', borderRadius: 999, cursor: 'pointer' }}>
+                          <button onClick={() => releaseConnection(o)} style={{ fontSize: 11, fontFamily: D.mono, letterSpacing: 0.8, padding: '6px 14px', background: D.plum, color: D.paper, border: 'none', borderRadius: 4, cursor: 'pointer' }}>
                             FEE PAID → RELEASE CONNECTION
                           </button>
                         ) : (
-                          <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, padding: '4px 10px', borderRadius: 999, background: o.status === 'connected' ? '#e8f5ed' : '#fbe9e1', color: o.status === 'connected' ? '#1d4731' : '#7a2d10' }}>
+                          <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, padding: '4px 10px', borderRadius: 4, background: o.status === 'connected' ? '#e8f5ed' : '#fbe9e1', color: o.status === 'connected' ? '#1d4731' : '#7a2d10' }}>
                             {o.status.toUpperCase()}
                           </span>
                         )}

@@ -120,7 +120,7 @@ export function ProductDetail() {
         <Nav />
         <main style={{ maxWidth: 640, margin: '0 auto', padding: '120px 24px', textAlign: 'center' }}>
           <h1 style={{ fontFamily: D.display, fontSize: 56, fontWeight: 400, letterSpacing: -1.2, lineHeight: 1, margin: 0 }}>Product not found.</h1>
-          <button onClick={() => navigate('/catalog')} style={{ marginTop: 16, background: D.plum, color: D.paper, border: 'none', padding: '13px 22px', borderRadius: 999, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>Back to catalog</button>
+          <button onClick={() => navigate('/catalog')} style={{ marginTop: 16, background: D.plum, color: D.paper, border: 'none', padding: '13px 22px', borderRadius: 4, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>Back to catalog</button>
         </main>
       </div>
     );
@@ -162,7 +162,7 @@ export function ProductDetail() {
                 textColor={D.plum}
               />
               {gallery.length > 1 && (
-                <span aria-hidden="true" style={{ position: 'absolute', bottom: 14, right: 14, background: 'rgba(36, 26, 40, 0.78)', color: D.paper, fontFamily: D.mono, fontSize: 11, letterSpacing: 1.2, padding: '6px 12px', borderRadius: 999, backdropFilter: 'blur(6px)' }}>
+                <span aria-hidden="true" style={{ position: 'absolute', bottom: 14, right: 14, background: 'rgba(14,23,19, 0.78)', color: D.paper, fontFamily: D.mono, fontSize: 11, letterSpacing: 1.2, padding: '6px 12px', borderRadius: 4, backdropFilter: 'blur(6px)' }}>
                   + {gallery.length - 1} VIEWS
                 </span>
               )}
@@ -255,13 +255,13 @@ export function ProductDetail() {
                 {quoteOnly ? (
                   <button
                     onClick={() => navigate(`/quote?sku=${encodeURIComponent(product.sku)}&path=source`)}
-                    style={{ flex: '1 1 160px', background: D.plum, color: D.paper, border: 'none', padding: '14px', borderRadius: 999, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}
+                    style={{ flex: '1 1 160px', background: D.plum, color: D.paper, border: 'none', padding: '14px', borderRadius: 4, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}
                   >
                     Request a quote →
                   </button>
                 ) : (
                   <>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 2, border: `1px solid ${D.line}`, borderRadius: 999, padding: 4 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 2, border: `1px solid ${D.line}`, borderRadius: 4, padding: 4 }}>
                       <button aria-label="Decrease quantity" onClick={() => setQty(Math.max(1, qty - 1))} style={{ background: 'none', border: 'none', padding: 8, cursor: 'pointer' }}><Icon.minus /></button>
                       <div style={{ minWidth: 40, textAlign: 'center', fontWeight: 600 }}>{qty}</div>
                       <button aria-label="Increase quantity" onClick={() => setQty(qty + 1)} style={{ background: 'none', border: 'none', padding: 8, cursor: 'pointer' }}><Icon.plus /></button>
@@ -277,11 +277,11 @@ export function ProductDetail() {
                         );
                         navigate('/cart');
                       }}
-                      style={{ flex: '1 1 160px', background: D.ink, color: D.paper, border: 'none', padding: '14px', borderRadius: 999, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}
+                      style={{ flex: '1 1 160px', background: D.ink, color: D.paper, border: 'none', padding: '14px', borderRadius: 4, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}
                     >
                       Add to cart
                     </button>
-                    <button onClick={() => navigate('/quote')} style={{ background: 'transparent', color: D.ink, border: `1.5px solid ${D.ink}`, padding: '13px 18px', borderRadius: 999, cursor: 'pointer', fontSize: 14, flex: isMobile ? '1 1 160px' : '0 0 auto' }}>Request quote</button>
+                    <button onClick={() => navigate('/quote')} style={{ background: 'transparent', color: D.ink, border: `1.5px solid ${D.ink}`, padding: '13px 18px', borderRadius: 4, cursor: 'pointer', fontSize: 14, flex: isMobile ? '1 1 160px' : '0 0 auto' }}>Request quote</button>
                   </>
                 )}
               </div>
@@ -344,7 +344,7 @@ export function ProductDetail() {
                 <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 10 }}>COMPLIANCE</div>
                 <h2 style={{ fontFamily: D.display, fontSize: 'clamp(28px, 4.4vw, 40px)', fontWeight: 400, letterSpacing: -0.8, lineHeight: 1.1, margin: 0 }}>Paperwork, kept clean.</h2>
               </div>
-              <Link to="/compliance" style={{ background: 'transparent', color: D.ink, border: `1.5px solid ${D.ink}`, padding: '10px 18px', borderRadius: 999, fontSize: 13 }}>View full credentials →</Link>
+              <Link to="/compliance" style={{ background: 'transparent', color: D.ink, border: `1.5px solid ${D.ink}`, padding: '10px 18px', borderRadius: 4, fontSize: 13 }}>View full credentials →</Link>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : isTablet ? 'repeat(3, 1fr)' : 'repeat(6, 1fr)', gap: 12 }}>
               {compliance.map((c) => (
@@ -461,9 +461,9 @@ export function ProductDetail() {
         {/* STOCKED EQUIVALENTS — backorder insurance (Cato-gap substitute matching) */}
         {substitutes.length > 0 && (
           <section style={{ padding: `${isMobile ? 40 : 56}px ${padX}px` }}>
-            <div style={{ maxWidth: 1360, margin: '0 auto', background: D.card, border: `1px solid ${D.line}`, borderRadius: 20, padding: isMobile ? 18 : 28 }}>
+            <div style={{ maxWidth: 1360, margin: '0 auto', background: D.card, border: `1px solid ${D.line}`, borderRadius: 8, padding: isMobile ? 18 : 28 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-                <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: '#3b8760', background: 'rgba(59,135,96,.1)', padding: '4px 10px', borderRadius: 999 }}>
+                <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: '#3b8760', background: 'rgba(59,135,96,.1)', padding: '4px 10px', borderRadius: 4 }}>
                   STOCKED EQUIVALENTS
                 </span>
                 <span style={{ fontSize: 13.5, color: D.ink2 }}>
@@ -497,7 +497,7 @@ export function ProductDetail() {
                 <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 10 }}>CUSTOMERS, IN THEIR OWN WORDS</div>
                 <h2 style={{ fontFamily: D.display, fontSize: 'clamp(28px, 4.4vw, 40px)', fontWeight: 400, letterSpacing: -0.8, lineHeight: 1.1, margin: 0 }}>4.8 / 5 average · {reviews.length * 47} reviews.</h2>
               </div>
-              <Link to="/portfolio" style={{ background: 'transparent', color: D.ink, border: `1.5px solid ${D.ink}`, padding: '10px 18px', borderRadius: 999, fontSize: 13 }}>Read case studies →</Link>
+              <Link to="/portfolio" style={{ background: 'transparent', color: D.ink, border: `1.5px solid ${D.ink}`, padding: '10px 18px', borderRadius: 4, fontSize: 13 }}>Read case studies →</Link>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : isTablet ? '1fr 1fr' : 'repeat(3, 1fr)', gap: 14 }}>
               {reviews.map((r) => (
@@ -527,7 +527,7 @@ export function ProductDetail() {
                   <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 10 }}>FREQUENTLY BUNDLED</div>
                   <h2 style={{ fontFamily: D.display, fontSize: 'clamp(28px, 4.4vw, 40px)', fontWeight: 400, letterSpacing: -0.8, lineHeight: 1.1, margin: 0 }}>Complete the formulary.</h2>
                 </div>
-                <Link to={`/catalog?cat=${encodeURIComponent(product.category)}`} style={{ background: 'transparent', color: D.ink, border: `1.5px solid ${D.ink}`, padding: '10px 18px', borderRadius: 999, fontSize: 13 }}>See all in {product.category} →</Link>
+                <Link to={`/catalog?cat=${encodeURIComponent(product.category)}`} style={{ background: 'transparent', color: D.ink, border: `1.5px solid ${D.ink}`, padding: '10px 18px', borderRadius: 4, fontSize: 13 }}>See all in {product.category} →</Link>
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : isTablet ? 'repeat(3, 1fr)' : 'repeat(4, 1fr)', gap: isMobile ? 12 : 18 }}>
                 {related.map((p) => (

@@ -46,7 +46,7 @@ export function AdminPurchaseOrders() {
           <button
             onClick={() => act(async () => { await draftPurchaseOrders(); }, 'draft-all')}
             disabled={busy === 'draft-all'}
-            style={{ background: D.plum, color: D.paper, border: 'none', padding: '11px 18px', borderRadius: 999, cursor: 'pointer', fontSize: 13, fontWeight: 600 }}
+            style={{ background: D.plum, color: D.paper, border: 'none', padding: '11px 18px', borderRadius: 4, cursor: 'pointer', fontSize: 13, fontWeight: 600 }}
           >
             {busy === 'draft-all' ? 'Drafting…' : 'Draft POs from replenishment'}
           </button>
@@ -55,7 +55,7 @@ export function AdminPurchaseOrders() {
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 18 }}>
           {['all', 'draft', 'approved', 'sent', 'partial', 'received', 'closed', 'cancelled'].map((s) => (
             <button key={s} onClick={() => setFilter(s)} style={{
-              fontFamily: D.mono, fontSize: 11, letterSpacing: 0.6, padding: '7px 12px', borderRadius: 999, cursor: 'pointer',
+              fontFamily: D.mono, fontSize: 11, letterSpacing: 0.6, padding: '7px 12px', borderRadius: 4, cursor: 'pointer',
               border: `1px solid ${filter === s ? D.plum : D.line}`, background: filter === s ? D.plum : D.card, color: filter === s ? D.paper : D.ink2,
             }}>{s.toUpperCase()}{s !== 'all' && counts[s] ? ` · ${counts[s]}` : ''}</button>
           ))}

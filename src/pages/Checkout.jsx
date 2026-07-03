@@ -100,7 +100,7 @@ export function Checkout() {
           <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum }}>CHECKOUT</div>
           <h1 style={{ fontFamily: D.display, fontSize: 56, fontWeight: 400, letterSpacing: -1.2, lineHeight: 1, margin: '12px 0 18px' }}>Cart is empty.</h1>
           <p style={{ color: D.ink2 }}>Add a few items first — we&apos;ll be right here.</p>
-          <button onClick={() => navigate('/catalog')} style={{ marginTop: 18, background: D.plum, color: D.paper, border: 'none', padding: '13px 22px', borderRadius: 999, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>Open the catalog</button>
+          <button onClick={() => navigate('/catalog')} style={{ marginTop: 18, background: D.plum, color: D.paper, border: 'none', padding: '13px 22px', borderRadius: 4, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>Open the catalog</button>
         </main>
       </div>
     );
@@ -207,7 +207,7 @@ export function Checkout() {
                 <div style={{ fontFamily: D.display, fontSize: 40, letterSpacing: -1 }}>{fmt.money(total)}</div>
               </div>
               {error && <div style={{ marginTop: 14, padding: 10, background: 'rgba(255,255,255,.12)', borderRadius: 8, fontSize: 12 }}>{error}</div>}
-              <button disabled={placing} onClick={handlePlace} style={{ marginTop: 20, width: '100%', background: D.paper, color: D.plum, border: 'none', padding: 14, borderRadius: 999, fontSize: 14, fontWeight: 600, cursor: placing ? 'wait' : 'pointer', opacity: placing ? 0.7 : 1 }}>
+              <button disabled={placing} onClick={handlePlace} style={{ marginTop: 20, width: '100%', background: D.paper, color: D.plum, border: 'none', padding: 14, borderRadius: 4, fontSize: 14, fontWeight: 600, cursor: placing ? 'wait' : 'pointer', opacity: placing ? 0.7 : 1 }}>
                 {placing ? 'Placing order…' : 'Place order'}
               </button>
               <div style={{ marginTop: 12, fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.plumSoft, textAlign: 'center' }}>SYNCS TO our billing system · SHIPSTATION · STRIPE</div>

@@ -99,7 +99,7 @@ function LeadForm({ isMobile }) {
         {[['savings', 'Request a savings analysis'], ['consult', 'Schedule a consultation'], ['distributor', 'Rep the program']].map(([k, l]) => (
           <button key={k} type="button" onClick={() => set('kind', k)} style={{
             background: form.kind === k ? D.plum : 'transparent', color: form.kind === k ? D.paper : D.ink2,
-            border: `1px solid ${form.kind === k ? D.plum : D.line}`, padding: '9px 14px', borderRadius: 999,
+            border: `1px solid ${form.kind === k ? D.plum : D.line}`, padding: '9px 14px', borderRadius: 4,
             fontSize: 12.5, cursor: 'pointer', fontFamily: D.sans,
           }}>{l}</button>
         ))}
@@ -120,7 +120,7 @@ function LeadForm({ isMobile }) {
           <textarea rows={3} value={form.message} onChange={(e) => set('message', e.target.value)} style={{ ...input, resize: 'vertical' }} />
         </label>
       </div>
-      <button type="submit" disabled={busy} style={{ marginTop: 16, background: D.plum, color: D.paper, border: 'none', padding: '14px 24px', borderRadius: 999, fontSize: 14, fontWeight: 600, cursor: busy ? 'wait' : 'pointer', opacity: busy ? 0.7 : 1, fontFamily: D.sans }}>
+      <button type="submit" disabled={busy} style={{ marginTop: 16, background: D.plum, color: D.paper, border: 'none', padding: '14px 24px', borderRadius: 4, fontSize: 14, fontWeight: 600, cursor: busy ? 'wait' : 'pointer', opacity: busy ? 0.7 : 1, fontFamily: D.sans }}>
         {busy ? 'Sending…' : form.kind === 'savings' ? 'Request savings analysis →' : form.kind === 'consult' ? 'Schedule consultation →' : 'Talk to our program team →'}
       </button>
     </form>
@@ -147,16 +147,16 @@ export function Robotics() {
             <h1 style={{ fontFamily: D.display, fontWeight: 400, fontSize: 'clamp(40px, 8.5vw, 104px)', lineHeight: 0.96, letterSpacing: '-0.035em', margin: 0, maxWidth: '11em' }}>
               Reduce the cost of <Grad>robotic surgery</Grad>.
             </h1>
-            <p style={{ fontSize: isMobile ? 15.5 : 18, lineHeight: 1.6, color: 'rgba(247,242,234,.8)', marginTop: 24, maxWidth: 640 }}>
+            <p style={{ fontSize: isMobile ? 15.5 : 18, lineHeight: 1.6, color: 'rgba(243,242,235,.8)', marginTop: 24, maxWidth: 640 }}>
               FDA 510(k)-cleared remanufactured da Vinci Xi &amp; DV5 instruments and certified
               pre-owned inventory — 20–25% savings per instrument, full manufacturer-of-record
               warranty, zero compromise on clinical performance.
             </p>
             <div style={{ display: 'flex', gap: 10, marginTop: 32, flexWrap: 'wrap' }}>
-              <a href="#robotics-lead" style={{ background: D.paper, color: D.ink, padding: isMobile ? '14px 22px' : '16px 28px', borderRadius: 999, fontSize: 15, fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 10 }}>
+              <a href="#robotics-lead" style={{ background: D.paper, color: D.ink, padding: isMobile ? '14px 22px' : '16px 28px', borderRadius: 4, fontSize: 15, fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 10 }}>
                 Request a savings analysis <Icon.arrow />
               </a>
-              <a href="#robotics-lead" className="um-glass-btn" style={{ color: D.paper, padding: isMobile ? '14px 22px' : '16px 28px', borderRadius: 999, fontSize: 15, fontWeight: 500 }}>
+              <a href="#robotics-lead" className="um-glass-btn" style={{ color: D.paper, padding: isMobile ? '14px 22px' : '16px 28px', borderRadius: 4, fontSize: 15, fontWeight: 500 }}>
                 Schedule a consultation
               </a>
             </div>
@@ -168,9 +168,9 @@ export function Robotics() {
                 ['25%', 'Savings · certified pre-owned'],
                 ['510(k)', 'The only FDA clearance · Restore Robotics'],
               ].map(([big, small]) => (
-                <div key={small} style={{ borderTop: '1px solid rgba(247,242,234,.22)', padding: `${isMobile ? 16 : 24}px 0` }}>
+                <div key={small} style={{ borderTop: '1px solid rgba(243,242,235,.22)', padding: `${isMobile ? 16 : 24}px 0` }}>
                   <div style={{ fontFamily: D.display, fontSize: isMobile ? 30 : 44, letterSpacing: -1 }}>{big}</div>
-                  <div style={{ fontFamily: D.mono, fontSize: isMobile ? 9 : 10.5, letterSpacing: 1, color: 'rgba(247,242,234,.6)', marginTop: 8, lineHeight: 1.5 }}>{small.toUpperCase()}</div>
+                  <div style={{ fontFamily: D.mono, fontSize: isMobile ? 9 : 10.5, letterSpacing: 1, color: 'rgba(243,242,235,.6)', marginTop: 8, lineHeight: 1.5 }}>{small.toUpperCase()}</div>
                 </div>
               ))}
             </div>
@@ -233,7 +233,7 @@ export function Robotics() {
               <h2 style={{ fontFamily: D.display, fontSize: 'clamp(28px, 4.8vw, 52px)', fontWeight: 400, letterSpacing: '-0.03em', lineHeight: 1.06, margin: 0 }}>
                 Less surgical waste. Longer instrument life.
               </h2>
-              <p style={{ fontSize: isMobile ? 14.5 : 16, lineHeight: 1.65, color: '#e5d6e7', marginTop: 18, maxWidth: 560 }}>
+              <p style={{ fontSize: isMobile ? 14.5 : 16, lineHeight: 1.65, color: '#cfe0d7', marginTop: 18, maxWidth: 560 }}>
                 Robotic instruments are programmed for a limited number of uses and then discarded.
                 Remanufacturing extends their useful life, reduces surgical waste, and cuts the
                 carbon footprint of your robotics program — while your budget captures the savings.
@@ -241,7 +241,7 @@ export function Robotics() {
             </div>
             <div style={{ display: 'grid', gap: 10 }}>
               {['Reduce discarded-instrument waste', 'Extend the lifecycle of advanced surgical technology', 'Lower the environmental footprint of your OR'].map((t) => (
-                <div key={t} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '14px 18px', background: 'rgba(247,242,234,.08)', borderRadius: 12, border: '1px solid rgba(247,242,234,.18)', fontSize: 14.5 }}>
+                <div key={t} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '14px 18px', background: 'rgba(243,242,235,.08)', borderRadius: 12, border: '1px solid rgba(243,242,235,.18)', fontSize: 14.5 }}>
                   <span style={{ color: D.terraSoft }}><Icon.check /></span> {t}
                 </div>
               ))}

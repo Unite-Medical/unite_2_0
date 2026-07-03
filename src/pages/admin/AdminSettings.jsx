@@ -234,6 +234,6 @@ function Stat({ label, value }) {
 }
 
 const inputStyle = { width: '100%', padding: '10px 12px', background: D.paper, border: `1px solid ${D.line}`, borderRadius: 8, fontSize: 13, color: D.ink, fontFamily: 'inherit', outline: 'none', boxSizing: 'border-box' };
-const primaryBtn = { background: D.plum, color: D.paper, border: 'none', padding: '11px 22px', borderRadius: 999, fontSize: 13, fontWeight: 600, fontFamily: 'inherit', cursor: 'pointer' };
-const ghostBtn = { background: 'transparent', color: D.ink, border: `1px solid ${D.line}`, padding: '10px 18px', borderRadius: 999, fontSize: 13, fontFamily: 'inherit', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6 };
+const primaryBtn = { background: D.plum, color: D.paper, border: 'none', padding: '11px 22px', borderRadius: 4, fontSize: 13, fontWeight: 600, fontFamily: 'inherit', cursor: 'pointer' };
+const ghostBtn = { background: 'transparent', color: D.ink, border: `1px solid ${D.line}`, padding: '10px 18px', borderRadius: 4, fontSize: 13, fontFamily: 'inherit', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6 };
 const mono = { fontFamily: 'IBM Plex Mono, monospace', fontSize: 12, background: D.paperAlt, padding: '1px 6px', borderRadius: 4 };

@@ -33,7 +33,7 @@ export function OrderSuccess() {
         <main style={{ maxWidth: 640, margin: '0 auto', padding: '120px 24px', textAlign: 'center' }}>
           <h1 style={{ fontFamily: D.display, fontSize: 56, fontWeight: 400, letterSpacing: -1.2, lineHeight: 1, margin: 0 }}>Order not found.</h1>
           <p style={{ color: D.ink2, marginTop: 14 }}>Check the order number and try again.</p>
-          <button onClick={() => navigate('/dashboard')} style={{ marginTop: 16, background: D.plum, color: D.paper, border: 'none', padding: '13px 22px', borderRadius: 999, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>Open dashboard</button>
+          <button onClick={() => navigate('/dashboard')} style={{ marginTop: 16, background: D.plum, color: D.paper, border: 'none', padding: '13px 22px', borderRadius: 4, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>Open dashboard</button>
         </main>
       </div>
     );
@@ -90,7 +90,7 @@ export function OrderSuccess() {
               <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.plumSoft }}>ESTIMATED DELIVERY</div>
               <div style={{ fontFamily: D.display, fontSize: 36, letterSpacing: -0.9, marginTop: 8, lineHeight: 1 }}>{fmt.date(ship?.eta || order.eta, { year: false })}</div>
               <div style={{ fontSize: 13, color: D.plumSoft, marginTop: 8 }}>{ship?.carrier?.replace('_', ' ').toUpperCase()} · {ship?.tracking_number}</div>
-              <button onClick={() => navigate(`/orders/${order.id}/track`)} style={{ marginTop: 18, width: '100%', background: D.paper, color: D.plum, border: 'none', padding: 12, borderRadius: 999, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>Track order</button>
+              <button onClick={() => navigate(`/orders/${order.id}/track`)} style={{ marginTop: 18, width: '100%', background: D.paper, color: D.plum, border: 'none', padding: 12, borderRadius: 4, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>Track order</button>
             </div>
 
             {address && (

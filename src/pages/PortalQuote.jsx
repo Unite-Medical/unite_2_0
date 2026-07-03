@@ -126,7 +126,7 @@ export function PortalQuote() {
                 <>
                   <textarea value={sourceText} onChange={(e) => setSourceText(e.target.value)} rows={3} placeholder="e.g. 5,000 units nitrile exam gloves, blue, size L, EN455"
                     style={{ width: '100%', marginTop: 12, padding: 12, borderRadius: 10, border: `1px solid ${D.line}`, fontSize: 14, fontFamily: D.sans, background: D.paper, color: D.ink, boxSizing: 'border-box', resize: 'vertical' }} />
-                  <button type="button" onClick={submitSourcing} disabled={!sourceText.trim()} style={{ marginTop: 10, background: 'transparent', color: D.ink, border: `1.5px solid ${D.ink}`, padding: '10px 18px', borderRadius: 999, cursor: sourceText.trim() ? 'pointer' : 'not-allowed', fontSize: 14, fontWeight: 600, opacity: sourceText.trim() ? 1 : 0.5 }}>Request sourcing</button>
+                  <button type="button" onClick={submitSourcing} disabled={!sourceText.trim()} style={{ marginTop: 10, background: 'transparent', color: D.ink, border: `1.5px solid ${D.ink}`, padding: '10px 18px', borderRadius: 4, cursor: sourceText.trim() ? 'pointer' : 'not-allowed', fontSize: 14, fontWeight: 600, opacity: sourceText.trim() ? 1 : 0.5 }}>Request sourcing</button>
                 </>
               )}
             </div>
@@ -156,7 +156,7 @@ export function PortalQuote() {
                     <span style={{ fontFamily: D.mono, fontSize: 11, color: D.ink3 }}>TOTAL (FOB GA)</span>
                     <span style={{ fontFamily: D.display, fontSize: 28, color: D.plum }}>{fmt.money(total)}</span>
                   </div>
-                  <button type="button" onClick={generate} disabled={busy} style={{ marginTop: 8, background: D.plum, color: D.paper, border: 'none', padding: '14px', borderRadius: 999, cursor: 'pointer', fontSize: 15, fontWeight: 600 }}>
+                  <button type="button" onClick={generate} disabled={busy} style={{ marginTop: 8, background: D.plum, color: D.paper, border: 'none', padding: '14px', borderRadius: 4, cursor: 'pointer', fontSize: 15, fontWeight: 600 }}>
                     {busy ? 'Generating…' : 'Generate quote →'}
                   </button>
                   <div style={{ fontSize: 11, color: D.ink3, textAlign: 'center' }}>You&apos;ll be able to review and accept it on the next screen.</div>

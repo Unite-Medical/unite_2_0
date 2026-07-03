@@ -78,7 +78,7 @@ export function AdminDigest() {
                     <div key={i} style={{ background: D.card, border: `1px solid ${D.line}`, borderLeft: `3px solid ${color}`, borderRadius: 12, padding: 18 }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10, flexWrap: 'wrap' }}>
                         <div style={{ fontWeight: 600, fontSize: 15 }}>{b.priority}. {b.headline}</div>
-                        <span style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, padding: '3px 8px', borderRadius: 999, background: `${color}20`, color, alignSelf: 'start' }}>{label}</span>
+                        <span style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, padding: '3px 8px', borderRadius: 4, background: `${color}20`, color, alignSelf: 'start' }}>{label}</span>
                       </div>
                       <div style={{ fontSize: 13, color: D.ink2, marginTop: 8 }}>{b.summary}</div>
                       <div style={{ fontSize: 12, color: D.ink3, marginTop: 6, fontStyle: 'italic' }}>{b.why_it_matters}</div>
@@ -105,7 +105,7 @@ export function AdminDigest() {
           <div style={{ padding: '14px 16px', borderBottom: `1px solid ${D.line}`, fontFamily: D.display, fontSize: 18 }}>History</div>
           {digests.length === 0 && <div style={{ padding: 16, fontSize: 13, color: D.ink3 }}>Empty.</div>}
           {digests.slice(0, 14).map((d) => (
-            <button key={d.id} onClick={() => setActiveId(d.id)} style={{ width: '100%', textAlign: 'left', display: 'block', padding: '12px 16px', borderTop: `1px solid ${D.line}`, background: active?.id === d.id ? 'rgba(94,41,99,.06)' : 'transparent', cursor: 'pointer', fontFamily: D.sans, color: D.ink }}>
+            <button key={d.id} onClick={() => setActiveId(d.id)} style={{ width: '100%', textAlign: 'left', display: 'block', padding: '12px 16px', borderTop: `1px solid ${D.line}`, background: active?.id === d.id ? 'rgba(29,92,77,.06)' : 'transparent', cursor: 'pointer', fontFamily: D.sans, color: D.ink }}>
               <div style={{ fontSize: 13, fontWeight: 500 }}>{fmt.date(d.generated_at, { year: true })}</div>
               <div style={{ fontSize: 11, color: D.ink3, marginTop: 2 }}>{(d.bullets || []).length} bullets · {d.generated_by}</div>
             </button>

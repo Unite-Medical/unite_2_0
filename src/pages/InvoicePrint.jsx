@@ -76,11 +76,11 @@ export function InvoicePrint() {
             Print / Save as PDF
           </button>
           {invoice.hosted_invoice_url && (
-            <a href={invoice.hosted_invoice_url} target="_blank" rel="noreferrer" style={{ padding: '10px 18px', borderRadius: 999, border: `1.5px solid ${D.plum}`, color: D.plum, textDecoration: 'none', fontSize: 14, fontWeight: 600 }}>
+            <a href={invoice.hosted_invoice_url} target="_blank" rel="noreferrer" style={{ padding: '10px 18px', borderRadius: 4, border: `1.5px solid ${D.plum}`, color: D.plum, textDecoration: 'none', fontSize: 14, fontWeight: 600 }}>
               Pay online →
             </a>
           )}
-          <Link to="/account/invoices" style={{ padding: '10px 18px', borderRadius: 999, border: `1px solid ${D.line}`, color: D.ink2, textDecoration: 'none', fontSize: 14 }}>
+          <Link to="/account/invoices" style={{ padding: '10px 18px', borderRadius: 4, border: `1px solid ${D.line}`, color: D.ink2, textDecoration: 'none', fontSize: 14 }}>
             ← back to invoices
           </Link>
         </div>
@@ -100,7 +100,7 @@ export function InvoicePrint() {
             <div><span style={{ color: D.ink3 }}>Due: </span>{fmt.date(invoice.due_date, { year: true })}</div>
             <div><span style={{ color: D.ink3 }}>Terms: </span>{(invoice.terms || 'net30').toUpperCase()}</div>
             <div style={{ marginTop: 6 }}>
-              <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, padding: '4px 10px', borderRadius: 999, background: `${statusColor}1f`, color: statusColor }}>
+              <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, padding: '4px 10px', borderRadius: 4, background: `${statusColor}1f`, color: statusColor }}>
                 {status.toUpperCase()}
               </span>
             </div>

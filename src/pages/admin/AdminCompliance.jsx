@@ -166,7 +166,7 @@ export function AdminCompliance() {
         </div>
 
         {notice && (
-          <div style={{ marginTop: 14, padding: '12px 16px', background: 'rgba(94,41,99,.07)', border: `1px solid ${D.line}`, borderRadius: 10, fontSize: 13 }}>{notice}</div>
+          <div style={{ marginTop: 14, padding: '12px 16px', background: 'rgba(29,92,77,.07)', border: `1px solid ${D.line}`, borderRadius: 10, fontSize: 13 }}>{notice}</div>
         )}
 
         <div style={{ marginTop: 20, display: 'grid', gap: 12 }}>
@@ -186,8 +186,8 @@ export function AdminCompliance() {
                     <div style={{ fontFamily: D.mono, fontSize: 11, color: D.ink3, marginTop: 2 }}>{ev.recall_number} · initiated {ev.recall_initiation_date || '—'}</div>
                   </div>
                   <div style={{ display: 'flex', gap: 8, alignItems: 'start' }}>
-                    <span style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, padding: '3px 8px', borderRadius: 999, background: `${cc}20`, color: cc }}>{(ev.classification || '').toUpperCase()}</span>
-                    <span style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, padding: '3px 8px', borderRadius: 999, background: `${sc}20`, color: sc }}>{sl}</span>
+                    <span style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, padding: '3px 8px', borderRadius: 4, background: `${cc}20`, color: cc }}>{(ev.classification || '').toUpperCase()}</span>
+                    <span style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, padding: '3px 8px', borderRadius: 4, background: `${sc}20`, color: sc }}>{sl}</span>
                   </div>
                 </div>
                 <div style={{ fontSize: 13, color: D.ink2, marginTop: 10 }}>{ev.reason}</div>

@@ -105,10 +105,10 @@ export function Procurement() {
 
         <section style={{ padding: `${isMobile ? 48 : 80}px ${padX}px` }}>
           <div style={{ maxWidth: 1100, margin: '0 auto', display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-            <a href="/documents/Unite_Group_Capability_Statement_2026.pdf" target="_blank" rel="noreferrer" style={{ background: D.plum, color: D.paper, border: 'none', padding: '13px 22px', borderRadius: 999, cursor: 'pointer', fontSize: 14, fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 10 }}>
+            <a href="/documents/Unite_Group_Capability_Statement_2026.pdf" target="_blank" rel="noreferrer" style={{ background: D.plum, color: D.paper, border: 'none', padding: '13px 22px', borderRadius: 4, cursor: 'pointer', fontSize: 14, fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 10 }}>
               Download capability statement <Icon.arrow />
             </a>
-            <button onClick={() => navigate('/contact?reason=Distributor%20program')} style={{ background: 'transparent', color: D.ink, border: `1.5px solid ${D.ink}`, padding: '12px 22px', borderRadius: 999, cursor: 'pointer', fontSize: 14, fontWeight: 500 }}>
+            <button onClick={() => navigate('/contact?reason=Distributor%20program')} style={{ background: 'transparent', color: D.ink, border: `1.5px solid ${D.ink}`, padding: '12px 22px', borderRadius: 4, cursor: 'pointer', fontSize: 14, fontWeight: 500 }}>
               Partner with Unite →
             </button>
           </div>

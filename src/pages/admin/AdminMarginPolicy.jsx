@@ -117,8 +117,8 @@ export function AdminMarginPolicy() {
         </AdminCard>
 
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-          <button type="button" onClick={save} style={{ background: D.plum, color: D.paper, border: 'none', padding: '12px 24px', borderRadius: 999, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>Save policy</button>
-          <button type="button" onClick={reset} style={{ background: 'transparent', color: D.ink2, border: `1px solid ${D.line}`, padding: '11px 22px', borderRadius: 999, fontSize: 13, cursor: 'pointer' }}>Reset to defaults</button>
+          <button type="button" onClick={save} style={{ background: D.plum, color: D.paper, border: 'none', padding: '12px 24px', borderRadius: 4, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>Save policy</button>
+          <button type="button" onClick={reset} style={{ background: 'transparent', color: D.ink2, border: `1px solid ${D.line}`, padding: '11px 22px', borderRadius: 4, fontSize: 13, cursor: 'pointer' }}>Reset to defaults</button>
           {saved && <span style={{ fontSize: 13, color: '#2d6a4f' }}>✓ saved</span>}
         </div>
       </div>

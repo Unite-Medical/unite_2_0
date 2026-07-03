@@ -4,8 +4,8 @@
   "description": "Veteran-owned wholesale medical supply.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#f7f2ea",
-  "theme_color": "#5e2963",
+  "background_color": "#f3f2eb",
+  "theme_color": "#0e1713",
   "icons": [
     {
       "src": "/favicon-192.png",

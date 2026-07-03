@@ -27,8 +27,8 @@ export function SegmentDealers() {
       />
       <div style={{ maxWidth: 1100, margin: '0 auto', padding: `12px ${padX}px ${isMobile ? 56 : 80}px` }}>
         <div style={{ display: 'flex', gap: 12, marginTop: 24, flexWrap: 'wrap' }}>
-          <Link to="/services/distributors" style={{ background: D.plum, color: D.paper, padding: '13px 22px', borderRadius: 999, fontSize: 14, fontWeight: 600 }}>Learn about our distributor program →</Link>
-          <Link to="/quote" style={{ background: 'transparent', color: D.ink, border: `1.5px solid ${D.ink}`, padding: '12px 22px', borderRadius: 999, fontSize: 14, fontWeight: 500 }}>Source &amp; quote →</Link>
+          <Link to="/services/distributors" style={{ background: D.plum, color: D.paper, padding: '13px 22px', borderRadius: 4, fontSize: 14, fontWeight: 600 }}>Learn about our distributor program →</Link>
+          <Link to="/quote" style={{ background: 'transparent', color: D.ink, border: `1.5px solid ${D.ink}`, padding: '12px 22px', borderRadius: 4, fontSize: 14, fontWeight: 500 }}>Source &amp; quote →</Link>
         </div>
       </div>
       <Footer />

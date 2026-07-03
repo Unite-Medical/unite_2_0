@@ -17,7 +17,7 @@ import { fmt } from '../../lib/format.js';
 import { useViewport } from '../../lib/viewport.js';
 import { PROMPT_REGISTRY } from '../../lib/ai/registry.js';
 
-const STATUS_COLOR = { ok: '#2d6a4f', stub: '#8f8490', error: '#c3382d', rate_limited: D.terra, schema_violation: '#c3382d' };
+const STATUS_COLOR = { ok: '#2d6a4f', stub: '#8b968d', error: '#c3382d', rate_limited: D.terra, schema_violation: '#c3382d' };
 
 export function AdminAI() {
   const { isMobile } = useViewport();
@@ -142,7 +142,7 @@ export function AdminAI() {
                       <td style={{ padding: '10px 12px', fontFamily: D.mono, fontSize: 12 }}>{u.prompt_key} <span style={{ color: D.ink3 }}>v{u.prompt_version}</span></td>
                       <td style={{ padding: '10px 12px', fontFamily: D.mono, fontSize: 11, color: D.ink2 }}>{u.model}</td>
                       <td style={{ padding: '10px 12px' }}>
-                        <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, padding: '3px 8px', borderRadius: 999, background: `${STATUS_COLOR[u.status] || D.ink3}20`, color: STATUS_COLOR[u.status] || D.ink3 }}>{u.status?.toUpperCase()}</span>
+                        <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, padding: '3px 8px', borderRadius: 4, background: `${STATUS_COLOR[u.status] || D.ink3}20`, color: STATUS_COLOR[u.status] || D.ink3 }}>{u.status?.toUpperCase()}</span>
                       </td>
                       <td style={{ padding: '10px 12px', fontFamily: D.mono, fontSize: 11 }}>{u.input_tokens} / {u.output_tokens}</td>
                       <td style={{ padding: '10px 12px', fontFamily: D.mono, fontSize: 11 }}>${(Number(u.usd_cost) || 0).toFixed(4)}</td>

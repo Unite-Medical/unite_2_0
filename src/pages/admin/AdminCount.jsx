@@ -58,7 +58,7 @@ export function AdminCount() {
               <option value="wh_atl">Atlanta (wh_atl)</option>
               <option value="wh_reno">Reno (wh_reno)</option>
             </select>
-            <button onClick={open} style={{ background: D.plum, color: D.paper, border: 'none', padding: '11px 18px', borderRadius: 999, cursor: 'pointer', fontSize: 13, fontWeight: 600 }}>Open new count</button>
+            <button onClick={open} style={{ background: D.plum, color: D.paper, border: 'none', padding: '11px 18px', borderRadius: 4, cursor: 'pointer', fontSize: 13, fontWeight: 600 }}>Open new count</button>
             {openSessions.length > 0 && (
               <select value={sessionId} onChange={(e) => setSessionId(e.target.value)} style={INPUT}>
                 <option value="">— resume open session —</option>
@@ -86,7 +86,7 @@ export function AdminCount() {
                   ))}
                 </tbody>
               </table>
-              <button onClick={post} style={{ marginTop: 16, background: D.plum, color: D.paper, border: 'none', padding: '12px 20px', borderRadius: 999, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>Post variances → ledger</button>
+              <button onClick={post} style={{ marginTop: 16, background: D.plum, color: D.paper, border: 'none', padding: '12px 20px', borderRadius: 4, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>Post variances → ledger</button>
             </AdminCard>
           </>
         )}
@@ -101,7 +101,7 @@ export function AdminCount() {
               <option value="adjust_loss">Loss (−)</option>
               <option value="found">Found (+)</option>
             </select>
-            <button onClick={postAdjustment} disabled={!canAdjust} title={canAdjust ? '' : 'Manager role required'} style={{ background: canAdjust ? D.ink : D.ink3, color: D.paper, border: 'none', padding: '11px 18px', borderRadius: 999, cursor: canAdjust ? 'pointer' : 'not-allowed', fontSize: 13, fontWeight: 600 }}>Post adjustment</button>
+            <button onClick={postAdjustment} disabled={!canAdjust} title={canAdjust ? '' : 'Manager role required'} style={{ background: canAdjust ? D.ink : D.ink3, color: D.paper, border: 'none', padding: '11px 18px', borderRadius: 4, cursor: canAdjust ? 'pointer' : 'not-allowed', fontSize: 13, fontWeight: 600 }}>Post adjustment</button>
           </div>
         </AdminCard>
       </div>

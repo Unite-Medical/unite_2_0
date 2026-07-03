@@ -102,7 +102,7 @@ export function Register() {
           {error && <div style={{ padding: 12, background: '#fbe9e1', color: '#7a2d10', borderRadius: 10, fontSize: 13 }}>{error}</div>}
 
           <div style={{ display: 'flex', gap: 14, alignItems: 'center', flexWrap: 'wrap' }}>
-            <button type="submit" disabled={submitting} style={{ background: D.plum, color: D.paper, border: 'none', padding: '16px 36px', borderRadius: 999, fontSize: 15, fontWeight: 600, cursor: submitting ? 'wait' : 'pointer', opacity: submitting ? 0.7 : 1 }}>
+            <button type="submit" disabled={submitting} style={{ background: D.plum, color: D.paper, border: 'none', padding: '16px 36px', borderRadius: 4, fontSize: 15, fontWeight: 600, cursor: submitting ? 'wait' : 'pointer', opacity: submitting ? 0.7 : 1 }}>
               {submitting ? 'Creating account…' : 'Submit application →'}
             </button>
             <div style={{ fontSize: 13, color: D.ink2 }}>Approved within 1 business day · we&apos;ll email + call your primary contact</div>

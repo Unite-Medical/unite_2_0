@@ -164,7 +164,7 @@ export function Catalog() {
             not listed? We source it and quote you a firm price.
           </p>
           <div style={{ display: 'flex', gap: 12, marginTop: 20, flexWrap: 'wrap', alignItems: 'center' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 14px', border: `1px solid ${D.line}`, borderRadius: 999, background: D.card, flex: '1 1 280px', maxWidth: 420 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 14px', border: `1px solid ${D.line}`, borderRadius: 4, background: D.card, flex: '1 1 280px', maxWidth: 420 }}>
               <Icon.search />
               <input
                 value={search}
@@ -178,7 +178,7 @@ export function Catalog() {
               <button key={c} onClick={() => setCat(c)} style={{
                 background: cat === c ? D.plum : D.card, color: cat === c ? D.paper : D.ink2,
                 border: `1px solid ${cat === c ? D.plum : D.line}`,
-                padding: '8px 14px', borderRadius: 999, cursor: 'pointer', fontSize: 13, fontFamily: D.sans,
+                padding: '8px 14px', borderRadius: 4, cursor: 'pointer', fontSize: 13, fontFamily: D.sans,
               }}>{c}</button>
             ))}
           </div>
@@ -222,14 +222,14 @@ export function Catalog() {
                       <div style={{ fontFamily: D.mono, fontSize: 10, color: D.ink3 }}>{p.pack_size} · MOQ {p.moq}</div>
                     </div>
                     {stocked ? (
-                      <button aria-label={`Add ${p.name} to cart`} onClick={() => cartStore.add(p.sku)} style={{ background: D.ink, color: D.paper, border: 'none', width: 40, height: 40, borderRadius: 20, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      <button aria-label={`Add ${p.name} to cart`} onClick={() => cartStore.add(p.sku)} style={{ background: D.ink, color: D.paper, border: 'none', width: 40, height: 40, borderRadius: 8, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                         <Icon.plus />
                       </button>
                     ) : (
                       <button
                         aria-label={`Request sourcing for ${p.name}`}
                         onClick={() => navigate(`/quote?sku=${encodeURIComponent(p.sku)}&path=source`)}
-                        style={{ background: 'transparent', color: D.terra, border: `1.5px solid ${D.terra}`, padding: '9px 12px', borderRadius: 999, cursor: 'pointer', fontSize: 11.5, fontWeight: 600, fontFamily: D.sans, flexShrink: 0 }}
+                        style={{ background: 'transparent', color: D.terra, border: `1.5px solid ${D.terra}`, padding: '9px 12px', borderRadius: 4, cursor: 'pointer', fontSize: 11.5, fontWeight: 600, fontFamily: D.sans, flexShrink: 0 }}
                       >
                         Source it →
                       </button>
@@ -257,7 +257,7 @@ export function Catalog() {
                 <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.plum }}>{SUPPLY_STATES.quote.short} · ANYTHING NOT LISTED</div>
                 <div style={{ fontSize: 14.5, color: D.ink2, marginTop: 6, lineHeight: 1.55 }}>{SUPPLY_STATES.quote.desc}</div>
               </div>
-              <button onClick={() => navigate('/quote')} style={{ background: D.plum, color: D.paper, border: 'none', padding: '12px 22px', borderRadius: 999, fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: D.sans }}>
+              <button onClick={() => navigate('/quote')} style={{ background: D.plum, color: D.paper, border: 'none', padding: '12px 22px', borderRadius: 4, fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: D.sans }}>
                 {SUPPLY_STATES.quote.cta} →
               </button>
             </div>

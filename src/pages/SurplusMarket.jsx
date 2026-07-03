@@ -175,16 +175,16 @@ export function SurplusMarket() {
                       </div>
                       {error && <div style={{ padding: 10, background: '#fbe9e1', color: '#7a2d10', borderRadius: 8, fontSize: 12 }}>{error}</div>}
                       <div style={{ display: 'flex', gap: 8 }}>
-                        <button type="submit" style={{ flex: 1, background: D.plum, color: D.paper, border: 'none', padding: '11px 0', borderRadius: 999, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
+                        <button type="submit" style={{ flex: 1, background: D.plum, color: D.paper, border: 'none', padding: '11px 0', borderRadius: 4, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
                           Submit offer
                         </button>
-                        <button type="button" onClick={() => setOpenId(null)} style={{ background: 'transparent', color: D.ink2, border: `1px solid ${D.line}`, padding: '11px 18px', borderRadius: 999, fontSize: 13, cursor: 'pointer' }}>
+                        <button type="button" onClick={() => setOpenId(null)} style={{ background: 'transparent', color: D.ink2, border: `1px solid ${D.line}`, padding: '11px 18px', borderRadius: 4, fontSize: 13, cursor: 'pointer' }}>
                           Cancel
                         </button>
                       </div>
                     </form>
                   ) : (
-                    <button onClick={() => startOffer(lot)} style={{ marginTop: 16, background: D.ink, color: D.paper, padding: '12px 0', borderRadius: 999, fontSize: 13, fontWeight: 600, textAlign: 'center', cursor: 'pointer', border: 'none', width: '100%' }}>
+                    <button onClick={() => startOffer(lot)} style={{ marginTop: 16, background: D.ink, color: D.paper, padding: '12px 0', borderRadius: 4, fontSize: 13, fontWeight: 600, textAlign: 'center', cursor: 'pointer', border: 'none', width: '100%' }}>
                       Place an offer →
                     </button>
                   )}

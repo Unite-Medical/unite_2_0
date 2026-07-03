@@ -50,7 +50,7 @@ export function Cart() {
             <div style={{ background: D.card, border: `1px dashed ${D.line}`, borderRadius: 14, padding: 48, textAlign: 'center' }}>
               <div style={{ fontFamily: D.display, fontSize: 28, letterSpacing: -0.4 }}>Your cart is empty.</div>
               <p style={{ color: D.ink2, marginTop: 10 }}>Browse the stocked catalog and add the items you need to your next order.</p>
-              <button onClick={() => navigate('/catalog')} style={{ marginTop: 14, background: D.plum, color: D.paper, border: 'none', padding: '12px 22px', borderRadius: 999, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>Open the catalog</button>
+              <button onClick={() => navigate('/catalog')} style={{ marginTop: 14, background: D.plum, color: D.paper, border: 'none', padding: '12px 22px', borderRadius: 4, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>Open the catalog</button>
             </div>
           )}
           {items.length > 0 && (
@@ -71,7 +71,7 @@ export function Cart() {
                     <div style={{ fontFamily: D.display, fontSize: isMobile ? 16 : 18, marginTop: 6, lineHeight: 1.2 }}>{it.name}</div>
                     <div style={{ fontSize: 12, color: D.ink2, marginTop: 4 }}>Tier {tierLabel(it.qty)} · {fmt.money(it.unit_price)}/ea</div>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 2, border: `1px solid ${D.line}`, borderRadius: 999, padding: 2 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 2, border: `1px solid ${D.line}`, borderRadius: 4, padding: 2 }}>
                     <button aria-label={`Decrease ${it.name}`} onClick={() => cartStore.setQty(it.sku, it.qty - 1)} style={{ background: 'none', border: 'none', padding: 6, cursor: 'pointer' }}><Icon.minus /></button>
                     <div style={{ minWidth: 36, textAlign: 'center', fontWeight: 600, fontSize: 13 }}>{it.qty}</div>
                     <button aria-label={`Increase ${it.name}`} onClick={() => cartStore.setQty(it.sku, it.qty + 1)} style={{ background: 'none', border: 'none', padding: 6, cursor: 'pointer' }}><Icon.plus /></button>
@@ -113,7 +113,7 @@ export function Cart() {
                 <div style={{ fontFamily: D.mono, fontSize: 11, color: D.plumSoft }}>TOTAL DUE</div>
                 <div style={{ fontFamily: D.display, fontSize: 44, letterSpacing: -1 }}>{fmt.money(total)}</div>
               </div>
-              <button disabled={items.length === 0} onClick={() => navigate('/checkout')} style={{ marginTop: 22, width: '100%', background: D.paper, color: D.plum, border: 'none', padding: 14, borderRadius: 999, fontSize: 14, fontWeight: 600, cursor: items.length === 0 ? 'not-allowed' : 'pointer', opacity: items.length === 0 ? 0.5 : 1 }}>Continue to checkout</button>
+              <button disabled={items.length === 0} onClick={() => navigate('/checkout')} style={{ marginTop: 22, width: '100%', background: D.paper, color: D.plum, border: 'none', padding: 14, borderRadius: 4, fontSize: 14, fontWeight: 600, cursor: items.length === 0 ? 'not-allowed' : 'pointer', opacity: items.length === 0 ? 0.5 : 1 }}>Continue to checkout</button>
               <div style={{ marginTop: 14, fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.plumSoft, textAlign: 'center' }}>NET 30 · NET 60 · ACH · WIRE · CC</div>
             </div>
           </div>

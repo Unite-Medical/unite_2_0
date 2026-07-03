@@ -36,7 +36,7 @@ export function Careers() {
           <div style={{ maxWidth: 1360, margin: '0 auto' }}>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginBottom: isMobile ? 32 : 48 }}>
               {AREAS.map((a) => (
-                <span key={a} style={{ background: D.card, border: `1px solid ${D.line}`, padding: '8px 16px', borderRadius: 999, fontSize: 13, color: D.ink2 }}>{a}</span>
+                <span key={a} style={{ background: D.card, border: `1px solid ${D.line}`, padding: '8px 16px', borderRadius: 4, fontSize: 13, color: D.ink2 }}>{a}</span>
               ))}
             </div>
 
@@ -50,7 +50,7 @@ export function Careers() {
                   in. If you&apos;re building a career in healthcare, supply chain, or B2B
                   platforms, we want to hear from you.
                 </p>
-                <button onClick={() => navigate('/contact')} style={{ marginTop: 18, background: D.paper, color: D.plum, border: 'none', padding: '13px 22px', borderRadius: 999, cursor: 'pointer', fontSize: 14, fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 10 }}>
+                <button onClick={() => navigate('/contact')} style={{ marginTop: 18, background: D.paper, color: D.plum, border: 'none', padding: '13px 22px', borderRadius: 4, cursor: 'pointer', fontSize: 14, fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 10 }}>
                   Get in touch <Icon.arrow />
                 </button>
               </div>

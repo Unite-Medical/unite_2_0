@@ -72,8 +72,8 @@ export function Invoices() {
             <div style={{ padding: '18px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: `1px solid ${D.line}`, flexWrap: 'wrap', gap: 12 }}>
               <div style={{ fontFamily: D.display, fontSize: 22, letterSpacing: -0.3 }}>Invoice history · {invoices.length} records</div>
               <div style={{ display: 'flex', gap: 8 }}>
-                <button onClick={exportCsv} style={{ background: 'transparent', color: D.ink2, border: `1px solid ${D.line}`, padding: '8px 14px', borderRadius: 999, fontSize: 12, cursor: 'pointer' }}>Export CSV</button>
-                <button onClick={handlePayAll} disabled={stats.ar === 0} style={{ background: D.plum, color: D.paper, border: 'none', padding: '8px 16px', borderRadius: 999, fontSize: 12, cursor: stats.ar === 0 ? 'not-allowed' : 'pointer', opacity: stats.ar === 0 ? 0.5 : 1 }}>
+                <button onClick={exportCsv} style={{ background: 'transparent', color: D.ink2, border: `1px solid ${D.line}`, padding: '8px 14px', borderRadius: 4, fontSize: 12, cursor: 'pointer' }}>Export CSV</button>
+                <button onClick={handlePayAll} disabled={stats.ar === 0} style={{ background: D.plum, color: D.paper, border: 'none', padding: '8px 16px', borderRadius: 4, fontSize: 12, cursor: stats.ar === 0 ? 'not-allowed' : 'pointer', opacity: stats.ar === 0 ? 0.5 : 1 }}>
                   Pay all outstanding
                 </button>
               </div>
@@ -100,7 +100,7 @@ export function Invoices() {
                         <td style={{ padding: '14px 18px', color: D.ink2 }}>{(inv.terms || '').toUpperCase()}</td>
                         <td style={{ padding: '14px 18px', color: D.ink2 }}>{fmt.date(inv.due_date)}</td>
                         <td style={{ padding: '14px 18px' }}>
-                          <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, padding: '4px 10px', borderRadius: 999, background: isPaid ? 'rgba(94,41,99,.1)' : D.terraSoft, color: isPaid ? D.ink2 : D.terra }}>{(inv.status || 'OPEN').toUpperCase()}</span>
+                          <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, padding: '4px 10px', borderRadius: 4, background: isPaid ? 'rgba(29,92,77,.1)' : D.terraSoft, color: isPaid ? D.ink2 : D.terra }}>{(inv.status || 'OPEN').toUpperCase()}</span>
                         </td>
                         <td style={{ padding: '14px 18px', textAlign: 'right' }}>
                           <button onClick={() => navigate(`/invoices/${inv.id}/print`)} style={{ background: 'none', border: 'none', fontFamily: D.mono, fontSize: 11, color: D.plum, cursor: 'pointer', padding: 0 }}>PDF →</button>

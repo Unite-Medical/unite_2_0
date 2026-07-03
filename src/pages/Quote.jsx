@@ -88,10 +88,10 @@ export function Quote() {
               window.
             </p>
             <div style={{ marginTop: 20, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-              <button onClick={() => handleRun()} disabled={running} style={{ background: D.plum, color: D.paper, border: 'none', padding: '13px 22px', borderRadius: 999, fontSize: 14, fontWeight: 600, cursor: running ? 'wait' : 'pointer', opacity: running ? 0.7 : 1 }}>
+              <button onClick={() => handleRun()} disabled={running} style={{ background: D.plum, color: D.paper, border: 'none', padding: '13px 22px', borderRadius: 4, fontSize: 14, fontWeight: 600, cursor: running ? 'wait' : 'pointer', opacity: running ? 0.7 : 1 }}>
                 {running ? 'Running engine…' : 'Run sample sheet (4 lines)'}
               </button>
-              <a href="#recent" style={{ background: 'transparent', color: D.ink, border: `1.5px solid ${D.ink}`, padding: '12px 22px', borderRadius: 999, fontSize: 14 }}>Past quotes ({recent.length})</a>
+              <a href="#recent" style={{ background: 'transparent', color: D.ink, border: `1.5px solid ${D.ink}`, padding: '12px 22px', borderRadius: 4, fontSize: 14 }}>Past quotes ({recent.length})</a>
             </div>
             {error && <div style={{ marginTop: 14, padding: 10, background: '#fbe9e1', color: '#7a2d10', borderRadius: 8, fontSize: 13 }}>{error}</div>}
           </div>
@@ -194,7 +194,7 @@ export function Quote() {
                 <button
                   disabled={!result}
                   onClick={() => result && navigate(`/quotes/${result.quote.id}/print?view=internal`)}
-                  style={{ marginTop: 22, width: '100%', background: D.paper, color: D.plum, border: 'none', padding: 14, borderRadius: 999, fontSize: 14, fontWeight: 600, fontFamily: D.sans, cursor: result ? 'pointer' : 'not-allowed', opacity: result ? 1 : 0.5 }}
+                  style={{ marginTop: 22, width: '100%', background: D.paper, color: D.plum, border: 'none', padding: 14, borderRadius: 4, fontSize: 14, fontWeight: 600, fontFamily: D.sans, cursor: result ? 'pointer' : 'not-allowed', opacity: result ? 1 : 0.5 }}
                 >
                   {result ? 'Open quote PDF →' : 'Run engine first'}
                 </button>
@@ -202,7 +202,7 @@ export function Quote() {
                   <button
                     type="button"
                     onClick={() => navigate(`/quotes/${result.quote.id}/print`)}
-                    style={{ marginTop: 10, width: '100%', background: 'transparent', color: D.paper, border: `1.5px solid ${D.paper}`, padding: 12, borderRadius: 999, fontSize: 13, fontWeight: 500, fontFamily: D.sans, cursor: 'pointer' }}
+                    style={{ marginTop: 10, width: '100%', background: 'transparent', color: D.paper, border: `1.5px solid ${D.paper}`, padding: 12, borderRadius: 4, fontSize: 13, fontWeight: 500, fontFamily: D.sans, cursor: 'pointer' }}
                   >
                     Preview customer view
                   </button>

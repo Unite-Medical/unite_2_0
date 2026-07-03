@@ -26,7 +26,7 @@ export function RequireAdmin({ children }) {
             Signed in as <strong>{session.name}</strong> ({session.role}). Switch to an admin
             account on the sign-in page to continue.
           </p>
-          <a href="/login" style={{ display: 'inline-block', marginTop: 22, background: D.plum, color: D.paper, padding: '12px 22px', borderRadius: 999, fontSize: 14, fontWeight: 600 }}>Open sign-in</a>
+          <a href="/login" style={{ display: 'inline-block', marginTop: 22, background: D.plum, color: D.paper, padding: '12px 22px', borderRadius: 4, fontSize: 14, fontWeight: 600 }}>Open sign-in</a>
         </div>
       </div>
     );

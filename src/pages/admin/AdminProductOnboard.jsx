@@ -208,7 +208,7 @@ export function AdminProductOnboard() {
                     {label}
                     <div style={{ fontSize: 11, color: D.ink2, marginTop: 2 }}>{vs.detail}</div>
                   </div>
-                  <span style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, padding: '3px 8px', borderRadius: 999, background: `${color}20`, color, whiteSpace: 'nowrap' }}>{text}</span>
+                  <span style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, padding: '3px 8px', borderRadius: 4, background: `${color}20`, color, whiteSpace: 'nowrap' }}>{text}</span>
                 </div>
               );
             })}
@@ -220,19 +220,19 @@ export function AdminProductOnboard() {
                   {requiredOk.ok ? 'all present' : `missing: ${requiredOk.missing.join(', ')}`}
                 </div>
               </div>
-              <span style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, padding: '3px 8px', borderRadius: 999, background: `${requiredOk.ok ? '#2d6a4f' : '#c3382d'}20`, color: requiredOk.ok ? '#2d6a4f' : '#c3382d' }}>
+              <span style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, padding: '3px 8px', borderRadius: 4, background: `${requiredOk.ok ? '#2d6a4f' : '#c3382d'}20`, color: requiredOk.ok ? '#2d6a4f' : '#c3382d' }}>
                 {requiredOk.ok ? 'OK' : 'MISSING'}
               </span>
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 14 }}>
-              <button type="button" onClick={runFullValidation} disabled={validating} style={{ background: D.ink, color: D.paper, border: 'none', padding: '10px 14px', borderRadius: 999, fontSize: 13, fontWeight: 500, cursor: validating ? 'wait' : 'pointer', opacity: validating ? 0.6 : 1 }}>
+              <button type="button" onClick={runFullValidation} disabled={validating} style={{ background: D.ink, color: D.paper, border: 'none', padding: '10px 14px', borderRadius: 4, fontSize: 13, fontWeight: 500, cursor: validating ? 'wait' : 'pointer', opacity: validating ? 0.6 : 1 }}>
                 {validating ? 'Validating…' : 'Re-validate codes'}
               </button>
-              <button type="button" onClick={downloadCsv} disabled={!form.primary_di} style={{ background: 'transparent', color: D.ink, border: `1.5px solid ${D.ink}`, padding: '9px 14px', borderRadius: 999, fontSize: 13, fontWeight: 500, cursor: form.primary_di ? 'pointer' : 'not-allowed', opacity: form.primary_di ? 1 : 0.4 }}>
+              <button type="button" onClick={downloadCsv} disabled={!form.primary_di} style={{ background: 'transparent', color: D.ink, border: `1.5px solid ${D.ink}`, padding: '9px 14px', borderRadius: 4, fontSize: 13, fontWeight: 500, cursor: form.primary_di ? 'pointer' : 'not-allowed', opacity: form.primary_di ? 1 : 0.4 }}>
                 Download CSV
               </button>
-              <button type="button" onClick={openInAccessGudid} disabled={!readyToSubmit} style={{ background: D.plum, color: D.paper, border: 'none', padding: '11px 14px', borderRadius: 999, fontSize: 13, fontWeight: 600, cursor: readyToSubmit ? 'pointer' : 'not-allowed', opacity: readyToSubmit ? 1 : 0.4 }}>
+              <button type="button" onClick={openInAccessGudid} disabled={!readyToSubmit} style={{ background: D.plum, color: D.paper, border: 'none', padding: '11px 14px', borderRadius: 4, fontSize: 13, fontWeight: 600, cursor: readyToSubmit ? 'pointer' : 'not-allowed', opacity: readyToSubmit ? 1 : 0.4 }}>
                 Open in AccessGUDID →
               </button>
               <div style={{ fontSize: 11, color: D.ink3, lineHeight: 1.55 }}>
@@ -253,7 +253,7 @@ function Field({ label, value, onChange, placeholder = '', required = false, sta
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
         <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>{label.toUpperCase()}{required ? ' *' : ''}</span>
         {sc && (
-          <span style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, padding: '2px 6px', borderRadius: 999, background: `${sc[0]}20`, color: sc[0] }}>{sc[1]}</span>
+          <span style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, padding: '2px 6px', borderRadius: 4, background: `${sc[0]}20`, color: sc[0] }}>{sc[1]}</span>
         )}
       </div>
       <input

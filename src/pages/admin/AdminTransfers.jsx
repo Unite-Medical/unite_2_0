@@ -42,7 +42,7 @@ export function AdminTransfers() {
             </select>
             <input value={form.sku} onChange={(e) => setForm({ ...form, sku: e.target.value.trim() })} placeholder="SKU" style={{ ...INPUT, fontFamily: D.mono }} />
             <input type="number" value={form.qty} onChange={(e) => setForm({ ...form, qty: e.target.value })} placeholder="Qty" style={{ ...INPUT, width: 100 }} />
-            <button onClick={create} style={{ background: D.plum, color: D.paper, border: 'none', padding: '11px 18px', borderRadius: 999, cursor: 'pointer', fontSize: 13, fontWeight: 600 }}>Create</button>
+            <button onClick={create} style={{ background: D.plum, color: D.paper, border: 'none', padding: '11px 18px', borderRadius: 4, cursor: 'pointer', fontSize: 13, fontWeight: 600 }}>Create</button>
           </div>
           {msg && <div style={{ marginTop: 12, padding: 10, borderRadius: 8, fontSize: 13, background: msg.kind === 'ok' ? '#e8f3ec' : '#fbeaea', color: msg.kind === 'ok' ? '#2c6647' : '#9a2b2b' }}>{msg.text}</div>}
         </AdminCard>

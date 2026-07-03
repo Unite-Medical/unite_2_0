@@ -102,12 +102,12 @@ export function Services() {
                   <div aria-hidden="true" style={{
                     position: 'absolute', top: isMobile ? -2 : 8, right: isMobile ? 12 : 24,
                     fontFamily: D.display, fontSize: isMobile ? 80 : 140, lineHeight: 1,
-                    color: 'rgba(94,41,99,.08)', letterSpacing: '-0.05em', userSelect: 'none',
+                    color: 'rgba(29,92,77,.08)', letterSpacing: '-0.05em', userSelect: 'none',
                   }}>{String(i + 1).padStart(2, '0')}</div>
                   <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum }}>{String(i + 1).padStart(2, '0')}</div>
                   <div style={{ fontFamily: D.display, fontSize: isMobile ? 28 : 42, letterSpacing: '-0.02em', lineHeight: 1.05, marginTop: 12, position: 'relative' }}>{s.name}</div>
                   <div style={{ fontSize: isMobile ? 14 : 16, color: D.ink2, marginTop: 14, lineHeight: 1.6, maxWidth: 480, position: 'relative' }}>{s.sub}</div>
-                  <button onClick={() => navigate(s.path)} style={{ background: D.ink, color: D.paper, border: 'none', padding: isMobile ? '12px 22px' : '14px 26px', borderRadius: 999, fontSize: 14, fontWeight: 600, cursor: 'pointer', marginTop: 24, fontFamily: D.sans, display: 'inline-flex', alignItems: 'center', gap: 10 }}>
+                  <button onClick={() => navigate(s.path)} style={{ background: D.ink, color: D.paper, border: 'none', padding: isMobile ? '12px 22px' : '14px 26px', borderRadius: 4, fontSize: 14, fontWeight: 600, cursor: 'pointer', marginTop: 24, fontFamily: D.sans, display: 'inline-flex', alignItems: 'center', gap: 10 }}>
                     {s.cta} <Icon.arrow />
                   </button>
                 </div>
@@ -124,11 +124,11 @@ export function Services() {
           gap: isMobile ? 36 : 80, alignItems: 'start',
         }}>
           <div>
-            <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: '#c8a4cd', marginBottom: 16 }}>PDAC & REIMBURSEMENT</div>
+            <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: '#9dbcae', marginBottom: 16 }}>PDAC & REIMBURSEMENT</div>
             <h2 style={{ fontFamily: D.display, fontSize: 'clamp(28px, 4.6vw, 52px)', fontWeight: 400, letterSpacing: '-0.03em', lineHeight: 1.06, margin: 0 }}>
               Most braces stall at Medicare review. <Grad>Ours arrive billable.</Grad>
             </h2>
-            <p style={{ fontSize: isMobile ? 14.5 : 16, lineHeight: 1.65, color: 'rgba(247,242,234,.78)', marginTop: 18, maxWidth: 520 }}>
+            <p style={{ fontSize: isMobile ? 14.5 : 16, lineHeight: 1.65, color: 'rgba(243,242,235,.78)', marginTop: 18, maxWidth: 520 }}>
               Every product in our Unite Medical orthopedic line is PDAC-approved and carries
               verified HCPCS L-coding. The code travels with the SKU — on the listing and on
               your invoice — so your bracing claims are ready to bill.
@@ -146,16 +146,16 @@ export function Services() {
                 display: 'grid', gridTemplateColumns: isMobile ? '100px 1fr' : '140px 1fr',
                 gap: isMobile ? 16 : 28, alignItems: 'baseline',
                 padding: `${isMobile ? 20 : 26}px 0`,
-                borderTop: '1px solid rgba(247,242,234,.18)',
+                borderTop: '1px solid rgba(243,242,235,.18)',
               }}>
-                <div style={{ fontFamily: D.display, fontSize: isMobile ? 26 : 34, letterSpacing: '-0.02em', color: '#c8a4cd', lineHeight: 1.05 }}>{f.stat}</div>
+                <div style={{ fontFamily: D.display, fontSize: isMobile ? 26 : 34, letterSpacing: '-0.02em', color: '#9dbcae', lineHeight: 1.05 }}>{f.stat}</div>
                 <div>
                   <div style={{ fontSize: isMobile ? 14.5 : 15.5, fontWeight: 600 }}>{f.label}</div>
-                  <div style={{ fontSize: isMobile ? 13 : 13.5, lineHeight: 1.6, color: 'rgba(247,242,234,.7)', marginTop: 6 }}>{f.sub}</div>
+                  <div style={{ fontSize: isMobile ? 13 : 13.5, lineHeight: 1.6, color: 'rgba(243,242,235,.7)', marginTop: 6 }}>{f.sub}</div>
                 </div>
               </div>
             ))}
-            <div style={{ borderTop: '1px solid rgba(247,242,234,.18)' }} />
+            <div style={{ borderTop: '1px solid rgba(243,242,235,.18)' }} />
           </div>
         </div>
       </div>

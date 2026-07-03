@@ -107,7 +107,7 @@ export function AdminReceiving() {
             <div><label style={LABEL}>EXPIRES</label><input type="date" value={scan.expiration_date} onChange={(e) => setScan({ ...scan, expiration_date: e.target.value })} style={INPUT} /></div>
             <div><label style={LABEL}>QTY</label><input type="number" inputMode="numeric" value={scan.qty} onChange={(e) => setScan({ ...scan, qty: e.target.value })} placeholder="0" style={INPUT} /></div>
           </div>
-          <button onClick={addToQueue} style={{ marginTop: 14, background: D.ink, color: D.paper, border: 'none', padding: '12px 20px', borderRadius: 999, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>Add to receipt</button>
+          <button onClick={addToQueue} style={{ marginTop: 14, background: D.ink, color: D.paper, border: 'none', padding: '12px 20px', borderRadius: 4, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>Add to receipt</button>
           {msg && <div style={{ marginTop: 12, padding: 10, borderRadius: 8, fontSize: 13, background: msg.kind === 'ok' ? '#e8f3ec' : '#fbeaea', color: msg.kind === 'ok' ? '#2c6647' : '#9a2b2b' }}>{msg.text}</div>}
         </AdminCard>
 
@@ -121,7 +121,7 @@ export function AdminReceiving() {
                   <span>× {r.qty}</span>
                 </div>
               ))}
-              <button onClick={post} disabled={busy || !canReceive} title={canReceive ? '' : 'Insufficient role'} style={{ marginTop: 16, width: '100%', background: canReceive ? D.plum : D.ink3, color: D.paper, border: 'none', padding: 14, borderRadius: 999, cursor: busy ? 'wait' : canReceive ? 'pointer' : 'not-allowed', fontSize: 15, fontWeight: 600 }}>
+              <button onClick={post} disabled={busy || !canReceive} title={canReceive ? '' : 'Insufficient role'} style={{ marginTop: 16, width: '100%', background: canReceive ? D.plum : D.ink3, color: D.paper, border: 'none', padding: 14, borderRadius: 4, cursor: busy ? 'wait' : canReceive ? 'pointer' : 'not-allowed', fontSize: 15, fontWeight: 600 }}>
                 {busy ? 'Posting…' : `Post receipt → ledger (${queue.reduce((a, r) => a + Number(r.qty), 0)} units)`}
               </button>
             </AdminCard>

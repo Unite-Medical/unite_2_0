@@ -62,8 +62,8 @@ export function ServiceDistribution() {
               </div>
             ))}
             <div style={{ display: 'flex', gap: 10, marginTop: 28, flexWrap: 'wrap' }}>
-              <Link to="/catalog" style={{ background: D.plum, color: D.paper, padding: '12px 20px', borderRadius: 999, fontSize: 14, fontWeight: 600 }}>Browse in-stock products →</Link>
-              <Link to="/quote" style={{ background: 'transparent', color: D.ink, border: `1.5px solid ${D.ink}`, padding: '11px 20px', borderRadius: 999, fontSize: 14, fontWeight: 500 }}>Quote a non-stock item →</Link>
+              <Link to="/catalog" style={{ background: D.plum, color: D.paper, padding: '12px 20px', borderRadius: 4, fontSize: 14, fontWeight: 600 }}>Browse in-stock products →</Link>
+              <Link to="/quote" style={{ background: 'transparent', color: D.ink, border: `1.5px solid ${D.ink}`, padding: '11px 20px', borderRadius: 4, fontSize: 14, fontWeight: 500 }}>Quote a non-stock item →</Link>
             </div>
           </div>
         </div>

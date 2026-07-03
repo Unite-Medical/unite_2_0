@@ -71,7 +71,7 @@ export function AdminShell({ active, children }) {
             display: 'block',
             padding: '11px 12px', borderRadius: 6, fontSize: 13,
             background: isActive(id, path) ? D.plum : 'transparent',
-            color: isActive(id, path) ? D.paper : '#b9a8bc',
+            color: isActive(id, path) ? D.paper : '#a9b8ae',
             marginBottom: 2,
           }}>{label}</Link>
         ))}
@@ -79,7 +79,7 @@ export function AdminShell({ active, children }) {
       <div style={{ marginTop: 40, padding: 14, background: 'rgba(255,255,255,.06)', borderRadius: 10 }}>
         <div style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, color: D.plumSoft }}>LOGGED IN AS</div>
         <div style={{ fontSize: 13, marginTop: 6 }}>{session?.name || 'Damon Reed'}</div>
-        <div style={{ fontSize: 11, color: '#9d8e9f' }}>{session?.role === 'admin' ? 'Super admin' : session ? 'Customer' : 'Demo · sign in'}</div>
+        <div style={{ fontSize: 11, color: '#8b9a90' }}>{session?.role === 'admin' ? 'Super admin' : session ? 'Customer' : 'Demo · sign in'}</div>
         {session ? (
           <button onClick={() => { auth.logout(); navigate('/'); }} style={{ marginTop: 10, fontSize: 11, fontFamily: D.mono, letterSpacing: 1, color: D.plumSoft, background: 'transparent', border: 'none', cursor: 'pointer', padding: 0 }}>SIGN OUT</button>
         ) : (

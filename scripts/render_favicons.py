@@ -33,18 +33,16 @@ ROOT = Path(__file__).resolve().parent.parent
 PUBLIC = ROOT / "public"
 SOURCE = PUBLIC / "images" / "source"
 
-GRAD_FROM = (0xF6, 0x4F, 0x00)  # warm orange
-GRAD_TO   = (0xA9, 0x00, 0xAA)  # magenta
-CORNER_RATIO = 0.22
+# Precision system: solid surgical-green field, bone glyph, sharp radius.
+FIELD = (0x1D, 0x5C, 0x4D)  # surgical green
+GLYPH = (0xF3, 0xF2, 0xEB)  # bone
+CORNER_RATIO = 0.14
 
 
 def make_gradient(size: int) -> Image.Image:
-    coords = np.indices((size, size)).astype(np.float32)
-    yy, xx = coords[0], coords[1]
-    t = np.clip((xx + yy) / (2 * (size - 1)), 0.0, 1.0)
+    """Flat brand field (name kept for call-site compatibility)."""
     arr = np.zeros((size, size, 3), dtype=np.uint8)
-    for i in range(3):
-        arr[..., i] = (GRAD_FROM[i] * (1 - t) + GRAD_TO[i] * t).astype(np.uint8)
+    arr[..., 0], arr[..., 1], arr[..., 2] = FIELD
     return Image.fromarray(arr, mode="RGB")
 
 
@@ -74,8 +72,8 @@ def draw_um_glyph(img: Image.Image, size: int) -> None:
         return (mark_x + x * sx, mark_y + y * sy)
 
     draw = ImageDraw.Draw(img, "RGBA")
-    white = (255, 255, 255, 255)
-    white92 = (255, 255, 255, int(255 * 0.92))
+    white = (*GLYPH, 255)
+    white92 = (*GLYPH, int(255 * 0.92))
 
     # Path 1 — U: M3 3v9a5 5 0 0 0 10 0V3
     draw.line([to_canvas(3, 3), to_canvas(3, 12)], fill=white, width=stroke)
@@ -126,14 +124,8 @@ def write_svg() -> Path:
     """Writes a vector logomark for browsers that prefer SVG favicons.
     Geometry mirrors src/components/shared/Logo.jsx exactly."""
     svg = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
-  <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#{"%02x%02x%02x" % GRAD_FROM}"/>
-      <stop offset="100%" stop-color="#{"%02x%02x%02x" % GRAD_TO}"/>
-    </linearGradient>
-  </defs>
-  <rect x="0" y="0" width="1024" height="1024" rx="225" ry="225" fill="url(#g)"/>
-  <g transform="translate(195 256) scale(26.46 25.6)" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+  <rect x="0" y="0" width="1024" height="1024" rx="144" ry="144" fill="#{"%02x%02x%02x" % FIELD}"/>
+  <g transform="translate(195 256) scale(26.46 25.6)" fill="none" stroke="#{"%02x%02x%02x" % GLYPH}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
     <path d="M3 3v9a5 5 0 0 0 10 0V3"/>
     <path d="M13 17V9l4 5 4-5v8" opacity="0.92"/>
   </g>
@@ -196,8 +188,8 @@ def main() -> int:
         "description": "Veteran-owned wholesale medical supply.",
         "start_url": "/",
         "display": "standalone",
-        "background_color": "#f7f2ea",
-        "theme_color": "#5e2963",
+        "background_color": "#f3f2eb",
+        "theme_color": "#0e1713",
         "icons": [
             {"src": "/favicon-192.png", "sizes": "192x192", "type": "image/png"},
             {"src": "/favicon-512.png", "sizes": "512x512", "type": "image/png"},

@@ -112,18 +112,18 @@ export function CaseStudyTJS() {
           <h2 style={{ fontFamily: D.display, fontSize: isMobile ? 26 : 36, letterSpacing: -0.6, margin: 0, lineHeight: 1.08 }}>
             Could this be <em style={{ color: D.terraSoft }}>your</em> store?
           </h2>
-          <p style={{ fontSize: 15, lineHeight: 1.7, color: 'rgba(247,242,234,.75)', margin: '14px 0 0', maxWidth: 700 }}>
+          <p style={{ fontSize: 15, lineHeight: 1.7, color: 'rgba(243,242,235,.75)', margin: '14px 0 0', maxWidth: 700 }}>
             The TJS build is a repeatable playbook. It fits:
           </p>
           <ul style={{ margin: '16px 0 0', paddingLeft: 20, display: 'grid', gap: 8 }}>
             {WHO_FOR.map((w) => (
-              <li key={w} style={{ fontSize: 14.5, lineHeight: 1.6, color: 'rgba(247,242,234,.85)' }}>{w}</li>
+              <li key={w} style={{ fontSize: 14.5, lineHeight: 1.6, color: 'rgba(243,242,235,.85)' }}>{w}</li>
             ))}
           </ul>
           <div style={{ display: 'flex', gap: 12, marginTop: 28, flexWrap: 'wrap' }}>
             <button
               onClick={() => navigate('/contact?reason=New%20account')}
-              style={{ background: D.paper, color: D.ink, border: 'none', padding: '14px 26px', borderRadius: 999, fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: D.sans }}
+              style={{ background: D.paper, color: D.ink, border: 'none', padding: '14px 26px', borderRadius: 4, fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: D.sans }}
             >
               Build my store — talk to us →
             </button>
@@ -131,13 +131,13 @@ export function CaseStudyTJS() {
               href="https://tjs.unitemedical.net/store"
               target="_blank"
               rel="noreferrer"
-              style={{ background: 'transparent', color: D.paper, border: '1.5px solid rgba(247,242,234,.5)', padding: '13px 26px', borderRadius: 999, fontSize: 14, fontWeight: 500 }}
+              style={{ background: 'transparent', color: D.paper, border: '1.5px solid rgba(243,242,235,.5)', padding: '13px 26px', borderRadius: 4, fontSize: 14, fontWeight: 500 }}
             >
               Visit the TJS Recovery Store →
             </a>
             <Link
               to="/services/private-label"
-              style={{ background: 'transparent', color: D.paper, border: '1.5px solid rgba(247,242,234,.5)', padding: '13px 26px', borderRadius: 999, fontSize: 14, fontWeight: 500 }}
+              style={{ background: 'transparent', color: D.paper, border: '1.5px solid rgba(243,242,235,.5)', padding: '13px 26px', borderRadius: 4, fontSize: 14, fontWeight: 500 }}
             >
               Private label & manufacturing →
             </Link>

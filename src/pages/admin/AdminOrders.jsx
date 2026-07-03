@@ -8,7 +8,7 @@ import { cin7 } from '../../lib/external/cin7.js';
 import { useViewport } from '../../lib/viewport.js';
 
 const FILTERS = ['All', 'net30', 'net60', 'card', 'mspv', 'wire'];
-const STATUS_COLOR = { picked: '#b8502c', label_created: '#5e2963', in_transit: '#2d6a4f', shipped: '#2d6a4f', delivered: '#8f8490', out_for_delivery: '#2d6a4f', pending: '#b8502c', processing: '#b8502c', cancelled: '#b8502c' };
+const STATUS_COLOR = { picked: '#b3592b', label_created: '#1d5c4d', in_transit: '#2d6a4f', shipped: '#2d6a4f', delivered: '#8b968d', out_for_delivery: '#2d6a4f', pending: '#b3592b', processing: '#b3592b', cancelled: '#b3592b' };
 const ORDER_STATUSES = ['pending', 'processing', 'shipped', 'in_transit', 'delivered', 'cancelled'];
 const PAYMENT_STATUSES = ['pending', 'invoiced', 'paid', 'refunded'];
 const CARRIERS = ['fedex_ground', 'ups_ground', 'usps_priority', 'fedex_2day', 'ups_2day'];
@@ -77,7 +77,7 @@ export function AdminOrders() {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: isMobile ? 'flex-start' : 'end', flexDirection: isMobile ? 'column' : 'row', gap: 14 }}>
           <h1 style={{ fontFamily: D.display, fontSize: 'clamp(34px, 5.6vw, 56px)', fontWeight: 400, letterSpacing: -1.3, lineHeight: 1.02, margin: 0 }}>Orders.</h1>
           <div style={{ display: 'flex', gap: 10 }}>
-            <button onClick={syncWarehouse} disabled={syncing} style={{ background: 'transparent', color: D.ink, border: `1px solid ${D.line}`, padding: '10px 16px', borderRadius: 999, fontSize: 13, cursor: syncing ? 'wait' : 'pointer', opacity: syncing ? 0.6 : 1 }}>
+            <button onClick={syncWarehouse} disabled={syncing} style={{ background: 'transparent', color: D.ink, border: `1px solid ${D.line}`, padding: '10px 16px', borderRadius: 4, fontSize: 13, cursor: syncing ? 'wait' : 'pointer', opacity: syncing ? 0.6 : 1 }}>
               {syncing ? 'Syncing…' : 'Sync warehouse'}
             </button>
           </div>
@@ -101,7 +101,7 @@ export function AdminOrders() {
         <div style={{ marginTop: isMobile ? 18 : 24 }}>
           <div style={{ display: 'flex', gap: 8, marginBottom: 12, flexWrap: 'wrap' }}>
             {FILTERS.map((f) => (
-              <button key={f} onClick={() => setFilter(f)} style={{ background: filter === f ? D.plum : D.card, color: filter === f ? D.paper : D.ink2, border: `1px solid ${filter === f ? D.plum : D.line}`, padding: '6px 12px', borderRadius: 999, fontSize: 12, cursor: 'pointer' }}>{f.toUpperCase()}</button>
+              <button key={f} onClick={() => setFilter(f)} style={{ background: filter === f ? D.plum : D.card, color: filter === f ? D.paper : D.ink2, border: `1px solid ${filter === f ? D.plum : D.line}`, padding: '6px 12px', borderRadius: 4, fontSize: 12, cursor: 'pointer' }}>{f.toUpperCase()}</button>
             ))}
           </div>
           <div style={{ background: D.card, borderRadius: 12, border: `1px solid ${D.line}`, overflow: 'hidden' }}>
@@ -116,14 +116,14 @@ export function AdminOrders() {
                 {orders.slice(0, 30).map((r) => {
                   const c = STATUS_COLOR[r.status] || D.ink3;
                   return (
-                    <tr key={r.id} onClick={() => setSelectedId(r.id)} style={{ borderTop: `1px solid ${D.line}`, background: selectedId === r.id ? 'rgba(94,41,99,.06)' : 'transparent', cursor: 'pointer' }}>
+                    <tr key={r.id} onClick={() => setSelectedId(r.id)} style={{ borderTop: `1px solid ${D.line}`, background: selectedId === r.id ? 'rgba(29,92,77,.06)' : 'transparent', cursor: 'pointer' }}>
                       <td style={{ padding: '11px 14px', fontFamily: D.mono, color: D.plum, fontWeight: 600 }}>{r.id}</td>
                       <td style={{ padding: '11px 14px' }}>{r.customer_name}</td>
                       <td style={{ padding: '11px 14px', color: D.ink2, fontFamily: D.mono }}>{fmt.date(r.placed_at)}</td>
                       <td style={{ padding: '11px 14px', fontFamily: D.mono }}>{fmt.money(r.total)}</td>
                       <td style={{ padding: '11px 14px', color: D.ink2 }}>{(r.payment_terms || '').toUpperCase()}</td>
                       <td style={{ padding: '11px 14px' }}>
-                        <span style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, padding: '3px 8px', borderRadius: 999, background: `${c}20`, color: c }}>{(r.status || '').replace('_', ' ').toUpperCase()}</span>
+                        <span style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, padding: '3px 8px', borderRadius: 4, background: `${c}20`, color: c }}>{(r.status || '').replace('_', ' ').toUpperCase()}</span>
                       </td>
                       <td style={{ padding: '11px 14px', fontSize: 11, color: D.ink2 }}>{db.get('warehouses', r.ship_from_warehouse)?.code}</td>
                     </tr>
@@ -158,7 +158,7 @@ export function AdminOrders() {
                 <div style={{ padding: 14, background: D.paper, borderRadius: 8, border: `1px solid ${D.line}` }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div style={{ fontSize: 13, fontWeight: 600 }}>{db.get('warehouses', selectedShipment.warehouse_id)?.name}</div>
-                    <span style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, padding: '3px 8px', borderRadius: 999, background: '#2d6a4f20', color: '#2d6a4f' }}>{selectedShipment.status?.replace('_', ' ').toUpperCase()}</span>
+                    <span style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, padding: '3px 8px', borderRadius: 4, background: '#2d6a4f20', color: '#2d6a4f' }}>{selectedShipment.status?.replace('_', ' ').toUpperCase()}</span>
                   </div>
                   <div style={{ fontSize: 12, color: D.ink2, marginTop: 6 }}>{selectedShipment.carrier?.replace('_', ' ').toUpperCase()} · {selectedShipment.tracking_number} · {selectedShipment.cartons} cartons · {selectedShipment.weight_lbs} lbs</div>
                   <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 0.8, color: D.plum, marginTop: 8 }}>EST. DELIVERY · {fmt.dateTime(selectedShipment.eta).toUpperCase()}</div>
@@ -201,7 +201,7 @@ export function AdminOrders() {
             <button
               onClick={cancelOrder}
               disabled={selected.status === 'cancelled'}
-              style={{ marginTop: 12, width: '100%', background: 'transparent', color: D.terra, border: `1px solid ${D.terra}`, padding: '10px 16px', borderRadius: 999, fontSize: 12, fontWeight: 600, cursor: selected.status === 'cancelled' ? 'not-allowed' : 'pointer', opacity: selected.status === 'cancelled' ? 0.5 : 1, fontFamily: 'inherit' }}
+              style={{ marginTop: 12, width: '100%', background: 'transparent', color: D.terra, border: `1px solid ${D.terra}`, padding: '10px 16px', borderRadius: 4, fontSize: 12, fontWeight: 600, cursor: selected.status === 'cancelled' ? 'not-allowed' : 'pointer', opacity: selected.status === 'cancelled' ? 0.5 : 1, fontFamily: 'inherit' }}
             >
               {selected.status === 'cancelled' ? 'Order cancelled' : 'Cancel this order'}
             </button>

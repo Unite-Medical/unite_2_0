@@ -128,14 +128,14 @@ export function AdminFinance() {
 
         <div style={{ marginTop: 20, display: 'flex', gap: 8 }}>
           {[['open', `Open (${open.length})`], ['overdue', `Overdue (${overdue.length})`], ['paid', `Paid (${paid.length})`]].map(([k, label]) => (
-            <button key={k} onClick={() => setTab(k)} style={{ padding: '8px 16px', borderRadius: 999, fontSize: 13, fontFamily: D.sans, cursor: 'pointer', border: `1px solid ${tab === k ? D.plum : D.line}`, background: tab === k ? D.plum : 'transparent', color: tab === k ? '#fff' : D.ink }}>
+            <button key={k} onClick={() => setTab(k)} style={{ padding: '8px 16px', borderRadius: 4, fontSize: 13, fontFamily: D.sans, cursor: 'pointer', border: `1px solid ${tab === k ? D.plum : D.line}`, background: tab === k ? D.plum : 'transparent', color: tab === k ? '#fff' : D.ink }}>
               {label}
             </button>
           ))}
         </div>
 
         {notice && (
-          <div style={{ marginTop: 14, padding: '12px 16px', background: 'rgba(94,41,99,.07)', border: `1px solid ${D.line}`, borderRadius: 10, fontSize: 13 }}>{notice}</div>
+          <div style={{ marginTop: 14, padding: '12px 16px', background: 'rgba(29,92,77,.07)', border: `1px solid ${D.line}`, borderRadius: 10, fontSize: 13 }}>{notice}</div>
         )}
 
         <div style={{ marginTop: 14, background: D.card, border: `1px solid ${D.line}`, borderRadius: 12, overflow: 'auto' }}>
@@ -161,7 +161,7 @@ export function AdminFinance() {
                       {isPaid ? '—' : d > 0 ? `${d}d late` : `due in ${-d}d`}
                     </td>
                     <td style={{ padding: 12 }}>
-                      <span style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, padding: '3px 8px', borderRadius: 999, background: isPaid ? '#2d6a4f20' : d > 0 ? '#c3382d20' : `${D.terra}20`, color: isPaid ? '#2d6a4f' : d > 0 ? '#c3382d' : D.terra }}>
+                      <span style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, padding: '3px 8px', borderRadius: 4, background: isPaid ? '#2d6a4f20' : d > 0 ? '#c3382d20' : `${D.terra}20`, color: isPaid ? '#2d6a4f' : d > 0 ? '#c3382d' : D.terra }}>
                         {isPaid ? 'PAID' : d > 0 ? 'OVERDUE' : 'OPEN'}
                       </span>
                     </td>

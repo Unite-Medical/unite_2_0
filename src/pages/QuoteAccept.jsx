@@ -65,8 +65,8 @@ export function QuoteAccept() {
           inventory and send tracking as soon as your shipment clears. A confirmation email is on its way.
         </p>
         <div style={{ marginTop: 24, display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-          <Link to={`/orders/${state.order.id}/track`} style={{ background: D.plum, color: D.paper, padding: '12px 22px', borderRadius: 999, textDecoration: 'none', fontWeight: 600 }}>Track order</Link>
-          <Link to={`/quotes/${quote.id}/print`} style={{ border: `1.5px solid ${D.ink}`, color: D.ink, padding: '12px 22px', borderRadius: 999, textDecoration: 'none', fontWeight: 600 }}>View quote</Link>
+          <Link to={`/orders/${state.order.id}/track`} style={{ background: D.plum, color: D.paper, padding: '12px 22px', borderRadius: 4, textDecoration: 'none', fontWeight: 600 }}>Track order</Link>
+          <Link to={`/quotes/${quote.id}/print`} style={{ border: `1.5px solid ${D.ink}`, color: D.ink, padding: '12px 22px', borderRadius: 4, textDecoration: 'none', fontWeight: 600 }}>View quote</Link>
         </div>
       </>,
     );
@@ -114,7 +114,7 @@ export function QuoteAccept() {
         </div>
       ) : (
         <div style={{ marginTop: 32 }}>
-          <button type="button" onClick={handleAccept} disabled={state.status === 'accepting'} style={{ background: D.plum, color: D.paper, padding: '14px 28px', borderRadius: 999, border: 'none', fontSize: 16, fontWeight: 600, cursor: 'pointer' }}>
+          <button type="button" onClick={handleAccept} disabled={state.status === 'accepting'} style={{ background: D.plum, color: D.paper, padding: '14px 28px', borderRadius: 4, border: 'none', fontSize: 16, fontWeight: 600, cursor: 'pointer' }}>
             {state.status === 'accepting' ? 'Accepting…' : `Accept quote — ${fmt.money(total)}`}
           </button>
           {state.status === 'error' && (

@@ -56,7 +56,7 @@ export function AdminFulfillment() {
   }
 
   const btn = (primary) => ({
-    padding: '7px 14px', borderRadius: 999, fontSize: 12, fontWeight: 600, cursor: 'pointer',
+    padding: '7px 14px', borderRadius: 4, fontSize: 12, fontWeight: 600, cursor: 'pointer',
     border: primary ? 'none' : `1.5px solid ${D.ink}`,
     background: primary ? D.plum : 'transparent', color: primary ? D.paper : D.ink,
   });
@@ -83,7 +83,7 @@ export function AdminFulfillment() {
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 20 }}>
           {breakers.length === 0 && <div style={{ fontSize: 12, color: D.ink3 }}>All integration circuits closed (healthy).</div>}
           {breakers.map((b) => (
-            <span key={b.integration} style={{ fontFamily: D.mono, fontSize: 11, padding: '4px 10px', borderRadius: 999, background: b.open ? 'rgba(195,56,45,.12)' : 'rgba(45,106,79,.12)', color: b.open ? '#c3382d' : '#2d6a4f' }}>
+            <span key={b.integration} style={{ fontFamily: D.mono, fontSize: 11, padding: '4px 10px', borderRadius: 4, background: b.open ? 'rgba(195,56,45,.12)' : 'rgba(45,106,79,.12)', color: b.open ? '#c3382d' : '#2d6a4f' }}>
               {b.integration}: {b.open ? 'OPEN' : 'closed'} ({b.recent_failures})
             </span>
           ))}
@@ -103,7 +103,7 @@ export function AdminFulfillment() {
                   const { done, total } = progress(o.id);
                   const steps = stepsByOrder.get(o.id) || {};
                   return (
-                    <tr key={o.id} style={{ borderTop: `1px solid ${D.line}`, background: selected === o.id ? 'rgba(94,41,99,.05)' : 'transparent', cursor: 'pointer' }} onClick={() => setSelected(o.id)}>
+                    <tr key={o.id} style={{ borderTop: `1px solid ${D.line}`, background: selected === o.id ? 'rgba(29,92,77,.05)' : 'transparent', cursor: 'pointer' }} onClick={() => setSelected(o.id)}>
                       <td style={{ padding: 12, fontFamily: D.mono, fontSize: 12 }}>{o.id}</td>
                       <td style={{ padding: 12, maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{o.customer_name}</td>
                       <td style={{ padding: 12, color: D.ink2 }}>{o.status}</td>
@@ -167,7 +167,7 @@ export function AdminFulfillment() {
                 {backorders.slice(0, 12).map((bo) => (
                   <div key={bo.id} style={{ fontSize: 12, display: 'flex', justifyContent: 'space-between', gap: 8 }}>
                     <span>{bo.product_name || bo.sku} ×{bo.quantity}</span>
-                    <span style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, padding: '2px 8px', borderRadius: 999, background: bo.status === 'shipped' ? 'rgba(45,106,79,.12)' : 'rgba(154,123,30,.14)', color: bo.status === 'shipped' ? '#2d6a4f' : '#9a7b1e' }}>{(bo.status || 'pending').toUpperCase()}</span>
+                    <span style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, padding: '2px 8px', borderRadius: 4, background: bo.status === 'shipped' ? 'rgba(45,106,79,.12)' : 'rgba(154,123,30,.14)', color: bo.status === 'shipped' ? '#2d6a4f' : '#9a7b1e' }}>{(bo.status || 'pending').toUpperCase()}</span>
                   </div>
                 ))}
               </div>

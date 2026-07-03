@@ -38,7 +38,7 @@ export function AdminCustomers() {
       <div style={{ padding: isMobile ? 20 : 32, display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '320px 1fr', gap: 20 }}>
         <div style={{ background: D.card, borderRadius: 12, border: `1px solid ${D.line}`, overflow: 'hidden' }}>
           {orgs.map((o) => (
-            <button key={o.id} onClick={() => setActiveId(o.id)} style={{ width: '100%', textAlign: 'left', padding: '14px 16px', borderTop: `1px solid ${D.line}`, background: activeId === o.id ? 'rgba(94,41,99,.06)' : 'transparent', cursor: 'pointer', fontFamily: D.sans, color: D.ink, display: 'grid', gridTemplateColumns: '1fr auto', gap: 8 }}>
+            <button key={o.id} onClick={() => setActiveId(o.id)} style={{ width: '100%', textAlign: 'left', padding: '14px 16px', borderTop: `1px solid ${D.line}`, background: activeId === o.id ? 'rgba(29,92,77,.06)' : 'transparent', cursor: 'pointer', fontFamily: D.sans, color: D.ink, display: 'grid', gridTemplateColumns: '1fr auto', gap: 8 }}>
               <div>
                 <div style={{ fontSize: 13, fontWeight: 600 }}>{o.name}</div>
                 <div style={{ fontSize: 12, color: D.ink2 }}>{(o.segment || '').toUpperCase()} · {o.account_rep}</div>
@@ -122,7 +122,7 @@ export function AdminCustomers() {
                         setActiveId(orgs.find((o) => o.id !== active.id)?.id);
                       }
                     }}
-                    style={{ background: 'transparent', color: D.terra, border: `1px solid ${D.terra}`, padding: '8px 14px', borderRadius: 999, fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', width: '100%' }}
+                    style={{ background: 'transparent', color: D.terra, border: `1px solid ${D.terra}`, padding: '8px 14px', borderRadius: 4, fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', width: '100%' }}
                   >
                     Delete customer
                   </button>
@@ -258,7 +258,7 @@ function PaymentMethodsPanel({ org }) {
           const on = row ? row.status === 'active' : active.some((a) => a.method === m && configured);
           return (
             <button key={m} onClick={() => (on && row ? paymentMethods.suspend(row.id) : paymentMethods.enable({ org_id: org.id, method: m, credit_limit: TERMS_METHODS.has(m) ? (org.credit_limit || null) : null, approved_by: 'usr_admin' }))}
-              style={{ padding: '8px 14px', borderRadius: 999, border: `1.5px solid ${on ? D.plum : D.line}`, background: on ? 'rgba(94,41,99,.06)' : D.paper, color: on ? D.plum : D.ink2, cursor: 'pointer', fontSize: 12, fontFamily: D.sans }}>
+              style={{ padding: '8px 14px', borderRadius: 4, border: `1.5px solid ${on ? D.plum : D.line}`, background: on ? 'rgba(29,92,77,.06)' : D.paper, color: on ? D.plum : D.ink2, cursor: 'pointer', fontSize: 12, fontFamily: D.sans }}>
               {on ? '✓ ' : ''}{METHOD_LABEL[m]}
               {on && TERMS_METHODS.has(m) && row?.credit_limit != null ? ` · ${fmt.money(row.credit_limit, { cents: false })}` : ''}
             </button>
@@ -298,7 +298,7 @@ function NotificationsPanel({ org }) {
                 const on = (r.events || NOTIFY_EVENTS).includes(ev);
                 return (
                   <button key={ev} onClick={() => notificationRecipients.setEvents(r.id, on ? (r.events || NOTIFY_EVENTS).filter((x) => x !== ev) : [...(r.events || NOTIFY_EVENTS), ev])}
-                    style={{ padding: '4px 8px', borderRadius: 6, border: `1px solid ${on ? D.plum : D.line}`, background: on ? 'rgba(94,41,99,.06)' : 'transparent', color: on ? D.plum : D.ink3, cursor: 'pointer', fontSize: 10, fontFamily: D.mono }}>{ev}</button>
+                    style={{ padding: '4px 8px', borderRadius: 6, border: `1px solid ${on ? D.plum : D.line}`, background: on ? 'rgba(29,92,77,.06)' : 'transparent', color: on ? D.plum : D.ink3, cursor: 'pointer', fontSize: 10, fontFamily: D.mono }}>{ev}</button>
                 );
               })}
             </div>

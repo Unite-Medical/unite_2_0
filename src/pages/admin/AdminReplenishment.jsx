@@ -189,7 +189,7 @@ export function AdminReplenishment() {
         </div>
 
         {notice && (
-          <div style={{ marginTop: 14, padding: '12px 16px', background: 'rgba(94,41,99,.07)', border: `1px solid ${D.line}`, borderRadius: 10, fontSize: 13 }}>{notice}</div>
+          <div style={{ marginTop: 14, padding: '12px 16px', background: 'rgba(29,92,77,.07)', border: `1px solid ${D.line}`, borderRadius: 10, fontSize: 13 }}>{notice}</div>
         )}
 
         <div style={{ marginTop: 20, background: D.card, border: `1px solid ${D.line}`, borderRadius: 12, overflow: 'auto' }}>
@@ -212,14 +212,14 @@ export function AdminReplenishment() {
                     <td style={{ padding: 12 }}>
                       {r.run_rate > 0 ? r.run_rate.toFixed(2) : '—'}
                       {r.model === 'prophet' && (
-                        <span title="Prophet seasonal forecast" style={{ marginLeft: 6, fontFamily: D.mono, fontSize: 8, letterSpacing: 1, padding: '2px 6px', borderRadius: 999, background: `${D.plum}18`, color: D.plum }}>PROPHET</span>
+                        <span title="Prophet seasonal forecast" style={{ marginLeft: 6, fontFamily: D.mono, fontSize: 8, letterSpacing: 1, padding: '2px 6px', borderRadius: 4, background: `${D.plum}18`, color: D.plum }}>PROPHET</span>
                       )}
                     </td>
                     <td style={{ padding: 12 }}>{fmt.number(r.on_hand)}</td>
                     <td style={{ padding: 12 }}>{fmt.number(r.reorder_point)}</td>
                     <td style={{ padding: 12 }}>{r.days_cover == null ? '∞' : `${r.days_cover}d`}</td>
                     <td style={{ padding: 12 }}>
-                      <span style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, padding: '3px 8px', borderRadius: 999, background: `${color}20`, color }}>{label}</span>
+                      <span style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, padding: '3px 8px', borderRadius: 4, background: `${color}20`, color }}>{label}</span>
                     </td>
                     <td style={{ padding: 12, fontWeight: r.suggested_qty > 0 ? 600 : 400 }}>{r.suggested_qty > 0 ? fmt.number(r.suggested_qty) : '—'}</td>
                   </tr>
@@ -251,7 +251,7 @@ export function AdminReplenishment() {
                     <div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                         <span style={{ fontWeight: 600, fontSize: 14 }}>{po.vendor_name}</span>
-                        <span style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, padding: '3px 8px', borderRadius: 999, background: `${chipColor}20`, color: chipColor }}>{chipLabel}</span>
+                        <span style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, padding: '3px 8px', borderRadius: 4, background: `${chipColor}20`, color: chipColor }}>{chipLabel}</span>
                       </div>
                       <div style={{ fontSize: 12, color: D.ink2, marginTop: 6 }}>
                         {po.id} · {(po.line_items || []).length} lines · expected {fmt.date(po.expected_delivery)} · WMS <span style={{ fontFamily: D.mono }}>{po.wms_po_id || '—'}</span>

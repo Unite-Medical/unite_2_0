@@ -46,7 +46,7 @@ export function AdminWebhooks() {
   }
 
   const btn = (primary) => ({
-    padding: '9px 16px', borderRadius: 999, fontSize: 13, fontWeight: 600, cursor: 'pointer',
+    padding: '9px 16px', borderRadius: 4, fontSize: 13, fontWeight: 600, cursor: 'pointer',
     border: primary ? 'none' : `1.5px solid ${D.ink}`,
     background: primary ? D.plum : 'transparent', color: primary ? D.paper : D.ink,
   });
@@ -104,7 +104,7 @@ export function AdminWebhooks() {
                     <td style={{ padding: 12, fontFamily: D.mono, fontSize: 12 }}>{e.type}</td>
                     <td style={{ padding: 12, fontFamily: D.mono, fontSize: 11, color: D.ink2, maxWidth: 180, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{e.event_id}</td>
                     <td style={{ padding: 12 }}>
-                      <span style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, padding: '3px 8px', borderRadius: 999, background: `${color}20`, color }}>{label}</span>
+                      <span style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, padding: '3px 8px', borderRadius: 4, background: `${color}20`, color }}>{label}</span>
                     </td>
                     <td style={{ padding: 12 }}>{e.attempts}</td>
                     <td style={{ padding: 12, color: D.terra, maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{e.last_error || '—'}</td>

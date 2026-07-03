@@ -116,7 +116,7 @@ export function Government() {
           <h3 style={{ fontFamily: D.display, fontSize: isMobile ? 26 : 36, letterSpacing: -0.6, marginTop: 10, marginBottom: 12 }}>
             Need compliance documentation or contract pricing?
           </h3>
-          <p style={{ color: '#e5d6e7', lineHeight: 1.55, maxWidth: 660 }}>
+          <p style={{ color: '#cfe0d7', lineHeight: 1.55, maxWidth: 660 }}>
             Request TAA / Berry attestations, country-of-origin documentation,
             capability statements, or schedule a call with our government sales team.
           </p>
@@ -124,9 +124,9 @@ export function Government() {
             {/* Hosted Unite Group capability statement (PRD-28 §8.1) — the PDF
                 lives at public/documents/; verify NAICS/SIC vs SAM.gov before
                 external distribution. */}
-            <a href="/documents/Unite_Group_Capability_Statement_2026.pdf" target="_blank" rel="noreferrer" style={{ background: D.paper, color: D.plum, padding: '11px 18px', borderRadius: 999, fontSize: 14, fontWeight: 600 }}>Download capability statement</a>
-            <a href="/compliance#docs" style={{ background: 'transparent', color: D.paper, border: `1.5px solid ${D.paper}`, padding: '10px 18px', borderRadius: 999, fontSize: 14, fontWeight: 500 }}>Request documentation</a>
-            <a href="/contact" style={{ background: 'transparent', color: D.paper, border: `1.5px solid ${D.paper}`, padding: '10px 18px', borderRadius: 999, fontSize: 14, fontWeight: 500 }}>Contact government sales</a>
+            <a href="/documents/Unite_Group_Capability_Statement_2026.pdf" target="_blank" rel="noreferrer" style={{ background: D.paper, color: D.plum, padding: '11px 18px', borderRadius: 4, fontSize: 14, fontWeight: 600 }}>Download capability statement</a>
+            <a href="/compliance#docs" style={{ background: 'transparent', color: D.paper, border: `1.5px solid ${D.paper}`, padding: '10px 18px', borderRadius: 4, fontSize: 14, fontWeight: 500 }}>Request documentation</a>
+            <a href="/contact" style={{ background: 'transparent', color: D.paper, border: `1.5px solid ${D.paper}`, padding: '10px 18px', borderRadius: 4, fontSize: 14, fontWeight: 500 }}>Contact government sales</a>
           </div>
         </div>
       </div>

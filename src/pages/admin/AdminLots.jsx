@@ -41,7 +41,7 @@ export function AdminLots() {
         <AdminCard title="Recall lookup — every customer who received a lot">
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
             <input value={recallLot} onChange={(e) => setRecallLot(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && runRecall()} placeholder="Lot number…" style={INPUT} />
-            <button onClick={runRecall} style={{ background: D.terra, color: D.paper, border: 'none', padding: '12px 20px', borderRadius: 999, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>Run recall</button>
+            <button onClick={runRecall} style={{ background: D.terra, color: D.paper, border: 'none', padding: '12px 20px', borderRadius: 4, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>Run recall</button>
             {recallMs != null && <span style={{ fontFamily: D.mono, fontSize: 12, color: recallMs < 1000 ? '#3b8760' : D.terra }}>{recallResult?.length || 0} customer(s) · {recallMs.toFixed(1)}ms {recallMs < 1000 ? '✓ < 1s SLA' : ''}</span>}
           </div>
           {recallResult && recallResult.length > 0 && (

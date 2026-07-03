@@ -371,7 +371,7 @@ export function AdminProductEdit() {
                     <button onClick={() => removeImage(i)} style={{ ...imgPillBtn, color: D.terra }}>✕</button>
                   </div>
                   {i === 0 && (
-                    <div style={{ position: 'absolute', top: 4, left: 4, background: D.plum, color: D.paper, fontFamily: D.mono, fontSize: 9, letterSpacing: 1, padding: '2px 8px', borderRadius: 999 }}>HERO</div>
+                    <div style={{ position: 'absolute', top: 4, left: 4, background: D.plum, color: D.paper, fontFamily: D.mono, fontSize: 9, letterSpacing: 1, padding: '2px 8px', borderRadius: 4 }}>HERO</div>
                   )}
                 </div>
               ))}
@@ -443,7 +443,7 @@ const inputStyle = { width: '100%', padding: '10px 12px', background: D.paper, b
 const smallInput = { width: '100%', padding: '6px 8px', background: D.paper, border: `1px solid ${D.line}`, borderRadius: 6, fontSize: 12, color: D.ink, outline: 'none', boxSizing: 'border-box' };
 const thStyle = { padding: '10px 8px', textAlign: 'left' };
 const tdSmall = { padding: '6px 4px' };
-const primaryBtn = { background: D.plum, color: D.paper, border: 'none', padding: '11px 22px', borderRadius: 999, fontSize: 13, fontWeight: 600, fontFamily: 'inherit', cursor: 'pointer' };
-const ghostBtn = { background: 'transparent', color: D.ink, border: `1px solid ${D.line}`, padding: '10px 18px', borderRadius: 999, fontSize: 13, fontFamily: 'inherit', cursor: 'pointer', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 6 };
+const primaryBtn = { background: D.plum, color: D.paper, border: 'none', padding: '11px 22px', borderRadius: 4, fontSize: 13, fontWeight: 600, fontFamily: 'inherit', cursor: 'pointer' };
+const ghostBtn = { background: 'transparent', color: D.ink, border: `1px solid ${D.line}`, padding: '10px 18px', borderRadius: 4, fontSize: 13, fontFamily: 'inherit', cursor: 'pointer', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 6 };
 const textBtn = { background: 'transparent', color: D.plum, border: 'none', cursor: 'pointer', fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, letterSpacing: 0.8, padding: '4px 6px' };
-const imgPillBtn = { flex: 1, background: 'rgba(0,0,0,0.55)', color: '#fff', border: 'none', padding: '4px 0', borderRadius: 999, fontSize: 11, cursor: 'pointer', fontFamily: 'inherit' };
+const imgPillBtn = { flex: 1, background: 'rgba(0,0,0,0.55)', color: '#fff', border: 'none', padding: '4px 0', borderRadius: 4, fontSize: 11, cursor: 'pointer', fontFamily: 'inherit' };

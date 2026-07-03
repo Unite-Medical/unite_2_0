@@ -19,99 +19,101 @@ import { useViewport } from '../lib/viewport.js';
 import { useSEO, organizationSchema, websiteSchema } from '../lib/seo.js';
 
 /* ------------------------------------------------------------------ */
-/* Hero — cinematic full-bleed: the photograph IS the first screen.    */
-/* Deep-ink scrim, cream display type overlaid bottom-left, live       */
-/* inventory ticker pinned along the hero's bottom hairline.           */
+/* Hero — editorial front page. Bone paper, oversized serif headline,  */
+/* standfirst + CTAs, then the photograph as an inset plate with a     */
+/* mono data strip. Print, not cinema.                                 */
 /* ------------------------------------------------------------------ */
 function Hero() {
   const navigate = useNavigate();
   const { isMobile } = useViewport();
   const padX = isMobile ? 20 : 40;
   return (
-    <section
-      id="main"
-      style={{
-        position: 'relative',
-        background: D.inkDeep,
-        color: D.paper,
-        minHeight: isMobile ? '86svh' : '92svh',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'flex-end',
-        overflow: 'hidden',
-      }}
-    >
-      {/* Full-bleed photography behind everything */}
-      <div className="um-hero-media" aria-hidden="true">
-        <img src={IMG.HOME_HERO} alt="" fetchPriority="high" decoding="async" />
-        <div className="um-hero-scrim" />
-      </div>
+    <section id="main" style={{ background: D.paper, color: D.ink, padding: `${isMobile ? 40 : 76}px ${padX}px 0` }}>
+      <div style={{ maxWidth: 1360, margin: '0 auto' }}>
+        <div className="um-fade-up" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
+          <Eyebrow pulse>FDA-Registered · Veteran-Owned · Est. 2019</Eyebrow>
+          {!isMobile && (
+            <span style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.2, color: D.ink3 }}>
+              LITHIA SPRINGS, GA · SHIPS TO ALL 50 STATES
+            </span>
+          )}
+        </div>
 
-      {/* Headline block, pinned low like a film title card */}
-      <div style={{ position: 'relative', padding: `${isMobile ? 120 : 160}px ${padX}px 0` }}>
-        <div className="um-fade-up" style={{ maxWidth: 1360, margin: '0 auto' }}>
-          <Eyebrow dark pulse style={{ marginBottom: isMobile ? 18 : 28 }}>FDA-REGISTERED · VETERAN-OWNED · EST. 2019</Eyebrow>
-          <h1 style={{
+        <h1
+          className="um-fade-up um-d1"
+          style={{
             fontFamily: D.display, fontWeight: 400,
-            fontSize: 'clamp(46px, 10.5vw, 138px)',
-            lineHeight: 0.94,
-            letterSpacing: '-0.035em',
-            color: D.paper, margin: 0,
-            paddingBottom: '0.06em',
+            fontSize: 'clamp(52px, 11vw, 152px)',
+            lineHeight: 0.96,
+            letterSpacing: '-0.02em',
+            margin: `${isMobile ? 22 : 36}px 0 0`,
             maxWidth: '10.5em',
-            textShadow: '0 2px 40px rgba(24,16,27,.45)',
-          }}>
-            The supply chain your <Grad>suppliers</Grad> use.
-          </h1>
+          }}
+        >
+          The supply chain your <Grad>suppliers</Grad> use.
+        </h1>
 
-          <div style={{
+        <div
+          className="um-fade-up um-d2"
+          style={{
+            borderTop: `1px solid ${D.ink}`,
+            marginTop: isMobile ? 26 : 44,
+            paddingTop: isMobile ? 20 : 28,
             display: 'grid',
-            gridTemplateColumns: isMobile ? '1fr' : 'minmax(360px, 640px) auto',
-            gap: isMobile ? 22 : 56,
-            alignItems: 'end',
-            marginTop: isMobile ? 20 : 36,
-            paddingBottom: isMobile ? 28 : 56,
-          }}>
-            <p style={{ fontSize: isMobile ? 15.5 : 18, lineHeight: 1.55, color: 'rgba(247,242,234,.82)', margin: 0 }}>
-              A global supply chain company specializing in medical. We stock and wholesale core
-              categories from our Georgia warehouse, and source the rest through our vetted
-              manufacturer network — for surgery centers, pharmacies, health systems, physician
-              groups, and government buyers. No minimum orders on stocked items.
-            </p>
-            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-              <button onClick={() => navigate('/catalog')} style={{ background: D.paper, color: D.ink, border: 'none', padding: isMobile ? '14px 22px' : '16px 28px', borderRadius: 999, fontSize: 15, fontWeight: 600, cursor: 'pointer', fontFamily: D.sans, display: 'flex', alignItems: 'center', gap: 10, flex: isMobile ? '1 1 200px' : '0 0 auto', justifyContent: 'center' }}>
-                Browse products <Icon.arrow />
-              </button>
-              <button onClick={() => navigate('/quote')} className="um-glass-btn" style={{ color: D.paper, padding: isMobile ? '14px 22px' : '16px 28px', borderRadius: 999, fontSize: 15, fontWeight: 500, cursor: 'pointer', fontFamily: D.sans, flex: isMobile ? '1 1 200px' : '0 0 auto' }}>
-                Source &amp; quote
-              </button>
-            </div>
+            gridTemplateColumns: isMobile ? '1fr' : 'minmax(360px, 640px) 1fr auto',
+            gap: isMobile ? 20 : 48,
+            alignItems: 'start',
+          }}
+        >
+          <p style={{ fontSize: isMobile ? 15.5 : 17.5, lineHeight: 1.6, color: D.ink2, margin: 0 }}>
+            A global supply chain company specializing in medical. We stock and wholesale core
+            categories from our Georgia warehouse, and source the rest through our vetted
+            manufacturer network — for surgery centers, pharmacies, health systems, physician
+            groups, and government buyers. No minimum orders on stocked items. Same-day shipping
+            on orders before 2pm EST.
+          </p>
+          {!isMobile && <span />}
+          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+            <button onClick={() => navigate('/catalog')} style={{ background: D.ink, color: D.paper, border: `1px solid ${D.ink}`, padding: isMobile ? '14px 22px' : '16px 28px', borderRadius: 4, fontSize: 15, fontWeight: 600, cursor: 'pointer', fontFamily: D.sans, display: 'flex', alignItems: 'center', gap: 10, flex: isMobile ? '1 1 200px' : '0 0 auto', justifyContent: 'center' }}>
+              Browse products <Icon.arrow />
+            </button>
+            <button onClick={() => navigate('/quote')} style={{ background: 'transparent', color: D.ink, border: `1px solid ${D.ink}`, padding: isMobile ? '14px 22px' : '16px 28px', borderRadius: 4, fontSize: 15, fontWeight: 500, cursor: 'pointer', fontFamily: D.sans, flex: isMobile ? '1 1 200px' : '0 0 auto' }}>
+              Source &amp; quote
+            </button>
           </div>
         </div>
-      </div>
 
-      {/* Live-inventory ticker along the hero's bottom hairline */}
-      <div style={{ position: 'relative', borderTop: '1px solid rgba(247,242,234,.18)', background: 'rgba(24,16,27,.55)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}>
-        <div style={{
-          maxWidth: 1360, margin: '0 auto', padding: `${isMobile ? 12 : 16}px ${padX}px`,
-          display: 'flex', alignItems: 'center', gap: isMobile ? 14 : 28, flexWrap: 'wrap',
-          fontFamily: D.mono, fontSize: isMobile ? 10 : 11, letterSpacing: 1.1,
-          color: 'rgba(247,242,234,.72)',
-        }}>
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-            <span style={{ width: 6, height: 6, borderRadius: 3, background: '#5fbd8a', display: 'inline-block', animation: 'umPulse 2.6s ease-in-out infinite' }} />
-            LIVE INVENTORY
-          </span>
-          <span style={{ opacity: .35 }}>/</span>
-          <span>STOCKED &amp; WAREHOUSED</span>
-          <span style={{ opacity: .35 }}>/</span>
-          <span>GEORGIA WAREHOUSE · ALL 50 STATES</span>
-          {!isMobile && <>
+        {/* Photographic plate — inset, framed by a hairline, data strip below */}
+        <div className="um-fade-up um-d3" style={{ marginTop: isMobile ? 28 : 48 }}>
+          <div style={{ border: `1px solid ${D.ink}`, borderBottom: 'none', height: isMobile ? 260 : 480, position: 'relative', overflow: 'hidden' }}>
+            <img
+              src={IMG.HOME_HERO}
+              alt="Unite Medical warehouse operations"
+              fetchPriority="high"
+              decoding="async"
+              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+            />
+          </div>
+          <div style={{
+            border: `1px solid ${D.ink}`,
+            background: D.inkDeep, color: 'rgba(243,242,235,.72)',
+            padding: `${isMobile ? 12 : 14}px ${isMobile ? 14 : 22}px`,
+            display: 'flex', alignItems: 'center', gap: isMobile ? 14 : 28, flexWrap: 'wrap',
+            fontFamily: D.mono, fontSize: isMobile ? 10 : 11, letterSpacing: 1.1,
+          }}>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ width: 6, height: 6, borderRadius: 3, background: '#5fbd8a', display: 'inline-block', animation: 'umPulse 2.6s ease-in-out infinite' }} />
+              LIVE INVENTORY
+            </span>
             <span style={{ opacity: .35 }}>/</span>
-            <span>SAME-DAY SHIPPING · ORDERS BEFORE 2PM EST</span>
-          </>}
-          {/* TODO(alex): wire to Shopify product/inventory count API
-              once available — see PRD Open Q #2. */}
+            <span>STOCKED &amp; WAREHOUSED</span>
+            <span style={{ opacity: .35 }}>/</span>
+            <span>GEORGIA WAREHOUSE · ALL 50 STATES</span>
+            {!isMobile && <>
+              <span style={{ opacity: .35 }}>/</span>
+              <span>SAME-DAY SHIPPING · ORDERS BEFORE 2PM EST</span>
+            </>}
+          </div>
         </div>
       </div>
     </section>
@@ -119,48 +121,39 @@ function Hero() {
 }
 
 /* ------------------------------------------------------------------ */
-/* Metrics — dark purple liquid glass. Frosted bevelled stat panes     */
-/* float over an aggressive plum canvas (layered blooms + film grain). */
-/* The cursor-glide sheen is driven globally (lib/glassSheen.js).      */
+/* Metrics — the registration numbers as a plain data table on an      */
+/* evergreen ground. No glass, no glow: the numbers ARE the design.    */
 /* ------------------------------------------------------------------ */
 function Metrics() {
   const { isMobile } = useViewport();
   const padX = isMobile ? 20 : 40;
 
   return (
-    <div
-      style={{
-        color: D.paper,
-        padding: `${isMobile ? 72 : 120}px ${padX}px`,
-        background: `linear-gradient(160deg, #1e0e23 0%, #2e1135 60%, #1a0c1f 100%)`,
-      }}
-    >
+    <div style={{ color: D.paper, padding: `${isMobile ? 64 : 110}px ${padX}px`, background: D.inkDeep }}>
       <div style={{ maxWidth: 1360, margin: '0 auto' }}>
         <Reveal>
-          <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plumSoft, marginBottom: 20 }}>BY THE NUMBERS</div>
-          <h2 style={{ fontFamily: D.display, fontSize: 'clamp(38px, 7.5vw, 84px)', fontWeight: 400, letterSpacing: '-0.03em', lineHeight: 0.98, margin: 0 }}>
-            The receipts. <Grad>Verified.</Grad>
+          <Eyebrow dark style={{ marginBottom: 20 }}>By the numbers</Eyebrow>
+          <h2 style={{ fontFamily: D.display, fontSize: 'clamp(38px, 7vw, 82px)', fontWeight: 400, letterSpacing: '-0.02em', lineHeight: 0.98, margin: 0 }}>
+            The receipts. <Grad style={{ color: D.plumSoft }}>Verified.</Grad>
           </h2>
         </Reveal>
-        {/* Plain hairline grid — registration numbers ARE the design. */}
         <div style={{
-          marginTop: isMobile ? 36 : 64,
+          marginTop: isMobile ? 36 : 60,
           display: 'grid',
           gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(4, 1fr)',
           gap: isMobile ? '0 20px' : '0 40px',
         }}>
           {TRUST_METRICS.map((t, i) => (
-            <Reveal key={i} delay={i * 80}>
-              <div style={{ borderTop: '1px solid rgba(247,242,234,.22)', padding: `${isMobile ? 18 : 26}px 0 ${isMobile ? 22 : 8}px` }}>
-                <div style={{ fontFamily: D.mono, fontSize: isMobile ? 9.5 : 11, letterSpacing: 1.2, color: 'rgba(247,242,234,.6)', lineHeight: 1.5 }}>
-                  {t.small.toUpperCase()}
+            <Reveal key={i} delay={i * 70}>
+              <div style={{ borderTop: '1px solid rgba(243,242,235,.24)', padding: `${isMobile ? 18 : 24}px 0 ${isMobile ? 22 : 8}px` }}>
+                <div style={{ fontFamily: D.mono, fontSize: isMobile ? 9.5 : 11, letterSpacing: 1.2, color: 'rgba(243,242,235,.55)', lineHeight: 1.5, display: 'flex', justifyContent: 'space-between' }}>
+                  <span>{t.small.toUpperCase()}</span>
+                  <span style={{ opacity: .5 }}>{String(i + 1).padStart(2, '0')}</span>
                 </div>
                 <div style={{
                   fontFamily: D.display,
-                  // One fixed scale for every card so long registration
-                  // codes wrap instead of dictating the row's rhythm.
                   fontSize: isMobile ? 'clamp(22px, 6vw, 32px)' : 'clamp(28px, 2.6vw, 42px)',
-                  letterSpacing: -1, lineHeight: 1.06,
+                  letterSpacing: '-0.01em', lineHeight: 1.06,
                   color: D.paper,
                   overflowWrap: 'anywhere',
                   marginTop: 14,
@@ -175,7 +168,74 @@ function Metrics() {
 }
 
 /* ------------------------------------------------------------------ */
-/* Two ways to buy — tall split panels that fully invert on hover      */
+/* Who we serve — the customer index. Numbered rows, one per buyer     */
+/* type, inverting to ink on hover. The site's organizing principle.   */
+/* ------------------------------------------------------------------ */
+const SEGMENTS = [
+  { n: '01', h: 'Surgery centers', sub: 'Case-cart staples, bracing, and recovery DME with no minimums and Net-30 on approved credit.', path: '/segments/asc' },
+  { n: '02', h: 'Pharmacies & retail', sub: 'OTC, diagnostics, and front-of-store lines — from single stores to regional chains.', path: '/segments/pharmacy' },
+  { n: '03', h: 'EMS & fire', sub: 'First-response consumables and trauma supplies, quoted by the pallet or the case.', path: '/segments/ems' },
+  { n: '04', h: 'Government & VA', sub: 'BPA 36F79725D0203 · CAGE 8MK70. A veteran-owned prime with the paperwork done.', path: '/government' },
+  { n: '05', h: 'Distributors & resellers', sub: 'Wholesale pricing, opt-in catalog exposure, and custom sourcing under your own brand.', path: '/segments/distributors' },
+  { n: '06', h: 'Health systems & physician groups', sub: 'Shortage matching, cross-referenced substitutes, and white-label patient programs.', path: '/shortage-list' },
+];
+
+function WhoWeServe() {
+  const { isMobile } = useViewport();
+  const padX = isMobile ? 20 : 40;
+  return (
+    <div style={{ background: D.paper, padding: `${isMobile ? 64 : 110}px ${padX}px`, borderBottom: `1px solid ${D.line}` }}>
+      <div style={{ maxWidth: 1360, margin: '0 auto' }}>
+        <Reveal>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'end', gap: 16, flexWrap: 'wrap' }}>
+            <div>
+              <Eyebrow style={{ marginBottom: 18 }}>Who we serve</Eyebrow>
+              <h2 style={{ fontFamily: D.display, fontSize: 'clamp(40px, 8vw, 96px)', fontWeight: 400, letterSpacing: '-0.02em', lineHeight: 0.98, margin: 0 }}>
+                Built for the people <Grad>who buy.</Grad>
+              </h2>
+            </div>
+            {!isMobile && (
+              <span style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.2, color: D.ink3, paddingBottom: 10 }}>
+                SIX BUYER TYPES · ONE WAREHOUSE
+              </span>
+            )}
+          </div>
+        </Reveal>
+        <div style={{ marginTop: isMobile ? 30 : 56, borderTop: `1px solid ${D.ink}` }}>
+          {SEGMENTS.map((s, i) => (
+            <Reveal key={s.n} delay={i * 50}>
+              <Link
+                to={s.path}
+                className="um-index-row"
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: isMobile ? '44px 1fr 24px' : '90px 1fr 1.2fr 40px',
+                  alignItems: 'center',
+                  gap: isMobile ? 12 : 32,
+                  padding: `${isMobile ? 18 : 26}px ${isMobile ? 4 : 10}px`,
+                  borderBottom: `1px solid ${D.line}`,
+                  color: D.ink,
+                }}
+              >
+                <span style={{ fontFamily: D.mono, fontSize: isMobile ? 11 : 13, letterSpacing: 1, color: D.plum }}>{s.n}</span>
+                <span style={{ fontFamily: D.display, fontSize: isMobile ? 24 : 40, letterSpacing: '-0.01em', lineHeight: 1.05 }}>{s.h}</span>
+                {!isMobile && <span style={{ fontSize: 15, lineHeight: 1.55, color: D.ink2 }}>{s.sub}</span>}
+                <Icon.arrow style={{ justifySelf: 'end' }} />
+              </Link>
+            </Reveal>
+          ))}
+        </div>
+        <p style={{ fontSize: 14, color: D.ink2, marginTop: 24, maxWidth: 700 }}>
+          Don&apos;t see your segment? We work with any facility that buys medical supplies.{' '}
+          <Link to="/quote" style={{ color: D.plum, textDecoration: 'underline', textUnderlineOffset: 3 }}>Start a quote →</Link>
+        </p>
+      </div>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Two ways to buy — split panels that invert to green on hover        */
 /* ------------------------------------------------------------------ */
 function TwoWaysToBuy() {
   const navigate = useNavigate();
@@ -194,41 +254,41 @@ function TwoWaysToBuy() {
     },
   ];
   return (
-    <div style={{ background: D.paper, padding: `${isMobile ? 64 : 120}px ${padX}px`, borderBottom: `1px solid ${D.line}` }}>
+    <div style={{ background: D.paperAlt, padding: `${isMobile ? 64 : 110}px ${padX}px`, borderBottom: `1px solid ${D.line}` }}>
       <div style={{ maxWidth: 1360, margin: '0 auto' }}>
         <Reveal>
-          <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 18 }}>TWO WAYS TO BUY</div>
-          <h2 style={{ fontFamily: D.display, fontSize: 'clamp(40px, 8.5vw, 104px)', fontWeight: 400, letterSpacing: '-0.035em', lineHeight: 0.96, margin: 0 }}>
+          <Eyebrow style={{ marginBottom: 18 }}>Two ways to buy</Eyebrow>
+          <h2 style={{ fontFamily: D.display, fontSize: 'clamp(40px, 8vw, 96px)', fontWeight: 400, letterSpacing: '-0.02em', lineHeight: 0.98, margin: 0 }}>
             Two ways <Grad>to buy.</Grad>
           </h2>
         </Reveal>
-        <div style={{ marginTop: isMobile ? 32 : 64, display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: isMobile ? 16 : 24 }}>
+        <div style={{ marginTop: isMobile ? 32 : 56, display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: isMobile ? 16 : 24 }}>
           {panels.map((c, i) => (
-            <Reveal key={c.n} delay={i * 110}>
+            <Reveal key={c.n} delay={i * 90}>
               <button
                 className="um-flip-panel"
                 onClick={() => navigate(c.path)}
                 style={{
                   display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
                   width: '100%', textAlign: 'left',
-                  minHeight: isMobile ? 280 : 420,
-                  borderRadius: 28, padding: isMobile ? 28 : 44,
+                  minHeight: isMobile ? 260 : 380,
+                  borderRadius: 6, padding: isMobile ? 26 : 40,
                   cursor: 'pointer', position: 'relative', overflow: 'hidden',
                   fontFamily: D.sans,
                 }}
               >
                 <span aria-hidden="true" className="um-flip-numeral" style={{
-                  position: 'absolute', top: isMobile ? -8 : -16, right: isMobile ? 10 : 18,
-                  fontFamily: D.display, fontSize: isMobile ? 110 : 190, lineHeight: 1,
-                  letterSpacing: '-0.05em', userSelect: 'none',
+                  position: 'absolute', top: isMobile ? -6 : -14, right: isMobile ? 10 : 18,
+                  fontFamily: D.display, fontSize: isMobile ? 110 : 180, lineHeight: 1,
+                  letterSpacing: '-0.03em', userSelect: 'none',
                 }}>{c.n}</span>
-                <span style={{ fontFamily: D.display, fontSize: isMobile ? 30 : 44, letterSpacing: -0.8, lineHeight: 1.05, position: 'relative' }}>{c.h}</span>
-                <span className="um-flip-sub" style={{ fontSize: isMobile ? 15 : 17, lineHeight: 1.6, marginTop: 16, maxWidth: 440, position: 'relative', flex: 1 }}>
+                <span style={{ fontFamily: D.display, fontSize: isMobile ? 30 : 44, letterSpacing: -0.5, lineHeight: 1.05, position: 'relative' }}>{c.h}</span>
+                <span className="um-flip-sub" style={{ fontSize: isMobile ? 15 : 16.5, lineHeight: 1.6, marginTop: 16, maxWidth: 440, position: 'relative', flex: 1 }}>
                   {c.p}
                 </span>
                 <span className="um-flip-cta" style={{
                   display: 'inline-flex', alignItems: 'center', gap: 10,
-                  padding: isMobile ? '13px 22px' : '15px 26px', borderRadius: 999,
+                  padding: isMobile ? '13px 22px' : '14px 24px', borderRadius: 4,
                   fontSize: 14, fontWeight: 600, marginTop: 24, position: 'relative',
                 }}>
                   {c.cta} <Icon.arrow />
@@ -237,10 +297,6 @@ function TwoWaysToBuy() {
             </Reveal>
           ))}
         </div>
-        <p style={{ fontSize: 14, color: D.ink2, marginTop: 32, maxWidth: 700 }}>
-          Don&apos;t see your segment? We work with any facility that buys medical supplies.{' '}
-          <Link to="/quote" style={{ color: D.plum, textDecoration: 'underline', textUnderlineOffset: 3 }}>Start a quote →</Link>
-        </p>
       </div>
     </div>
   );
@@ -271,23 +327,26 @@ function Featured() {
   }
 
   return (
-    <div style={{ padding: `${isMobile ? 72 : 140}px 0`, background: D.paperAlt, overflow: 'hidden' }}>
+    <div style={{ padding: `${isMobile ? 64 : 120}px 0`, background: D.paper, overflow: 'hidden' }}>
       <div style={{ maxWidth: 1360, margin: '0 auto', padding: `0 ${padX}px` }}>
         <Reveal>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: isMobile ? 'flex-start' : 'end', flexDirection: isMobile ? 'column' : 'row', gap: 14 }}>
-            <h2 style={{ fontFamily: D.display, fontSize: 'clamp(40px, 7.6vw, 96px)', fontWeight: 400, letterSpacing: '-0.03em', color: D.ink, margin: 0, lineHeight: 0.98 }}>
-              In stock, <Grad>shipping today</Grad>.
-            </h2>
+            <div>
+              <Eyebrow style={{ marginBottom: 18 }}>Stocked catalog</Eyebrow>
+              <h2 style={{ fontFamily: D.display, fontSize: 'clamp(40px, 7vw, 88px)', fontWeight: 400, letterSpacing: '-0.02em', color: D.ink, margin: 0, lineHeight: 0.98 }}>
+                In stock, <Grad>shipping today</Grad>.
+              </h2>
+            </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <button onClick={() => navigate('/catalog')} style={{ color: D.ink, fontSize: 14, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 8, background: 'none', border: `1.5px solid ${D.ink}`, borderRadius: 999, padding: '12px 22px', cursor: 'pointer', fontFamily: D.sans, whiteSpace: 'nowrap' }}>
+              <button onClick={() => navigate('/catalog')} style={{ color: D.ink, fontSize: 14, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 8, background: 'none', border: `1px solid ${D.ink}`, borderRadius: 4, padding: '12px 22px', cursor: 'pointer', fontFamily: D.sans, whiteSpace: 'nowrap' }}>
                 Browse products <Icon.arrow />
               </button>
               {!isMobile && (
                 <>
-                  <button onClick={() => scrollRail(-1)} aria-label="Previous products" style={{ background: 'none', border: `1.5px solid ${D.ink}`, color: D.ink, width: 44, height: 44, borderRadius: 22, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <button onClick={() => scrollRail(-1)} aria-label="Previous products" style={{ background: 'none', border: `1px solid ${D.ink}`, color: D.ink, width: 44, height: 44, borderRadius: 4, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <Icon.arrow style={{ transform: 'rotate(180deg)' }} />
                   </button>
-                  <button onClick={() => scrollRail(1)} aria-label="Next products" style={{ background: D.ink, border: `1.5px solid ${D.ink}`, color: D.paper, width: 44, height: 44, borderRadius: 22, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <button onClick={() => scrollRail(1)} aria-label="Next products" style={{ background: D.ink, border: `1px solid ${D.ink}`, color: D.paper, width: 44, height: 44, borderRadius: 4, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <Icon.arrow />
                   </button>
                 </>
@@ -305,7 +364,7 @@ function Featured() {
           display: 'flex', gap: isMobile ? 12 : 20,
           overflowX: 'auto',
           scrollSnapType: 'x mandatory',
-          paddingTop: isMobile ? 28 : 48,
+          paddingTop: isMobile ? 28 : 44,
           paddingBottom: 8,
           // Align the first card with the 1360px container, then bleed right
           paddingLeft: `max(${padX}px, calc((100vw - 1360px) / 2 + ${padX}px))`,
@@ -313,18 +372,11 @@ function Featured() {
           scrollPaddingLeft: `max(${padX}px, calc((100vw - 1360px) / 2 + ${padX}px))`,
         }}
       >
-        {picks.map((p, i) => {
+        {picks.map((p) => {
           const cutout = productCutout(p.sku);
           // Real availability from the WMS projection — badge only shows when
           // stock is verified on hand (PRD-28 §2.4); never hardcoded.
           const inStock = (stockBySku.get(p.sku)?.available || 0) > 0;
-          // Alternate soft washes behind the floating cutouts so the
-          // rail reads as a sequence, not a repeat.
-          const wash = [
-            'radial-gradient(120% 100% at 50% 108%, rgba(94,41,99,.16), transparent 62%), linear-gradient(165deg, #f6efe2 0%, #ece0cd 100%)',
-            'radial-gradient(120% 100% at 50% 108%, rgba(246,79,0,.13), transparent 62%), linear-gradient(165deg, #f7f0e4 0%, #efe2cf 100%)',
-            'radial-gradient(120% 100% at 50% 108%, rgba(95,189,138,.14), transparent 62%), linear-gradient(165deg, #f5efe3 0%, #eadfd0 100%)',
-          ][i % 3];
           return (
             <article
               key={p.sku}
@@ -332,7 +384,7 @@ function Featured() {
               style={{
                 flex: `0 0 ${isMobile ? 262 : 396}px`,
                 scrollSnapAlign: 'start',
-                background: D.card, borderRadius: 20, overflow: 'hidden',
+                background: D.card, borderRadius: 6, overflow: 'hidden',
                 border: `1px solid ${D.line}`,
                 display: 'flex', flexDirection: 'column',
               }}
@@ -340,56 +392,49 @@ function Featured() {
               {cutout ? (
                 <Link to={`/products/${p.sku}`} aria-label={p.name} style={{ display: 'block' }}>
                   <div className="um-cutout-stage" style={{
-                    height: isMobile ? 196 : 312, position: 'relative',
+                    height: isMobile ? 196 : 300, position: 'relative',
                     display: 'grid', placeItems: 'center',
-                    background: wash, borderBottom: `1px solid ${D.line}`,
+                    background: D.paperAlt, borderBottom: `1px solid ${D.line}`,
                     overflow: 'hidden',
                   }}>
-                    {/* floor shadow the cutout "stands" on */}
-                    <div aria-hidden="true" style={{
-                      position: 'absolute', bottom: 14, left: '50%', transform: 'translateX(-50%)',
-                      width: '58%', height: 14, borderRadius: '50%',
-                      background: 'radial-gradient(ellipse, rgba(36,26,40,.18), transparent 70%)',
-                    }} />
                     <img
                       className="um-cutout-img"
                       src={cutout}
                       alt={p.name}
                       loading="lazy"
                       decoding="async"
-                      style={{ maxWidth: '80%', maxHeight: '84%', objectFit: 'contain', position: 'relative' }}
+                      style={{ maxWidth: '78%', maxHeight: '82%', objectFit: 'contain', position: 'relative' }}
                     />
                     {inStock && (
                       <span style={{
                         position: 'absolute', top: 12, left: 12,
                         display: 'inline-flex', alignItems: 'center', gap: 6,
                         fontFamily: D.mono, fontSize: 9, letterSpacing: 1,
-                        color: D.ink2, background: 'rgba(251,247,239,.78)',
-                        backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)',
-                        border: `1px solid ${D.line}`, borderRadius: 999, padding: '4px 10px',
+                        color: D.ink2, background: 'rgba(252,251,246,.92)',
+                        border: `1px solid ${D.line}`, borderRadius: 3, padding: '4px 9px',
                       }}>
-                        <span style={{ width: 5, height: 5, borderRadius: 3, background: '#5fbd8a', display: 'inline-block', animation: 'umPulse 2.6s ease-in-out infinite' }} />
+                        <span style={{ width: 5, height: 5, borderRadius: 3, background: '#2e7d5f', display: 'inline-block', animation: 'umPulse 2.6s ease-in-out infinite' }} />
                         IN STOCK
                       </span>
                     )}
                   </div>
                 </Link>
               ) : (
-                <PhotoPlaceholder src={PRODUCT_IMG[p.sku]} caption={p.img} height={isMobile ? 196 : 312} stripeFrom="#ebe3d3" stripeTo="#ddd1b7" textColor={D.plum} />
+                <PhotoPlaceholder src={PRODUCT_IMG[p.sku]} caption={p.img} height={isMobile ? 196 : 300} stripeFrom="#e7e5da" stripeTo="#dcd9ca" textColor={D.plum} />
               )}
               <div style={{ padding: isMobile ? 18 : 24, flex: 1, display: 'flex', flexDirection: 'column' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: D.mono, fontSize: 10, letterSpacing: 0.8, color: D.ink3 }}>
                   <span>{p.sku}</span>
                   <span style={{ display: isMobile ? 'none' : 'inline' }}>HCPCS {p.hcpcs}</span>
                 </div>
-                <div style={{ fontFamily: D.display, fontSize: isMobile ? 18 : 23, color: D.ink, marginTop: 10, lineHeight: 1.25, flex: 1 }}>{p.name}</div>
+                <div style={{ fontFamily: D.display, fontSize: isMobile ? 19 : 24, color: D.ink, marginTop: 10, lineHeight: 1.2, flex: 1 }}>{p.name}</div>
                 <div style={{ fontSize: 13, color: D.ink2, marginTop: 6 }}>{p.cat} · {p.packSize}</div>
-                <div style={{ display: 'flex', alignItems: 'end', justifyContent: 'space-between', marginTop: 18 }}>
+                <div style={{ display: 'flex', alignItems: 'end', justifyContent: 'space-between', marginTop: 18, paddingTop: 14, borderTop: `1px solid ${D.line}` }}>
                   <div>
-                    <div style={{ fontFamily: D.display, fontSize: isMobile ? 22 : 30, color: D.plum, letterSpacing: -0.4 }}>${p.price.toFixed(2)}</div>
+                    <div style={{ fontFamily: D.display, fontSize: isMobile ? 22 : 28, color: D.ink, letterSpacing: -0.4 }}>${p.price.toFixed(2)}</div>
                     <div style={{ fontFamily: D.mono, fontSize: 10, color: D.ink3 }}>MOQ {p.moq}</div>
                   </div>
-                  <button onClick={() => cartStore.add(p.sku)} aria-label={`Add ${p.name}`} className="um-add-btn" style={{ background: D.ink, color: D.paper, border: 'none', width: 46, height: 46, borderRadius: 23, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <button onClick={() => cartStore.add(p.sku)} aria-label={`Add ${p.name}`} className="um-add-btn" style={{ background: D.ink, color: D.paper, border: 'none', width: 44, height: 44, borderRadius: 4, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                     <Icon.plus />
                   </button>
                 </div>
@@ -411,16 +456,10 @@ function Featured() {
 }
 
 /* ------------------------------------------------------------------ */
-/* Shortage strip — the no-EDI intake play, one line + one action      */
+/* Live inventory widget — reads the WMS availability projection       */
+/* (on_hand − reserved) straight off the ledger-backed `inventory`     */
+/* table, so the homepage shows the same truth as storefront + admin.  */
 /* ------------------------------------------------------------------ */
-/* ------------------------------------------------------------------ */
-/* OwnedInventory — clean fact band. The stocked + sourced two-model   */
-/* story as plain editorial: headline left, hairline fact rows right.  */
-/* No photography, no glass — procurement buyers want the numbers.     */
-/* ------------------------------------------------------------------ */
-/* Live inventory widget — reads the WMS availability projection (on_hand −
-   reserved) straight off the ledger-backed `inventory` table, so the homepage
-   shows the same truth as the storefront and admin. */
 function LiveInventoryWidget() {
   const inv = db.useTable('inventory');
   const s = availability.summary();
@@ -435,15 +474,15 @@ function LiveInventoryWidget() {
   ];
   return (
     <Reveal>
-      <div style={{ border: `1px solid ${D.line}`, borderRadius: 14, padding: 20, marginBottom: 18, background: D.card }}>
+      <div style={{ border: `1px solid ${D.ink}`, borderRadius: 6, padding: 20, marginBottom: 18, background: D.card }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
-          <span style={{ width: 8, height: 8, borderRadius: 4, background: '#3b8760', boxShadow: '0 0 0 4px rgba(59,135,96,.18)' }} />
+          <span style={{ width: 7, height: 7, borderRadius: 4, background: '#2e7d5f', animation: 'umPulse 2.6s ease-in-out infinite' }} />
           <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1.4, color: D.plum }}>LIVE INVENTORY · WMS</span>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
           {stats.map((st) => (
             <div key={st.l}>
-              <div style={{ fontFamily: D.display, fontSize: 28, letterSpacing: -0.5, color: D.ink }}>{st.v}</div>
+              <div style={{ fontFamily: D.display, fontSize: 30, letterSpacing: -0.5, color: D.ink }}>{st.v}</div>
               <div style={{ fontSize: 11, color: D.ink2, marginTop: 4, lineHeight: 1.3 }}>{st.l}</div>
             </div>
           ))}
@@ -453,6 +492,10 @@ function LiveInventoryWidget() {
   );
 }
 
+/* ------------------------------------------------------------------ */
+/* OwnedInventory — the stocked + sourced model as plain editorial:    */
+/* headline left, live widget + hairline fact rows right.              */
+/* ------------------------------------------------------------------ */
 function OwnedInventory() {
   const navigate = useNavigate();
   const { isMobile } = useViewport();
@@ -463,15 +506,15 @@ function OwnedInventory() {
     { stat: '2pm', label: 'Same-day cutoff', sub: 'Orders placed before 2pm EST on stocked items ship the same day.' },
   ];
   return (
-    <div style={{ background: D.paper, padding: `${isMobile ? 64 : 120}px ${padX}px`, borderTop: `1px solid ${D.line}` }}>
+    <div style={{ background: D.paperAlt, padding: `${isMobile ? 64 : 110}px ${padX}px`, borderTop: `1px solid ${D.line}` }}>
       <div style={{
         maxWidth: 1360, margin: '0 auto',
         display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.1fr 1fr',
         gap: isMobile ? 40 : 80, alignItems: 'start',
       }}>
         <Reveal>
-          <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 18 }}>STOCKED + SOURCED</div>
-          <h2 style={{ fontFamily: D.display, fontSize: 'clamp(30px, 5vw, 58px)', fontWeight: 400, letterSpacing: '-0.03em', lineHeight: 1.04, margin: 0, color: D.ink }}>
+          <Eyebrow style={{ marginBottom: 18 }}>Stocked + sourced</Eyebrow>
+          <h2 style={{ fontFamily: D.display, fontSize: 'clamp(32px, 5vw, 58px)', fontWeight: 400, letterSpacing: '-0.015em', lineHeight: 1.04, margin: 0, color: D.ink }}>
             Stocked when you need it today. <Grad>Sourced when you don&apos;t.</Grad>
           </h2>
           <p style={{ fontSize: isMobile ? 14.5 : 16.5, lineHeight: 1.65, color: D.ink2, marginTop: 20, maxWidth: 520 }}>
@@ -483,7 +526,7 @@ function OwnedInventory() {
             onClick={() => navigate('/catalog')}
             style={{
               background: D.ink, color: D.paper, border: 'none',
-              padding: isMobile ? '14px 24px' : '16px 30px', borderRadius: 999,
+              padding: isMobile ? '14px 24px' : '16px 30px', borderRadius: 4,
               fontSize: 15, fontWeight: 600, cursor: 'pointer', fontFamily: D.sans,
               display: 'inline-flex', alignItems: 'center', gap: 10, marginTop: 28,
             }}
@@ -494,14 +537,14 @@ function OwnedInventory() {
         <div>
           <LiveInventoryWidget />
           {facts.map((f, i) => (
-            <Reveal key={f.label} delay={i * 90}>
+            <Reveal key={f.label} delay={i * 80}>
               <div style={{
                 display: 'grid', gridTemplateColumns: isMobile ? '92px 1fr' : '130px 1fr',
                 gap: isMobile ? 16 : 28, alignItems: 'baseline',
-                padding: `${isMobile ? 22 : 30}px 0`,
+                padding: `${isMobile ? 22 : 28}px 0`,
                 borderTop: `1px solid ${D.line}`,
               }}>
-                <div style={{ fontFamily: D.display, fontSize: isMobile ? 40 : 56, letterSpacing: '-0.03em', color: D.plum, lineHeight: 1 }}>{f.stat}</div>
+                <div style={{ fontFamily: D.display, fontSize: isMobile ? 40 : 54, letterSpacing: '-0.02em', color: D.plum, lineHeight: 1 }}>{f.stat}</div>
                 <div>
                   <div style={{ fontSize: isMobile ? 15 : 16, fontWeight: 600, color: D.ink }}>{f.label}</div>
                   <div style={{ fontSize: isMobile ? 13 : 14, lineHeight: 1.6, color: D.ink2, marginTop: 6 }}>{f.sub}</div>
@@ -516,44 +559,45 @@ function OwnedInventory() {
   );
 }
 
+/* ------------------------------------------------------------------ */
+/* Shortage strip — the no-EDI intake play, one line + one action      */
+/* ------------------------------------------------------------------ */
 function ShortageStrip() {
   const navigate = useNavigate();
   const { isMobile } = useViewport();
   const padX = isMobile ? 20 : 40;
   return (
-    <div style={{ background: D.inkDeep, color: D.paper, padding: `${isMobile ? 64 : 110}px ${padX}px` }}>
+    <div style={{ background: D.inkDeep, color: D.paper, padding: `${isMobile ? 64 : 100}px ${padX}px` }}>
       <div style={{
         maxWidth: 1360, margin: '0 auto',
         display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr auto',
         gap: isMobile ? 28 : 64, alignItems: 'center',
       }}>
         <Reveal>
-          <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plumSoft, marginBottom: 16 }}>
-            NO EDI · NO PORTAL SETUP · NO FORMATTING
-          </div>
-          <h2 style={{ fontFamily: D.display, fontSize: 'clamp(28px, 5vw, 56px)', fontWeight: 400, letterSpacing: '-0.03em', lineHeight: 1.04, margin: 0 }}>
+          <Eyebrow dark style={{ marginBottom: 16 }}>No EDI · No portal setup · No formatting</Eyebrow>
+          <h2 style={{ fontFamily: D.display, fontSize: 'clamp(30px, 5vw, 58px)', fontWeight: 400, letterSpacing: '-0.015em', lineHeight: 1.04, margin: 0 }}>
             Backordered somewhere else?<br />
-            <Grad>Paste your shortage list.</Grad>
+            <Grad style={{ color: D.plumSoft }}>Paste your shortage list.</Grad>
           </h2>
-          <p style={{ fontSize: isMobile ? 14.5 : 16, lineHeight: 1.6, color: 'rgba(247,242,234,.78)', marginTop: 16, maxWidth: 560 }}>
+          <p style={{ fontSize: isMobile ? 14.5 : 16, lineHeight: 1.6, color: 'rgba(243,242,235,.72)', marginTop: 16, maxWidth: 560 }}>
             Upload or paste your shortage list and we return a quote — items we stock are matched
             against our own live inventory, and the rest goes to our sourcing network.
           </p>
         </Reveal>
-        <Reveal delay={120}>
+        <Reveal delay={100}>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: isMobile ? 'flex-start' : 'flex-end', gap: 12 }}>
             <button
               onClick={() => navigate('/shortage-list')}
               style={{
                 background: D.paper, color: D.ink, border: 'none',
-                padding: isMobile ? '15px 26px' : '18px 34px', borderRadius: 999,
+                padding: isMobile ? '15px 26px' : '18px 34px', borderRadius: 4,
                 fontSize: 15, fontWeight: 600, cursor: 'pointer', fontFamily: D.sans,
                 display: 'inline-flex', alignItems: 'center', gap: 10,
               }}
             >
               Match my list <Icon.arrow />
             </button>
-            <span style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.2, color: 'rgba(247,242,234,.6)' }}>
+            <span style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.2, color: 'rgba(243,242,235,.55)' }}>
               FREE · TAKES ~60 SECONDS
             </span>
           </div>
@@ -564,31 +608,23 @@ function ShortageStrip() {
 }
 
 /* ------------------------------------------------------------------ */
-/* Partner spotlight — full-bleed plum band, oversized pull quote      */
+/* Partner spotlight — surgical-green band, oversized serif pull quote */
 /* ------------------------------------------------------------------ */
 function PartnerSpotlight() {
   const { isMobile } = useViewport();
   const padX = isMobile ? 20 : 40;
   return (
-    <div style={{ background: D.plum, color: D.paper, padding: `${isMobile ? 64 : 130}px ${padX}px`, position: 'relative', overflow: 'hidden' }}>
-      <div aria-hidden="true" style={{
-        position: 'absolute', inset: 0, pointerEvents: 'none',
-        background: `
-          radial-gradient(700px 500px at 100% 0%, rgba(36,26,40,.5), transparent 70%),
-          radial-gradient(520px 400px at 0% 100%, rgba(246,79,0,.14), transparent 70%)`,
-      }} />
-      <div aria-hidden="true" style={{
-        position: 'absolute', top: isMobile ? -30 : -60, left: isMobile ? -10 : 0,
-        fontFamily: D.display, fontSize: isMobile ? 220 : 420, lineHeight: 1,
-        color: 'rgba(247,242,234,.07)', userSelect: 'none', pointerEvents: 'none',
-      }}>&ldquo;</div>
+    <div style={{ background: D.plum, color: D.paper, padding: `${isMobile ? 64 : 120}px ${padX}px`, position: 'relative', overflow: 'hidden' }}>
       <div style={{ maxWidth: 1100, margin: '0 auto', position: 'relative' }}>
         <Reveal>
-          <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plumSoft, marginBottom: 24 }}>PARTNER SPOTLIGHT</div>
-          <h2 style={{ fontFamily: D.display, fontSize: 'clamp(30px, 6.2vw, 68px)', fontWeight: 400, letterSpacing: '-0.03em', lineHeight: 1.04, margin: 0 }}>
+          <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 2, color: D.plumSoft, marginBottom: 24, display: 'flex', alignItems: 'center', gap: 12 }}>
+            <span aria-hidden="true" style={{ width: 28, height: 1, background: D.plumSoft }} />
+            PARTNER SPOTLIGHT
+          </div>
+          <h2 style={{ fontFamily: D.display, fontSize: 'clamp(32px, 6vw, 68px)', fontWeight: 400, letterSpacing: '-0.015em', lineHeight: 1.06, margin: 0 }}>
             &ldquo;We built their patient recovery store. <em style={{ color: D.terraSoft }}>They put their name on it.</em>&rdquo;
           </h2>
-          <p style={{ fontSize: isMobile ? 15 : 17, lineHeight: 1.65, color: '#e5d6e7', marginTop: 28, maxWidth: 820 }}>
+          <p style={{ fontSize: isMobile ? 15 : 17, lineHeight: 1.65, color: 'rgba(243,242,235,.82)', marginTop: 28, maxWidth: 820 }}>
             Total Joint Specialists — one of the most respected orthopedic groups in the
             country — chose Unite to build, stock, and fulfill their entire Patient Recovery
             Store. From product manufacturing to same-day drop shipping, every order flows
@@ -599,18 +635,18 @@ function PartnerSpotlight() {
               href="https://tjs.unitemedical.net/store"
               target="_blank"
               rel="noreferrer"
-              style={{ background: D.paper, color: D.plum, padding: '14px 26px', borderRadius: 999, fontSize: 14, fontWeight: 600 }}
+              style={{ background: D.paper, color: D.plum, padding: '14px 26px', borderRadius: 4, fontSize: 14, fontWeight: 600 }}
             >
               Visit the TJS Recovery Store →
             </a>
             <Link
               to="/case-studies/tjs"
-              style={{ background: 'transparent', color: D.paper, border: `1.5px solid rgba(247,242,234,.5)`, padding: '13px 26px', borderRadius: 999, fontSize: 14, fontWeight: 500 }}
+              style={{ background: 'transparent', color: D.paper, border: `1px solid rgba(243,242,235,.5)`, padding: '13px 26px', borderRadius: 4, fontSize: 14, fontWeight: 500 }}
             >
               Read the case study →
             </Link>
           </div>
-          <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1, color: D.plumSoft, marginTop: 32, paddingTop: 24, borderTop: '1px solid rgba(247,242,234,.18)' }}>
+          <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1, color: D.plumSoft, marginTop: 32, paddingTop: 24, borderTop: '1px solid rgba(243,242,235,.22)' }}>
             White-label storefront · Product manufacturing · Direct-to-patient fulfillment
           </div>
         </Reveal>
@@ -620,45 +656,48 @@ function PartnerSpotlight() {
 }
 
 /* ------------------------------------------------------------------ */
-/* Testimonials — editorial grid, middle card inverted in ink          */
+/* Testimonials — three hairline columns, print-style attributions     */
 /* ------------------------------------------------------------------ */
 function Testimonials() {
   const { isMobile } = useViewport();
   const padX = isMobile ? 20 : 40;
   return (
-    <div style={{ background: D.paper, padding: `${isMobile ? 64 : 120}px ${padX}px` }}>
+    <div style={{ background: D.paper, padding: `${isMobile ? 64 : 110}px ${padX}px` }}>
       <div style={{ maxWidth: 1360, margin: '0 auto' }}>
         <Reveal>
-          <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: isMobile ? 24 : 40 }}>WHAT CUSTOMERS SAY</div>
+          <Eyebrow style={{ marginBottom: isMobile ? 24 : 40 }}>What customers say</Eyebrow>
         </Reveal>
-        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: isMobile ? 16 : 24, alignItems: 'stretch' }}>
-          {TESTIMONIALS.map((t, i) => {
-            const inverted = !isMobile && i === 1;
-            return (
-              <Reveal key={t.name} delay={i * 100} style={{ height: '100%', marginTop: !isMobile && i === 1 ? -24 : 0 }}>
-                <figure className="um-card" style={{
-                  margin: 0,
-                  background: inverted ? D.ink : D.card,
-                  color: inverted ? D.paper : D.ink,
-                  border: `1px solid ${inverted ? D.ink : D.line}`,
-                  borderRadius: 24,
-                  padding: isMobile ? 24 : 32,
-                  height: inverted ? 'calc(100% + 48px)' : '100%',
-                  display: 'flex', flexDirection: 'column',
-                  boxSizing: 'border-box',
-                }}>
-                  <div aria-hidden="true" style={{ fontFamily: D.display, fontSize: 64, lineHeight: 0.55, color: inverted ? 'rgba(247,242,234,.3)' : D.plumSoft, userSelect: 'none', marginBottom: 18 }}>&ldquo;</div>
-                  <blockquote style={{ margin: 0, fontFamily: D.display, fontSize: isMobile ? 18 : 21, letterSpacing: -0.3, lineHeight: 1.38, fontStyle: 'italic', flex: 1 }}>
-                    &ldquo;{t.quote}&rdquo;
-                  </blockquote>
-                  <figcaption style={{ marginTop: 20, fontSize: 13, paddingTop: 18, borderTop: `1px solid ${inverted ? 'rgba(247,242,234,.2)' : D.line}`, color: inverted ? 'rgba(247,242,234,.7)' : D.ink2 }}>
-                    <div style={{ fontWeight: 600, color: inverted ? D.paper : D.ink }}>{t.name}</div>
-                    <div style={{ marginTop: 2 }}>{t.title} · {t.org}</div>
-                  </figcaption>
-                </figure>
-              </Reveal>
-            );
-          })}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',
+          borderTop: `1px solid ${D.ink}`,
+        }}>
+          {TESTIMONIALS.map((t, i) => (
+            <Reveal key={t.name} delay={i * 80}>
+              <figure style={{
+                margin: 0,
+                padding: isMobile ? '24px 0' : '36px 32px 36px 0',
+                marginRight: !isMobile && i < 2 ? 0 : undefined,
+                borderRight: !isMobile && i < 2 ? `1px solid ${D.line}` : 'none',
+                borderBottom: isMobile ? `1px solid ${D.line}` : 'none',
+                paddingLeft: !isMobile && i > 0 ? 32 : 0,
+                height: '100%',
+                display: 'flex', flexDirection: 'column',
+                boxSizing: 'border-box',
+              }}>
+                <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.2, color: D.plum, marginBottom: 18 }}>
+                  {String(i + 1).padStart(2, '0')}
+                </div>
+                <blockquote style={{ margin: 0, fontFamily: D.display, fontSize: isMobile ? 19 : 23, letterSpacing: '-0.01em', lineHeight: 1.32, fontStyle: 'italic', flex: 1, color: D.ink }}>
+                  &ldquo;{t.quote}&rdquo;
+                </blockquote>
+                <figcaption style={{ marginTop: 20, fontSize: 13, paddingTop: 16, borderTop: `1px solid ${D.line}`, color: D.ink2 }}>
+                  <div style={{ fontWeight: 600, color: D.ink }}>{t.name}</div>
+                  <div style={{ marginTop: 2 }}>{t.title} · {t.org}</div>
+                </figcaption>
+              </figure>
+            </Reveal>
+          ))}
         </div>
       </div>
     </div>
@@ -673,25 +712,19 @@ function CTA() {
   const { isMobile } = useViewport();
   const padX = isMobile ? 20 : 40;
   return (
-    <div style={{ padding: `${isMobile ? 80 : 160}px ${padX}px`, background: D.ink, color: D.paper, position: 'relative', overflow: 'hidden' }}>
-      <div aria-hidden="true" style={{
-        position: 'absolute', inset: 0, pointerEvents: 'none',
-        background: `
-          radial-gradient(640px 480px at 50% -10%, rgba(94,41,99,.55), transparent 70%),
-          radial-gradient(520px 380px at 12% 110%, rgba(246,79,0,.16), transparent 70%)`,
-      }} />
+    <div style={{ padding: `${isMobile ? 80 : 150}px ${padX}px`, background: D.inkDeep, color: D.paper, position: 'relative', overflow: 'hidden' }}>
       <div style={{ maxWidth: 1100, margin: '0 auto', position: 'relative', textAlign: 'center' }}>
         <Reveal>
-          <h2 style={{ fontFamily: D.display, fontSize: 'clamp(44px, 10.5vw, 124px)', fontWeight: 400, letterSpacing: '-0.04em', lineHeight: 0.96, margin: 0 }}>
+          <h2 style={{ fontFamily: D.display, fontSize: 'clamp(44px, 10vw, 120px)', fontWeight: 400, letterSpacing: '-0.02em', lineHeight: 0.98, margin: 0 }}>
             Enter data once.<br />
-            <Grad>Sync everything.</Grad>
+            <Grad style={{ color: D.plumSoft }}>Sync everything.</Grad>
           </h2>
-          <div style={{ fontSize: isMobile ? 15 : 17, lineHeight: 1.6, color: '#cfc4d2', margin: `${isMobile ? 24 : 36}px auto 0`, maxWidth: 560 }}>
+          <div style={{ fontSize: isMobile ? 15 : 17, lineHeight: 1.6, color: 'rgba(243,242,235,.66)', margin: `${isMobile ? 24 : 36}px auto 0`, maxWidth: 560 }}>
             Request a quote → get an instant, fully landed, compliance-checked price you can
             trust. Accept online and it becomes an order. No guesswork, no waiting, no
             back-and-forth.
           </div>
-          <button onClick={() => navigate('/quote')} style={{ background: D.plum, color: D.paper, border: 'none', padding: isMobile ? '15px 28px' : '17px 34px', borderRadius: 999, fontSize: 15, fontWeight: 500, cursor: 'pointer', fontFamily: D.sans, display: 'inline-flex', alignItems: 'center', gap: 10, marginTop: isMobile ? 28 : 44 }}>
+          <button onClick={() => navigate('/quote')} style={{ background: D.paper, color: D.ink, border: 'none', padding: isMobile ? '15px 28px' : '17px 34px', borderRadius: 4, fontSize: 15, fontWeight: 600, cursor: 'pointer', fontFamily: D.sans, display: 'inline-flex', alignItems: 'center', gap: 10, marginTop: isMobile ? 28 : 44 }}>
             Start a quote <Icon.arrow />
           </button>
         </Reveal>
@@ -711,16 +744,16 @@ export function Homepage() {
   });
   return (
     <div style={{ background: D.paper, fontFamily: D.sans, color: D.ink }}>
-      {/* Overlay: hero photography runs full-bleed behind the floating capsule */}
-      <Nav overlay />
+      <Nav />
       <Hero />
       <PartnerMarquee
-        background={D.inkDeep}
-        borderColor="rgba(247,242,234,.12)"
-        variant="paper"
-        eyebrowColor={D.plumSoft}
+        background={D.paper}
+        borderColor={D.line}
+        variant="ink"
+        eyebrowColor={D.plum}
       />
       <Metrics />
+      <WhoWeServe />
       <TwoWaysToBuy />
       <Featured />
       <OwnedInventory />

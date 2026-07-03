@@ -145,7 +145,7 @@ function PathForm({ path, prefillSku, isMobile }) {
           <input required type="email" value={form.email} onChange={(e) => set('email', e.target.value)} style={inputStyle} />
         </label>
       </div>
-      <button type="submit" disabled={busy} style={{ marginTop: 16, background: D.plum, color: D.paper, border: 'none', padding: '14px 24px', borderRadius: 999, fontSize: 14, fontWeight: 600, cursor: busy ? 'wait' : 'pointer', opacity: busy ? 0.7 : 1, fontFamily: D.sans }}>
+      <button type="submit" disabled={busy} style={{ marginTop: 16, background: D.plum, color: D.paper, border: 'none', padding: '14px 24px', borderRadius: 4, fontSize: 14, fontWeight: 600, cursor: busy ? 'wait' : 'pointer', opacity: busy ? 0.7 : 1, fontFamily: D.sans }}>
         {busy ? 'Sending…' : 'Start a quote →'}
       </button>
     </form>
@@ -196,14 +196,14 @@ export function QuoteStart() {
                     background: isActive ? D.ink : D.card,
                     color: isActive ? D.paper : D.ink,
                     border: `1.5px solid ${isActive ? D.ink : D.line}`,
-                    borderRadius: 20, padding: isMobile ? 20 : 28,
+                    borderRadius: 8, padding: isMobile ? 20 : 28,
                     fontFamily: D.sans,
                     display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
                   }}
                 >
                   <span style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.2, color: isActive ? D.plumSoft : D.plum }}>{p.n}</span>
                   <span style={{ fontFamily: D.display, fontSize: isMobile ? 22 : 26, letterSpacing: -0.5, lineHeight: 1.1, marginTop: 10 }}>{p.h}</span>
-                  <span style={{ fontSize: 13.5, lineHeight: 1.6, marginTop: 10, color: isActive ? 'rgba(247,242,234,.75)' : D.ink2, flex: 1 }}>{p.p}</span>
+                  <span style={{ fontSize: 13.5, lineHeight: 1.6, marginTop: 10, color: isActive ? 'rgba(243,242,235,.75)' : D.ink2, flex: 1 }}>{p.p}</span>
                   <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginTop: 16, fontSize: 13, fontWeight: 600, color: isActive ? D.paper : D.plum }}>
                     {p.id === 'shortage' ? 'Match my list' : isActive ? 'Selected' : 'Choose this'} <Icon.arrow />
                   </span>

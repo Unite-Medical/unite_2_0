@@ -81,16 +81,16 @@ export function Portfolio() {
               display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.15fr 1fr', alignItems: 'stretch',
             }}>
               <div style={{ minHeight: isMobile ? 220 : 440 }}>
-                <PhotoPlaceholder src={TJS_IMG} alt="The Total Joint Specialists patient recovery store" caption="tjs patient recovery store" height="100%" stripeFrom="#3a2c3e" stripeTo="#2c2030" textColor={D.plumSoft} radius={0} />
+                <PhotoPlaceholder src={TJS_IMG} alt="The Total Joint Specialists patient recovery store" caption="tjs patient recovery store" height="100%" stripeFrom="#243530" stripeTo="#182620" textColor={D.plumSoft} radius={0} />
               </div>
               <div style={{ padding: isMobile ? 24 : '56px 60px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-start' }}>
                 <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.2, color: D.plumSoft }}>PHYSICIAN GROUP · PATIENT RECOVERY STORE</div>
                 <h3 style={{ fontFamily: D.display, fontSize: isMobile ? 30 : 44, fontWeight: 400, letterSpacing: '-0.02em', lineHeight: 1.05, margin: '14px 0 0' }}>Total Joint Specialists</h3>
                 <div style={{ marginTop: isMobile ? 20 : 32 }}>
                   <div style={{ fontFamily: D.display, fontSize: isMobile ? 64 : 104, lineHeight: 0.9, letterSpacing: '-0.04em', background: D.grad, WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent' }}>+43%</div>
-                  <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1, color: 'rgba(247,242,234,.55)', marginTop: 10 }}>REVENUE GROWTH, LAUNCH MONTH TO MONTH THREE</div>
+                  <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1, color: 'rgba(243,242,235,.55)', marginTop: 10 }}>REVENUE GROWTH, LAUNCH MONTH TO MONTH THREE</div>
                 </div>
-                <p style={{ fontSize: isMobile ? 14.5 : 16, color: 'rgba(247,242,234,.75)', lineHeight: 1.65, margin: `${isMobile ? 18 : 28}px 0 0` }}>
+                <p style={{ fontSize: isMobile ? 14.5 : 16, color: 'rgba(243,242,235,.75)', lineHeight: 1.65, margin: `${isMobile ? 18 : 28}px 0 0` }}>
                   Unite built Total Joint Specialists a complete, branded patient-recovery store
                   from scratch — a 49-product catalog, private-label bracing we manufacture, and
                   direct-to-patient fulfillment from our Georgia warehouse. In its first 90 days,
@@ -98,16 +98,16 @@ export function Portfolio() {
                   ($5,278 → $7,547), on a rising average order value. The surgeon&apos;s brand stays
                   on every touchpoint; we run everything behind it.
                 </p>
-                <div style={{ display: 'flex', gap: isMobile ? 14 : 24, marginTop: isMobile ? 18 : 26, flexWrap: 'wrap', fontFamily: D.mono, fontSize: 10.5, letterSpacing: 0.8, color: 'rgba(247,242,234,.6)' }}>
+                <div style={{ display: 'flex', gap: isMobile ? 14 : 24, marginTop: isMobile ? 18 : 26, flexWrap: 'wrap', fontFamily: D.mono, fontSize: 10.5, letterSpacing: 0.8, color: 'rgba(243,242,235,.6)' }}>
                   <span>$19.3K REVENUE, FIRST 90 DAYS</span>
                   <span>49-PRODUCT CATALOG, LIVE AT LAUNCH</span>
                   <span>REVENUE UP EVERY MONTH</span>
                 </div>
                 <div style={{ display: 'flex', gap: 10, marginTop: isMobile ? 22 : 32, flexWrap: 'wrap' }}>
-                  <Link to="/case-studies/tjs" style={{ background: D.paper, color: D.ink, padding: '13px 24px', borderRadius: 999, fontSize: 14, fontWeight: 600 }}>
+                  <Link to="/case-studies/tjs" style={{ background: D.paper, color: D.ink, padding: '13px 24px', borderRadius: 4, fontSize: 14, fontWeight: 600 }}>
                     Read the case study →
                   </Link>
-                  <button onClick={() => navigate('/contact')} style={{ background: 'transparent', color: D.paper, border: '1.5px solid rgba(247,242,234,.5)', padding: '12px 24px', borderRadius: 999, cursor: 'pointer', fontSize: 14, fontFamily: D.sans }}>
+                  <button onClick={() => navigate('/contact')} style={{ background: 'transparent', color: D.paper, border: '1.5px solid rgba(243,242,235,.5)', padding: '12px 24px', borderRadius: 4, cursor: 'pointer', fontSize: 14, fontFamily: D.sans }}>
                     Could this be your store? →
                   </button>
                 </div>
@@ -128,18 +128,18 @@ export function Portfolio() {
                   <div style={{ fontFamily: D.display, fontSize: isMobile ? 64 : 104, lineHeight: 0.9, letterSpacing: '-0.04em', color: D.paper }}>$900K+</div>
                   <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1, color: D.plumSoft, marginTop: 10 }}>SAVED FOR HOSPITAL SYSTEMS TO DATE</div>
                 </div>
-                <p style={{ fontSize: isMobile ? 14.5 : 16, color: '#e5d6e7', lineHeight: 1.65, margin: `${isMobile ? 18 : 28}px 0 0` }}>
+                <p style={{ fontSize: isMobile ? 14.5 : 16, color: '#cfe0d7', lineHeight: 1.65, margin: `${isMobile ? 18 : 28}px 0 0` }}>
                   Total savings Unite has generated for hospital systems through the Restore
                   Robotics program — over $900,000 to date. FDA 510(k)-cleared remanufactured
                   da Vinci instruments deliver 20–25% per-instrument savings with a
                   manufacturer-of-record warranty.
                 </p>
-                <Link to="/robotics" style={{ marginTop: isMobile ? 22 : 32, background: D.paper, color: D.plum, padding: '13px 24px', borderRadius: 999, fontSize: 14, fontWeight: 600 }}>
+                <Link to="/robotics" style={{ marginTop: isMobile ? 22 : 32, background: D.paper, color: D.plum, padding: '13px 24px', borderRadius: 4, fontSize: 14, fontWeight: 600 }}>
                   Explore the robotics program →
                 </Link>
               </div>
               <div style={{ minHeight: isMobile ? 220 : 440 }}>
-                <PhotoPlaceholder src={PORTFOLIO_IMG[3]} alt="Surgical robotic instruments" caption="restore robotics program" height="100%" stripeFrom="#3a2c3e" stripeTo="#2c2030" textColor={D.plumSoft} radius={0} />
+                <PhotoPlaceholder src={PORTFOLIO_IMG[3]} alt="Surgical robotic instruments" caption="restore robotics program" height="100%" stripeFrom="#243530" stripeTo="#182620" textColor={D.plumSoft} radius={0} />
               </div>
             </article>
 
@@ -163,7 +163,7 @@ export function Portfolio() {
             </div>
             <div style={{ marginTop: isMobile ? 10 : 14, display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(2, 1fr)', gap: isMobile ? 14 : 24 }}>
               {ANON_CASES.map((c, idx) => (
-                <article key={c.customer} className="um-card" style={{ background: D.card, border: `1px solid ${D.line}`, borderRadius: 24, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+                <article key={c.customer} className="um-card" style={{ background: D.card, border: `1px solid ${D.line}`, borderRadius: 10, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
                   <PhotoPlaceholder src={PORTFOLIO_IMG[(idx + 1) % PORTFOLIO_IMG.length]} caption={c.segment.toLowerCase()} height={isMobile ? 160 : 240} stripeFrom="#e8ddcd" stripeTo="#d9c8b0" textColor={D.plum} radius={0} />
                   <div style={{ padding: isMobile ? 22 : 32, flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
                     <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.2, color: D.plum }}>{c.segment.toUpperCase()}</div>
@@ -173,7 +173,7 @@ export function Portfolio() {
                       <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1, color: D.ink3 }}>{c.stat_label.toUpperCase()}</div>
                     </div>
                     <p style={{ fontSize: 14.5, color: D.ink2, lineHeight: 1.6, margin: '16px 0 0', flex: 1 }}>{c.body}</p>
-                    <button onClick={() => navigate('/contact')} style={{ marginTop: 24, background: 'transparent', color: D.ink, border: `1.5px solid ${D.ink}`, padding: '11px 18px', borderRadius: 999, cursor: 'pointer', fontSize: 13, fontFamily: D.sans }}>
+                    <button onClick={() => navigate('/contact')} style={{ marginTop: 24, background: 'transparent', color: D.ink, border: `1.5px solid ${D.ink}`, padding: '11px 18px', borderRadius: 4, cursor: 'pointer', fontSize: 13, fontFamily: D.sans }}>
                       Talk to a rep about your version →
                     </button>
                   </div>

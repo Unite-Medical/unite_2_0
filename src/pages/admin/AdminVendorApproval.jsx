@@ -7,7 +7,7 @@ import { gs1, hts } from '../../lib/services.js';
 import { evaluateVendor } from '../../lib/vendorScoring.js';
 import { useViewport } from '../../lib/viewport.js';
 
-const BADGE = (s) => ({ pass: ['#2d6a4f', 'PASS'], warn: [D.terra, 'REVIEW'], fail: ['#c3382d', 'FAIL'], pending: [D.ink3, 'PENDING'], approved: ['#2d6a4f', 'APPROVED'], rejected: ['#c3382d', 'REJECTED'] })[s] || ['#8f8490', '—'];
+const BADGE = (s) => ({ pass: ['#2d6a4f', 'PASS'], warn: [D.terra, 'REVIEW'], fail: ['#c3382d', 'FAIL'], pending: [D.ink3, 'PENDING'], approved: ['#2d6a4f', 'APPROVED'], rejected: ['#c3382d', 'REJECTED'] })[s] || ['#8b968d', '—'];
 const DECISION_COLOR = { AUTO_APPROVE: '#2d6a4f', MANUAL_REVIEW: D.terra, AUTO_REJECT: '#c3382d' };
 
 export function AdminVendorApproval() {
@@ -68,12 +68,12 @@ export function AdminVendorApproval() {
           {vendors.map((v) => {
             const [color, label] = BADGE(v.status);
             return (
-              <button key={v.id} onClick={() => { setActiveId(v.id); setChecks([]); }} style={{ width: '100%', textAlign: 'left', display: 'grid', gridTemplateColumns: '1fr 80px', gap: 8, padding: '14px 16px', borderTop: `1px solid ${D.line}`, background: activeId === v.id ? 'rgba(94,41,99,.06)' : 'transparent', cursor: 'pointer', fontFamily: D.sans, color: D.ink, alignItems: 'center' }}>
+              <button key={v.id} onClick={() => { setActiveId(v.id); setChecks([]); }} style={{ width: '100%', textAlign: 'left', display: 'grid', gridTemplateColumns: '1fr 80px', gap: 8, padding: '14px 16px', borderTop: `1px solid ${D.line}`, background: activeId === v.id ? 'rgba(29,92,77,.06)' : 'transparent', cursor: 'pointer', fontFamily: D.sans, color: D.ink, alignItems: 'center' }}>
                 <div>
                   <div style={{ fontSize: 14, fontWeight: 500 }}>{v.name}</div>
                   <div style={{ fontSize: 12, color: D.ink2 }}>{v.country} · audit {fmt.ago(v.last_audit) || 'never'}</div>
                 </div>
-                <span style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, padding: '3px 8px', borderRadius: 999, background: `${color}20`, color, textAlign: 'center' }}>{label}</span>
+                <span style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, padding: '3px 8px', borderRadius: 4, background: `${color}20`, color, textAlign: 'center' }}>{label}</span>
               </button>
             );
           })}
@@ -90,13 +90,13 @@ export function AdminVendorApproval() {
                   <div style={{ fontSize: 13, color: D.ink2, marginTop: 6 }}>FDA registered: {active.fda_registered ? 'yes' : 'no'} · GS1 validated: {active.gs1_validated ? 'yes' : 'pending'}</div>
                 </div>
                 <div style={{ display: 'flex', gap: 10 }}>
-                  <button onClick={reject} style={{ background: 'transparent', color: '#c3382d', border: '1.5px solid #c3382d', padding: '10px 18px', borderRadius: 999, fontSize: 13, cursor: 'pointer' }}>Reject</button>
-                  <button onClick={approve} style={{ background: D.plum, color: D.paper, border: 'none', padding: '10px 22px', borderRadius: 999, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>Approve as partner</button>
+                  <button onClick={reject} style={{ background: 'transparent', color: '#c3382d', border: '1.5px solid #c3382d', padding: '10px 18px', borderRadius: 4, fontSize: 13, cursor: 'pointer' }}>Reject</button>
+                  <button onClick={approve} style={{ background: D.plum, color: D.paper, border: 'none', padding: '10px 22px', borderRadius: 4, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>Approve as partner</button>
                 </div>
               </div>
 
               <div style={{ marginTop: 28, display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
-                <button onClick={runChecks} disabled={running} style={{ background: D.ink, color: D.paper, border: 'none', padding: '11px 20px', borderRadius: 999, fontSize: 13, fontWeight: 500, cursor: running ? 'wait' : 'pointer', opacity: running ? 0.6 : 1 }}>
+                <button onClick={runChecks} disabled={running} style={{ background: D.ink, color: D.paper, border: 'none', padding: '11px 20px', borderRadius: 4, fontSize: 13, fontWeight: 500, cursor: running ? 'wait' : 'pointer', opacity: running ? 0.6 : 1 }}>
                   {running ? 'Running checks…' : 'Run vendor approval pipeline'}
                 </button>
                 <div style={{ fontFamily: D.mono, fontSize: 11, color: D.ink3 }}>
@@ -150,7 +150,7 @@ export function AdminVendorApproval() {
                         <div style={{ fontSize: 14, fontWeight: 600 }}>{c.name}</div>
                         <div style={{ fontSize: 12, color: D.ink2, marginTop: 4 }}>{c.detail}</div>
                       </div>
-                      <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, padding: '4px 10px', borderRadius: 999, background: `${color}20`, color, textAlign: 'center' }}>{label}</span>
+                      <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, padding: '4px 10px', borderRadius: 4, background: `${color}20`, color, textAlign: 'center' }}>{label}</span>
                     </div>
                   );
                 })}

@@ -127,7 +127,7 @@ export function AdminDiscovery() {
       <div style={{ padding: isMobile ? 20 : 32 }}>
         <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
           {[['shipper', 'Find manufacturers'], ['consignee', 'Find US buyers']].map(([k, label]) => (
-            <button key={k} onClick={() => { setRole(k); setResults([]); }} style={{ padding: '9px 18px', borderRadius: 999, fontSize: 13, fontFamily: D.sans, cursor: 'pointer', border: `1px solid ${role === k ? D.plum : D.line}`, background: role === k ? D.plum : 'transparent', color: role === k ? '#fff' : D.ink }}>
+            <button key={k} onClick={() => { setRole(k); setResults([]); }} style={{ padding: '9px 18px', borderRadius: 4, fontSize: 13, fontFamily: D.sans, cursor: 'pointer', border: `1px solid ${role === k ? D.plum : D.line}`, background: role === k ? D.plum : 'transparent', color: role === k ? '#fff' : D.ink }}>
               {label}
             </button>
           ))}
@@ -147,7 +147,7 @@ export function AdminDiscovery() {
           </div>
         )}
         {notice && (
-          <div style={{ marginTop: 14, padding: '12px 16px', background: 'rgba(94,41,99,.07)', border: `1px solid ${D.line}`, borderRadius: 10, fontSize: 13 }}>{notice}</div>
+          <div style={{ marginTop: 14, padding: '12px 16px', background: 'rgba(29,92,77,.07)', border: `1px solid ${D.line}`, borderRadius: 10, fontSize: 13 }}>{notice}</div>
         )}
 
         {results.length > 0 && (

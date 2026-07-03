@@ -162,7 +162,7 @@ export function Compliance() {
                 Most documents are auto-generated from your portal in under a minute. The rest, our compliance team turns around inside one business day.
               </p>
               <div style={{ display: 'flex', gap: 10, marginTop: 24, flexWrap: 'wrap' }}>
-                <button onClick={() => navigate('/contact')} style={{ background: D.ink, color: D.paper, border: 'none', padding: '13px 22px', borderRadius: 999, cursor: 'pointer', fontSize: 14, fontWeight: 500, fontFamily: D.sans, display: 'inline-flex', alignItems: 'center', gap: 10 }}>
+                <button onClick={() => navigate('/contact')} style={{ background: D.ink, color: D.paper, border: 'none', padding: '13px 22px', borderRadius: 4, cursor: 'pointer', fontSize: 14, fontWeight: 500, fontFamily: D.sans, display: 'inline-flex', alignItems: 'center', gap: 10 }}>
                   Request documents <Icon.arrow />
                 </button>
               </div>

@@ -84,7 +84,7 @@ export function CodingResources() {
         <section style={{ padding: `24px ${padX}px ${isMobile ? 56 : 96}px` }}>
           <div style={{ maxWidth: 1360, margin: '0 auto' }}>
             <div style={{ display: 'flex', gap: 8, marginBottom: 14, flexWrap: 'wrap', alignItems: 'center' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 14px', border: `1px solid ${D.line}`, borderRadius: 999, background: D.card, flex: '1 1 320px', maxWidth: 480 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 14px', border: `1px solid ${D.line}`, borderRadius: 4, background: D.card, flex: '1 1 320px', maxWidth: 480 }}>
                 <Icon.search />
                 <input
                   value={q}
@@ -95,7 +95,7 @@ export function CodingResources() {
                 />
               </div>
               {cats.map((c) => (
-                <button key={c} onClick={() => setCat(c)} style={{ background: cat === c ? D.plum : D.card, color: cat === c ? D.paper : D.ink2, border: `1px solid ${cat === c ? D.plum : D.line}`, padding: '8px 14px', borderRadius: 999, cursor: 'pointer', fontSize: 13, fontFamily: D.sans }}>{c}</button>
+                <button key={c} onClick={() => setCat(c)} style={{ background: cat === c ? D.plum : D.card, color: cat === c ? D.paper : D.ink2, border: `1px solid ${cat === c ? D.plum : D.line}`, padding: '8px 14px', borderRadius: 4, cursor: 'pointer', fontSize: 13, fontFamily: D.sans }}>{c}</button>
               ))}
               <Link to="/resources" style={{ marginLeft: 'auto', fontFamily: D.mono, fontSize: 11, letterSpacing: 0.8, color: D.plum, textDecoration: 'none' }}>FULL HCPCS REFERENCE →</Link>
             </div>

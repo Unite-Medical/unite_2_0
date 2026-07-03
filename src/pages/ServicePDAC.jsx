@@ -88,15 +88,15 @@ export function ServicePDAC() {
             <div style={{ fontFamily: D.display, fontSize: isMobile ? 52 : 72, letterSpacing: -1.6, marginTop: 10, lineHeight: 1 }}>95%+</div>
             <div style={{ fontSize: 13, color: D.plumSoft, marginTop: 6 }}>on targeted code submissions</div>
             <div style={{ display: 'grid', gap: 10, marginTop: 22 }}>
-              <Link to="/contact?reason=PDAC%20consulting" style={{ background: D.paper, color: D.plum, padding: '13px 18px', borderRadius: 999, fontSize: 14, fontWeight: 600, textAlign: 'center' }}>
+              <Link to="/contact?reason=PDAC%20consulting" style={{ background: D.paper, color: D.plum, padding: '13px 18px', borderRadius: 4, fontSize: 14, fontWeight: 600, textAlign: 'center' }}>
                 Book a review →
               </Link>
               {/* PRD-29 §2.2 — CTA points at Unite's own PDAC-credentialed
                   line: the braces category + the RegeniCool™ Pro listing. */}
-              <Link to={`/catalog?cat=${encodeURIComponent('Bracing & Orthotics')}&filter=pdac`} style={{ background: 'transparent', color: D.paper, border: `1.5px solid ${D.paper}`, padding: '12px 18px', borderRadius: 999, fontSize: 14, fontWeight: 500, textAlign: 'center' }}>
+              <Link to={`/catalog?cat=${encodeURIComponent('Bracing & Orthotics')}&filter=pdac`} style={{ background: 'transparent', color: D.paper, border: `1.5px solid ${D.paper}`, padding: '12px 18px', borderRadius: 4, fontSize: 14, fontWeight: 500, textAlign: 'center' }}>
                 Browse PDAC-approved braces →
               </Link>
-              <Link to="/products/REGENICOOL-PRO" style={{ background: 'transparent', color: D.paper, border: `1.5px solid ${D.paper}`, padding: '12px 18px', borderRadius: 999, fontSize: 14, fontWeight: 500, textAlign: 'center' }}>
+              <Link to="/products/REGENICOOL-PRO" style={{ background: 'transparent', color: D.paper, border: `1.5px solid ${D.paper}`, padding: '12px 18px', borderRadius: 4, fontSize: 14, fontWeight: 500, textAlign: 'center' }}>
                 RegeniCool™ Pro →
               </Link>
             </div>

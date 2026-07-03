@@ -68,7 +68,7 @@ export function PurchaseOrderPrint() {
           <button type="button" className="um-print-cta" onClick={() => window.print()} style={{ background: D.plum, color: D.paper }}>
             Print / Save as PDF
           </button>
-          <Link to="/admin/replenishment" style={{ padding: '10px 18px', borderRadius: 999, border: `1px solid ${D.line}`, color: D.ink2, textDecoration: 'none', fontSize: 14 }}>
+          <Link to="/admin/replenishment" style={{ padding: '10px 18px', borderRadius: 4, border: `1px solid ${D.line}`, color: D.ink2, textDecoration: 'none', fontSize: 14 }}>
             ← back to replenishment
           </Link>
         </div>
@@ -87,7 +87,7 @@ export function PurchaseOrderPrint() {
             <div><span style={{ color: D.ink3 }}>Issued: </span>{fmt.date(po.created_at || new Date().toISOString(), { year: true })}</div>
             <div><span style={{ color: D.ink3 }}>Expected: </span>{fmt.date(po.expected_delivery, { year: true })}</div>
             <div style={{ marginTop: 6 }}>
-              <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, padding: '4px 10px', borderRadius: 999, background: `${statusColor}1f`, color: statusColor }}>
+              <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, padding: '4px 10px', borderRadius: 4, background: `${statusColor}1f`, color: statusColor }}>
                 {status.replace(/_/g, ' ').toUpperCase()}
               </span>
             </div>

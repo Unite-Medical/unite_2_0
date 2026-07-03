@@ -41,7 +41,7 @@ const STATUS_META = {
   stocked:    { label: 'IN STOCK',    color: '#3b8760', bg: 'rgba(59,135,96,.1)' },
   source:     { label: 'WE SOURCE',   color: D.terra,   bg: 'rgba(184,80,44,.1)' },
   equivalent: { label: 'EQUIVALENTS', color: D.terra,   bg: 'rgba(184,80,44,.1)' },
-  sourcing:   { label: 'QUOTE',       color: D.plum,    bg: 'rgba(94,41,99,.08)' },
+  sourcing:   { label: 'QUOTE',       color: D.plum,    bg: 'rgba(29,92,77,.08)' },
 };
 
 function MatchRow({ line, isMobile }) {
@@ -50,7 +50,7 @@ function MatchRow({ line, isMobile }) {
   return (
     <div style={{ background: D.card, border: `1px solid ${D.line}`, borderRadius: 16, padding: isMobile ? 14 : 20 }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
-        <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: meta.color, background: meta.bg, padding: '4px 10px', borderRadius: 999, flexShrink: 0 }}>
+        <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: meta.color, background: meta.bg, padding: '4px 10px', borderRadius: 4, flexShrink: 0 }}>
           {meta.label}
         </span>
         <span style={{ fontFamily: D.mono, fontSize: 12, color: D.ink2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1, minWidth: 160 }}>
@@ -196,15 +196,15 @@ export function ShortageMatch() {
       <div id="main" style={{ padding: `${isMobile ? 32 : 64}px ${padX}px ${isMobile ? 64 : 110}px` }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
           {/* Paste box */}
-          <div style={{ background: D.card, border: `1px solid ${D.line}`, borderRadius: 20, padding: isMobile ? 16 : 24 }}>
+          <div style={{ background: D.card, border: `1px solid ${D.line}`, borderRadius: 8, padding: isMobile ? 16 : 24 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap', marginBottom: 12 }}>
               <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.2, color: D.plum }}>ONE ITEM PER LINE — SKU, HCPCS, OR PLAIN DESCRIPTION</div>
               <div style={{ display: 'flex', gap: 8 }}>
-                <label style={{ fontSize: 13, fontWeight: 600, color: D.ink, border: `1.5px solid ${D.ink}`, borderRadius: 999, padding: '8px 16px', cursor: 'pointer' }}>
+                <label style={{ fontSize: 13, fontWeight: 600, color: D.ink, border: `1.5px solid ${D.ink}`, borderRadius: 4, padding: '8px 16px', cursor: 'pointer' }}>
                   Upload .csv / .txt
                   <input type="file" accept=".csv,.txt,.tsv" onChange={onUpload} style={{ display: 'none' }} />
                 </label>
-                <button onClick={() => setText(SAMPLE)} style={{ fontSize: 13, fontWeight: 500, color: D.ink2, background: 'none', border: `1px solid ${D.line}`, borderRadius: 999, padding: '8px 16px', cursor: 'pointer', fontFamily: D.sans }}>
+                <button onClick={() => setText(SAMPLE)} style={{ fontSize: 13, fontWeight: 500, color: D.ink2, background: 'none', border: `1px solid ${D.line}`, borderRadius: 4, padding: '8px 16px', cursor: 'pointer', fontFamily: D.sans }}>
                   Try a sample
                 </button>
               </div>
@@ -231,7 +231,7 @@ export function ShortageMatch() {
                   {result.summary.total} line{result.summary.total === 1 ? '' : 's'} read
                 </span>
                 {chips.map(([label, n, color]) => (
-                  <span key={label} style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1, color, border: `1px solid ${D.line}`, background: D.card, borderRadius: 999, padding: '6px 13px' }}>
+                  <span key={label} style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1, color, border: `1px solid ${D.line}`, background: D.card, borderRadius: 4, padding: '6px 13px' }}>
                     {n} {label}
                   </span>
                 ))}
@@ -245,21 +245,21 @@ export function ShortageMatch() {
 
               {/* Submit for sourcing follow-up */}
               {submittedId ? (
-                <div style={{ marginTop: 32, background: D.ink, color: D.paper, borderRadius: 20, padding: isMobile ? 24 : 36 }}>
+                <div style={{ marginTop: 32, background: D.ink, color: D.paper, borderRadius: 8, padding: isMobile ? 24 : 36 }}>
                   <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.2, color: D.plumSoft }}>REQUEST RECEIVED · {submittedId.toUpperCase()}</div>
                   <div style={{ fontFamily: D.display, fontSize: isMobile ? 24 : 32, marginTop: 10, letterSpacing: -0.5 }}>
                     Your list is with our sourcing desk.
                   </div>
-                  <p style={{ fontSize: 14.5, lineHeight: 1.6, color: 'rgba(247,242,234,.75)', maxWidth: 560 }}>
+                  <p style={{ fontSize: 14.5, lineHeight: 1.6, color: 'rgba(243,242,235,.75)', maxWidth: 560 }}>
                     Stocked lines ship same-day on orders before 2pm EST. We&apos;ll come back on the
                     sourcing lines with landed-cost pricing from our vetted manufacturer network.
                   </p>
-                  <Link to="/cart" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: D.paper, color: D.ink, padding: '12px 22px', borderRadius: 999, fontSize: 14, fontWeight: 600, marginTop: 8 }}>
+                  <Link to="/cart" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: D.paper, color: D.ink, padding: '12px 22px', borderRadius: 4, fontSize: 14, fontWeight: 600, marginTop: 8 }}>
                     Review cart <Icon.arrow />
                   </Link>
                 </div>
               ) : (
-                <form onSubmit={submit} style={{ marginTop: 32, background: D.card, border: `1px solid ${D.line}`, borderRadius: 20, padding: isMobile ? 18 : 28 }}>
+                <form onSubmit={submit} style={{ marginTop: 32, background: D.card, border: `1px solid ${D.line}`, borderRadius: 8, padding: isMobile ? 18 : 28 }}>
                   <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.2, color: D.plum, marginBottom: 14 }}>
                     SEND THE FULL LIST TO OUR SOURCING DESK
                   </div>
@@ -274,7 +274,7 @@ export function ShortageMatch() {
                       placeholder="Organization (optional)"
                       style={{ padding: '13px 16px', border: `1px solid ${D.line}`, borderRadius: 12, background: D.paper, fontSize: 15 }}
                     />
-                    <button type="submit" style={{ background: D.plum, color: D.paper, border: 'none', padding: '14px 26px', borderRadius: 999, fontSize: 14.5, fontWeight: 600, cursor: 'pointer', fontFamily: D.sans, display: 'inline-flex', alignItems: 'center', gap: 8, justifyContent: 'center' }}>
+                    <button type="submit" style={{ background: D.plum, color: D.paper, border: 'none', padding: '14px 26px', borderRadius: 4, fontSize: 14.5, fontWeight: 600, cursor: 'pointer', fontFamily: D.sans, display: 'inline-flex', alignItems: 'center', gap: 8, justifyContent: 'center' }}>
                       Submit list <Icon.arrow />
                     </button>
                   </div>

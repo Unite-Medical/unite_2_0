@@ -62,7 +62,7 @@ export function AdminConsignment() {
         <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '240px 1fr', gap: 20 }}>
           <div style={{ background: D.card, border: `1px solid ${D.line}`, borderRadius: 12, overflow: 'hidden', height: 'fit-content' }}>
             {distributors.map((d) => (
-              <button key={d.id} onClick={() => setActiveId(d.id)} style={{ width: '100%', textAlign: 'left', padding: '14px 16px', borderTop: `1px solid ${D.line}`, background: active?.id === d.id ? 'rgba(94,41,99,.06)' : 'transparent', cursor: 'pointer', color: D.ink }}>
+              <button key={d.id} onClick={() => setActiveId(d.id)} style={{ width: '100%', textAlign: 'left', padding: '14px 16px', borderTop: `1px solid ${D.line}`, background: active?.id === d.id ? 'rgba(29,92,77,.06)' : 'transparent', cursor: 'pointer', color: D.ink }}>
                 <div style={{ fontSize: 13, fontWeight: 600 }}>{d.name}</div>
                 <div style={{ fontSize: 12, color: D.ink2 }}>{consignment.productsFor(d.id).length} SKUs</div>
               </button>
@@ -105,7 +105,7 @@ export function AdminConsignment() {
               <div style={{ background: D.card, border: `1px solid ${D.line}`, borderRadius: 12, padding: 16 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div style={{ fontFamily: D.display, fontSize: 18 }}>Settlement</div>
-                  <button onClick={() => active && consignment.settle(active.id)} disabled={!settlement.owed} style={{ background: settlement.owed ? D.plum : D.line, color: D.paper, border: 'none', padding: '7px 14px', borderRadius: 999, fontSize: 12, cursor: settlement.owed ? 'pointer' : 'default' }}>Mark settled</button>
+                  <button onClick={() => active && consignment.settle(active.id)} disabled={!settlement.owed} style={{ background: settlement.owed ? D.plum : D.line, color: D.paper, border: 'none', padding: '7px 14px', borderRadius: 4, fontSize: 12, cursor: settlement.owed ? 'pointer' : 'default' }}>Mark settled</button>
                 </div>
                 <div style={{ marginTop: 12, fontSize: 13, color: D.ink2 }}>Owed <b style={{ color: D.ink }}>{fmt.money(settlement.owed)}</b> · settled {fmt.money(settlement.settled)}</div>
                 {settlement.movements.slice(-5).reverse().map((m) => (
@@ -129,6 +129,6 @@ export function AdminConsignment() {
 }
 
 function Pill({ c, children }) {
-  return <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 0.5, color: c, border: `1px solid ${c}`, borderRadius: 999, padding: '2px 8px' }}>{children}</span>;
+  return <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 0.5, color: c, border: `1px solid ${c}`, borderRadius: 4, padding: '2px 8px' }}>{children}</span>;
 }
 const inp = { width: 70, padding: '7px 9px', border: `1px solid ${D.line}`, borderRadius: 6, fontFamily: 'inherit', fontSize: 13 };

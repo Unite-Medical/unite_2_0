@@ -53,7 +53,7 @@ export function RepPortal() {
           <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum }}>REP PORTAL</div>
           <h1 style={{ fontFamily: D.display, fontSize: 44, letterSpacing: -1, marginTop: 10 }}>Sign in to continue</h1>
           <p style={{ color: D.ink2, marginTop: 12 }}>The rep portal is for Unite Medical field reps.</p>
-          <button type="button" onClick={() => navigate('/login')} style={{ marginTop: 18, background: D.plum, color: D.paper, border: 'none', padding: '12px 22px', borderRadius: 999, cursor: 'pointer', fontWeight: 600 }}>Sign in</button>
+          <button type="button" onClick={() => navigate('/login')} style={{ marginTop: 18, background: D.plum, color: D.paper, border: 'none', padding: '12px 22px', borderRadius: 4, cursor: 'pointer', fontWeight: 600 }}>Sign in</button>
         </main>
       </div>
     );
@@ -90,11 +90,11 @@ export function RepPortal() {
             </div>
             <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
               {reps.length > 1 && (
-                <select value={rep.id} onChange={(e) => setRepId(e.target.value)} style={{ padding: '10px 12px', borderRadius: 999, border: `1.5px solid ${D.line}`, background: D.card, color: D.ink, fontSize: 13 }}>
+                <select value={rep.id} onChange={(e) => setRepId(e.target.value)} style={{ padding: '10px 12px', borderRadius: 4, border: `1.5px solid ${D.line}`, background: D.card, color: D.ink, fontSize: 13 }}>
                   {reps.map((r) => <option key={r.id} value={r.id}>{r.name}</option>)}
                 </select>
               )}
-              <div style={{ display: 'inline-flex', border: `1.5px solid ${D.line}`, borderRadius: 999, overflow: 'hidden' }}>
+              <div style={{ display: 'inline-flex', border: `1.5px solid ${D.line}`, borderRadius: 4, overflow: 'hidden' }}>
                 {WINDOWS.map(([d, label]) => (
                   <button key={d} type="button" onClick={() => setDays(d)} style={{ padding: '9px 14px', border: 'none', background: days === d ? D.plum : 'transparent', color: days === d ? D.paper : D.ink2, cursor: 'pointer', fontSize: 13, fontWeight: 600 }}>{label}</button>
                 ))}
@@ -190,7 +190,7 @@ export function RepPortal() {
 
               <div style={card}>
                 <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>BOOKING LINK</div>
-                <button type="button" onClick={getBooking} style={{ marginTop: 10, background: 'transparent', color: D.ink, border: `1.5px solid ${D.ink}`, padding: '9px 16px', borderRadius: 999, cursor: 'pointer', fontSize: 13, fontWeight: 600 }}>Generate intro link</button>
+                <button type="button" onClick={getBooking} style={{ marginTop: 10, background: 'transparent', color: D.ink, border: `1.5px solid ${D.ink}`, padding: '9px 16px', borderRadius: 4, cursor: 'pointer', fontSize: 13, fontWeight: 600 }}>Generate intro link</button>
                 {bookingMsg && <div style={{ marginTop: 10, fontSize: 12, color: D.ink2, wordBreak: 'break-all' }}>{bookingMsg}</div>}
               </div>
             </div>

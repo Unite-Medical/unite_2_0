@@ -28,7 +28,7 @@ export function AdminQuotes() {
           <div style={{ padding: '14px 16px', borderBottom: `1px solid ${D.line}`, fontFamily: D.display, fontSize: 18 }}>Recent</div>
           {quotes.length === 0 && <div style={{ padding: 16, color: D.ink3, fontSize: 13 }}>No quotes yet. Run the engine on /quote.</div>}
           {quotes.map((q) => (
-            <button key={q.id} onClick={() => setActiveId(q.id)} style={{ width: '100%', textAlign: 'left', padding: '14px 16px', borderTop: `1px solid ${D.line}`, background: activeId === q.id ? 'rgba(94,41,99,.06)' : 'transparent', cursor: 'pointer', fontFamily: D.sans, color: D.ink, display: 'grid', gridTemplateColumns: '1fr auto', gap: 8 }}>
+            <button key={q.id} onClick={() => setActiveId(q.id)} style={{ width: '100%', textAlign: 'left', padding: '14px 16px', borderTop: `1px solid ${D.line}`, background: activeId === q.id ? 'rgba(29,92,77,.06)' : 'transparent', cursor: 'pointer', fontFamily: D.sans, color: D.ink, display: 'grid', gridTemplateColumns: '1fr auto', gap: 8 }}>
               <div>
                 <div style={{ fontFamily: D.mono, fontSize: 11, color: D.plum }}>{q.id}</div>
                 <div style={{ fontSize: 13, fontWeight: 500, marginTop: 4 }}>{q.customer_name}</div>
@@ -53,8 +53,8 @@ export function AdminQuotes() {
                   <div style={{ fontSize: 13, color: D.ink2, marginTop: 6 }}>{active.vendor} · {active.contact_name} · ETA {fmt.date(active.eta, { year: true })}</div>
                 </div>
                 <div style={{ display: 'flex', gap: 10 }}>
-                  <button onClick={() => setStatus('sent')} style={{ background: 'transparent', color: D.ink, border: `1.5px solid ${D.ink}`, padding: '10px 18px', borderRadius: 999, fontSize: 13, cursor: 'pointer' }}>Mark sent</button>
-                  <button onClick={() => setStatus('accepted')} style={{ background: D.plum, color: D.paper, border: 'none', padding: '10px 18px', borderRadius: 999, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>Mark accepted</button>
+                  <button onClick={() => setStatus('sent')} style={{ background: 'transparent', color: D.ink, border: `1.5px solid ${D.ink}`, padding: '10px 18px', borderRadius: 4, fontSize: 13, cursor: 'pointer' }}>Mark sent</button>
+                  <button onClick={() => setStatus('accepted')} style={{ background: D.plum, color: D.paper, border: 'none', padding: '10px 18px', borderRadius: 4, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>Mark accepted</button>
                 </div>
               </div>
 

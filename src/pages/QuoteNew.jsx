@@ -45,7 +45,7 @@ const TIERS = [
 const VIA_BADGE = {
   alias: { label: 'exact', color: '#1f7a4d', bg: '#e3f5ec' },
   fuzzy: { label: 'fuzzy', color: '#7c5b1d', bg: '#fdf6e3' },
-  ai: { label: 'AI', color: '#5b2a4a', bg: '#f5eff3' },
+  ai: { label: 'AI', color: '#1d5c4d', bg: '#e8f3ec' },
 };
 
 export function QuoteNew() {
@@ -247,7 +247,7 @@ export function QuoteNew() {
                         {mappingEntries.map(([field, m]) => {
                           const b = VIA_BADGE[m.via] || VIA_BADGE.alias;
                           return (
-                            <span key={field} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 11, border: `1px solid ${D.line}`, borderRadius: 999, padding: '4px 10px' }}>
+                            <span key={field} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 11, border: `1px solid ${D.line}`, borderRadius: 4, padding: '4px 10px' }}>
                               <code style={{ fontFamily: D.mono, color: D.ink }}>{field}</code>
                               <span style={{ color: D.ink3 }}>←</span>
                               <span style={{ color: D.ink2 }}>{m.header}</span>
@@ -289,7 +289,7 @@ export function QuoteNew() {
                               <td style={{ padding: '8px 6px', fontWeight: 500 }}>
                                 {l.name}
                                 {l.translated && (
-                                  <span title={`Original: ${l.name_original}`} style={{ marginLeft: 6, fontFamily: D.mono, fontSize: 9, color: '#5b2a4a', background: '#f5eff3', borderRadius: 4, padding: '1px 5px' }}>译</span>
+                                  <span title={`Original: ${l.name_original}`} style={{ marginLeft: 6, fontFamily: D.mono, fontSize: 9, color: '#1d5c4d', background: '#e8f3ec', borderRadius: 4, padding: '1px 5px' }}>译</span>
                                 )}
                                 {l.translated && (
                                   <div style={{ fontSize: 10, color: D.ink3, marginTop: 2 }}>{l.name_original}</div>
@@ -353,7 +353,7 @@ export function QuoteNew() {
                   type="button"
                   disabled={!parsed?.ok || running}
                   onClick={runEngine}
-                  style={{ marginTop: 18, width: '100%', background: D.plum, color: D.paper, border: 'none', padding: 14, borderRadius: 999, fontSize: 14, fontWeight: 600, cursor: (!parsed?.ok || running) ? 'not-allowed' : 'pointer', opacity: (!parsed?.ok || running) ? 0.5 : 1, display: 'inline-flex', alignItems: 'center', gap: 10, justifyContent: 'center' }}
+                  style={{ marginTop: 18, width: '100%', background: D.plum, color: D.paper, border: 'none', padding: 14, borderRadius: 4, fontSize: 14, fontWeight: 600, cursor: (!parsed?.ok || running) ? 'not-allowed' : 'pointer', opacity: (!parsed?.ok || running) ? 0.5 : 1, display: 'inline-flex', alignItems: 'center', gap: 10, justifyContent: 'center' }}
                 >
                   {running ? 'Running…' : <>Run quoting engine <Icon.arrow /></>}
                 </button>
@@ -375,18 +375,18 @@ function Chip({ D, children, tone }) {
   const tones = {
     ok: { color: '#1f7a4d', bg: '#e3f5ec', border: '#bfe6d2' },
     warn: { color: '#7c5b1d', bg: '#fdf6e3', border: '#ecd9a8' },
-    ai: { color: '#5b2a4a', bg: '#f5eff3', border: '#e2cdda' },
+    ai: { color: '#1d5c4d', bg: '#e8f3ec', border: '#c8ddd2' },
   };
   const t = tones[tone] || { color: D.ink2, bg: D.paperAlt, border: D.line };
   return (
-    <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 0.5, color: t.color, background: t.bg, border: `1px solid ${t.border}`, borderRadius: 999, padding: '4px 10px' }}>
+    <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 0.5, color: t.color, background: t.bg, border: `1px solid ${t.border}`, borderRadius: 4, padding: '4px 10px' }}>
       {children}
     </span>
   );
 }
 
-const btnSolid = (D) => ({ background: D.ink, color: D.paper, border: 'none', padding: '8px 14px', borderRadius: 999, fontSize: 12, cursor: 'pointer' });
-const btnGhost = (D) => ({ background: 'transparent', color: D.ink2, border: `1px solid ${D.line}`, padding: '7px 13px', borderRadius: 999, fontSize: 12, cursor: 'pointer' });
+const btnSolid = (D) => ({ background: D.ink, color: D.paper, border: 'none', padding: '8px 14px', borderRadius: 4, fontSize: 12, cursor: 'pointer' });
+const btnGhost = (D) => ({ background: 'transparent', color: D.ink2, border: `1px solid ${D.line}`, padding: '7px 13px', borderRadius: 4, fontSize: 12, cursor: 'pointer' });
 
 const fieldStyle = {
   width: '100%', marginTop: 6, padding: '10px 12px', background: D.paper, border: `1px solid ${D.line}`, borderRadius: 8, fontSize: 13, fontFamily: 'inherit', color: 'inherit', outline: 'none', boxSizing: 'border-box',

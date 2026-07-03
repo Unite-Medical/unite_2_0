@@ -8,7 +8,7 @@ import { fmt } from '../lib/format.js';
 import { useViewport } from '../lib/viewport.js';
 import { useSEO } from '../lib/seo.js';
 
-const STATUS_COLOR = { delivered: '#3b8760', in_transit: '#5e2963', shipped: '#5e2963', processing: '#b8502c', pending: '#b8502c' };
+const STATUS_COLOR = { delivered: '#3b8760', in_transit: '#1d5c4d', shipped: '#1d5c4d', processing: '#b3592b', pending: '#b3592b' };
 
 export function Dashboard() {
   const navigate = useNavigate();
@@ -46,8 +46,8 @@ export function Dashboard() {
               <div style={{ fontSize: isMobile ? 14 : 16, color: D.ink2, marginTop: 14 }}>Your rep <span style={{ color: D.ink, fontWeight: 600 }}>{org?.account_rep || 'Meredith Cole'}</span> is online · 11 min avg reply.</div>
             </div>
             <div style={{ display: 'flex', gap: 8, justifyContent: isMobile ? 'flex-start' : 'end', flexWrap: 'wrap' }}>
-              <button onClick={() => navigate('/catalog')} style={{ background: D.plum, color: D.paper, border: 'none', padding: '12px 20px', borderRadius: 999, cursor: 'pointer', fontSize: 14, fontWeight: 500 }}>Quick reorder</button>
-              <button onClick={() => navigate('/contact')} style={{ background: 'transparent', color: D.ink, border: `1.5px solid ${D.ink}`, padding: '12px 20px', borderRadius: 999, cursor: 'pointer', fontSize: 14 }}>Message rep</button>
+              <button onClick={() => navigate('/catalog')} style={{ background: D.plum, color: D.paper, border: 'none', padding: '12px 20px', borderRadius: 4, cursor: 'pointer', fontSize: 14, fontWeight: 500 }}>Quick reorder</button>
+              <button onClick={() => navigate('/contact')} style={{ background: 'transparent', color: D.ink, border: `1.5px solid ${D.ink}`, padding: '12px 20px', borderRadius: 4, cursor: 'pointer', fontSize: 14 }}>Message rep</button>
               <button onClick={() => { auth.logout(); navigate('/'); }} style={{ background: 'transparent', color: D.ink2, border: 'none', padding: '12px 14px', cursor: 'pointer', fontSize: 13 }}>Sign out</button>
             </div>
           </div>
@@ -108,14 +108,14 @@ export function Dashboard() {
               <div style={{ background: D.plum, color: D.paper, borderRadius: 14, padding: 22 }}>
                 <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.plumSoft }}>YOUR REP</div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 12 }}>
-                  <div style={{ width: 48, height: 48, borderRadius: 24, background: D.plumSoft }} />
+                  <div style={{ width: 48, height: 48, borderRadius: 10, background: D.plumSoft }} />
                   <div>
                     <div style={{ fontFamily: D.display, fontSize: 22, letterSpacing: -0.3 }}>{org?.account_rep || 'Meredith Cole'}</div>
                     <div style={{ fontSize: 12, color: D.plumSoft }}>{org?.segment === 'gov' ? 'Government' : 'Southeast'} · {org?.segment?.toUpperCase()} specialist</div>
                   </div>
                 </div>
                 <div style={{ marginTop: 16, fontSize: 13, color: D.plumSoft, lineHeight: 1.5 }}>&ldquo;{(profile?.name || 'Friend').split(' ')[0]} — circling back on the next reorder. Anything to add to the cart?&rdquo;</div>
-                <button onClick={() => navigate('/contact')} style={{ marginTop: 14, width: '100%', background: D.paper, color: D.plum, border: 'none', padding: 12, borderRadius: 999, cursor: 'pointer', fontSize: 13, fontWeight: 600 }}>Reply · book a call</button>
+                <button onClick={() => navigate('/contact')} style={{ marginTop: 14, width: '100%', background: D.paper, color: D.plum, border: 'none', padding: 12, borderRadius: 4, cursor: 'pointer', fontSize: 13, fontWeight: 600 }}>Reply · book a call</button>
               </div>
               <div style={{ background: D.card, borderRadius: 14, padding: 22, border: `1px solid ${D.line}` }}>
                 <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>QUICK LINKS</div>

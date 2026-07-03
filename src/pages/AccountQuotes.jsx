@@ -17,7 +17,7 @@ import { useViewport } from '../lib/viewport.js';
 import { useSEO } from '../lib/seo.js';
 
 const STATUS_COLOR = {
-  draft: D.ink3, sent: '#5e2963', accepted: '#3b8760', expired: '#b8502c', declined: '#c3382d',
+  draft: D.ink3, sent: '#1d5c4d', accepted: '#3b8760', expired: '#b3592b', declined: '#c3382d',
 };
 
 export function AccountQuotes() {
@@ -43,7 +43,7 @@ export function AccountQuotes() {
           <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum }}>YOUR ACCOUNT</div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: 16, flexWrap: 'wrap' }}>
             <h1 style={{ fontFamily: D.display, fontSize: 'clamp(34px, 6vw, 60px)', fontWeight: 400, letterSpacing: -1.2, margin: '12px 0 0' }}>Quotes</h1>
-            <button type="button" onClick={() => navigate('/portal/quote')} style={{ background: D.plum, color: D.paper, border: 'none', padding: '12px 20px', borderRadius: 999, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>Build a new quote</button>
+            <button type="button" onClick={() => navigate('/portal/quote')} style={{ background: D.plum, color: D.paper, border: 'none', padding: '12px 20px', borderRadius: 4, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>Build a new quote</button>
           </div>
         </div>
 
@@ -68,7 +68,7 @@ export function AccountQuotes() {
                       <td style={{ padding: '14px 16px', fontFamily: D.display, fontSize: 16, color: D.plum }}>{fmt.money(q.total || 0)}</td>
                       <td style={{ padding: '14px 16px', color: D.ink2 }}>{fmt.date(q.valid_until)}</td>
                       <td style={{ padding: '14px 16px' }}>
-                        <span style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, padding: '3px 8px', borderRadius: 999, background: `${color}20`, color }}>{status.toUpperCase()}</span>
+                        <span style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, padding: '3px 8px', borderRadius: 4, background: `${color}20`, color }}>{status.toUpperCase()}</span>
                       </td>
                       <td style={{ padding: '14px 16px', whiteSpace: 'nowrap' }}>
                         {canAccept && q.acceptance_token && (
