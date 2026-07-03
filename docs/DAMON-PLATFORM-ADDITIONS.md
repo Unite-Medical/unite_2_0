@@ -975,3 +975,32 @@ Agent reviewed the 3 legacy legal docs (pulled from current live site into Deskt
 16. **Keep:** "Not Healthcare Advice," IP/DMCA, indemnification, limitation of liability, "subsidiaries & affiliated companies" (useful now w/ Unite Pharma/Medava/Clyne family). Terms is the healthiest of the 3.
 
 **Overall:** Privacy = most stale (Safe Harbor/CCPA) → highest priority. Purchase = mirror old + the fixes + reconcile returns conflict. Terms = solid, minor tweaks. All should be legally reviewed (Alex's legal-LLM or outside counsel — see process question above) before publishing.
+
+### RETURN POLICY — RECONCILED to ONE authoritative policy (Damon-approved)
+
+Resolves the Purchase-Policy-vs-Returns-page conflict. Single hybrid policy site-wide (Purchase Policy + Returns page must MATCH this):
+- **Unopened, non-defective returns** within **30 days of delivery** → allowed, **20% restocking fee** (bumped from 10% — Damon, to deter non-defect/buyer's-remorse returns), **RMA required**, **customer pays return shipping**.
+- **Sterile / single-use / opened / private-label items** → **NON-returnable except manufacturer defect** (patient-safety + non-resellable).
+- **Manufacturer defects** → free replacement/repair. Two-tier claim window: report **visible damage / DOA / wrong item within ~30 days of receipt**; **latent manufacturing defects** covered for the **manufacturer's warranty period (typically 1 year)**.
+ALEX: make the Returns page and the Purchase Policy state this SAME policy (no contradiction).
+
+### OPEN ITEMS DAMON OWES ALEX (files + decisions) — NOT site hold-ups
+
+**Providing THIS handoff round:**
+1. **Capability Statement PDF** (`Unite_Group_Capability_Statement_2026.pdf`) → Government page CTA `/documents/...`. (Verify NAICS/SIC vs SAM.gov before external use.)
+2. **2 walking-boot PDAC letters** (Short + Tall Walking Boot Pneumatic) → the 2 gaps from the PDAC reconciliation.
+3. **RegeniCool™ Pro PDAC letter** → unblocks HCPCS code on the RegeniCool™ Pro listing.
+6. **Real TJS product photo** → Portfolio flagship (replace storefront preview image).
+   + **ALL PDAC letters** (the 25 already pulled + the 2 walking-boot letters above) → `/documents/pdac/<SKU>.pdf`.
+   + **Environmental Policy — REBRANDED** → Damon is running the Env Policy through the NEW brand guidelines and providing the updated version this round.
+
+**Owes LATER (Damon flagged — NOT this round, NOT a site hold-up):**
+4. **Marketing Flyers** — see the dedicated flyer item below.
+5. **Product Instructions docs** — the current site's Product Instructions page links out; Damon to provide the real linked docs later.
+
+### CONTENT: Brace Marketing Flyers — REBRAND ALL + fill gaps (Damon — OPEN, owed by Damon, NOT a site hold-up)
+
+- The current site's "Marketing Flyers" page is **customer-login protected** — agent could not enumerate/download the flyers from the public site (product pages link only the PDAC letter, not a flyer). So the flyer inventory must be pulled by Damon while logged in.
+- **Damon owes:** log into the Unite customer/admin account, pull the existing brace marketing flyers, and drop them into `Desktop/Unite Medical/Site Migration for Alex/03_Marketing Flyers`. Then agent reconciles **1-to-1 against all 27 brace/orthotic products** (same as the PDAC-letter reconciliation) to confirm none are missing.
+- **All brace flyers must be REDONE under the NEW brand guidelines** (rebrand existing + create net-new for any brace missing a flyer). The 27-brace master checklist is saved in the 03_Marketing Flyers folder for Damon to tick off while logged in.
+- 27 braces to verify flyers for: (Knee 8) Cryo Pneumatic ROM, Deluxe Universal ROM, Double Upright, Post-Operative, Single Upright, Sized ROM, Suspension Sleeve, Universal ROM; (Back/Lumbar 4) Lumbar Orthosis, Lumbar Sacral w/ Rigid Panels, Lumbar Sacral Orthosis, Baby Cradle; (Hip 2) Hip Orthosis, Bilateral Hip; (Cervical 1) Cervical Collar; (Foot/Ankle 6) Ankle Foot Orthosis, Foot & Ankle Extender Panel, Cryo Pneumatic Ankle, Heel Stabilizer, Short Walking Boot, Tall Walking Boot; (Shoulder/Elbow 4) Cryo Pneumatic Elbow, Cryo Pneumatic Shoulder, Shoulder Abduction, Telescoping ROM Elbow; (Wrist 2) Wrist Hand Finger Orthosis, Wrist Hand Orthosis.
