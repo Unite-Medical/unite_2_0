@@ -9,6 +9,8 @@ import { useViewport } from '../lib/viewport.js';
 import { useSEO } from '../lib/seo.js';
 import { IMG } from '../lib/imageMap.js';
 
+// Leadership is data-driven so a single leader can be cleanly removed without
+// breaking layout (PRD-28 §3.1 contingency — the grid adapts to the count).
 const LEADERS = [
   {
     name: 'Damon R.',
@@ -24,6 +26,19 @@ const LEADERS = [
   },
 ];
 
+// Unite family of companies (PRD-28 §3.1) — brief context for the companies
+// the founder bio references.
+const FAMILY_COMPANIES = [
+  {
+    name: 'Unite Pharma',
+    desc: 'A multi-state licensed wholesale pharmacy and FDA-registered third-party logistics (3PL) provider.',
+  },
+  {
+    name: 'Clyne Health',
+    desc: 'An AI-powered concierge medicine platform that unifies a patient\u2019s care team, labs, and treatment into one personalized health system.',
+  },
+];
+
 // Cleaned credentials grid — mirrors the /compliance page. No
 // unsubstantiated SBA-certification tiles, no fabricated SKU counts.
 const CREDENTIALS = [
@@ -34,7 +49,7 @@ const CREDENTIALS = [
   ['Veteran-Owned', 'DD214 Verified', 'ID.me verified'],
   ['TAA Compliant', 'Prioritized', 'Country of origin documented'],
   ['Berry Compliant', 'Medava PPE', 'Buy America Act'],
-  ['PDAC Approved', 'Credentialed', 'All orthotics + RegeniCool Pro'],
+  ['PDAC Approved', 'Credentialed', 'All orthotics + RegeniCool™ Pro'],
 ];
 
 export function About() {
@@ -43,7 +58,7 @@ export function About() {
   useSEO({
     title: 'About · Built on discipline. Driven by demand. · Unite Medical',
     description:
-      'A veteran supply chain operator and a practicing physician built the medical supply company they couldn\u2019t find anywhere else. Lithia Springs, Georgia, est. 2019. FDA-registered, CAGE 8MK70. Over 500 million units distributed.',
+      'Built by a veteran supply-chain operator and a practicing physician — the medical supply partner the industry was missing. Lithia Springs, Georgia, est. 2019. FDA-registered, CAGE 8MK70. Over 500 million units distributed.',
     canonical: '/about',
   });
   return (
@@ -60,8 +75,8 @@ export function About() {
             </h1>
           </div>
           <div style={{ fontSize: isMobile ? 16 : 17, lineHeight: 1.6, color: D.ink2, maxWidth: 460 }}>
-            A veteran supply chain operator and a practicing physician built the medical supply
-            company they couldn&apos;t find anywhere else.
+            Built by a veteran supply-chain operator and a practicing physician — the medical
+            supply partner the industry was missing.
           </div>
         </div>
       </div>
@@ -91,32 +106,41 @@ export function About() {
             </h2>
             <div style={{ height: 2, background: D.grad, borderRadius: 2, opacity: 0.9, marginTop: 28, width: 72 }} />
           </div>
+          {/* Approved founder-letter rewrite — PRD-28 §3.1, apply verbatim. */}
           <div style={{ fontSize: isMobile ? 16 : 18, lineHeight: 1.75, color: D.ink2 }}>
             <p style={{ marginTop: 0 }}>
-              I&apos;ve been in medical supply chain for over a decade. I&apos;ve built brands from
-              scratch, manufactured products overseas and domestically, sold a company, and
-              started three more. I know what it takes to get a product from a factory floor
-              to a patient&apos;s front door because I&apos;ve done every step myself.
+              I&apos;ve spent my career in supply chain. Since 2016 I&apos;ve worked every link of
+              it — sourcing, manufacturing, private label, logistics, fulfillment — and I learned
+              early how often the chain breaks and what it costs the people depending on it. In
+              2019 I founded Unite Medical to be the partner I kept wishing existed: disciplined,
+              accountable, and built to deliver when it matters most.
             </p>
             <p style={{ marginTop: 18 }}>
-              Unite Medical started in 2019 because the customers I&apos;d built relationships
-              with over the years kept asking me to do more — source this, stock that, can you
-              ship direct to our patients? So I did. And then I kept going.
+              That conviction was tested during the pandemic. When the traditional supply chain
+              failed, Unite became one of the largest direct-to-patient drop shippers in the
+              country, moving over 500 million units of tests, PPE, and critical supplies to the
+              labs, hospitals, pharmacies, and retailers who needed them. We didn&apos;t just
+              survive that period — we proved what a focused, vertically capable supply chain
+              partner could do under pressure.
             </p>
             <p style={{ marginTop: 18 }}>
-              We&apos;ve moved over 500 million units. During the pandemic, we were one of the
-              largest direct-to-patient drop shippers in the country — getting test kits, PPE,
-              and supplies to patients on behalf of labs, hospitals, pharmacies, and retailers
-              when the traditional supply chain fell apart.
+              What we built since has been earned the same way: by delivering and keeping our
+              word. Surgery centers, hospitals, retailers, brand owners, and national partners
+              work with Unite because we do what we say we&apos;ll do. It&apos;s the reason the
+              leadership of Restore Robotics chose us to represent their program, and the reason
+              customers who started with a single order stay with us for years. We&apos;ve grown
+              with one vision — to be the supply chain other companies can build on.
             </p>
             <p style={{ marginTop: 18 }}>
-              Today, we source and distribute Class 1 and Class 2 medical devices. We own every
-              unit we sell. We manufacture our own product lines. We build entire white-label
-              storefronts for physician groups who want their brand on the front end while we
-              run everything behind it.
+              The market has changed, and we&apos;ve changed with it. The pandemic-driven demand
+              that once came to our door is gone; today we earn every order, and we don&apos;t
+              take a single one for granted. We&apos;re investing heavily in technology and AI to
+              build a more scalable, transparent, and resilient Unite — a company designed for
+              how business will be done next, not how it was done last.
             </p>
             <p style={{ marginTop: 18 }}>
-              We&apos;re the supply chain behind the companies you already trust.
+              We are grateful for every customer who trusts us with their supply chain. They are
+              the reason Unite exists, and everything we build, we build to serve them better.
             </p>
             <p style={{ fontFamily: D.display, fontSize: 22, fontStyle: 'italic', color: D.ink, marginTop: 32 }}>— Damon R., Founder & CEO</p>
           </div>
@@ -130,7 +154,8 @@ export function About() {
           <h2 style={{ fontFamily: D.display, fontSize: 'clamp(34px, 5.6vw, 56px)', fontWeight: 400, letterSpacing: -1.2, lineHeight: 1.02, margin: 0 }}>
             The people running it.
           </h2>
-          <div style={{ marginTop: isMobile ? 32 : 56, display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: isMobile ? 16 : 24 }}>
+          {/* Column count follows the data so removing a leader never breaks layout. */}
+          <div style={{ marginTop: isMobile ? 32 : 56, display: 'grid', gridTemplateColumns: isMobile ? '1fr' : `repeat(${Math.max(LEADERS.length, 1)}, 1fr)`, gap: isMobile ? 16 : 24 }}>
             {LEADERS.map((l) => {
               const initials = l.name.split(' ').map((w) => w[0]).join('').replace('.', '');
               return (
@@ -151,6 +176,19 @@ export function About() {
                 </div>
               );
             })}
+          </div>
+
+          {/* Unite family of companies — context for the companies the bios reference. */}
+          <div style={{ marginTop: isMobile ? 28 : 40 }}>
+            <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 14 }}>THE UNITE FAMILY OF COMPANIES</div>
+            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: isMobile ? 12 : 24 }}>
+              {FAMILY_COMPANIES.map((c) => (
+                <div key={c.name} style={{ padding: isMobile ? 18 : 24, background: D.paperAlt, borderRadius: 16, border: `1px solid ${D.line}` }}>
+                  <div style={{ fontFamily: D.display, fontSize: isMobile ? 20 : 24, letterSpacing: -0.4, color: D.ink }}>{c.name}</div>
+                  <p style={{ fontSize: isMobile ? 13.5 : 14.5, color: D.ink2, lineHeight: 1.6, margin: '8px 0 0' }}>{c.desc}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>

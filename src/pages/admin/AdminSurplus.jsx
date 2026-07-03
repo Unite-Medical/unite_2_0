@@ -1,13 +1,13 @@
 /**
- * Admin · Surplus inventory review — PRD-10 Phase 2.
+ * Admin · Surplus brokerage desk — PRD-29 §5 pivot.
  *
- * Left rail: list of incoming hospital surplus submissions.
- * Right pane: line-by-line review, AI valuation, manual offer
- * adjustments, and "Send offer" action.
+ * Left rail: incoming seller listings. Right pane: line review, publish
+ * to the brokered marketplace (default path — seller's target = the ask),
+ * and the binding-offer / fee-escrow flow: accept an offer → binding +
+ * fee invoice → confirm fee paid → connection released to both sides.
  *
- * AI valuation runs through `ai.run('surplus/valuation', ...)` which
- * is stubbed today (no Anthropic key); real numbers come when keys
- * are wired.
+ * The AI valuation + "send offer" tools remain for the OPTIONAL Unite
+ * direct-buy path (a lot worth owning) — broker is the default.
  */
 
 import { useState } from 'react';
@@ -18,7 +18,7 @@ import { fmt } from '../../lib/format.js';
 import { useViewport } from '../../lib/viewport.js';
 import { ai } from '../../lib/ai/client.js';
 import { gmail } from '../../lib/services.js';
-import { publishSubmissionLines, offersFor, acceptOffer, declineOffer } from '../../lib/marketplace.js';
+import { publishSubmissionLines, offersFor, acceptOffer, declineOffer, confirmFeePaid, BUYER_CHANNELS } from '../../lib/marketplace.js';
 
 const STATUS_COLOR = {
   new:        ['#8f8490', 'NEW'],
@@ -46,7 +46,7 @@ export function AdminSurplus() {
   function publishToMarketplace() {
     if (!active) return;
     const { published } = publishSubmissionLines(active.id);
-    if (published === 0) setError('No unlisted "want" lines to publish — mark lines as want first.');
+    if (published === 0) setError('No publishable lines — each needs a seller target price or a valuation first.');
     else setError(null);
   }
 
@@ -56,6 +56,14 @@ export function AdminSurplus() {
       else declineOffer(offer.id);
     } catch (e) {
       setError(e?.message || 'Offer update failed.');
+    }
+  }
+
+  async function releaseConnection(offer) {
+    try {
+      await confirmFeePaid(offer.id);
+    } catch (e) {
+      setError(e?.message || 'Fee confirmation failed.');
     }
   }
 
@@ -200,11 +208,11 @@ Founder, Unite Medical`,
                 <button onClick={runValuation} disabled={valuating} style={{ background: D.ink, color: D.paper, border: 'none', padding: '10px 18px', borderRadius: 999, fontSize: 13, fontWeight: 500, cursor: valuating ? 'wait' : 'pointer', opacity: valuating ? 0.6 : 1 }}>
                   {valuating ? 'Valuating…' : 'Run AI valuation'}
                 </button>
-                <button onClick={sendOffer} disabled={!lines.some((l) => l.decision === 'want')} style={{ background: D.plum, color: D.paper, border: 'none', padding: '10px 22px', borderRadius: 999, fontSize: 13, fontWeight: 600, cursor: 'pointer', opacity: lines.some((l) => l.decision === 'want') ? 1 : 0.4 }}>
-                  Send offer to hospital
+                <button onClick={publishToMarketplace} disabled={!lines.some((l) => !l.listed)} style={{ background: D.plum, color: D.paper, border: 'none', padding: '10px 22px', borderRadius: 999, fontSize: 13, fontWeight: 600, cursor: 'pointer', opacity: lines.some((l) => !l.listed) ? 1 : 0.4 }}>
+                  Publish listings (broker) ↗
                 </button>
-                <button onClick={publishToMarketplace} disabled={!lines.some((l) => l.decision === 'want' && !l.listed)} style={{ background: 'transparent', color: D.plum, border: `1px solid ${D.plum}`, padding: '10px 22px', borderRadius: 999, fontSize: 13, fontWeight: 600, cursor: 'pointer', opacity: lines.some((l) => l.decision === 'want' && !l.listed) ? 1 : 0.4 }}>
-                  Publish to marketplace ↗
+                <button onClick={sendOffer} disabled={!lines.some((l) => l.decision === 'want')} style={{ background: 'transparent', color: D.plum, border: `1px solid ${D.plum}`, padding: '10px 22px', borderRadius: 999, fontSize: 13, fontWeight: 600, cursor: 'pointer', opacity: lines.some((l) => l.decision === 'want') ? 1 : 0.4 }}>
+                  Direct-buy offer (optional)
                 </button>
               </div>
               {error && <div style={{ marginTop: 12, padding: 10, borderRadius: 8, background: '#fbe9e1', color: '#7a2d10', fontSize: 13 }}>{error}</div>}
@@ -213,14 +221,14 @@ Founder, Unite Medical`,
                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13, minWidth: 760 }}>
                   <thead>
                     <tr style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>
-                      {['PRODUCT', 'CATEGORY', 'COND', 'QTY', 'EST RETAIL', 'OFFER/UNIT', 'OFFER TOTAL', 'DECISION'].map((h) => (
+                      {['PRODUCT', 'CATEGORY', 'COND', 'QTY', 'TARGET $/U', 'EST RETAIL', 'BUY OFFER/UNIT', 'BUY TOTAL', 'DIRECT BUY'].map((h) => (
                         <th key={h} style={{ textAlign: 'left', padding: '8px 6px', borderBottom: `1px solid ${D.line}` }}>{h}</th>
                       ))}
                     </tr>
                   </thead>
                   <tbody>
                     {lines.length === 0 && (
-                      <tr><td colSpan={8} style={{ padding: 20, color: D.ink3, fontSize: 13, textAlign: 'center' }}>No lines.</td></tr>
+                      <tr><td colSpan={9} style={{ padding: 20, color: D.ink3, fontSize: 13, textAlign: 'center' }}>No lines.</td></tr>
                     )}
                     {lines.map((l) => (
                       <tr key={l.id} style={{ borderTop: `1px solid ${D.line}` }}>
@@ -236,6 +244,10 @@ Founder, Unite Medical`,
                         <td style={{ padding: '8px 6px', fontSize: 11 }}>{l.category || '—'}</td>
                         <td style={{ padding: '8px 6px', fontSize: 11 }}>{l.condition || '—'}</td>
                         <td style={{ padding: '8px 6px', fontFamily: D.mono }}>{l.qty}</td>
+                        <td style={{ padding: '8px 6px', fontFamily: D.mono, fontSize: 11, color: D.plum }}>
+                          {l.target_usd_per_unit != null && l.target_usd_per_unit !== '' ? `$${Number(l.target_usd_per_unit).toFixed(2)}` : '—'}
+                          {l.listed ? ' · LISTED' : ''}
+                        </td>
                         <td style={{ padding: '8px 6px', fontFamily: D.mono, fontSize: 11 }}>${(Number(l.est_retail_usd) || 0).toFixed(2)}</td>
                         <td style={{ padding: '8px 6px' }}>
                           <input
@@ -272,6 +284,7 @@ Founder, Unite Medical`,
                   </div>
                   {activeOffers.map((o) => {
                     const line = db.get('surplus_lines', o.line_id);
+                    const channel = BUYER_CHANNELS.find((c) => c.id === o.buyer_channel)?.label || o.buyer_channel;
                     return (
                       <div key={o.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, padding: '12px 14px', border: `1px solid ${D.line}`, borderRadius: 10, marginBottom: 8, flexWrap: 'wrap' }}>
                         <div>
@@ -280,17 +293,26 @@ Founder, Unite Medical`,
                             <span style={{ fontFamily: D.mono, color: D.plum, marginLeft: 8 }}>{fmt.money(o.offer_usd_total)}</span>
                           </div>
                           <div style={{ fontSize: 11, color: D.ink3, marginTop: 2 }}>
-                            {line?.normalized_name || line?.raw_description} · {o.buyer_email} · {fmt.ago(o.created_at)}
+                            {line?.normalized_name || line?.raw_description} · {o.buyer_email} · {channel ? `${channel} · ` : ''}{fmt.ago(o.created_at)}
                             {o.message ? ` · “${o.message}”` : ''}
                           </div>
+                          {o.fee_usd != null && (
+                            <div style={{ fontSize: 11, color: D.plum, marginTop: 2, fontFamily: D.mono }}>
+                              BRIDGE FEE {fmt.money(o.fee_usd)} ({Math.round((o.fee_pct || 0) * 100)}%) · {String(o.fee_status || 'not_due').replace('_', ' ').toUpperCase()}
+                            </div>
+                          )}
                         </div>
                         {o.status === 'open' ? (
                           <div style={{ display: 'flex', gap: 8 }}>
-                            <button onClick={() => decideOffer(o, true)} style={{ fontSize: 11, fontFamily: D.mono, letterSpacing: 0.8, padding: '6px 14px', background: '#2d6a4f', color: D.paper, border: 'none', borderRadius: 999, cursor: 'pointer' }}>ACCEPT</button>
+                            <button onClick={() => decideOffer(o, true)} style={{ fontSize: 11, fontFamily: D.mono, letterSpacing: 0.8, padding: '6px 14px', background: '#2d6a4f', color: D.paper, border: 'none', borderRadius: 999, cursor: 'pointer' }}>ACCEPT (BINDS + FEE)</button>
                             <button onClick={() => decideOffer(o, false)} style={{ fontSize: 11, fontFamily: D.mono, letterSpacing: 0.8, padding: '6px 14px', background: 'transparent', color: '#c3382d', border: '1px solid #c3382d', borderRadius: 999, cursor: 'pointer' }}>DECLINE</button>
                           </div>
+                        ) : o.status === 'accepted' ? (
+                          <button onClick={() => releaseConnection(o)} style={{ fontSize: 11, fontFamily: D.mono, letterSpacing: 0.8, padding: '6px 14px', background: D.plum, color: D.paper, border: 'none', borderRadius: 999, cursor: 'pointer' }}>
+                            FEE PAID → RELEASE CONNECTION
+                          </button>
                         ) : (
-                          <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, padding: '4px 10px', borderRadius: 999, background: o.status === 'accepted' ? '#e8f5ed' : '#fbe9e1', color: o.status === 'accepted' ? '#1d4731' : '#7a2d10' }}>
+                          <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, padding: '4px 10px', borderRadius: 999, background: o.status === 'connected' ? '#e8f5ed' : '#fbe9e1', color: o.status === 'connected' ? '#1d4731' : '#7a2d10' }}>
                             {o.status.toUpperCase()}
                           </span>
                         )}

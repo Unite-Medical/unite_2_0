@@ -35,6 +35,8 @@ export const SERVICE_IMG = [
   base('SVC-02'), // PDAC Consulting
   base('SVC-03'), // Quoting & Sourcing
   base('SVC-04'), // Distributor Program
+  base('GOV-01'), // Restore Robotics (surgical/warehouse editorial until program art lands)
+  base('EDU-02'), // Diagnostic Tests
 ];
 
 /* SKU -> hero image path. Built from the real catalog. */

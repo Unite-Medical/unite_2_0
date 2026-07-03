@@ -196,6 +196,8 @@ export function Nav({ overlay = false }) {
               ))}
               <div style={{ height: 1, background: D.line, margin: '10px 14px' }} />
               {[
+                ['/robotics', 'Robotics Program'],
+                ['/diagnostics', 'Diagnostic Tests'],
                 ['/shortage-list', 'Shortage List Matcher'],
                 ['/supply-risk', 'Supply Risk Monitor'],
                 ['/government', 'Government'],

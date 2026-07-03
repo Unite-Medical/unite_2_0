@@ -35,19 +35,20 @@ STATIC_ROUTES = [
     ("/supply-risk",             "0.9",  "daily"),
     ("/surplus",                 "0.85", "monthly"),
     ("/surplus/market",          "0.85", "daily"),
-    ("/solutions",               "0.9",  "weekly"),
     ("/segments/asc",            "0.9",  "monthly"),
     ("/segments/pharmacy",       "0.9",  "monthly"),
-    ("/segments/gov",            "0.9",  "monthly"),
     ("/segments/ems",            "0.85", "monthly"),
     ("/segments/distributors",   "0.85", "monthly"),
     ("/services",                "0.9",  "monthly"),
     ("/services/distribution",   "0.85", "monthly"),
     ("/services/pdac",           "0.85", "monthly"),
-    ("/services/dealer",         "0.85", "monthly"),
-    ("/services/education",      "0.85", "monthly"),
+    ("/services/distributors",   "0.85", "monthly"),
+    ("/services/private-label",  "0.85", "monthly"),
+    ("/robotics",                "0.85", "monthly"),
+    ("/diagnostics",             "0.85", "monthly"),
+    ("/government",              "0.85", "monthly"),
+    ("/case-studies/tjs",        "0.7",  "monthly"),
     ("/about",                   "0.85", "monthly"),
-    ("/about/veteran-owned",     "0.85", "monthly"),
     ("/compliance",              "0.85", "monthly"),
     ("/portfolio",               "0.8",  "monthly"),
     ("/procurement",             "0.85", "monthly"),
@@ -79,7 +80,12 @@ def parse_skus() -> list[str]:
     start = text.index("{", text.index("REAL_CATALOG"))
     end = text.rindex("};", 0, text.index("export const REAL_PRODUCTS")) + 1
     catalog = json.loads(text[start:end])
-    return [p["sku"] for p in catalog.get("PRODUCTS", []) if p.get("sku")]
+    skus = [p["sku"] for p in catalog.get("PRODUCTS", []) if p.get("sku")]
+    # Hand-maintained listings (src/data/extraProducts.js) are merged into
+    # REAL_PRODUCTS at runtime — include them here too.
+    extra_text = (ROOT / "src" / "data" / "extraProducts.js").read_text()
+    skus += [s for s in re.findall(r"sku:\s*'([^']+)'", extra_text) if s not in skus]
+    return skus
 
 
 def parse_blog_slugs(seed_text: str) -> list[str]:

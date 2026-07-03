@@ -52,6 +52,8 @@ const COLUMNS = [
       ['/services/pdac', 'PDAC Consulting'],
       ['/services/private-label', 'Private Label'],
       ['/services/distributors', 'Distributor Program'],
+      ['/robotics', 'Robotics Program'],
+      ['/diagnostics', 'Diagnostic Tests'],
       ['/government', 'Government'],
     ],
   },
@@ -100,7 +102,7 @@ export function Footer() {
               Veteran-owned wholesale medical supply.
             </p>
             <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1, color: D.plumSoft, marginTop: 24, lineHeight: 1.7 }}>
-              FDA 3015727296 · CAGE 8MK70 · DUNS 117553945
+              FDA 3015727296 · CAGE 8MK70 · MSPV BPA 36C24123A0077 · DUNS 117553945
             </div>
 
             <div style={{ marginTop: 22 }}>

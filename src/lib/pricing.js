@@ -8,7 +8,7 @@
  *
  * The org-tier multiplier applies on top of the qty-break price, so a
  * Tier-A hospital ordering 250+ units gets both. Distributors carry the
- * deepest contract discount per the dealer program.
+ * deepest contract discount per the distributor program.
  */
 
 import { db } from './db.js';
@@ -18,7 +18,7 @@ export const TIER_MULTIPLIER = {
   A: 0.92,            // top accounts — negotiated 8% off list
   B: 0.96,            // standard wholesale accounts
   C: 1.0,             // new / unrated accounts pay list
-  distributor: 0.88,  // dealer program contract pricing
+  distributor: 0.88,  // distributor program contract pricing
 };
 
 export function tierMultiplier(org) {

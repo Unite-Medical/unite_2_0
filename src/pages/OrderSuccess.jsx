@@ -9,7 +9,7 @@ import { fmt } from '../lib/format.js';
 import { useViewport } from '../lib/viewport.js';
 import { useSEO } from '../lib/seo.js';
 
-const FALLBACK_REP = { name: 'Miguel Vasquez', phone: '833.868.6483', email: 'sales@unitemedical.net' };
+const FALLBACK_REP = { name: 'Miguel Vasquez', phone: '833.868.6483', email: 'support@unitemedical.net' };
 
 export function OrderSuccess() {
   const navigate = useNavigate();

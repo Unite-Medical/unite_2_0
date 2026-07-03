@@ -68,7 +68,7 @@ function mirrorOutbox({ to, from, subject, body, template_key, drafted_by, statu
 
 export const gmail = {
   /** Send a transactional email. Falls back to the local outbox queue. */
-  async send({ to, subject, body, from = 'sales@unitemedical.net', template_key, drafted_by = 'human' }) {
+  async send({ to, subject, body, from = 'support@unitemedical.net', template_key, drafted_by = 'human' }) {
     return realOrStub({
       scope: 'gmail',
       label: `send(${to})`,

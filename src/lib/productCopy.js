@@ -25,7 +25,7 @@ const CATEGORY_TONES = {
   Surgical: {
     intro: 'A surgical-grade consumable manufactured to AAMI / ASTM specifications for use in OR, procedural, and field-medic environments. FDA-registered with documented country-of-origin per case.',
     fit: 'Single-use, ready-to-deploy, packaged in clinically appropriate quantities. Compatible with standard sterilization workflows where applicable.',
-    billing: 'Standard supply line item. Available under BPA for federal customers; no MOQs for commercial buyers.',
+    billing: 'Standard supply line item. Available under BPA for federal customers; no MOQs on stocked items for commercial buyers.',
   },
   'Wound Care': {
     intro: 'A wound-management consumable intended to maintain a moist healing environment, manage exudate, and protect the wound bed during healing.',
@@ -88,7 +88,7 @@ const HIGHLIGHT_LIBRARY = {
   ],
   Surgical: [
     { title: 'Sterile-field ready', body: 'Packaged for direct delivery to the sterile field; no double-wrap repackaging required.' },
-    { title: 'No MOQs', body: 'Order by the case or the each. Buy what fits the procedure schedule, not a vendor minimum.' },
+    { title: 'No MOQs on stocked items', body: 'Order by the case or the each. Buy what fits the procedure schedule, not a vendor minimum.' },
     { title: 'BPA available', body: 'Federal buyers can pull this SKU directly under our active BPA without a fresh contract.' },
     { title: 'Same-day shipping', body: 'Ships from Atlanta if ordered by 3 PM ET; median delivery to a Southeast ASC: the same day.' },
   ],
@@ -97,6 +97,14 @@ const HIGHLIGHT_LIBRARY = {
     { title: 'Third-party tested', body: 'Every lot independently assayed for potency, identity, and contaminants.' },
     { title: 'FSA / HSA eligible', body: 'Eligible for purchase with FSA and HSA cards at point of sale.' },
     { title: 'Pharmacy-channel ready', body: 'Drop-ship and counter-display SKUs available for retail pharmacy programs.' },
+  ],
+  // Truthful highlights for the quote-only DME line (RegeniCool™ Pro) — all
+  // verifiable against the FDA device listing + PDAC approval.
+  DME: [
+    { title: 'FDA-listed Class 2 device', body: 'Listed under 21 CFR 890.5720 (product code ILO) by Unite Medical, LLC — establishment #3015727296.' },
+    { title: 'PDAC approved', body: 'Coding verification on file, so suppliers can bill with confidence from day one.' },
+    { title: 'Built with clinicians', body: 'Developed with Total Joint Specialists and deployed through surgeon-led patient recovery programs.' },
+    { title: 'Quote-only pricing', body: 'Priced per order for practices, ASCs, and DME suppliers — tell us your volume and setting.' },
   ],
 };
 
@@ -214,7 +222,9 @@ export function productDocuments(product) {
     { label: 'Manufacturer specification sheet', kind: 'PDF', size: '218 KB' },
     { label: 'Instructions for use (IFU)', kind: 'PDF', size: '142 KB' },
   ];
-  if (product.pdac_approved) docs.push({ label: 'PDAC determination letter', kind: 'PDF', size: '96 KB' });
+  // PDAC letters are real documents migrated from the old site — hosted at
+  // /documents/pdac/<SKU>.pdf (PRD-29 §6.4: wiring, not fabrication).
+  if (product.pdac_approved) docs.push({ label: 'PDAC determination letter', kind: 'PDF', size: '96 KB', href: `/documents/pdac/${product.sku}.pdf` });
   if (product.taa_compliant) docs.push({ label: 'TAA / country-of-origin attestation', kind: 'PDF', size: '64 KB' });
   if (product.mspv_listed) docs.push({ label: 'BPA pricing schedule', kind: 'PDF', size: '52 KB' });
   if (product.category === 'Pharmaceuticals') docs.push({ label: 'Safety data sheet (SDS)', kind: 'PDF', size: '188 KB' });
@@ -228,7 +238,10 @@ export function productDocuments(product) {
  * same product always shows the same quotes.
  */
 export function productReviews(product) {
-  const pool = REVIEW_LIBRARY[product.category] || REVIEW_LIBRARY.PPE;
+  // Categories without a review pool (e.g. the quote-only DME line) show no
+  // reviews rather than borrowing another category's.
+  const pool = REVIEW_LIBRARY[product.category] || (product.quote_only ? [] : REVIEW_LIBRARY.PPE);
+  if (pool.length === 0) return [];
   // Deterministic pick: take all available, but rotate based on SKU char sum.
   const sum = product.sku.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
   const start = sum % pool.length;

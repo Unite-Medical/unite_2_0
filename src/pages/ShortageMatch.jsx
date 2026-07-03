@@ -26,7 +26,7 @@ import { useSEO } from '../lib/seo.js';
 import { db } from '../lib/db.js';
 import { uid } from '../lib/format.js';
 import { cartStore } from '../store/cart.js';
-import { matchShortageList } from '../lib/matching.js';
+import { matchShortageList, captureCrossReferences } from '../lib/matching.js';
 
 const SAMPLE = `12 x nitrile exam gloves, large
 Influenza A&B rapid test 25ct — 4 boxes
@@ -34,15 +34,19 @@ KGN-200 hinged knee brace, qty 6
 strep a test cassettes x10
 surgical gowns level 3, 2 cases`;
 
+// 3-supply-state matching (PRD-29 §4.1): IN STOCK = real available
+// inventory (on-hand − reserved); WE SOURCE = matched line with no shelf
+// stock (vetted manufacturer network); QUOTE = open RFQ.
 const STATUS_META = {
   stocked:    { label: 'IN STOCK',    color: '#3b8760', bg: 'rgba(59,135,96,.1)' },
+  source:     { label: 'WE SOURCE',   color: D.terra,   bg: 'rgba(184,80,44,.1)' },
   equivalent: { label: 'EQUIVALENTS', color: D.terra,   bg: 'rgba(184,80,44,.1)' },
-  sourcing:   { label: 'WE SOURCE IT', color: D.plum,   bg: 'rgba(94,41,99,.08)' },
+  sourcing:   { label: 'QUOTE',       color: D.plum,    bg: 'rgba(94,41,99,.08)' },
 };
 
 function MatchRow({ line, isMobile }) {
   const meta = STATUS_META[line.status];
-  const picks = line.status === 'stocked' ? [line.match] : line.alternates;
+  const picks = (line.status === 'stocked' || line.status === 'source') ? [line.match] : line.alternates;
   return (
     <div style={{ background: D.card, border: `1px solid ${D.line}`, borderRadius: 16, padding: isMobile ? 14 : 20 }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
@@ -67,22 +71,31 @@ function MatchRow({ line, isMobile }) {
                   {p.sku} · {p.category}{p.pack_size ? ` · ${p.pack_size}` : ''}
                 </div>
               </div>
-              <div style={{ fontFamily: D.display, fontSize: 18, color: D.plum, flexShrink: 0 }}>${Number(p.price).toFixed(2)}</div>
-              <button
-                onClick={() => cartStore.add(p.sku, line.qty)}
-                aria-label={`Add ${p.name} to cart`}
-                style={{ background: D.ink, color: D.paper, border: 'none', width: 36, height: 36, borderRadius: 18, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}
-              >
-                <Icon.plus />
-              </button>
+              <div style={{ fontFamily: D.display, fontSize: 18, color: D.plum, flexShrink: 0 }}>{p.price == null ? 'Quote' : `$${Number(p.price).toFixed(2)}`}</div>
+              {line.status === 'stocked' ? (
+                <button
+                  onClick={() => cartStore.add(p.sku, line.qty)}
+                  aria-label={`Add ${p.name} to cart`}
+                  style={{ background: D.ink, color: D.paper, border: 'none', width: 36, height: 36, borderRadius: 18, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}
+                >
+                  <Icon.plus />
+                </button>
+              ) : (
+                <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 0.8, color: D.ink3, flexShrink: 0 }}>VIA SOURCING</span>
+              )}
             </div>
           ))}
         </div>
       )}
 
+      {line.status === 'source' && (
+        <div style={{ marginTop: 10, fontSize: 13, color: D.ink2 }}>
+          We carry this line but it&apos;s not on the shelf right now — we source it through our vetted manufacturer network and quote you a firm price and delivery window.
+        </div>
+      )}
       {line.status === 'sourcing' && (
         <div style={{ marginTop: 10, fontSize: 13, color: D.ink2 }}>
-          Not on our shelf — this line routes to our quoting engine and vetted manufacturer network when you submit below.
+          Not in our catalog — this line opens an RFQ with our sourcing desk when you submit below.
         </div>
       )}
     </div>
@@ -94,14 +107,17 @@ export function ShortageMatch() {
   const padX = isMobile ? 20 : 40;
 
   useSEO({
-    title: 'Match your shortage list against live stock',
-    description: 'Paste your backorder or shortage list — no formatting, no EDI. Unite Medical instantly matches each line against stocked inventory and suggests in-stock equivalents. Unmatched lines route to our sourcing network.',
+    title: 'Match your shortage list against our full supply chain — instantly',
+    description: 'We instantly check each line against our stock, our vetted manufacturer network, and our sourcing desk — then come back with what we can supply and a quote for the rest.',
     canonical: '/shortage-list',
   });
 
   const [text, setText] = useState('');
   const [email, setEmail] = useState('');
   const [org, setOrg] = useState('');
+  // Medical-safety guardrail (PRD-29 §4.1.4): the client tells us which
+  // cross-SKUs are acceptable — we never guess equivalents on their behalf.
+  const [substitutes, setSubstitutes] = useState('');
   const [submittedId, setSubmittedId] = useState(null);
   const [error, setError] = useState(null);
 
@@ -133,8 +149,12 @@ export function ShortageMatch() {
       email: email.trim(),
       organization: org.trim(),
       raw_text: text,
+      // Client-provided acceptable cross-SKUs (PRD-29 §4.1.4) — the approved
+      // substitutes list, verbatim, for the sourcing desk + cross-ref DB.
+      acceptable_substitutes: substitutes.trim() || null,
       line_count: result.summary.total,
       matched: result.summary.stocked,
+      source_lines: result.summary.source,
       substitutes: result.summary.equivalent,
       unmatched: result.summary.sourcing,
       lines: result.lines.map((l) => ({
@@ -144,21 +164,24 @@ export function ShortageMatch() {
       })),
       status: 'new',
     });
+    // Cross-reference SKU capture (PRD-29 §4.1.3) — every uploaded list
+    // enriches the customer-item ↔ Unite-SKU database.
+    captureCrossReferences({ lines: result.lines, requestId: id, email: email.trim() });
     db.insert('leads', {
       id: uid('lead'),
       name: org.trim() || email.trim(),
       email: email.trim(),
       source: 'shortage-list',
       status: 'new',
-      notes: `Shortage list ${id}: ${result.summary.total} lines / ${result.summary.sourcing} need sourcing`,
+      notes: `Shortage list ${id}: ${result.summary.total} lines / ${result.summary.sourcing} to quote${substitutes.trim() ? ' · approved substitutes provided' : ''}`,
     });
     setSubmittedId(id);
   }
 
   const chips = result ? [
     ['IN STOCK', result.summary.stocked, '#3b8760'],
-    ['EQUIVALENTS', result.summary.equivalent, D.terra],
-    ['TO SOURCE', result.summary.sourcing, D.plum],
+    ['WE SOURCE', result.summary.source + result.summary.equivalent, D.terra],
+    ['TO QUOTE', result.summary.sourcing, D.plum],
   ] : [];
 
   return (
@@ -167,7 +190,7 @@ export function ShortageMatch() {
       <PageHead
         eyebrow="NO EDI · NO PORTAL SETUP · NO FORMATTING"
         title="Paste your shortage list."
-        sub="Send us your backorder list exactly as it exits your system. We match every line against stocked inventory in real time, surface in-stock equivalents, and route the rest to our sourcing network."
+        sub="We instantly check each line against our stock, our vetted manufacturer network, and our sourcing desk — then come back with what we can supply and a quote for the rest."
       />
 
       <div id="main" style={{ padding: `${isMobile ? 32 : 64}px ${padX}px ${isMobile ? 64 : 110}px` }}>
@@ -254,6 +277,22 @@ export function ShortageMatch() {
                     <button type="submit" style={{ background: D.plum, color: D.paper, border: 'none', padding: '14px 26px', borderRadius: 999, fontSize: 14.5, fontWeight: 600, cursor: 'pointer', fontFamily: D.sans, display: 'inline-flex', alignItems: 'center', gap: 8, justifyContent: 'center' }}>
                       Submit list <Icon.arrow />
                     </button>
+                  </div>
+                  {/* Medical-safety guardrail (PRD-29 §4.1.4): the client
+                      approves cross-SKUs up front — we don't guess. */}
+                  <div style={{ marginTop: 14 }}>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: D.ink }}>Acceptable substitutes (optional, recommended)</div>
+                    <div style={{ fontSize: 12.5, color: D.ink3, marginTop: 4, lineHeight: 1.5 }}>
+                      If your facility has pre-approved cross-SKUs or brands, list them here — we only
+                      offer substitutes you&apos;ve signed off on, never keyword-match guesses.
+                    </div>
+                    <textarea
+                      value={substitutes}
+                      onChange={(e) => setSubstitutes(e.target.value)}
+                      placeholder={'e.g. "Any nitrile exam glove, ASTM D6319" or "KGN-200 → your SKU UB-KNEE-01 OK"'}
+                      rows={3}
+                      style={{ width: '100%', boxSizing: 'border-box', marginTop: 8, resize: 'vertical', background: D.paper, color: D.ink, border: `1px solid ${D.line}`, borderRadius: 12, padding: 12, fontFamily: D.sans, fontSize: 14, lineHeight: 1.6 }}
+                    />
                   </div>
                   {error && <div style={{ marginTop: 10, fontSize: 13.5, color: D.terra }}>{error}</div>}
                   <div style={{ marginTop: 12, fontSize: 12.5, color: D.ink3 }}>

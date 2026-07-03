@@ -7,7 +7,7 @@ import { db } from '../../lib/db.js';
 import { fmt } from '../../lib/format.js';
 import { useViewport } from '../../lib/viewport.js';
 
-const SEGMENT_LABEL = { asc: 'Ambulatory surgery', gov: 'Gov/VA', pharmacy: 'Pharmacy', distributors: 'Regional dealers', ems: 'EMS', hospital: 'Hospital' };
+const SEGMENT_LABEL = { asc: 'Ambulatory surgery', gov: 'Gov/VA', pharmacy: 'Pharmacy', distributors: 'Regional distributors', ems: 'EMS', hospital: 'Hospital' };
 const SEGMENT_COLOR = { asc: '#5e2963', gov: '#b8502c', pharmacy: '#3b8760', distributors: '#8f8490', ems: '#b8a04a', hospital: '#564b5c' };
 
 export function AdminAnalytics() {

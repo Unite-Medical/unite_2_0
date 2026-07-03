@@ -19,7 +19,7 @@ export const TESTIMONIALS = [
   },
   {
     quote:
-      'Berry compliance documentation ready on day one, same-day shipping, and a rep who knows our procurement process. Unite came in as a secondary source and earned a primary spot inside 90 days.',
+      'Berry compliant products in stock when we needed them, same-day shipping, and a rep who knows our procurement process. Unite came in as a secondary source and earned a primary spot inside 90 days.',
     name: 'D. V.',
     title: 'Procurement Lead',
     org: 'Regional Health System',

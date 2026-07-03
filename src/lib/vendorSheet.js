@@ -28,6 +28,9 @@
  *   packaging         (optional)
  *   target_quantity   (optional, integer)
  *   notes             (optional)
+ *   cross_reference_skus (optional — competitor / customer part numbers this
+ *                      product substitutes for; feeds the cross-reference
+ *                      SKU database, PRD-29 §4.1.3)
  */
 
 import { isValidGtin } from './external/gs1.js';
@@ -58,6 +61,9 @@ export const COLUMN_ALIASES = {
   target_quantity:   ['target_quantity', 'target qty', 'quantity', 'qty', 'order quantity', 'requested qty'],
   notes:             ['notes', 'comments', 'comment', 'note'],
   currency:          ['currency', 'ccy', 'cur', 'currency code', 'fob currency', 'price currency', 'unit'],
+  // PRD-29 §4.1.3 — cross-reference SKUs on the manufacturer product sheet
+  // (competitor / customer part numbers this product substitutes for).
+  cross_reference_skus: ['cross_reference_skus', 'cross reference', 'cross-reference', 'cross ref', 'xref', 'equivalent sku', 'equivalent skus', 'substitute for', 'competitor part number', 'competitor sku', 'oem part number'],
 };
 
 // PRD-18 §5 Layer 2 — multilingual aliases (Chinese / Korean / Vietnamese).

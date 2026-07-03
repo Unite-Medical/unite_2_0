@@ -11,13 +11,14 @@ import { uid } from '../lib/format.js';
 import { useViewport } from '../lib/viewport.js';
 import { useSEO } from '../lib/seo.js';
 
-// Contact form reasons per spec §4m. "Distributor program" replaces "Dealer
-// program"; "Document request" and "PDAC consulting" added; separate
-// Government/VA and Vendor desks removed (no dedicated emails).
+// Contact form reasons — aligned with the quote-router paths (PRD-28 §5.4)
+// and the 3 supply states (§5.1) so leads tag consistently in HubSpot.
 const REASONS = [
   'New account',
   'Quote · stocked item',
-  'Quote · non-stocked / sourcing',
+  'Quote · source a product or brand',
+  'Quote · custom / made to spec',
+  'Shortage list',
   'Government procurement',
   'Distributor program',
   'Document request',
@@ -31,7 +32,7 @@ export function Contact() {
   useSEO({
     title: 'Contact — call us, we answer',
     description:
-      'Every inbound goes to a real person. Mon–Fri 8am–5pm EST. Sales, support, government, and billing all on 833.868.6483.',
+      'Every inbound goes to a real person. Mon–Fri 8am–5pm EST. Accounting & billing at ext. 3; all other inquiries — sales, support, general — on 833.868.6483.',
     canonical: '/contact',
   });
   // ?reason= deep-link picks the initial dropdown value; the user takes over
@@ -54,10 +55,10 @@ export function Contact() {
         org_name: form.org || `${form.first} ${form.last}`,
         contact_name: `${form.first} ${form.last}`.trim(),
         contact_email: form.email,
-        segment: form.reason.toLowerCase().includes('gov') ? 'gov' : form.reason.toLowerCase().includes('dealer') ? 'distributors' : 'asc',
+        segment: form.reason.toLowerCase().includes('gov') ? 'gov' : form.reason.toLowerCase().includes('distributor') ? 'distributors' : 'asc',
         status: form.route_to_rep ? 'warm' : 'cold',
         source: 'website',
-        owner: 'Aidan Park',
+        owner: 'Unassigned',
         next_action: 'First reply',
         next_action_at: new Date(Date.now() + 86400000).toISOString(),
         notes: form.message,
@@ -73,7 +74,7 @@ export function Contact() {
           lifecyclestage: 'lead',
         }),
         gmail.send({ to: form.email, subject: `Got it — Unite Medical (${form.reason})`, body: `Hi ${form.first || 'there'}, thanks for reaching out. ${form.route_to_rep ? 'A rep is being assigned and will reply within one business day.' : 'A team member will be in touch shortly.'}` }),
-        gmail.send({ to: 'sales@unitemedical.net', subject: `New lead · ${form.org || form.first}`, body: `${form.reason}\n\n${form.message}` }),
+        gmail.send({ to: 'support@unitemedical.net', subject: `New lead · ${form.org || form.first}`, body: `${form.reason}\n\n${form.message}` }),
       ]);
       setSubmitted({ id: lead.id });
     } finally {
@@ -124,17 +125,15 @@ export function Contact() {
               Prefer to <em>talk</em>?
             </div>
             <div style={{ marginTop: 24, display: 'grid', gap: 14 }}>
-              {/* All numbers consolidated to one line per spec §4m. */}
+              {/* Two lines per PRD-28 §3.5 — accounting keeps its real inbox; everything else routes to support@. */}
               {[
-                ['Sales & New Accounts', '833.868.6483', 'sales@unitemedical.net'],
-                ['Customer Support', '833.868.6483', 'support@unitemedical.net'],
-                ['General Inquiries', '833.868.6483', 'info@unitemedical.net'],
-                ['Accounting & Billing', '833.868.6483', 'accounting@unitemedical.net'],
-              ].map(([name, phone, email]) => (
+                ['Accounting & Billing', '833.868.6483 ext. 3', '8338686483', 'accounting@unitemedical.net'],
+                ['All other inquiries · sales, support, general', '833.868.6483', '8338686483', 'support@unitemedical.net'],
+              ].map(([name, phoneLabel, phoneDigits, email]) => (
                 <div key={name} style={{ padding: 20, background: D.card, borderRadius: 12, border: `1px solid ${D.line}` }}>
                   <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.plum }}>{name.toUpperCase()}</div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 8, flexWrap: 'wrap', gap: 8 }}>
-                    <a href={`tel:${phone.replace(/\D/g, '')}`} style={{ fontFamily: D.display, fontSize: 22, color: D.ink, letterSpacing: -0.3 }}>{phone}</a>
+                    <a href={`tel:${phoneDigits}`} style={{ fontFamily: D.display, fontSize: 22, color: D.ink, letterSpacing: -0.3 }}>{phoneLabel}</a>
                     <a href={`mailto:${email}`} style={{ fontSize: 13, color: D.ink2, alignSelf: 'end' }}>{email}</a>
                   </div>
                 </div>

@@ -7,14 +7,15 @@ import { PageHead } from '../../components/layout/PageHead.jsx';
 import { useViewport } from '../../lib/viewport.js';
 import { useSEO } from '../../lib/seo.js';
 
+// Diagnostics tags deep-link into the Diagnostics page (PRD-29 §3.2).
 const TAGS = [
-  'OTC rapid tests',
-  'Point-of-care diagnostics',
-  'PDAC-approved orthotics',
-  'Gloves',
-  'Masks',
-  'Supplements',
-  'DME supplies',
+  ['OTC rapid tests', '/diagnostics'],
+  ['Point-of-care diagnostics', '/diagnostics'],
+  ['PDAC-approved orthotics', null],
+  ['Gloves', null],
+  ['Masks', null],
+  ['Supplements', null],
+  ['DME supplies', null],
 ];
 
 export function SegmentPharmacy() {
@@ -37,7 +38,9 @@ export function SegmentPharmacy() {
       <div style={{ maxWidth: 1100, margin: '0 auto', padding: `12px ${padX}px ${isMobile ? 56 : 80}px` }}>
         <h2 style={{ fontFamily: D.display, fontSize: 'clamp(24px, 4vw, 36px)', letterSpacing: -0.6, margin: '24px 0 14px 0' }}>What we supply for pharmacies</h2>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
-          {TAGS.map((t) => (
+          {TAGS.map(([t, to]) => to ? (
+            <Link key={t} to={to} style={{ background: D.card, border: `1px solid ${D.line}`, padding: '8px 14px', borderRadius: 999, fontSize: 13, color: D.plum }}>{t} →</Link>
+          ) : (
             <span key={t} style={{ background: D.card, border: `1px solid ${D.line}`, padding: '8px 14px', borderRadius: 999, fontSize: 13, color: D.ink2 }}>{t}</span>
           ))}
         </div>

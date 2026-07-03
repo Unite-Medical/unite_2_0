@@ -10,12 +10,12 @@ import { SERVICE_IMG } from '../lib/imageMap.js';
 import { useViewport } from '../lib/viewport.js';
 import { useSEO } from '../lib/seo.js';
 
-// Four cards per spec §4c. Education & Certification card removed.
-// Government promoted to its own primary nav item at /government.
+// Service cards per PRD-28 §3.2 — single Georgia warehouse, approved quoting
+// copy, plus the Restore Robotics and Diagnostics flagship cards.
 const services = [
   {
     name: 'Distribution & Fulfillment',
-    sub: 'Same-day shipping · 2 US warehouses · Ships to all 50 states + territories',
+    sub: 'Same-day shipping · Georgia warehouse · Ships to all 50 states + territories',
     cta: 'See coverage',
     path: '/services/distribution',
   },
@@ -28,7 +28,7 @@ const services = [
   {
     name: 'Quoting & Sourcing',
     sub:
-      'Source non-stock items from our vetted manufacturer network. Real-time pricing, landed cost, compliance verified.',
+      'Tell us what you need and get an instant, fully landed, compliance-checked quote — sourced from our vetted manufacturer network.',
     cta: 'Start a quote',
     path: '/quote',
   },
@@ -38,6 +38,18 @@ const services = [
     cta: 'Learn more',
     path: '/services/distributors',
   },
+  {
+    name: 'Restore Robotics',
+    sub: 'FDA 510(k)-cleared remanufactured da Vinci instruments — 20\u201325% savings for hospital systems, manufacturer-of-record warranty.',
+    cta: 'Explore the program',
+    path: '/robotics',
+  },
+  {
+    name: 'Diagnostic Tests',
+    sub: 'Every major brand of point-of-care and OTC tests — wholesale, retail EDI, bulk, and private label. Don\u2019t see your brand? Just ask.',
+    cta: 'See diagnostics',
+    path: '/diagnostics',
+  },
 ];
 
 export function Services() {
@@ -45,9 +57,9 @@ export function Services() {
   const { isMobile } = useViewport();
   const padX = isMobile ? 20 : 40;
   useSEO({
-    title: 'Services — distribution, PDAC, quoting, distributor program',
+    title: 'Services — distribution, PDAC, quoting, distributors, robotics, diagnostics',
     description:
-      'Beyond the catalog: nationwide distribution, Medicare PDAC consulting, sourcing & quoting from our vetted manufacturer network, and a distributor program for regional partners.',
+      'Beyond the catalog: nationwide distribution from our Georgia warehouse, Medicare PDAC consulting, instant compliance-checked quoting, a distributor program, the Restore Robotics instrument program, and diagnostics supply.',
     canonical: '/services',
   });
   return (
@@ -117,16 +129,18 @@ export function Services() {
               Most braces stall at Medicare review. <Grad>Ours arrive billable.</Grad>
             </h2>
             <p style={{ fontSize: isMobile ? 14.5 : 16, lineHeight: 1.65, color: 'rgba(247,242,234,.78)', marginTop: 18, maxWidth: 520 }}>
-              100% of our orthopedic line carries verified HCPCS coding. Every SKU ships with its
-              L-code, modifiers, and documentation checklist attached to the invoice — and if a
-              claim gets pulled, our coding team supplies the verification letter same day.
+              Every product in our Unite Medical orthopedic line is PDAC-approved and carries
+              verified HCPCS L-coding. The code travels with the SKU — on the listing and on
+              your invoice — so your bracing claims are ready to bill.
             </p>
           </div>
           <div>
+            {/* Stats scoped to the Unite Medical bracing line (PRD-28 §3.2) —
+                no audit-SLA claims. */}
             {[
-              { stat: '100%', label: 'PDAC-verified orthopedic line', sub: 'Verification held on every Unite-branded orthosis at time of listing.' },
-              { stat: 'L-codes', label: 'Attached to every invoice', sub: 'HCPCS code, modifiers, and documentation checklist included per SKU.' },
-              { stat: 'Same day', label: 'Audit response', sub: 'Verification letters and spec sheets supplied within one business day.' },
+              { stat: '100%', label: 'PDAC-approved Unite Medical bracing line', sub: 'Every Unite Medical orthosis is PDAC-approved.' },
+              { stat: 'L-codes', label: 'On the listing and the invoice', sub: 'Verified HCPCS L-code carried per Unite Medical bracing SKU and passed through to your invoice.' },
+              { stat: 'Per SKU', label: 'PDAC approval letter on file', sub: 'Download the current PDAC approval letter from any Unite Medical bracing product page.' },
             ].map((f, i) => (
               <div key={i} style={{
                 display: 'grid', gridTemplateColumns: isMobile ? '100px 1fr' : '140px 1fr',

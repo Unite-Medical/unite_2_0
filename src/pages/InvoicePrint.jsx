@@ -134,15 +134,19 @@ export function InvoicePrint() {
           </thead>
           <tbody>
             {items.length === 0 && <tr><td colSpan={5} style={{ color: D.ink3, padding: 24, textAlign: 'center' }}>No line items on the originating order.</td></tr>}
-            {items.map((it) => (
+            {items.map((it) => {
+              // PDAC L-code travels with the SKU onto the invoice (PRD-28 §3.2).
+              const hcpcs = db.get('products', it.sku)?.hcpcs;
+              return (
               <tr key={it.id}>
                 <td style={{ fontWeight: 500 }}>{it.name}</td>
-                <td style={{ fontFamily: D.mono, fontSize: 12 }}>{it.sku}</td>
+                <td style={{ fontFamily: D.mono, fontSize: 12 }}>{it.sku}{hcpcs ? <div style={{ color: D.ink2, fontSize: 11 }}>HCPCS {hcpcs}</div> : null}</td>
                 <td style={{ textAlign: 'right', fontFamily: D.mono }}>{fmt.number(it.qty)}</td>
                 <td style={{ textAlign: 'right', fontFamily: D.mono }}>{fmt.money(it.unit_price)}</td>
                 <td style={{ textAlign: 'right', fontFamily: D.mono, fontWeight: 600, color: D.plum }}>{fmt.money(it.ext_price || it.qty * it.unit_price)}</td>
               </tr>
-            ))}
+              );
+            })}
           </tbody>
           <tfoot>
             {(freight > 0 || tax > 0) && (

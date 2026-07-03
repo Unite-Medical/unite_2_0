@@ -10,12 +10,15 @@ import { SERVICE_IMG } from '../lib/imageMap.js';
 import { useViewport } from '../lib/viewport.js';
 import { useSEO } from '../lib/seo.js';
 
+// Cards 01/02 per PRD-29 §2.3 — catalog exposure is explicitly OPT-IN in
+// both directions (their products in our catalog, our products to their
+// customers).
 const cards = [
   {
     n: '01',
     h: '3PL & Warehousing',
     p:
-      'We stock and ship your products from our facilities. Your inventory lives in our warehouse, ships on your schedule, and your products are also available through our catalog — expanding your reach.',
+      'We stock and ship your products from our facilities — your inventory lives in our warehouse and ships on your schedule, like it\u2019s your own. Optionally, list your products in our catalog to reach new buyers. Manage it all from your own distributor dashboard: stock levels, orders, shipments, and reporting, as if you owned the warehouse.',
     cta: 'Learn more →',
     to: '/contact?reason=Distributor%20program',
   },
@@ -23,7 +26,7 @@ const cards = [
     n: '02',
     h: 'Drop-Ship Integration',
     p:
-      'We integrate our product catalog into your site and fulfill orders on your behalf — or your customers\u2019 behalf. Blind-shipped, discreetly, under your brand. Your customers never see us.',
+      'Integrate our catalog into your site and we fulfill on your behalf — blind-shipped, discreetly, under your brand. Your customers never see us. Offering our catalog to your customers is optional — you control what you list and what stays private. Track every order from your distributor dashboard in real time.',
     cta: 'Request integration details →',
     to: '/contact?reason=Distributor%20program',
   },
@@ -39,7 +42,7 @@ const cards = [
     n: '04',
     h: 'Custom Sourcing',
     p:
-      'Need products we don\u2019t stock? Use our quoting engine to source from our vetted manufacturer network. Real-time pricing, landed cost, compliance verified.',
+      'Need products we don\u2019t stock? Use our quoting engine to source from our vetted manufacturer network — get an all-in landed price with compliance handled.',
     cta: 'Start a quote →',
     to: '/quote',
   },
@@ -83,6 +86,31 @@ export function ServiceDistributors() {
               <Link to={c.to} style={{ display: 'inline-block', marginTop: 16, fontFamily: D.mono, fontSize: 11, letterSpacing: 1, color: D.plum }}>{c.cta}</Link>
             </div>
           ))}
+        </div>
+
+        {/* Distributor Dashboard showcase (PRD-29 §2.3.3) — maps to the
+            existing DistributorPortal at /distributor. */}
+        <div style={{ marginTop: isMobile ? 20 : 28, background: D.plum, color: D.paper, borderRadius: 16, padding: isMobile ? 26 : 40, display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.4fr 1fr', gap: isMobile ? 20 : 40, alignItems: 'center' }}>
+          <div>
+            <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1.2, color: D.plumSoft }}>THE DISTRIBUTOR DASHBOARD</div>
+            <h3 style={{ fontFamily: D.display, fontSize: isMobile ? 26 : 36, letterSpacing: -0.7, lineHeight: 1.1, margin: '12px 0 0' }}>
+              Run your business like you own the warehouse.
+            </h3>
+            <p style={{ fontSize: 14.5, lineHeight: 1.6, color: D.plumSoft, margin: '14px 0 0' }}>
+              Every distributor gets a custom dashboard to manage inventory, place and track
+              orders, handle drop-ship and blind-ship fulfillment, pull reporting, and control
+              exactly which products you list — and which of ours you offer your customers.
+              Full visibility, full control, zero warehouse overhead.
+            </p>
+          </div>
+          <div style={{ display: 'grid', gap: 10 }}>
+            <Link to="/contact?reason=Distributor%20program" style={{ background: D.paper, color: D.plum, padding: '13px 18px', borderRadius: 999, fontSize: 14, fontWeight: 600, textAlign: 'center' }}>
+              Request a dashboard demo →
+            </Link>
+            <Link to="/distributor" style={{ background: 'transparent', color: D.paper, border: `1.5px solid ${D.paper}`, padding: '12px 18px', borderRadius: 999, fontSize: 14, fontWeight: 500, textAlign: 'center' }}>
+              Distributor login →
+            </Link>
+          </div>
         </div>
       </div>
       <Footer />

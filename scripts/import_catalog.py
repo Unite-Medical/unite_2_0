@@ -345,7 +345,10 @@ def emit_js(products: list[dict], categories: list[dict], collections: list[dict
     out = (
         JS_HEADER
         + "export const REAL_CATALOG = " + body + ";\n\n"
-        + "export const REAL_PRODUCTS = REAL_CATALOG.PRODUCTS;\n"
+        # Hand-maintained products (e.g. RegeniCool™ Pro) live outside the
+        # Shopify export and must survive every re-import.
+        + "import { EXTRA_PRODUCTS } from './extraProducts.js';\n"
+        + "export const REAL_PRODUCTS = [...REAL_CATALOG.PRODUCTS, ...EXTRA_PRODUCTS];\n"
         + "export const REAL_CATEGORIES = REAL_CATALOG.CATEGORIES;\n"
         + "export const REAL_COLLECTIONS = REAL_CATALOG.COLLECTIONS;\n"
         + "export default REAL_CATALOG;\n"

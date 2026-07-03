@@ -36,7 +36,7 @@ N95 respirator fluid-resistant,NHM,6307.90,0.21,50000,50000,MY,
 
 const TIERS = [
   { id: 'A', label: 'A · Hospital / Gov (30%)' },
-  { id: 'B', label: 'B · Mid ASC / Dealer (50%)' },
+  { id: 'B', label: 'B · Mid ASC / Distributor (50%)' },
   { id: 'C', label: 'C · Small clinic (60%)' },
   { id: 'distributor', label: 'Distributor (25%)' },
   { id: 'gov', label: 'Government / BPA (20%)' },
@@ -54,7 +54,7 @@ export function QuoteNew() {
   const padX = isMobile ? 20 : 40;
   useSEO({
     title: 'New quote · Source & price',
-    description: 'Upload a vendor product sheet (Excel or CSV, any language). We map columns, translate, validate FDA codes, pull live duty rates, generate freight, and return a landed-cost quote.',
+    description: 'Upload a vendor product sheet (Excel or CSV, any language) and get back a compliance-checked, all-in landed-cost quote — ready to accept online.',
     canonical: '/quote/new',
   });
 
@@ -153,7 +153,7 @@ export function QuoteNew() {
         <PageHead
           eyebrow="SOURCE & QUOTE · NEW"
           title={<>Upload a sheet. <em>Get a quote.</em></>}
-          sub="Drop your vendor's product list — Excel or CSV, any language. We map the columns, translate, validate FDA codes, pull live USITC duty rates, compare freight, and return a landed-cost PDF customers can accept."
+          sub="Drop your vendor's product list — Excel or CSV, any language. We handle the translation and compliance checks and return an all-in, landed-cost PDF customers can accept."
         />
 
         <section style={{ padding: `0 ${padX}px ${isMobile ? 56 : 80}px` }}>
@@ -359,7 +359,7 @@ export function QuoteNew() {
                 </button>
 
                 <div style={{ marginTop: 14, fontSize: 11, color: D.ink3, lineHeight: 1.6 }}>
-                  Pipeline: parse → map → translate → openFDA → USITC HTS → freight (LCL/FCL) → 6-component landed cost → tier margin → Claude letter → PDF.
+                  Every line is compliance-checked and priced all-in — one landed number, no hidden freight or fees — then delivered as an accept-ready PDF.
                 </div>
               </div>
             </aside>

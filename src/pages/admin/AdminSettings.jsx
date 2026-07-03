@@ -33,7 +33,7 @@ const DEFAULTS = {
   cage: '8MK70',
   duns: '117553945',
   sales_phone: '833.868.6483',
-  sales_email: 'sales@unitemedical.net',
+  sales_email: 'support@unitemedical.net',
   default_margin: 0.6,
   freight_per_unit: 0.42,
   free_freight_threshold: 500,

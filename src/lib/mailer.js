@@ -52,7 +52,7 @@ export const mailer = {
    * Send a transactional email. Never throws — always resolves to the
    * mirrored outbox row (status 'sent' or 'queued').
    */
-  async send({ to, subject, body, from = 'sales@unitemedical.net', template_key, drafted_by = 'human' }) {
+  async send({ to, subject, body, from = 'support@unitemedical.net', template_key, drafted_by = 'human' }) {
     let lastErr = null;
     if (API_BASE) {
       for (const p of PROVIDERS) {

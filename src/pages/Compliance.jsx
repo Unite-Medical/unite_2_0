@@ -7,6 +7,7 @@ import { PageHead } from '../components/layout/PageHead.jsx';
 import { Grad } from '../components/shared/Grad.jsx';
 import { Icon } from '../components/shared/Icon.jsx';
 import { PhotoPlaceholder } from '../components/shared/PhotoPlaceholder.jsx';
+import { StatusPill } from '../components/shared/StatusPill.jsx';
 import { IMG } from '../lib/imageMap.js';
 import { db } from '../lib/db.js';
 import { gmail } from '../lib/services.js';
@@ -24,7 +25,10 @@ const CREDENTIALS = [
   { label: 'Veteran-Owned', val: 'DD214 Verified', sub: 'ID.me verified', anchor: 'veteran' },
   { label: 'TAA Compliant', val: 'Prioritized', sub: 'TAA-compliant sourcing prioritized', anchor: 'taa' },
   { label: 'Berry Compliant', val: 'Medava PPE line', sub: 'Buy America Act', anchor: 'berry' },
-  { label: 'PDAC Approved', val: 'Credentialed', sub: 'All orthotics + RegeniCool Pro', anchor: 'pdac' },
+  { label: 'PDAC Approved', val: 'Credentialed', sub: 'All Unite Medical orthotics + RegeniCool™ Pro', anchor: 'pdac' },
+  // Pursuit confirmed active (PRD-28 §3.4) — surfaced with an IN PROGRESS
+  // status pill, tied to the "Quality management" policy below.
+  { label: 'ISO 13485', val: 'Quality management', sub: 'Certification pursuit active', anchor: 'iso', badge: 'IN PROGRESS' },
 ];
 
 // Policies per spec §4l: ISO is "pursuing" (not "aligned"). Cold-chain and
@@ -32,7 +36,9 @@ const CREDENTIALS = [
 const POLICIES = [
   { t: 'Quality management', s: 'Pursuing ISO 13485 certification. Documented procedures across receiving, storage, and order picking. Every lot scanned, every recall traceable to a customer.' },
   { t: 'Country-of-origin', s: 'Every SKU tied to a documented country of origin and HTS code. TAA, Buy America, and Berry compliance certifications generated on demand.' },
-  { t: 'Recalls & adverse events', s: 'Lot-level traceability for recall management. MDR-eligible reports filed to FDA on the customer\u2019s behalf when requested. See docs/schema/lot_tracking.sql for the data model.' },
+  // MDR scope corrected (PRD-28 §3.4): Unite files for its OWN products as
+  // manufacturer/distributor of record — never on customers' behalf.
+  { t: 'Recalls & adverse events', s: 'Lot-level traceability for recall management. As the manufacturer/distributor of record, we file MDR-eligible reports to the FDA for our own products.' },
   { t: 'Supplier qualification', s: 'Every manufacturer audited against an internal questionnaire covering FDA registration, ISO certification, and product testing standards before approval.' },
 ];
 
@@ -43,7 +49,7 @@ function DocLibrary() {
   async function request(doc) {
     setBusy(doc);
     db.insert('doc_requests', { id: uid('dr'), doc, requested_at: new Date().toISOString(), status: 'queued' });
-    await gmail.send({ to: 'info@unitemedical.net', subject: `Doc request · ${doc}`, body: `Customer requested: ${doc}` });
+    await gmail.send({ to: 'support@unitemedical.net', subject: `Doc request · ${doc}`, body: `Customer requested: ${doc}` });
     setRequested((s) => new Set([...s, doc]));
     setBusy(null);
   }
@@ -116,7 +122,10 @@ export function Compliance() {
               {CREDENTIALS.map((c) => (
                 <div key={c.label} id={c.anchor} style={{ padding: '0 0 20px' }}>
                   <div style={{ height: 2, background: D.grad, borderRadius: 2, opacity: 0.9, marginBottom: 20 }} />
-                  <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>{c.label.toUpperCase()}</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                    <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>{c.label.toUpperCase()}</div>
+                    {c.badge && <StatusPill dotColor={D.terra}>{c.badge}</StatusPill>}
+                  </div>
                   <div style={{ fontFamily: D.display, fontSize: 26, letterSpacing: -0.4, color: D.ink, marginTop: 8 }}>{c.val}</div>
                   <div style={{ fontSize: 12, color: D.ink2, marginTop: 4 }}>{c.sub}</div>
                 </div>
@@ -169,10 +178,12 @@ export function Compliance() {
         <section style={{ padding: `${isMobile ? 56 : 80}px ${padX}px`, background: D.plum, color: D.paper }}>
           <div style={{ maxWidth: 1360, margin: '0 auto', display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.2fr 1fr', gap: isMobile ? 22 : 64, alignItems: 'center' }}>
             <h2 style={{ fontFamily: D.display, fontSize: 'clamp(32px, 5vw, 48px)', fontWeight: 400, letterSpacing: -1, lineHeight: 1.08, margin: 0 }}>
-              Audit-ready. Inspector-friendly.
+              Documentation for your auditors.
             </h2>
             <p style={{ fontSize: 16, lineHeight: 1.6, color: D.plumSoft, margin: 0 }}>
-              State board, DEA, FDA, JCAHO — if it walks through your door asking about supplier qualification, point them at us. We&apos;ll be on the phone before they finish their second cup of coffee.
+              Our supplier-qualification documentation — registrations, attestations, and
+              quality records — is available to regulators and health-system auditors on
+              request. Contact our compliance team and we&apos;ll provide what your review requires.
             </p>
           </div>
         </section>

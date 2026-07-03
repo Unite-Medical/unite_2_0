@@ -129,6 +129,9 @@ export function ProductDetail() {
   const variantPrice = selectedVariant?.price ?? product.price;
   const price = hasMultiVariants ? variantPrice : (activeTier?.unit_price ?? product.price);
   const savingsPct = product.price && price < product.price ? Math.round(((product.price - price) / product.price) * 100) : 0;
+  // Quote-only products (no public price, e.g. RegeniCool™ Pro) route to the
+  // quote flow instead of the cart.
+  const quoteOnly = product.quote_only || price == null;
 
   return (
     <div style={{ background: D.paper, fontFamily: D.sans, color: D.ink, minHeight: '100vh' }}>
@@ -171,21 +174,31 @@ export function ProductDetail() {
               {product.sku} {product.hcpcs && product.hcpcs !== '—' ? `· HCPCS ${product.hcpcs}` : ''} {product.pdac_approved ? '· PDAC APPROVED' : ''}
             </div>
             <h1 style={{ fontFamily: D.display, fontSize: 'clamp(30px, 5.4vw, 48px)', fontWeight: 400, letterSpacing: -1, lineHeight: 1.08, margin: '14px 0 0' }}>{product.name}</h1>
-            <div style={{ display: 'flex', gap: 4, marginTop: 14, alignItems: 'center', color: D.plum, flexWrap: 'wrap' }}>
-              {[0, 1, 2, 3, 4].map((i) => <Icon.star key={i} />)}
-              <div style={{ fontSize: 13, color: D.ink2, marginLeft: 10 }}>4.8 · {reviews.length * 47} reviews · used by 38 ASCs</div>
-            </div>
+            {!quoteOnly && (
+              <div style={{ display: 'flex', gap: 4, marginTop: 14, alignItems: 'center', color: D.plum, flexWrap: 'wrap' }}>
+                {[0, 1, 2, 3, 4].map((i) => <Icon.star key={i} />)}
+                <div style={{ fontSize: 13, color: D.ink2, marginLeft: 10 }}>4.8 · {reviews.length * 47} reviews · used by 38 ASCs</div>
+              </div>
+            )}
 
             <div style={{ marginTop: 28, padding: 24, background: D.card, borderRadius: 14, border: `1px solid ${D.line}` }}>
               <div style={{ display: 'flex', alignItems: 'end', gap: 14, flexWrap: 'wrap' }}>
-                <div style={{ fontFamily: D.display, fontSize: isMobile ? 42 : 56, color: D.plum, letterSpacing: -1, lineHeight: 1 }}>{fmt.money(price)}</div>
-                <div style={{ color: D.ink3, fontSize: 13, paddingBottom: 8 }}>
-                  per unit · volume tier {tierLabel}
-                  {savingsPct > 0 && <span style={{ color: '#3b8760', marginLeft: 8, fontWeight: 600 }}>save {savingsPct}%</span>}
+                <div style={{ fontFamily: D.display, fontSize: quoteOnly ? (isMobile ? 30 : 38) : (isMobile ? 42 : 56), color: D.plum, letterSpacing: -1, lineHeight: 1 }}>
+                  {quoteOnly ? 'Quote on request' : fmt.money(price)}
                 </div>
+                {!quoteOnly && (
+                  <div style={{ color: D.ink3, fontSize: 13, paddingBottom: 8 }}>
+                    per unit · volume tier {tierLabel}
+                    {savingsPct > 0 && <span style={{ color: '#3b8760', marginLeft: 8, fontWeight: 600 }}>save {savingsPct}%</span>}
+                  </div>
+                )}
               </div>
               <div style={{ marginTop: 20 }}>
-                {hasMultiVariants ? (
+                {quoteOnly ? (
+                  <div style={{ fontSize: 13.5, color: D.ink2, lineHeight: 1.55 }}>
+                    Priced per order — tell us your volume and setting and we come back with a firm quote.
+                  </div>
+                ) : hasMultiVariants ? (
                   <>
                     <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3, marginBottom: 10 }}>
                       {Object.keys(variants[0]?.options || {})[0]?.toUpperCase() || 'OPTION'}
@@ -239,27 +252,38 @@ export function ProductDetail() {
                 )}
               </div>
               <div style={{ display: 'flex', gap: 10, marginTop: 22, alignItems: 'center', flexWrap: 'wrap' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 2, border: `1px solid ${D.line}`, borderRadius: 999, padding: 4 }}>
-                  <button aria-label="Decrease quantity" onClick={() => setQty(Math.max(1, qty - 1))} style={{ background: 'none', border: 'none', padding: 8, cursor: 'pointer' }}><Icon.minus /></button>
-                  <div style={{ minWidth: 40, textAlign: 'center', fontWeight: 600 }}>{qty}</div>
-                  <button aria-label="Increase quantity" onClick={() => setQty(qty + 1)} style={{ background: 'none', border: 'none', padding: 8, cursor: 'pointer' }}><Icon.plus /></button>
-                </div>
-                <button
-                  onClick={() => {
-                    cartStore.add(
-                      product.sku,
-                      qty,
-                      selectedVariant
-                        ? { sku: selectedVariant.sku, title: selectedVariant.title, price: selectedVariant.price }
-                        : undefined,
-                    );
-                    navigate('/cart');
-                  }}
-                  style={{ flex: '1 1 160px', background: D.ink, color: D.paper, border: 'none', padding: '14px', borderRadius: 999, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}
-                >
-                  Add to cart
-                </button>
-                <button onClick={() => navigate('/quote')} style={{ background: 'transparent', color: D.ink, border: `1.5px solid ${D.ink}`, padding: '13px 18px', borderRadius: 999, cursor: 'pointer', fontSize: 14, flex: isMobile ? '1 1 160px' : '0 0 auto' }}>Request quote</button>
+                {quoteOnly ? (
+                  <button
+                    onClick={() => navigate(`/quote?sku=${encodeURIComponent(product.sku)}&path=source`)}
+                    style={{ flex: '1 1 160px', background: D.plum, color: D.paper, border: 'none', padding: '14px', borderRadius: 999, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}
+                  >
+                    Request a quote →
+                  </button>
+                ) : (
+                  <>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 2, border: `1px solid ${D.line}`, borderRadius: 999, padding: 4 }}>
+                      <button aria-label="Decrease quantity" onClick={() => setQty(Math.max(1, qty - 1))} style={{ background: 'none', border: 'none', padding: 8, cursor: 'pointer' }}><Icon.minus /></button>
+                      <div style={{ minWidth: 40, textAlign: 'center', fontWeight: 600 }}>{qty}</div>
+                      <button aria-label="Increase quantity" onClick={() => setQty(qty + 1)} style={{ background: 'none', border: 'none', padding: 8, cursor: 'pointer' }}><Icon.plus /></button>
+                    </div>
+                    <button
+                      onClick={() => {
+                        cartStore.add(
+                          product.sku,
+                          qty,
+                          selectedVariant
+                            ? { sku: selectedVariant.sku, title: selectedVariant.title, price: selectedVariant.price }
+                            : undefined,
+                        );
+                        navigate('/cart');
+                      }}
+                      style={{ flex: '1 1 160px', background: D.ink, color: D.paper, border: 'none', padding: '14px', borderRadius: 999, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}
+                    >
+                      Add to cart
+                    </button>
+                    <button onClick={() => navigate('/quote')} style={{ background: 'transparent', color: D.ink, border: `1.5px solid ${D.ink}`, padding: '13px 18px', borderRadius: 999, cursor: 'pointer', fontSize: 14, flex: isMobile ? '1 1 160px' : '0 0 auto' }}>Request quote</button>
+                  </>
+                )}
               </div>
               <div style={{ marginTop: 14, fontSize: 12, color: D.ink3, fontFamily: D.mono, letterSpacing: 0.6 }}>
                 NET 30 · ACH · WIRE · CARD · PO ACCEPTED
@@ -267,11 +291,15 @@ export function ProductDetail() {
             </div>
 
             <div style={{ marginTop: 16, display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3,1fr)', gap: 8 }}>
-              {[
+              {(quoteOnly ? [
+                ['Quote-only', 'priced per order, per setting'],
+                ['PDAC approved', 'coding verified for billing'],
+                ['FDA listed', 'Class 2 · Unite Medical, LLC'],
+              ] : [
                 ['In stock', `${stock.toLocaleString()} units across 3 DCs`],
                 ['Ships today', 'if ordered by 3 PM ET'],
                 ['Free freight', 'orders over $500'],
-              ].map(([a, b]) => (
+              ]).map(([a, b]) => (
                 <div key={a} style={{ border: `1px solid ${D.line}`, padding: 14, borderRadius: 10, background: D.paper }}>
                   <div style={{ fontSize: 13, fontWeight: 600, color: D.ink }}>{a}</div>
                   <div style={{ fontSize: 12, color: D.ink2, marginTop: 4 }}>{b}</div>
@@ -413,7 +441,11 @@ export function ProductDetail() {
                   <li key={doc.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 18px', borderTop: i === 0 ? 'none' : `1px solid ${D.line}`, gap: 12 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 12, minWidth: 0 }}>
                       <span style={{ color: D.plum, flexShrink: 0 }}><Icon.upload /></span>
-                      <span style={{ fontSize: 13.5, color: D.ink, lineHeight: 1.4 }}>{doc.label}</span>
+                      {doc.href ? (
+                        <a href={doc.href} target="_blank" rel="noreferrer" style={{ fontSize: 13.5, color: D.plum, lineHeight: 1.4, textDecoration: 'underline', textUnderlineOffset: 3 }}>{doc.label}</a>
+                      ) : (
+                        <span style={{ fontSize: 13.5, color: D.ink, lineHeight: 1.4 }}>{doc.label}</span>
+                      )}
                     </div>
                     <span style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 0.8, color: D.ink3, flexShrink: 0 }}>{doc.kind} · {doc.size}</span>
                   </li>

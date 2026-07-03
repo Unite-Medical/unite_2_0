@@ -2,769 +2,781 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://unitemedical.net/</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/catalog</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.95</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/quote</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/shortage-list</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/supply-risk</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/surplus</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/surplus/market</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://unitemedical.net/solutions</loc>
-    <lastmod>2026-06-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
     <loc>https://unitemedical.net/segments/asc</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/segments/pharmacy</loc>
-    <lastmod>2026-06-11</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://unitemedical.net/segments/gov</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/segments/ems</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/segments/distributors</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/services</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/services/distribution</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/services/pdac</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://unitemedical.net/services/dealer</loc>
-    <lastmod>2026-06-11</lastmod>
+    <loc>https://unitemedical.net/services/distributors</loc>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://unitemedical.net/services/education</loc>
-    <lastmod>2026-06-11</lastmod>
+    <loc>https://unitemedical.net/services/private-label</loc>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://unitemedical.net/robotics</loc>
+    <lastmod>2026-07-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://unitemedical.net/diagnostics</loc>
+    <lastmod>2026-07-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://unitemedical.net/government</loc>
+    <lastmod>2026-07-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://unitemedical.net/case-studies/tjs</loc>
+    <lastmod>2026-07-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/about</loc>
-    <lastmod>2026-06-11</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://unitemedical.net/about/veteran-owned</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/compliance</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/portfolio</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/procurement</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/locations</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/careers</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/contact</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/support</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/blog</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/resources</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/resources/coding</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/privacy</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/terms</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/returns</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/shipping</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/catalog?cat=Orthotics</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/catalog?cat=Diagnostics</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/catalog?cat=PPE</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/catalog?cat=Wound%20Care</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/catalog?cat=Pharmaceuticals</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/catalog?cat=Equipment</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/WFLUAB-POC-25</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/APN-3001-C</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/RA2-E02401</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/L03A-R1445</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/L03A-R0645</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/RA9-E02402</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/RA9-E02404</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/7678383</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/VA1S50S</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/WCOVFLU-POC-25</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/BF-KB</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/BF-ZDK</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/11060527362</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/6935299</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/6935258</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/6935305</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/18010475496</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/18065476592</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/11023528963</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/6935286</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/18024527461</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/6935296</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/6935209</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/6935208</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/6935256</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/6935309</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/6935297</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/6935298</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/6935153</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/21IN-0303000002-B</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/21IN-0103000012-B</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/21IN-5023000001-B</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/21IN-2003000002-B</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/21IN-1003000008-B</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/21IN-0503000010-B</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/RA9-E01802B</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/RA9-E01701B</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/RA9-E02501B</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/RA9-E02303B</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/RA9-E01902B</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/RA9-E02105B</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/RA9-E02005B</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/LFA0462-25N</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/PWB6061-XS-T</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/PWB6061-XS-S</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/1001-0340</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/LFA0462-2V6-BIO</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/LFA0462-1V10-BIO</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/Status-33225-B25</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/USAM100SC</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/USAMN95F50</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/USAM350T</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/USAM150</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/USAM100C-XS</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/AMC200-XS</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/AFO0671L-S</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/BC3349-1</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/AM350</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/USAM350</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/USAM250</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/UMRA9-E00302</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/UMSL1016</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/VGPF3002</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/UMRA9-E00301</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/LO2742</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/KO4552L-S</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/HS3170-S</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/SEWH3960</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/AFO71-Panel</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/LSO3148</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/LSO3750</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/WHO1615-SM</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/SS2397</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/KO4351L</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/KO3233-1</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/KO3233</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/Cryo3670</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/Cryo3233</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/CryoAnkle</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/CC180</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/HO1690</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/CryoElbow</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/HO1686</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/WHFO0709L</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/EO6061L</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/KO3233-PO</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/products/KO3233-SM</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://unitemedical.net/products/REGENICOOL-PRO</loc>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://unitemedical.net/blog/real-article-slug</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>

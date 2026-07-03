@@ -11,7 +11,7 @@ const capabilities = [
   {
     n: '01',
     h: 'Private label manufacturing',
-    p: 'Diagnostics, PPE, orthotics. We manufacture domestically and overseas across vetted facilities, with the QA paperwork to back it up.',
+    p: 'Diagnostics, PPE, orthotics — produced under your brand through our network of vetted domestic and overseas manufacturers, with the QA paperwork to back it up.',
   },
   {
     n: '02',

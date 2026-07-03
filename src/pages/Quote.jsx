@@ -59,12 +59,13 @@ export function Quote() {
 
   const stepFor = (step) => progress.filter((p) => p.step === step).pop();
 
-  // Generic customer-facing labels; backend integration names are not exposed.
+  // Outcome-level labels only (PRD-28 §1.4) — sell the capability, never the
+  // mechanism. No integration names, no pipeline internals.
   const cards = [
-    ['FDA verification', stepFor('openfda')?.label || (running ? 'Validating…' : 'Idle'), 'openfda'],
-    ['Customs & duty', stepFor('hts')?.label || (running ? 'Pulling…' : 'Idle'), 'hts'],
-    ['Freight quote', stepFor('flexport')?.label || (running ? 'Quoting…' : 'Idle'), 'flexport'],
-    ['Cover letter', stepFor('claude')?.label || (running ? 'Drafting…' : 'Idle'), 'claude'],
+    ['Compliance check', stepFor('openfda')?.label || (running ? 'Checking…' : 'Idle'), 'openfda'],
+    ['All-in pricing', stepFor('hts')?.label || (running ? 'Pricing…' : 'Idle'), 'hts'],
+    ['Delivery window', stepFor('flexport')?.label || (running ? 'Estimating…' : 'Idle'), 'flexport'],
+    ['Quote packet', stepFor('claude')?.label || (running ? 'Preparing…' : 'Idle'), 'claude'],
   ];
 
   const recent = db.useTable('quotes', { orderBy: 'created_at', dir: 'desc', limit: 5 });
@@ -127,25 +128,24 @@ export function Quote() {
 
             <div style={{ marginTop: 16, background: D.card, borderRadius: 14, overflow: 'hidden', border: `1px solid ${D.line}` }}>
               <div style={{ padding: '18px 22px', borderBottom: `1px solid ${D.line}`, display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
-                <div style={{ fontFamily: D.display, fontSize: 22 }}>Landed cost breakdown</div>
+                <div style={{ fontFamily: D.display, fontSize: 22 }}>Your quote — all-in landed pricing</div>
                 <div style={{ flex: 1 }} />
-                <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>LANDED · DELIVERED</div>
+                <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>DELIVERED · NO HIDDEN FEES</div>
               </div>
+              {/* Customer view shows only the sell side (PRD-28 §1.4) — cost
+                  structure (FOB/duty/HTS) never leaves the internal tooling. */}
               <div className="um-scroll-x">
-              <table style={{ width: '100%', minWidth: 640, borderCollapse: 'collapse', fontSize: 13 }}>
+              <table style={{ width: '100%', minWidth: 560, borderCollapse: 'collapse', fontSize: 13 }}>
                 <thead>
                   <tr style={{ background: D.paperAlt, color: D.ink3, fontFamily: D.mono, fontSize: 10, letterSpacing: 1 }}>
-                    {['PRODUCT', 'HTS', 'FOB', 'DUTY', 'LANDED', 'SELL', 'EXT'].map((h) => <th key={h} style={{ padding: '12px 16px', textAlign: 'left' }}>{h}</th>)}
+                    {['PRODUCT', 'QTY', 'PRICE / UNIT · DELIVERED', 'EXTENDED'].map((h) => <th key={h} style={{ padding: '12px 16px', textAlign: 'left' }}>{h}</th>)}
                   </tr>
                 </thead>
                 <tbody>
-                  {(result?.lines || SAMPLE_VENDOR_SHEET.lines.map((l) => ({ ...l, duty_pct: 0, landed_per_unit: l.fob, sell_per_unit: l.fob * 2.5, ext_sell: l.fob * 2.5 * (l.target_qty || 1) }))).map((r, i) => (
+                  {(result?.lines || SAMPLE_VENDOR_SHEET.lines.map((l) => ({ ...l, sell_per_unit: l.fob * 2.5, ext_sell: l.fob * 2.5 * (l.target_qty || 1) }))).map((r, i) => (
                     <tr key={i} style={{ borderTop: `1px solid ${D.line}` }}>
                       <td style={{ padding: 14, fontWeight: 500 }}>{r.name}</td>
-                      <td style={{ padding: 14, fontFamily: D.mono, fontSize: 11 }}>{r.hts}</td>
-                      <td style={{ padding: 14, fontFamily: D.mono }}>${r.fob.toFixed(2)}</td>
-                      <td style={{ padding: 14, fontFamily: D.mono }}>{r.duty_pct.toFixed(1)}%</td>
-                      <td style={{ padding: 14, fontFamily: D.mono, color: D.plum }}>${r.landed_per_unit.toFixed(2)}</td>
+                      <td style={{ padding: 14, fontFamily: D.mono }}>{(r.target_qty || 1).toLocaleString()}</td>
                       <td style={{ padding: 14, fontFamily: D.mono, fontWeight: 600 }}>${r.sell_per_unit.toFixed(2)}</td>
                       <td style={{ padding: 14, fontFamily: D.mono, fontWeight: 600, color: D.plum }}>{fmt.money(r.ext_sell)}</td>
                     </tr>

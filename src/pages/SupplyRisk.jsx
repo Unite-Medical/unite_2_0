@@ -22,11 +22,24 @@ import { useViewport } from '../lib/viewport.js';
 import { useSEO } from '../lib/seo.js';
 import { openfda } from '../lib/external/openfda.js';
 import { rankCatalog } from '../lib/matching.js';
+import { availability } from '../lib/wms/availability.js';
 
-// Map a recall's product description onto our stocked shelf.
-function shelfCoverage(description) {
+/**
+ * Map a recall's product description onto all 3 supply sources (PRD-29
+ * §4.2.3): a recalled item can offer a stocked alternate (real available
+ * inventory), a sourced alternate (catalog / vetted-manufacturer line with
+ * no shelf stock), or route to an open quote.
+ */
+function supplyCoverage(description) {
   const ranked = rankCatalog(description, { limit: 3 });
-  return ranked.length ? ranked.map((r) => r.product) : null;
+  if (!ranked.length) return null;
+  const products = ranked.map((r) => r.product);
+  const stocked = products.filter((p) => availability.availableToPromise(p.sku) > 0);
+  return {
+    products,
+    stocked,
+    mode: stocked.length > 0 ? 'stocked' : 'source',
+  };
 }
 
 function fmtDate(yyyymmdd) {
@@ -60,7 +73,7 @@ export function SupplyRisk() {
       if (!alive) return;
       const rows = (data.results || []).map((r) => ({
         ...r,
-        coverage: shelfCoverage(r.product_description),
+        coverage: supplyCoverage(r.product_description),
       }));
       setFeed({ rows, fallback: !!data.meta?.fallback, updated: data.meta?.last_updated });
       setLoading(false);
@@ -76,7 +89,7 @@ export function SupplyRisk() {
       <PageHead
         eyebrow="LIVE FROM OPENFDA · DEVICE ENFORCEMENT REPORTS"
         title="Supply risk, monitored."
-        sub="Active FDA device recalls across the categories we serve — gloves, diagnostics, orthotics, surgical supplies. When a recall hits your supplier, we flag whether Unite warehouses stocked alternates."
+        sub="Active FDA device recalls across the categories we serve — gloves, diagnostics, orthotics, surgical supplies. When a recall hits your supplier, we flag whether Unite can cover it — from stock or through our sourcing network."
       />
 
       <div id="main" style={{ padding: `${isMobile ? 32 : 64}px ${padX}px ${isMobile ? 64 : 110}px` }}>
@@ -89,7 +102,7 @@ export function SupplyRisk() {
             </span>
             {!loading && (
               <span style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1, color: D.plum, border: `1px solid ${D.line}`, background: D.card, borderRadius: 999, padding: '7px 14px' }}>
-                {covered} WITH STOCKED ALTERNATES AT UNITE
+                {covered} WITH ALTERNATES ACROSS OUR SUPPLY CHAIN
               </span>
             )}
             {!loading && feed.fallback && (
@@ -125,15 +138,27 @@ export function SupplyRisk() {
                     </div>
                     {r.coverage && (
                       <div style={{ marginTop: 14, paddingTop: 14, borderTop: `1px solid ${D.line}`, display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
-                        <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: '#3b8760', background: 'rgba(59,135,96,.1)', padding: '4px 10px', borderRadius: 999 }}>
-                          UNITE STOCKS THIS CATEGORY
-                        </span>
+                        {r.coverage.mode === 'stocked' ? (
+                          <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: '#3b8760', background: 'rgba(59,135,96,.1)', padding: '4px 10px', borderRadius: 999 }}>
+                            STOCKED ALTERNATE AT UNITE
+                          </span>
+                        ) : (
+                          <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.terra, background: 'rgba(184,80,44,.1)', padding: '4px 10px', borderRadius: 999 }}>
+                            WE SOURCE THIS CATEGORY
+                          </span>
+                        )}
                         <span style={{ fontSize: 13, color: D.ink2, flex: 1, minWidth: 200 }}>
-                          {r.coverage.slice(0, 2).map((p) => p.name).join(' · ')}
+                          {(r.coverage.mode === 'stocked' ? r.coverage.stocked : r.coverage.products).slice(0, 2).map((p) => p.name).join(' · ')}
                         </span>
-                        <Link to={`/products/${encodeURIComponent(r.coverage[0].sku)}`} style={{ fontSize: 13, fontWeight: 600, color: D.plum, display: 'inline-flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap' }}>
-                          View stocked alternate <Icon.arrow />
-                        </Link>
+                        {r.coverage.mode === 'stocked' ? (
+                          <Link to={`/products/${encodeURIComponent(r.coverage.stocked[0].sku)}`} style={{ fontSize: 13, fontWeight: 600, color: D.plum, display: 'inline-flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap' }}>
+                            View stocked alternate <Icon.arrow />
+                          </Link>
+                        ) : (
+                          <Link to={`/quote?sku=${encodeURIComponent(r.coverage.products[0].sku)}&path=source`} style={{ fontSize: 13, fontWeight: 600, color: D.plum, display: 'inline-flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap' }}>
+                            Request a sourced alternate <Icon.arrow />
+                          </Link>
+                        )}
                       </div>
                     )}
                   </article>
@@ -151,7 +176,7 @@ export function SupplyRisk() {
             <div style={{ position: 'relative' }}>
               <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.2, color: D.plumSoft }}>HIT BY A RECALL OR BACKORDER?</div>
               <div style={{ fontFamily: D.display, fontSize: isMobile ? 28 : 44, letterSpacing: -0.8, lineHeight: 1.05, marginTop: 12, maxWidth: 640 }}>
-                Paste your shortage list. We&apos;ll match it against live stock.
+                Paste your shortage list — we&apos;ll match it against our full supply chain.
               </div>
               <Link to="/shortage-list" style={{ display: 'inline-flex', alignItems: 'center', gap: 10, background: D.paper, color: D.ink, padding: '14px 26px', borderRadius: 999, fontSize: 14.5, fontWeight: 600, marginTop: 24 }}>
                 Open the shortage matcher <Icon.arrow />

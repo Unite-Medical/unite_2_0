@@ -1,5 +1,13 @@
+// Catalog — reworked per PRD-28 §5.1:
+//   · 3-supply-state model (In Stock / Source / Available to Quote) replaces
+//     the binary IN STOCK/LOW badge. OOS items still SHOW, with a sourcing
+//     path (per M1) — never hidden, never claimed in stock.
+//   · Hero no longer claims "everything in stock".
+//   · Category chips run on the M6 taxonomy (§5.6).
+//   · Compliance filters wired to real product flags.
+//   · Fake "updated 04 min ago" removed — the WMS projection IS live.
 import { useEffect, useMemo, useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { D } from '../tokens.js';
 import { Nav } from '../components/layout/Nav.jsx';
 import { Footer } from '../components/layout/Footer.jsx';
@@ -10,19 +18,46 @@ import { Eyebrow } from '../components/shared/Eyebrow.jsx';
 import { cartStore } from '../store/cart.js';
 import { db } from '../lib/db.js';
 import { availability } from '../lib/wms/availability.js';
+import { categorize, M6_CATEGORIES, SUPPLY_STATES } from '../lib/taxonomy.js';
 import { fmt } from '../lib/format.js';
 import { useViewport } from '../lib/viewport.js';
 import { useSEO } from '../lib/seo.js';
 import { PRODUCT_IMG } from '../lib/imageMap.js';
 
+// Compliance filters — wired to the real product flags (PRD-28 §5.1).
+const COMPLIANCE_FILTERS = [
+  ['PDAC-approved', 'pdac_approved'],
+  ['Berry compliant', 'berry_compliant'],
+  ['TAA compliant', 'taa_compliant'],
+  ['MSPV listed', 'mspv_listed'],
+];
+
+// Legacy ?cat= values from old links map onto the M6 taxonomy.
+const LEGACY_CAT_MAP = {
+  orthotics: 'Bracing & Orthotics',
+  diagnostics: 'Diagnostic Tests',
+  ppe: 'American-Made PPE',
+  surgical: 'Other / Medava',
+  supplements: 'Supplements',
+};
+
+function SupplyBadge({ state }) {
+  const color = state.id === 'in_stock' ? '#3b8760' : D.terra;
+  return (
+    <span style={{ color, display: 'inline-flex', alignItems: 'center', gap: 5 }} title={state.desc}>
+      <Icon.dot /> {state.short}
+    </span>
+  );
+}
+
 export function Catalog() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
   const { isMobile, isTablet } = useViewport();
   const padX = isMobile ? 20 : 40;
   const PRODUCTS = db.useTable('products');
   const inventory = db.useTable('inventory');
-  const cats = useMemo(() => ['All', ...new Set(PRODUCTS.map((p) => p.category))], [PRODUCTS]);
-  const tiers = useMemo(() => [...new Set(PRODUCTS.map((p) => p.tier))], [PRODUCTS]);
+  const cats = useMemo(() => ['All', ...M6_CATEGORIES.filter((c) => PRODUCTS.some((p) => categorize(p) === c))], [PRODUCTS]);
   // Storefront gates on available-to-promise (on_hand − reserved), not raw
   // on_hand, so held stock can't be double-sold (PRD-25 Phase 1).
   const stockBySku = useMemo(() => {
@@ -35,11 +70,19 @@ export function Catalog() {
   const initialCat = (() => {
     const q = searchParams.get('cat');
     if (!q) return 'All';
-    return cats.find((c) => c.toLowerCase() === q.toLowerCase()) || 'All';
+    const direct = M6_CATEGORIES.find((c) => c.toLowerCase() === q.toLowerCase());
+    return direct || LEGACY_CAT_MAP[q.toLowerCase()] || 'All';
   })();
 
   const [cat, setCat] = useState(initialCat);
-  const [tier, setTier] = useState(new Set());
+  // Deep links like /catalog?filter=pdac (PDAC-page CTA) pre-select the
+  // matching compliance filter.
+  const [compliance, setCompliance] = useState(() => {
+    const f = (searchParams.get('filter') || '').toLowerCase();
+    const flag = COMPLIANCE_FILTERS.find(([, id]) => id.startsWith(f) && f)?.[1];
+    return new Set(flag ? [flag] : []);
+  });
+  const [supplyFilter, setSupplyFilter] = useState('all'); // all | in_stock | source
 
   useEffect(() => {
     const params = new URLSearchParams(searchParams);
@@ -58,25 +101,50 @@ export function Catalog() {
       ? 'Medical supply catalog · Unite Medical'
       : `${cat} · Catalog`,
     description: cat === 'All'
-      ? 'Browse the Unite Medical catalog: orthotics, diagnostics, PPE, wound care, equipment, and pharmaceuticals. Veteran-owned, FDA-registered. No minimums on stocked items. Same-day shipping on orders before 2pm EST.'
-      : `${cat} from Unite Medical — in stock, no minimums on stocked items, same-day shipping on orders before 2pm EST. Veteran-owned, FDA-registered catalog.`,
+      ? 'The Unite catalog: bracing & orthotics, diagnostic tests, American-made PPE, syringes, and supplements — stocked items ship same-day before 2pm EST, and anything we don\u2019t stock, we source. No minimums on stocked items.'
+      : `${cat} from Unite Medical — stocked items ship same-day on orders before 2pm EST; out-of-stock items are sourced through our vetted network. No minimums on stocked items.`,
     canonical: cat === 'All' ? '/catalog' : `/catalog?cat=${encodeURIComponent(cat)}`,
   });
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
-    return PRODUCTS.filter((p) =>
-      (cat === 'All' || p.category === cat) &&
-      (tier.size === 0 || tier.has(p.tier)) &&
-      (!q || `${p.name} ${p.sku} ${p.hcpcs}`.toLowerCase().includes(q))
-    );
-  }, [PRODUCTS, cat, tier, search]);
+    return PRODUCTS.filter((p) => {
+      const stocked = (stockBySku.get(p.sku) || 0) > 0;
+      return (cat === 'All' || categorize(p) === cat) &&
+        (compliance.size === 0 || [...compliance].every((flag) => p[flag])) &&
+        (supplyFilter === 'all' || (supplyFilter === 'in_stock' ? stocked : !stocked)) &&
+        (!q || `${p.name} ${p.sku} ${p.hcpcs}`.toLowerCase().includes(q));
+    });
+  }, [PRODUCTS, cat, compliance, supplyFilter, search, stockBySku]);
 
-  const toggle = (t) => {
-    const n = new Set(tier);
-    if (n.has(t)) n.delete(t); else n.add(t);
-    setTier(n);
+  const toggleCompliance = (flag) => {
+    const n = new Set(compliance);
+    if (n.has(flag)) n.delete(flag); else n.add(flag);
+    setCompliance(n);
   };
+
+  const supplyStates = [
+    ['all', 'Everything'],
+    ['in_stock', SUPPLY_STATES.in_stock.label],
+    ['source', SUPPLY_STATES.source.label],
+  ];
+
+  const filterPanel = (
+    <>
+      <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1, color: D.ink3, marginBottom: 14 }}>SUPPLY STATE</div>
+      {supplyStates.map(([id, label]) => (
+        <label key={id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '6px 0', fontSize: 14, color: D.ink2, cursor: 'pointer' }}>
+          <input type="radio" name="supply" checked={supplyFilter === id} onChange={() => setSupplyFilter(id)} style={{ accentColor: D.plum }} /> {label}
+        </label>
+      ))}
+      <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1, color: D.ink3, margin: '28px 0 14px' }}>COMPLIANCE</div>
+      {COMPLIANCE_FILTERS.map(([label, flag]) => (
+        <label key={flag} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '6px 0', fontSize: 14, color: D.ink2, cursor: 'pointer' }}>
+          <input type="checkbox" checked={compliance.has(flag)} onChange={() => toggleCompliance(flag)} style={{ accentColor: D.plum }} /> {label}
+        </label>
+      ))}
+    </>
+  );
 
   return (
     <div style={{ background: D.paper, fontFamily: D.sans, color: D.ink, minHeight: '100vh' }}>
@@ -84,13 +152,17 @@ export function Catalog() {
       <main id="main">
       <div style={{ background: D.paperAlt, padding: `${isMobile ? 32 : 48}px ${padX}px`, borderBottom: `1px solid ${D.line}` }}>
         <div style={{ maxWidth: 1360, margin: '0 auto' }}>
-          <Eyebrow>CATALOG · STOCKED & SHIPPING SAME DAY</Eyebrow>
+          <Eyebrow>CATALOG · STOCKED + SOURCED</Eyebrow>
           <div style={{ display: 'flex', alignItems: isMobile ? 'flex-start' : 'end', justifyContent: 'space-between', marginTop: 10, flexDirection: isMobile ? 'column' : 'row', gap: 8 }}>
             <h1 style={{ fontFamily: D.display, fontSize: 'clamp(38px, 7.2vw, 72px)', fontWeight: 400, letterSpacing: 'clamp(-0.9px, -0.19vw, -1.8px)', margin: 0, lineHeight: 1.0 }}>
-              {cat === 'All' ? <>Everything <Grad>in stock</Grad></> : cat}
+              {cat === 'All' ? <>The Unite <Grad>catalog</Grad></> : cat}
             </h1>
-            <div style={{ fontFamily: D.mono, fontSize: 12, color: D.ink2 }}>{filtered.length} results · updated 04 min ago</div>
+            <div style={{ fontFamily: D.mono, fontSize: 12, color: D.ink2 }}>{filtered.length} results</div>
           </div>
+          <p style={{ fontSize: isMobile ? 13.5 : 14.5, color: D.ink2, margin: '12px 0 0', maxWidth: 640, lineHeight: 1.55 }}>
+            Stocked items ship same-day on orders before 2pm EST — no minimums. Out of stock or
+            not listed? We source it and quote you a firm price.
+          </p>
           <div style={{ display: 'flex', gap: 12, marginTop: 20, flexWrap: 'wrap', alignItems: 'center' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 14px', border: `1px solid ${D.line}`, borderRadius: 999, background: D.card, flex: '1 1 280px', maxWidth: 420 }}>
               <Icon.search />
@@ -116,47 +188,22 @@ export function Catalog() {
         <div>
           {isMobile ? (
             <details style={{ background: D.card, border: `1px solid ${D.line}`, borderRadius: 12, padding: '12px 14px' }}>
-              <summary style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1, color: D.plum, cursor: 'pointer' }}>FILTERS · {tier.size} active</summary>
+              <summary style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1, color: D.plum, cursor: 'pointer' }}>
+                FILTERS · {compliance.size + (supplyFilter !== 'all' ? 1 : 0)} active
+              </summary>
               <div style={{ marginTop: 12, paddingTop: 12, borderTop: `1px solid ${D.line}` }}>
-                <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1, color: D.ink3, marginBottom: 8 }}>TIER</div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
-                  {tiers.map((t) => (
-                    <label key={t} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '6px 0', fontSize: 14, color: D.ink2, cursor: 'pointer' }}>
-                      <input type="checkbox" checked={tier.has(t)} onChange={() => toggle(t)} style={{ accentColor: D.plum }} /> {t}
-                    </label>
-                  ))}
-                </div>
-                <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1, color: D.ink3, margin: '18px 0 8px' }}>COMPLIANCE</div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
-                  {['PDAC-approved', 'Berry compliant', 'TAA compliant', 'MSPV listed'].map((c) => (
-                    <label key={c} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '6px 0', fontSize: 13, color: D.ink2, cursor: 'pointer' }}>
-                      <input type="checkbox" style={{ accentColor: D.plum }} /> {c}
-                    </label>
-                  ))}
-                </div>
+                {filterPanel}
               </div>
             </details>
-          ) : (
-            <>
-              <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1, color: D.ink3, marginBottom: 14 }}>TIER</div>
-              {tiers.map((t) => (
-                <label key={t} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '6px 0', fontSize: 14, color: D.ink2, cursor: 'pointer' }}>
-                  <input type="checkbox" checked={tier.has(t)} onChange={() => toggle(t)} style={{ accentColor: D.plum }} /> {t}
-                </label>
-              ))}
-              <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1, color: D.ink3, margin: '28px 0 14px' }}>COMPLIANCE</div>
-              {['PDAC-approved', 'Berry compliant', 'TAA compliant', 'MSPV listed'].map((c) => (
-                <label key={c} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '6px 0', fontSize: 14, color: D.ink2, cursor: 'pointer' }}>
-                  <input type="checkbox" style={{ accentColor: D.plum }} /> {c}
-                </label>
-              ))}
-            </>
-          )}
+          ) : filterPanel}
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : isTablet ? 'repeat(2, 1fr)' : 'repeat(3,1fr)', gap: isMobile ? 12 : 18 }}>
           {filtered.map((p) => {
             const stock = stockBySku.get(p.sku) || 0;
-            const isLow = stock < 200;
+            // 3-state supply model (PRD-28 §5.1): stocked items ship today;
+            // OOS items stay visible with a sourcing path (never hidden).
+            const state = stock > 0 ? SUPPLY_STATES.in_stock : SUPPLY_STATES.source;
+            const stocked = state.id === 'in_stock';
             return (
               <article key={p.sku} className="um-card" style={{ background: D.card, borderRadius: 14, overflow: 'hidden', border: `1px solid ${D.line}`, display: 'flex', flexDirection: 'column' }}>
                 <Link to={`/products/${p.sku}`} style={{ display: 'block' }}>
@@ -165,18 +212,28 @@ export function Catalog() {
                 <div style={{ padding: isMobile ? 14 : 18, flex: 1, display: 'flex', flexDirection: 'column' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: D.mono, fontSize: 10, letterSpacing: 0.8, color: D.ink3 }}>
                     <span>{p.sku}</span>
-                    <span style={{ color: !isLow ? '#3b8760' : D.terra }}><Icon.dot /> {!isLow ? 'IN STOCK' : 'LOW'}</span>
+                    <SupplyBadge state={state} />
                   </div>
                   <Link to={`/products/${p.sku}`} style={{ fontFamily: D.display, fontSize: isMobile ? 16 : 19, color: D.ink, marginTop: 10, lineHeight: 1.25, minHeight: isMobile ? 40 : 46 }}>{p.name}</Link>
-                  <div style={{ fontSize: 12, color: D.ink2, marginTop: 4 }}>{p.category}{!isMobile && ` · HCPCS ${p.hcpcs}`}</div>
+                  <div style={{ fontSize: 12, color: D.ink2, marginTop: 4 }}>{categorize(p)}{!isMobile && ` · HCPCS ${p.hcpcs}`}</div>
                   <div style={{ display: 'flex', alignItems: 'end', justifyContent: 'space-between', marginTop: 14 }}>
                     <div>
-                      <div style={{ fontFamily: D.display, fontSize: isMobile ? 20 : 24, color: D.plum, letterSpacing: -0.4 }}>{fmt.money(p.price)}</div>
+                      <div style={{ fontFamily: D.display, fontSize: isMobile ? 20 : 24, color: D.plum, letterSpacing: -0.4 }}>{p.price == null ? 'Quote' : fmt.money(p.price)}</div>
                       <div style={{ fontFamily: D.mono, fontSize: 10, color: D.ink3 }}>{p.pack_size} · MOQ {p.moq}</div>
                     </div>
-                    <button aria-label={`Add ${p.name} to cart`} onClick={() => cartStore.add(p.sku)} style={{ background: D.ink, color: D.paper, border: 'none', width: 40, height: 40, borderRadius: 20, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                      <Icon.plus />
-                    </button>
+                    {stocked ? (
+                      <button aria-label={`Add ${p.name} to cart`} onClick={() => cartStore.add(p.sku)} style={{ background: D.ink, color: D.paper, border: 'none', width: 40, height: 40, borderRadius: 20, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                        <Icon.plus />
+                      </button>
+                    ) : (
+                      <button
+                        aria-label={`Request sourcing for ${p.name}`}
+                        onClick={() => navigate(`/quote?sku=${encodeURIComponent(p.sku)}&path=source`)}
+                        style={{ background: 'transparent', color: D.terra, border: `1.5px solid ${D.terra}`, padding: '9px 12px', borderRadius: 999, cursor: 'pointer', fontSize: 11.5, fontWeight: 600, fontFamily: D.sans, flexShrink: 0 }}
+                      >
+                        Source it →
+                      </button>
+                    )}
                   </div>
                 </div>
               </article>
@@ -184,7 +241,25 @@ export function Catalog() {
           })}
           {filtered.length === 0 && (
             <div style={{ gridColumn: '1 / -1', padding: 48, textAlign: 'center', color: D.ink3, background: D.card, borderRadius: 14, border: `1px dashed ${D.line}` }}>
-              No products match these filters.
+              <div>No products match these filters.</div>
+              <div style={{ marginTop: 12, fontSize: 14 }}>
+                Need something we don&apos;t list?{' '}
+                <Link to="/quote" style={{ color: D.plum, textDecoration: 'underline', textUnderlineOffset: 3 }}>
+                  {SUPPLY_STATES.quote.label} — start an RFQ →
+                </Link>
+              </div>
+            </div>
+          )}
+          {/* 3rd supply state — open RFQ for items not in the catalog */}
+          {filtered.length > 0 && (
+            <div style={{ gridColumn: '1 / -1', marginTop: 8, padding: isMobile ? 18 : 24, background: D.paperAlt, borderRadius: 14, border: `1px solid ${D.line}`, display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
+              <div style={{ flex: '1 1 320px' }}>
+                <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.plum }}>{SUPPLY_STATES.quote.short} · ANYTHING NOT LISTED</div>
+                <div style={{ fontSize: 14.5, color: D.ink2, marginTop: 6, lineHeight: 1.55 }}>{SUPPLY_STATES.quote.desc}</div>
+              </div>
+              <button onClick={() => navigate('/quote')} style={{ background: D.plum, color: D.paper, border: 'none', padding: '12px 22px', borderRadius: 999, fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: D.sans }}>
+                {SUPPLY_STATES.quote.cta} →
+              </button>
             </div>
           )}
         </div>

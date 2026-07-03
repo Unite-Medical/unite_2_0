@@ -12,25 +12,25 @@ import { IMG } from '../lib/imageMap.js';
 const STATS = [
   ['Same-day', 'ORDERS BY 2PM EST'],
   ['100%', 'US + TERRITORIES'],
-  ['98.6%', 'FILL RATE'],
+  ['99%+', 'FILL RATE'],
   ['0 MOQ', 'STOCKED ITEMS'],
 ];
 
 const STEPS = [
   'Order lands in WMS from web, EDI, or phone',
-  'Routing engine picks nearest warehouse with full fill',
+  'Order routed and allocated for a complete, single-shipment fill',
   'Pick + pack within 2 hrs if placed by 2pm EST',
   'Shipping label generated, tracking returns to your portal',
-  'Invoice auto-creates, Net-30 with approved credit',
+  'Invoice auto-creates; flexible terms available with approved credit',
 ];
 
 export function ServiceDistribution() {
   const { isMobile } = useViewport();
   const padX = isMobile ? 20 : 40;
   useSEO({
-    title: 'Distribution — 2 US warehouses, same-day shipping, nationwide coverage · Unite Medical',
+    title: 'Distribution — Georgia warehouse, same-day shipping, nationwide coverage · Unite Medical',
     description:
-      'Two US warehouses in Georgia and Nevada. Same-day shipping on orders before 2pm EST. Routed by proximity, picked within 2 hours, tracking returned to your portal automatically.',
+      'Same-day shipping from our Lithia Springs, Georgia warehouse on orders before 2pm EST — to all 50 states and territories. Picked within 2 hours, tracking returned to your portal automatically.',
     canonical: '/services/distribution',
   });
   return (
@@ -38,8 +38,8 @@ export function ServiceDistribution() {
       <Nav />
       <PageHead
         eyebrow="SERVICE · DISTRIBUTION"
-        title={<>Your <em>forward</em> warehouse.</>}
-        sub="Two US warehouses, one routing engine. We stock to your rolling 30-day run rate, not last year's forecast."
+        title={<>One warehouse. <em>Every</em> dock.</>}
+        sub="One Georgia warehouse, tuned to your rolling 30-day run rate — not last year's forecast."
       />
       <div style={{ maxWidth: 1360, margin: '0 auto', padding: `32px ${padX}px ${isMobile ? 56 : 80}px` }}>
         <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(4,1fr)', gap: 12, marginBottom: 24 }}>

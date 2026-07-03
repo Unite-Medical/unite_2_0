@@ -6,6 +6,7 @@ import { Icon } from '../../components/shared/Icon.jsx';
 import { db } from '../../lib/db.js';
 import { fmt } from '../../lib/format.js';
 import { useViewport } from '../../lib/viewport.js';
+import { M6_CATEGORIES } from '../../lib/taxonomy.js';
 
 const CATEGORIES = ['Orthotics', 'Diagnostics', 'PPE', 'Surgical', 'Supplements', 'Wound Care', 'Pharmaceuticals', 'Equipment'];
 const TIERS = ['Bracing', 'POC', 'OTC', 'Consumable', 'Surgical', 'Wellness', 'Pharma', 'Equipment'];
@@ -19,6 +20,7 @@ function emptyProduct() {
     name: '',
     vendor: 'Unite Medical®',
     category: 'Orthotics',
+    m6_category: '', // required on new uploads (PRD-28 §5.6 / ties to A2)
     product_type: 'Orthopedic Devices',
     tier: 'Bracing',
     pack_size: '1 ea',
@@ -73,6 +75,11 @@ export function AdminProductEdit() {
   function save() {
     if (!form.sku?.trim()) {
       window.alert('SKU is required.');
+      return;
+    }
+    // M6 taxonomy is a required classification on every new product (PRD-28 §5.6).
+    if (!existing && !form.m6_category) {
+      window.alert('Product category (M6 taxonomy) is required on new products.');
       return;
     }
     const payload = {
@@ -235,6 +242,12 @@ export function AdminProductEdit() {
                 </select>
               </Field>
             </div>
+            <Field label="Product category (M6 taxonomy) — required">
+              <select value={form.m6_category || ''} onChange={(e) => patch({ m6_category: e.target.value })} style={inputStyle}>
+                <option value="" disabled>Select a category…</option>
+                {M6_CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+              </select>
+            </Field>
             <Field label="Summary (1-line for cards)">
               <input value={form.summary || ''} onChange={(e) => patch({ summary: e.target.value })} style={inputStyle} />
             </Field>

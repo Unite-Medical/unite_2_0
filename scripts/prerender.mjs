@@ -33,39 +33,47 @@ const STATIC_ROUTES = {
   },
   '/quote': {
     title: 'Request a quote',
-    description: 'Upload a product list or pick from the catalog and get a landed-cost quote with HCPCS/HTS codes, freight, and lead times — usually within one business day.',
+    description: 'Source a specific product, get a custom made-to-spec quote, or match a shortage list — tell us what you need and we come back with an all-in price.',
   },
   '/shortage-list': {
     title: 'Shortage list matching',
-    description: 'Paste your backorder or shortage list and get instant in-stock matches from our Georgia and Nevada warehouses — no EDI required.',
+    description: 'Paste your backorder or shortage list — we instantly check each line against our stock, our vetted manufacturer network, and our sourcing desk. No EDI required.',
   },
   '/supply-risk': {
     title: 'Supply risk monitor',
     description: 'Live FDA enforcement, recall, and shortage signals mapped to the products your facility buys.',
   },
   '/surplus': {
-    title: 'Sell surplus inventory',
-    description: 'Turn excess medical inventory into cash or credit. Upload your surplus list; we evaluate, price, and arrange pickup.',
+    title: 'Move surplus inventory',
+    description: 'List excess, near-expiry, or expired medical inventory with your target price. Unite brokers it to buyers across medical, veterinary, research, and overseas channels for a transparent fee.',
   },
   '/surplus/market': {
     title: 'Surplus marketplace',
-    description: 'Shop verified surplus lots from hospitals and surgery centers — sealed, in-date stock at well below list.',
+    description: 'Browse surplus medical inventory Unite is brokering — sealed, in-date lots plus vet/research/export-eligible stock, direct from the seller at well below list.',
   },
   '/services': {
     title: 'Services',
-    description: 'Wholesale distribution, PDAC consulting, dealer programs, and private labeling for healthcare suppliers and providers.',
+    description: 'Wholesale distribution, PDAC consulting, distributor programs, and private labeling for healthcare suppliers and providers.',
   },
   '/services/distribution': {
     title: 'Wholesale distribution',
-    description: 'FDA-registered national distribution with Georgia and Nevada warehouses, same-day shipping, and no minimums on stocked items.',
+    description: 'FDA-registered national distribution from our Georgia warehouse — same-day shipping and no minimums on stocked items.',
   },
   '/services/pdac': {
     title: 'PDAC consulting',
-    description: 'Get DME products PDAC-approved: coding verification, documentation packages, and submission management by people who have done it before.',
+    description: 'Get DME and orthotic products PDAC-approved: coding verification, documentation packages, and submission management by people who have done it before.',
+  },
+  '/robotics': {
+    title: 'Restore Robotics program',
+    description: 'FDA 510(k)-cleared remanufactured da Vinci instruments — significant savings per instrument with a closed-loop collection and remanufacturing program.',
+  },
+  '/diagnostics': {
+    title: 'Diagnostic tests',
+    description: 'Every major diagnostic test brand from one supplier — COVID, flu, strep, HIV, drug screening, and more. Wholesale, retail, and private label.',
   },
   '/services/distributors': {
-    title: 'Dealer & distributor program',
-    description: 'Stock-feed pricing, drop-ship fulfillment, and marketing support for regional medical supply dealers and distributors.',
+    title: 'Distributor Program',
+    description: 'Stock-feed pricing, drop-ship fulfillment, and marketing support for regional medical supply distributors.',
   },
   '/services/private-label': {
     title: 'Private labeling',
@@ -97,7 +105,7 @@ const STATIC_ROUTES = {
   },
   '/about': {
     title: 'About',
-    description: 'Veteran-owned, FDA-registered wholesale medical supply distribution founded in 2018, shipping from Georgia and Nevada.',
+    description: 'Veteran-owned, FDA-registered wholesale medical supply distribution founded in 2018, shipping nationwide from our Georgia warehouse.',
   },
   '/compliance': {
     title: 'Compliance',
@@ -109,11 +117,11 @@ const STATIC_ROUTES = {
   },
   '/locations': {
     title: 'Locations',
-    description: 'Georgia and Nevada distribution centers with national same-day shipping coverage.',
+    description: 'One Lithia Springs, Georgia warehouse with same-day shipping to all 50 states and territories.',
   },
   '/careers': {
     title: 'Careers',
-    description: 'Join a veteran-owned medical supply company scaling national distribution.',
+    description: 'Unite Medical is a veteran-owned medical supply and supply-chain company, always interested in great people — engineering, sales, ops, compliance. Get in touch.',
   },
   '/contact': {
     title: 'Contact',
@@ -128,12 +136,12 @@ const STATIC_ROUTES = {
     description: 'Orthopedic insights, supply chain analysis, and reimbursement coding guides from the Unite Medical team.',
   },
   '/resources': {
-    title: 'Resources',
-    description: 'Buyer guides, compliance documentation, and reimbursement references for medical supply purchasing.',
+    title: 'HCPCS Level II code reference',
+    description: 'Free searchable HCPCS Level II reference — every CMS procedure and supply code with full descriptions, cross-linked to Unite Medical SKUs. Updated quarterly from the official CMS dataset.',
   },
   '/resources/coding': {
-    title: 'HCPCS coding resources',
-    description: 'HCPCS and PDAC coding references for DME and orthopedic soft goods.',
+    title: 'HCPCS coding reference for Unite SKUs',
+    description: 'The HCPCS Level II codes Unite Medical products bill against, with official CMS descriptions. PDAC-approved SKUs flagged; every SKU links to its product page.',
   },
   '/case-studies/tjs': {
     title: 'Case study · TJS',
@@ -141,8 +149,8 @@ const STATIC_ROUTES = {
   },
   '/privacy': { title: 'Privacy policy', description: 'How Unite Medical collects, uses, and protects your data.' },
   '/terms': { title: 'Terms of service', description: 'Terms governing purchases and use of unitemedical.net.' },
-  '/returns': { title: 'Returns', description: 'Return policy for stocked and special-order items.' },
-  '/shipping': { title: 'Shipping', description: 'Same-day shipping before 2pm EST; freight options for pallet orders.' },
+  '/returns': { title: 'Returns', description: 'Returns accepted for manufacturer defects, and for unopened items within 30 days of the original purchase order.' },
+  '/shipping': { title: 'Shipping', description: 'Same-day order processing and shipping on orders before 2pm EST, from our Georgia warehouse to all 50 states and territories.' },
 };
 
 function esc(s) {
@@ -182,9 +190,12 @@ function renderRoute(baseHtml, route, { title, description, type = 'website', js
 }
 
 function productMeta(p) {
+  const quoteOnly = p.quote_only || p.price == null;
   const desc = `${p.name} — ${p.category || 'medical supply'}, SKU ${p.sku}.`
     + (p.hcpcs && p.hcpcs !== '—' ? ` HCPCS ${p.hcpcs}.` : '')
-    + ' Wholesale pricing, same-day shipping before 2pm EST, no minimums on stocked items.';
+    + (quoteOnly
+      ? ' Quote-only — priced per order from Unite Medical.'
+      : ' Wholesale pricing, same-day shipping before 2pm EST, no minimums on stocked items.');
   return {
     title: p.name,
     description: desc.slice(0, 300),
@@ -197,14 +208,18 @@ function productMeta(p) {
       category: p.category,
       brand: { '@type': 'Brand', name: SITE_NAME },
       image: DEFAULT_OG_IMAGE,
-      offers: {
-        '@type': 'Offer',
-        priceCurrency: 'USD',
-        price: p.price,
-        availability: 'https://schema.org/InStock',
-        seller: { '@type': 'Organization', name: SITE_NAME },
-        url: `${SITE_URL}/products/${p.sku}`,
-      },
+      // Quote-only products have no public price — omit the Offer rather
+      // than emit a null price / false InStock signal.
+      ...(quoteOnly ? {} : {
+        offers: {
+          '@type': 'Offer',
+          priceCurrency: 'USD',
+          price: p.price,
+          availability: 'https://schema.org/InStock',
+          seller: { '@type': 'Organization', name: SITE_NAME },
+          url: `${SITE_URL}/products/${p.sku}`,
+        },
+      }),
     },
   };
 }

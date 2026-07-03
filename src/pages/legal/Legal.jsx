@@ -41,7 +41,7 @@ export function LegalShell({ eyebrow, title, lastUpdated, sections }) {
 export function Privacy() {
   useSEO({
     title: 'Privacy Policy',
-    description: 'How Unite Medical collects, uses, stores, and shares your information. SOC 2 Type II environments. No PHI without a signed BAA.',
+    description: 'How Unite Medical collects, uses, stores, and shares your information. Hosted in SOC 2 Type II data centers. No PHI without a signed BAA.',
     canonical: '/privacy',
   });
   return (
@@ -52,8 +52,10 @@ export function Privacy() {
       sections={[
         { title: 'What we collect', body: 'Account information you give us (name, work email, organization, address), the orders and quotes you create, and basic device telemetry. We do not collect protected health information (PHI) without a signed Business Associate Agreement.' },
         { title: 'Why we collect it', body: 'To process your orders, generate invoices, ship goods, support compliance audits, and improve the platform. We do not sell your data to third parties — full stop.' },
-        { title: 'Where it lives', body: 'Customer records and order history are stored in SOC 2 Type II environments hosted in the United States. Backups are encrypted at rest with AES-256.' },
-        { title: 'Sharing', body: 'We share order, payment, and shipping data with the third-party processors that move your goods (our WMS, FedEx, UPS, your bank, our billing system Online, Stripe) under contractual obligations to keep it confidential.' },
+        // [CONFIRM pending, PRD-29 §7.2] SOC 2 applies to the hosting provider,
+        // not Unite itself — worded accordingly until verified otherwise.
+        { title: 'Where it lives', body: 'Customer records and order history are hosted in SOC 2 Type II data centers in the United States. Backups are encrypted at rest.' },
+        { title: 'Sharing', body: 'We share order, payment, and shipping data with the third-party processors that move your goods (our WMS, FedEx, UPS, your bank, QuickBooks Online, Stripe) under contractual obligations to keep it confidential.' },
         { title: 'Your rights', body: 'You may request a copy of the personal data we hold about you, request corrections, or request deletion. Email privacy@unitemedical.net and we will respond within 30 days.' },
         { title: 'Children', body: 'The platform is intended for business use only and is not directed at anyone under 16.' },
         { title: 'Contact', body: 'Privacy Officer · privacy@unitemedical.net · 1487 Trae Lane, Lithia Springs GA 30122.' },
@@ -80,7 +82,7 @@ export function Terms() {
         { title: 'Cancellation', body: 'Orders may be cancelled before label creation at no charge. Once a label is generated, the order is committed to the carrier and our standard return process applies.' },
         { title: 'Warranty', body: 'Products carry the original manufacturer warranty. Unite Medical disclaims all other warranties to the maximum extent permitted by law.' },
         { title: 'Liability', body: 'Unite Medical\'s aggregate liability for any claim arising under these Terms shall not exceed the amount paid for the products giving rise to the claim.' },
-        { title: 'Governing Law', body: 'These Terms are governed by the laws of the State of Georgia, with exclusive venue in Douglas County.' },
+        { title: 'Governing Law', body: 'These Terms are governed by the laws of the State of Georgia, with exclusive venue in Fulton County.' },
       ]}
     />
   );
@@ -89,23 +91,26 @@ export function Terms() {
 export function Returns() {
   useSEO({
     title: 'Returns policy',
-    description: '30-day returns on unopened, original packaging. Sterile/single-use items excepted. Damaged-on-arrival replaced free within 72 hours.',
+    description: 'Returns are accepted for manufacturer defects, and for unopened items within 30 days of the original purchase order. Sterile and single-use items are non-returnable once opened.',
     canonical: '/returns',
   });
+  // Policy per PRD-29 §7.4: no returns except manufacturer defect; unopened
+  // items within 30 days of the original PO. Verify against the migrated
+  // legal doc from the old site before final legal sign-off.
   return (
     <LegalShell
       eyebrow="POLICIES · RETURNS"
-      title={<>Returns, <Grad>simplified</Grad>.</>}
+      title={<>Returns <Grad>policy</Grad>.</>}
       sections={[
-        { title: 'Return window', body: 'Most products may be returned within 30 days of delivery in unopened, original packaging.' },
-        { title: 'Sterile / single-use exceptions', body: 'Sterile devices, lot-controlled diagnostics, and any item with a broken sterile seal are non-returnable for patient-safety reasons.' },
+        { title: 'Our policy', body: 'Returns are not accepted except in two cases: (1) manufacturer defect, and (2) unopened items in original packaging, returned within 30 days of the original purchase order.' },
+        { title: 'Sterile / single-use items', body: 'Sterile devices, lot-controlled diagnostics, and any item with a broken sterile seal are non-returnable for patient-safety reasons. Once opened, these products cannot re-enter patient care.' },
+        { title: 'Manufacturer defects', body: 'If a product arrives defective, damaged, or incorrect, email support@unitemedical.net within 72 hours of delivery with your PO number and photos. We\'ll arrange a replacement or credit — defective items are handled at no cost to you.' },
         { title: 'How to start a return', list: [
-          'Open your dashboard, find the order, and click "Start a return."',
-          'Print the prepaid label we email you (Net-30 customers) or generate one yourself (card customers).',
-          'Drop the package at any FedEx or UPS location.',
+          'Email support@unitemedical.net with your PO number and the items you want to return.',
+          'Our team confirms eligibility (unopened, within 30 days of the original PO, or manufacturer defect) and issues a return authorization.',
+          'Ship the authorized return to our Lithia Springs, GA warehouse.',
         ] },
-        { title: 'Refunds', body: 'Refunds are issued to the original payment method (or as a credit memo on Net-30 accounts) within 5 business days of receipt at our DC.' },
-        { title: 'Damaged or wrong items', body: 'If anything arrives damaged or incorrect, email support@unitemedical.net within 72 hours and we\'ll replace it at no charge — no return needed.' },
+        { title: 'Refunds', body: 'Approved refunds are issued to the original payment method (or as a credit memo on terms accounts) after the return is received and inspected at our warehouse.' },
       ]}
     />
   );
@@ -114,19 +119,21 @@ export function Returns() {
 export function Shipping() {
   useSEO({
     title: 'Shipping policy',
-    description: 'Free standard ground on orders over $500. Expedited from $38, overnight from $95, same-day available in Atlanta metro. Drop-ship and international options.',
+    description: 'Same-day order processing and shipping on orders placed before 2pm EST, from our Lithia Springs, Georgia warehouse to all 50 states and territories.',
     canonical: '/shipping',
   });
+  // Per PRD-29 §7.5: no shipping prices, no transit-time claims, no
+  // Atlanta-metro same-day specifics. Same-day *processing* is the only
+  // commitment we advertise.
   return (
     <LegalShell
       eyebrow="POLICIES · SHIPPING"
       title={<>Shipping <Grad>policy</Grad>.</>}
       sections={[
-        { title: 'Standard ground', body: 'Free on orders above $500. Ships from the closest of our four DCs (Georgia & Nevada, Lithia Springs). Median delivery: 4 business days.' },
-        { title: 'Expedited & overnight', body: 'Expedited 2-day from $38; standard overnight from $95. Cut-off is 2:00 PM local DC time for same-day pick.' },
-        { title: 'Same-day (Atlanta metro)', body: 'Available for stocked items inside the Atlanta metro perimeter. $95 flat. Delivered by 6 PM if ordered by 2 PM.' },
-        { title: 'Drop-ship', body: 'For dealers and pharmacies, we drop-ship to your patient or store with your packing slip and your branding.' },
-        { title: 'International', body: 'Currently US-only. Talk to our dealer team about white-label arrangements for cross-border distribution.' },
+        { title: 'Same-day processing', body: 'Orders placed before 2:00 PM EST, Monday–Friday, are picked, packed, and shipped the same day from our Lithia Springs, Georgia warehouse.' },
+        { title: 'Coverage', body: 'We ship to all 50 states and US territories. Shipping charges are calculated at checkout or quoted on your order based on weight, destination, and service level.' },
+        { title: 'Drop-ship', body: 'For distributors and pharmacies, we drop-ship to your patient or store with your packing slip and your branding.' },
+        { title: 'International', body: 'Currently US-only. Talk to our distributor team about white-label arrangements for cross-border distribution.' },
       ]}
     />
   );

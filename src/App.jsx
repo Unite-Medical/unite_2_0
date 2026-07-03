@@ -9,6 +9,7 @@ import { RequireAdmin } from './components/layout/RequireAdmin.jsx';
 const Homepage = lazy(() => import('./pages/Homepage.jsx').then((m) => ({ default: m.Homepage })));
 const Catalog = lazy(() => import('./pages/Catalog.jsx').then((m) => ({ default: m.Catalog })));
 const Quote = lazy(() => import('./pages/Quote.jsx').then((m) => ({ default: m.Quote })));
+const QuoteStart = lazy(() => import('./pages/QuoteStart.jsx').then((m) => ({ default: m.QuoteStart })));
 const QuoteNew = lazy(() => import('./pages/QuoteNew.jsx').then((m) => ({ default: m.QuoteNew })));
 const QuotePrint = lazy(() => import('./pages/QuotePrint.jsx').then((m) => ({ default: m.QuotePrint })));
 const QuoteAccept = lazy(() => import('./pages/QuoteAccept.jsx').then((m) => ({ default: m.QuoteAccept })));
@@ -47,6 +48,8 @@ const ServicePDAC = lazy(() => import('./pages/ServicePDAC.jsx').then((m) => ({ 
 const ServiceDistributors = lazy(() => import('./pages/ServiceDistributors.jsx').then((m) => ({ default: m.ServiceDistributors })));
 const ServicePrivateLabel = lazy(() => import('./pages/ServicePrivateLabel.jsx').then((m) => ({ default: m.ServicePrivateLabel })));
 const Government = lazy(() => import('./pages/Government.jsx').then((m) => ({ default: m.Government })));
+const Robotics = lazy(() => import('./pages/Robotics.jsx').then((m) => ({ default: m.Robotics })));
+const Diagnostics = lazy(() => import('./pages/Diagnostics.jsx').then((m) => ({ default: m.Diagnostics })));
 const CaseStudyTJS = lazy(() => import('./pages/CaseStudyTJS.jsx').then((m) => ({ default: m.CaseStudyTJS })));
 const SegmentASC = lazy(() => import('./pages/segments/SegmentASC.jsx').then((m) => ({ default: m.SegmentASC })));
 const SegmentPharmacy = lazy(() => import('./pages/segments/SegmentPharmacy.jsx').then((m) => ({ default: m.SegmentPharmacy })));
@@ -105,7 +108,10 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Homepage />} />
           <Route path="/catalog" element={<Catalog />} />
-          <Route path="/quote" element={<Quote />} />
+          {/* A5 quote router (PRD-28 §5.4) — the chooser is the front door;
+              the engine demo moves to /quote/engine. */}
+          <Route path="/quote" element={<QuoteStart />} />
+          <Route path="/quote/engine" element={<Quote />} />
           <Route path="/quote/new" element={<QuoteNew />} />
           <Route path="/quotes/:id/print" element={<QuotePrint />} />
           <Route path="/q/:token" element={<QuoteAccept />} />
@@ -152,6 +158,9 @@ export default function App() {
           <Route path="/solutions/ems" element={<Navigate to="/segments/ems" replace />} />
 
           <Route path="/services" element={<Services />} />
+          <Route path="/robotics" element={<Robotics />} />
+          <Route path="/services/robotics" element={<Navigate to="/robotics" replace />} />
+          <Route path="/diagnostics" element={<Diagnostics />} />
           <Route path="/services/distribution" element={<ServiceDistribution />} />
           <Route path="/services/pdac" element={<ServicePDAC />} />
           <Route path="/services/distributors" element={<ServiceDistributors />} />

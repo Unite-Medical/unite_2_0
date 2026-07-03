@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { D } from '../tokens.js';
 import { Nav } from '../components/layout/Nav.jsx';
@@ -72,10 +73,10 @@ function Hero() {
             paddingBottom: isMobile ? 28 : 56,
           }}>
             <p style={{ fontSize: isMobile ? 15.5 : 18, lineHeight: 1.55, color: 'rgba(247,242,234,.82)', margin: 0 }}>
-              We source, stock, and ship Class 1 and Class 2 medical devices for surgery centers,
-              pharmacies, health systems, physician groups, and government buyers. We own and
-              warehouse everything we sell. No minimum orders on stocked items. Landed cost,
-              transparent.
+              A global supply chain company specializing in medical. We stock and wholesale core
+              categories from our Georgia warehouse, and source the rest through our vetted
+              manufacturer network — for surgery centers, pharmacies, health systems, physician
+              groups, and government buyers. No minimum orders on stocked items.
             </p>
             <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
               <button onClick={() => navigate('/catalog')} style={{ background: D.paper, color: D.ink, border: 'none', padding: isMobile ? '14px 22px' : '16px 28px', borderRadius: 999, fontSize: 15, fontWeight: 600, cursor: 'pointer', fontFamily: D.sans, display: 'flex', alignItems: 'center', gap: 10, flex: isMobile ? '1 1 200px' : '0 0 auto', justifyContent: 'center' }}>
@@ -104,7 +105,7 @@ function Hero() {
           <span style={{ opacity: .35 }}>/</span>
           <span>STOCKED &amp; WAREHOUSED</span>
           <span style={{ opacity: .35 }}>/</span>
-          <span>GEORGIA &amp; NEVADA</span>
+          <span>GEORGIA WAREHOUSE · ALL 50 STATES</span>
           {!isMobile && <>
             <span style={{ opacity: .35 }}>/</span>
             <span>SAME-DAY SHIPPING · ORDERS BEFORE 2PM EST</span>
@@ -253,6 +254,22 @@ function Featured() {
   const { isMobile } = useViewport();
   const padX = isMobile ? 20 : 40;
   const picks = PRODUCTS.slice(0, 8);
+  const railRef = useRef(null);
+  // Live availability so the stock badge reflects reality (PRD-28 §2.4) —
+  // same WMS projection (on_hand − reserved) the catalog gates on.
+  const inv = db.useTable('inventory');
+  const stockBySku = availability.stockBySku();
+  void inv;
+
+  // Arrow buttons scroll the rail one card at a time — the scrollbar is
+  // hidden, so plain-mouse users need a real affordance (PRD-28 §2.3).
+  function scrollRail(dir) {
+    const rail = railRef.current;
+    if (!rail) return;
+    const cardWidth = (isMobile ? 262 : 396) + (isMobile ? 12 : 20);
+    rail.scrollBy({ left: dir * cardWidth, behavior: 'smooth' });
+  }
+
   return (
     <div style={{ padding: `${isMobile ? 72 : 140}px 0`, background: D.paperAlt, overflow: 'hidden' }}>
       <div style={{ maxWidth: 1360, margin: '0 auto', padding: `0 ${padX}px` }}>
@@ -261,15 +278,28 @@ function Featured() {
             <h2 style={{ fontFamily: D.display, fontSize: 'clamp(40px, 7.6vw, 96px)', fontWeight: 400, letterSpacing: '-0.03em', color: D.ink, margin: 0, lineHeight: 0.98 }}>
               In stock, <Grad>shipping today</Grad>.
             </h2>
-            <button onClick={() => navigate('/catalog')} style={{ color: D.ink, fontSize: 14, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 8, background: 'none', border: `1.5px solid ${D.ink}`, borderRadius: 999, padding: '12px 22px', cursor: 'pointer', fontFamily: D.sans, whiteSpace: 'nowrap' }}>
-              Browse products <Icon.arrow />
-            </button>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <button onClick={() => navigate('/catalog')} style={{ color: D.ink, fontSize: 14, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 8, background: 'none', border: `1.5px solid ${D.ink}`, borderRadius: 999, padding: '12px 22px', cursor: 'pointer', fontFamily: D.sans, whiteSpace: 'nowrap' }}>
+                Browse products <Icon.arrow />
+              </button>
+              {!isMobile && (
+                <>
+                  <button onClick={() => scrollRail(-1)} aria-label="Previous products" style={{ background: 'none', border: `1.5px solid ${D.ink}`, color: D.ink, width: 44, height: 44, borderRadius: 22, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Icon.arrow style={{ transform: 'rotate(180deg)' }} />
+                  </button>
+                  <button onClick={() => scrollRail(1)} aria-label="Next products" style={{ background: D.ink, border: `1.5px solid ${D.ink}`, color: D.paper, width: 44, height: 44, borderRadius: 22, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Icon.arrow />
+                  </button>
+                </>
+              )}
+            </div>
           </div>
         </Reveal>
       </div>
 
       {/* Rail bleeds across the full viewport; cards snap as you scroll */}
       <div
+        ref={railRef}
         className="um-rail"
         style={{
           display: 'flex', gap: isMobile ? 12 : 20,
@@ -285,6 +315,9 @@ function Featured() {
       >
         {picks.map((p, i) => {
           const cutout = productCutout(p.sku);
+          // Real availability from the WMS projection — badge only shows when
+          // stock is verified on hand (PRD-28 §2.4); never hardcoded.
+          const inStock = (stockBySku.get(p.sku)?.available || 0) > 0;
           // Alternate soft washes behind the floating cutouts so the
           // rail reads as a sequence, not a repeat.
           const wash = [
@@ -326,17 +359,19 @@ function Featured() {
                       decoding="async"
                       style={{ maxWidth: '80%', maxHeight: '84%', objectFit: 'contain', position: 'relative' }}
                     />
-                    <span style={{
-                      position: 'absolute', top: 12, left: 12,
-                      display: 'inline-flex', alignItems: 'center', gap: 6,
-                      fontFamily: D.mono, fontSize: 9, letterSpacing: 1,
-                      color: D.ink2, background: 'rgba(251,247,239,.78)',
-                      backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)',
-                      border: `1px solid ${D.line}`, borderRadius: 999, padding: '4px 10px',
-                    }}>
-                      <span style={{ width: 5, height: 5, borderRadius: 3, background: '#5fbd8a', display: 'inline-block', animation: 'umPulse 2.6s ease-in-out infinite' }} />
-                      IN STOCK
-                    </span>
+                    {inStock && (
+                      <span style={{
+                        position: 'absolute', top: 12, left: 12,
+                        display: 'inline-flex', alignItems: 'center', gap: 6,
+                        fontFamily: D.mono, fontSize: 9, letterSpacing: 1,
+                        color: D.ink2, background: 'rgba(251,247,239,.78)',
+                        backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)',
+                        border: `1px solid ${D.line}`, borderRadius: 999, padding: '4px 10px',
+                      }}>
+                        <span style={{ width: 5, height: 5, borderRadius: 3, background: '#5fbd8a', display: 'inline-block', animation: 'umPulse 2.6s ease-in-out infinite' }} />
+                        IN STOCK
+                      </span>
+                    )}
                   </div>
                 </Link>
               ) : (
@@ -379,8 +414,8 @@ function Featured() {
 /* Shortage strip — the no-EDI intake play, one line + one action      */
 /* ------------------------------------------------------------------ */
 /* ------------------------------------------------------------------ */
-/* OwnedInventory — clean fact band. The "zero middlemen" pitch as     */
-/* plain editorial: headline left, three hairline fact rows right.     */
+/* OwnedInventory — clean fact band. The stocked + sourced two-model   */
+/* story as plain editorial: headline left, hairline fact rows right.  */
 /* No photography, no glass — procurement buyers want the numbers.     */
 /* ------------------------------------------------------------------ */
 /* Live inventory widget — reads the WMS availability projection (on_hand −
@@ -423,8 +458,8 @@ function OwnedInventory() {
   const { isMobile } = useViewport();
   const padX = isMobile ? 20 : 40;
   const facts = [
-    { stat: '0', label: 'Middlemen', sub: 'Inventory owned and shipped from Unite-operated distribution centers.' },
-    { stat: '2', label: 'Warehouses', sub: 'Lithia Springs, GA and Las Vegas, NV — coverage on both coasts.' },
+    { stat: 'GA', label: 'Georgia warehouse', sub: 'Our Lithia Springs, GA warehouse ships to all 50 states and territories.' },
+    { stat: 'Direct', label: 'Manufacturer relationships', sub: 'Core categories bought direct and held as owned stock in our own warehouse.' },
     { stat: '2pm', label: 'Same-day cutoff', sub: 'Orders placed before 2pm EST on stocked items ship the same day.' },
   ];
   return (
@@ -435,13 +470,14 @@ function OwnedInventory() {
         gap: isMobile ? 40 : 80, alignItems: 'start',
       }}>
         <Reveal>
-          <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 18 }}>OWNED INVENTORY</div>
+          <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 18 }}>STOCKED + SOURCED</div>
           <h2 style={{ fontFamily: D.display, fontSize: 'clamp(30px, 5vw, 58px)', fontWeight: 400, letterSpacing: '-0.03em', lineHeight: 1.04, margin: 0, color: D.ink }}>
-            Most supplies cross four distributors before they reach you. <Grad>Ours cross zero.</Grad>
+            Stocked when you need it today. <Grad>Sourced when you don&apos;t.</Grad>
           </h2>
           <p style={{ fontSize: isMobile ? 14.5 : 16.5, lineHeight: 1.65, color: D.ink2, marginTop: 20, maxWidth: 520 }}>
-            We buy direct from manufacturers, hold the stock in our own buildings, and ship it
-            ourselves. No brokered inventory, no surprise substitutions, no third-party markups.
+            We buy our core categories direct from manufacturers and hold that stock in our own
+            Georgia warehouse. For everything else, our vetted sourcing network finds it fast —
+            with transparent pricing either way.
           </p>
           <button
             onClick={() => navigate('/catalog')}
@@ -500,8 +536,8 @@ function ShortageStrip() {
             <Grad>Paste your shortage list.</Grad>
           </h2>
           <p style={{ fontSize: isMobile ? 14.5 : 16, lineHeight: 1.6, color: 'rgba(247,242,234,.78)', marginTop: 16, maxWidth: 560 }}>
-            We match every line against stocked inventory in real time, surface in-stock
-            equivalents, and route the rest to our sourcing network.
+            Upload or paste your shortage list and we return a quote — items we stock are matched
+            against our own live inventory, and the rest goes to our sourcing network.
           </p>
         </Reveal>
         <Reveal delay={120}>
@@ -651,8 +687,9 @@ function CTA() {
             <Grad>Sync everything.</Grad>
           </h2>
           <div style={{ fontSize: isMobile ? 15 : 17, lineHeight: 1.6, color: '#cfc4d2', margin: `${isMobile ? 24 : 36}px auto 0`, maxWidth: 560 }}>
-            Order placed → inventory updates → invoice auto-creates → label prints → tracking
-            returns to your portal. Zero manual touchpoints.
+            Request a quote → get an instant, fully landed, compliance-checked price you can
+            trust. Accept online and it becomes an order. No guesswork, no waiting, no
+            back-and-forth.
           </div>
           <button onClick={() => navigate('/quote')} style={{ background: D.plum, color: D.paper, border: 'none', padding: isMobile ? '15px 28px' : '17px 34px', borderRadius: 999, fontSize: 15, fontWeight: 500, cursor: 'pointer', fontFamily: D.sans, display: 'inline-flex', alignItems: 'center', gap: 10, marginTop: isMobile ? 28 : 44 }}>
             Start a quote <Icon.arrow />
@@ -667,7 +704,7 @@ export function Homepage() {
   useSEO({
     title: 'The supply chain your suppliers use',
     description:
-      'Veteran-owned, FDA-registered wholesale medical supply for surgery centers, pharmacies, health systems, government, and regional distributors. No minimums on stocked items. Same-day shipping on orders before 2pm EST from Georgia & Nevada.',
+      'Veteran-owned, FDA-registered wholesale medical supply for surgery centers, pharmacies, health systems, government, and regional distributors. No minimums on stocked items. Same-day shipping on orders before 2pm EST from our Georgia warehouse.',
     canonical: '/',
     type: 'website',
     jsonLd: [organizationSchema(), websiteSchema()],

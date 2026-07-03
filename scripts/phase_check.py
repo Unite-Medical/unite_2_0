@@ -75,10 +75,11 @@ SOURCE_GLOBS = ("**/*.jsx", "**/*.js", "**/*.html", "**/*.json", "**/*.css")
 DOC_EXEMPT_DIRS = {"node_modules", "dist", ".git", "docs", "scripts", "prompts", "forecasting"}
 
 # Files where vendor / tool names (ShipStation, Cin7, QBO, Flexport)
-# are legitimately required: the external client code itself and the
-# admin-only integration dashboards. Phase-1 rules that match those
-# names skip these paths. All OTHER Phase-1 rules (phones, BPA #, etc.)
-# still apply.
+# are legitimately required. The rule targets *customer-facing marketing
+# copy*; backend integration code (api/, src/lib/), admin-only pages,
+# and the print documents that carry operational references are exempt.
+# Legal.jsx is exempt because PRD-29 §7.3 explicitly names QuickBooks
+# Online as a payment-data processor in the privacy policy.
 VENDOR_NAME_RULES = {
     "ShipStation",
     "QuickBooks/QBO",
@@ -86,16 +87,23 @@ VENDOR_NAME_RULES = {
     "Cin7 (customer-facing)",
 }
 VENDOR_NAME_EXEMPT_PATHS = (
-    "src/lib/external/",
-    "src/lib/services.js",          # re-export shim
-    "src/lib/receiving.js",         # inbound pipeline (names the systems it chains)
-    "src/pages/admin/AdminIntegrations.jsx",
-    "src/pages/admin/AdminAI.jsx",
-    "src/pages/admin/AdminMarginPolicy.jsx",
-    "src/pages/admin/AdminSurplus.jsx",
-    "src/pages/admin/AdminProductOnboard.jsx",
+    "api/",
+    "src/lib/",
+    "src/pages/admin/",
     "src/pages/QuoteNew.jsx",
+    "src/pages/legal/Legal.jsx",
 )
+
+# Diversity classifications: PRD-28 §3.3 mandates that Procurement.jsx
+# list VOSB/SDVOSB among the certifications *partner distributors* hold
+# (phrased so Unite claims none of them). Self-claim rules skip it.
+DIVERSITY_RULES = {"VOSB self-claim", "SDVOSB self-claim"}
+DIVERSITY_EXEMPT_PATHS = ("src/pages/Procurement.jsx",)
+
+# Generated public datasets are not marketing copy — the CMS HCPCS
+# descriptions legitimately contain phrases (e.g. "48 hours") that the
+# copy rules forbid in Unite's own claims.
+DATASET_EXEMPT_FILES = {"src/data/hcpcs.json"}
 
 
 def iter_source_files() -> Iterable[Path]:
@@ -104,6 +112,8 @@ def iter_source_files() -> Iterable[Path]:
             rel = path.relative_to(ROOT)
             parts = set(rel.parts)
             if parts & DOC_EXEMPT_DIRS:
+                continue
+            if str(rel) in DATASET_EXEMPT_FILES:
                 continue
             yield path
 
@@ -212,8 +222,9 @@ def forbid_in_file(
 
 FORBIDDEN_PATTERNS: list[tuple[str, str]] = [
     # rule label, regex (case-sensitive unless ?i flag)
-    ("old BPA number", r"36C24123A0077"),
-    ("MSPV BPA label", r"MSPV\s+BPA"),
+    # (PRD-28 §3.3/§6.6 confirmed MSPV BPA 36C24123A0077 as correct and
+    # mandated the "MSPV BPA" label in the footer + Procurement grid, so
+    # the old "old BPA number"/"MSPV BPA label" forbids were retired.)
     ("old sales phone display", r"\(678\)\s*555-0(142|180|219|255|277)"),
     ("old sales phone tel:", r"tel:\+1?6785550(142|180|219|255|277)"),
     ("old sales phone tel (no +)", r"tel:6785550(142|180|219|255|277)"),
@@ -224,6 +235,8 @@ FORBIDDEN_PATTERNS: list[tuple[str, str]] = [
     #   - "SDVOSB suppliers" (diversity-network attribution)
     # All three reference an *external* SDVOSB entity, not Unite. Anything
     # outside those contexts is a Unite-side self-claim and is forbidden.
+    # (Procurement.jsx is exempted below: PRD-28 §3.3 mandates listing
+    # VOSB/SDVOSB among the diversity classifications *partners* hold.)
     (
         "SDVOSB self-claim",
         r"\bSDVOSB\b(?!\s+(?:partner|contract|suppliers))",
@@ -270,14 +283,18 @@ def check_phase_1() -> PhaseResult:
     files = list(iter_source_files())
 
     for label, rx in FORBIDDEN_PATTERNS:
-        # Vendor-name rules skip the integration admin pages and the
-        # external client folder where these names are required.
-        targeted_files = files
+        # Vendor-name rules skip backend/admin code where these names are
+        # required; diversity self-claim rules skip the partner-facing
+        # Procurement page (PRD-28 §3.3).
+        exempt_paths = ()
         if label in VENDOR_NAME_RULES:
-            targeted_files = [
-                f for f in files
-                if not any(str(f.relative_to(ROOT)).startswith(p) for p in VENDOR_NAME_EXEMPT_PATHS)
-            ]
+            exempt_paths = VENDOR_NAME_EXEMPT_PATHS
+        elif label in DIVERSITY_RULES:
+            exempt_paths = DIVERSITY_EXEMPT_PATHS
+        targeted_files = [
+            f for f in files
+            if not any(str(f.relative_to(ROOT)).startswith(p) for p in exempt_paths)
+        ] if exempt_paths else files
         res.violations.extend(
             scan(targeted_files, rx, phase=1, rule=f"forbidden: {label}")
         )
@@ -314,7 +331,8 @@ def check_phase_1() -> PhaseResult:
     res.violations.extend(
         require_in_file(
             footer,
-            r"FDA\s*3015727296\s*·\s*CAGE\s*8MK70\s*·\s*DUNS\s*117553945",
+            # PRD-28 §6.6: MSPV BPA added to the footer credential line.
+            r"FDA\s*3015727296\s*·\s*CAGE\s*8MK70\s*·\s*MSPV\s+BPA\s*36C24123A0077\s*·\s*DUNS\s*117553945",
             phase=1,
             rule="Footer: cleaned credential line",
         )
@@ -505,17 +523,22 @@ PAGE_CHECKS: list[tuple[str, list[tuple[str, str]], list[tuple[str, str]]]] = [
     (
         "pages/ServiceDistribution.jsx",
         [
-            ("forward warehouse H1", r"Your forward warehouse\."),
-            ("2 US warehouses", r"2\s+US\s+warehouses|Two\s+US\s+warehouses"),
-            ("fill rate stat", r"98\.6%"),
+            # PRD-29 §2.1: single-Georgia-warehouse hero + 99%+ fill rate.
+            ("one warehouse H1", r"One warehouse\..*dock\."),
+            ("Georgia warehouse sub", r"[Oo]ne Georgia warehouse"),
+            ("fill rate stat", r"99%\+"),
             ("net-30 qualifier", r"approved credit"),
         ],
-        [],
+        [
+            ("stale 2-warehouse claim", r"2\s+US\s+warehouses|Two\s+US\s+warehouses"),
+            ("stale 98.6% fill rate", r"98\.6%"),
+        ],
     ),
     (
         "pages/ServicePDAC.jsx",
         [
-            ("L-codes headline", r"L-codes right the first time"),
+            # PRD-28 §2 repositioned the page around DME + orthotics coding.
+            ("coded-right headline", r"coded right\."),
             ("HCPCS mention", r"HCPCS"),
             ("95% stat", r"95%\+"),
         ],
@@ -527,7 +550,9 @@ PAGE_CHECKS: list[tuple[str, list[tuple[str, str]], list[tuple[str, str]]]] = [
     (
         "pages/Procurement.jsx",
         [
-            ("procurement H1", r"For procurement\s*&\s*diversity officers\."),
+            # PRD-28 §3.3: premise corrected — Unite is the supplier behind
+            # diverse resellers, not a diversity-certified seller itself.
+            ("procurement H1", r"A supply partner for\s*diverse businesses\."),
         ],
         [
             ("22 years Army", r"22\s+years"),
@@ -547,10 +572,13 @@ PAGE_CHECKS: list[tuple[str, list[tuple[str, str]], list[tuple[str, str]]]] = [
     (
         "pages/Locations.jsx",
         [
-            ("locations H1", r"Close to every dock\."),
-            ("2 US warehouses badge", r"2\s+US\s+WAREHOUSES"),
+            # PRD-28/29 single-warehouse model.
+            ("locations H1", r"One warehouse\..*zip code\."),
+            ("Georgia warehouse eyebrow", r"GEORGIA WAREHOUSE"),
         ],
-        [],
+        [
+            ("stale 2-warehouse badge", r"2\s+US\s+WAREHOUSES"),
+        ],
     ),
     (
         "pages/Contact.jsx",
@@ -563,7 +591,9 @@ PAGE_CHECKS: list[tuple[str, list[tuple[str, str]], list[tuple[str, str]]]] = [
         [],
     ),
     (
-        "pages/Support.jsx",
+        # PRD-29 §6.4 moved the FAQ copy + FAQPage JSON-LD into
+        # src/data/faqs.js (Support.jsx imports faqJsonLd from there).
+        "data/faqs.js",
         [
             ("FAQ JSON-LD", r"FAQPage"),
             ("MOQ FAQ", r"minimum order quantities"),

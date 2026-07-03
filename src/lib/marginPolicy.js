@@ -12,7 +12,7 @@ export const DEFAULT_MARGIN_POLICY = {
   // Per-tier target margin (decimal, 0..1). E.g. 0.30 means 30% margin.
   tiers: {
     A:           0.30,  // large hospital / gov / retail
-    B:           0.50,  // mid ASC / regional dealer
+    B:           0.50,  // mid ASC / regional distributor
     C:           0.60,  // small clinic / one-off (legacy default)
     distributor: 0.25,  // volume — lower margin, higher velocity
     gov:         0.20,  // VA/BPA contract pricing

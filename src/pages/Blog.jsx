@@ -40,7 +40,21 @@ export function Blog() {
             ))}
           </div>
 
-          {posts.length === 0 && <div style={{ padding: 48, textAlign: 'center', color: D.ink3, background: D.card, borderRadius: 14, border: `1px dashed ${D.line}` }}>No posts in this category.</div>}
+          {/* Friendly empty state (PRD-29 §6.2) — the blog is intentionally
+              empty until real content lands; don't let it look broken. */}
+          {posts.length === 0 && (
+            <div style={{ padding: isMobile ? 40 : 64, textAlign: 'center', background: D.card, borderRadius: 14, border: `1px dashed ${D.line}` }}>
+              <div style={{ fontFamily: D.display, fontSize: isMobile ? 24 : 32, letterSpacing: -0.5, color: D.ink }}>
+                {allPosts.length === 0 ? 'Field notes coming soon.' : 'No posts in this category.'}
+              </div>
+              {allPosts.length === 0 && (
+                <p style={{ fontSize: 14.5, color: D.ink2, margin: '12px auto 0', maxWidth: 460, lineHeight: 1.6 }}>
+                  We&apos;re writing up market takes, compliance walkthroughs, and ops notes
+                  from the warehouse floor. Check back shortly.
+                </p>
+              )}
+            </div>
+          )}
 
           {featured && (
             <article onClick={() => navigate(`/blog/${featured.slug}`)} className="um-card" style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.2fr 1fr', gap: isMobile ? 0 : 20, marginBottom: 28, background: D.card, border: `1px solid ${D.line}`, borderRadius: 16, overflow: 'hidden', cursor: 'pointer' }}>

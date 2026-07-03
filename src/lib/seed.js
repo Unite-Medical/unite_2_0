@@ -32,8 +32,10 @@ function legacyTier(category) {
 }
 
 const STATIC_PRODUCTS = REAL_PRODUCTS.map((p) => {
-  const stock = deterministicStock(p.sku);
-  const cogs  = +(p.price * 0.42).toFixed(2);
+  // Quote-only products (e.g. RegeniCool™ Pro) have no public price and no
+  // warehoused stock — they route to the quote flow, never "in stock".
+  const stock = p.quote_only ? 0 : deterministicStock(p.sku);
+  const cogs  = p.price == null ? null : +(p.price * 0.42).toFixed(2);
   return {
     sku:      p.sku,
     handle:   p.handle,
@@ -58,6 +60,8 @@ const STATIC_PRODUCTS = REAL_PRODUCTS.map((p) => {
     price_min: p.price_min,
     price_max: p.price_max,
     product_type: p.product_type,
+    m6_category: p.m6_category,
+    quote_only: p.quote_only ?? false,
     fda_registered:    p.fda_registered,
     pdac_approved:     p.pdac_approved,
     taa_compliant:     p.taa_compliant,
@@ -254,6 +258,8 @@ export function seed(db) {
       tags: p.tags,
       collections: p.collections,
       variants: p.variants,
+      m6_category: p.m6_category,
+      quote_only: p.quote_only ?? false,
       country_of_origin: p.country_of_origin || 'CN',
       fda_registered: p.fda_registered ?? true,
       taa_compliant: p.taa_compliant ?? false,
@@ -268,9 +274,11 @@ export function seed(db) {
     db.inventory.push({ id: `inv_atl_${p.sku}`, sku: p.sku, warehouse_id: 'wh_atl', on_hand: p.stock, reorder_at: Math.floor(p.stock * 0.2), reorder_qty: Math.floor(p.stock * 0.5) });
     db.inventory.push({ id: `inv_reno_${p.sku}`, sku: p.sku, warehouse_id: 'wh_reno', on_hand: Math.floor(p.stock * 0.3), reorder_at: Math.floor(p.stock * 0.06), reorder_qty: Math.floor(p.stock * 0.15) });
 
-    db.pricing.push({ id: `prc_${p.sku}_1`, sku: p.sku, tier: 1, min_qty: 1, unit_price: p.price });
-    db.pricing.push({ id: `prc_${p.sku}_2`, sku: p.sku, tier: 2, min_qty: 50, unit_price: +(p.price * 0.93).toFixed(2) });
-    db.pricing.push({ id: `prc_${p.sku}_3`, sku: p.sku, tier: 3, min_qty: 250, unit_price: +(p.price * 0.86).toFixed(2) });
+    if (p.price != null) {
+      db.pricing.push({ id: `prc_${p.sku}_1`, sku: p.sku, tier: 1, min_qty: 1, unit_price: p.price });
+      db.pricing.push({ id: `prc_${p.sku}_2`, sku: p.sku, tier: 2, min_qty: 50, unit_price: +(p.price * 0.93).toFixed(2) });
+      db.pricing.push({ id: `prc_${p.sku}_3`, sku: p.sku, tier: 3, min_qty: 250, unit_price: +(p.price * 0.86).toFixed(2) });
+    }
 
     (p.variants || []).forEach((v) => {
       db.product_variants.push({

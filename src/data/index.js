@@ -45,7 +45,7 @@ const fallback = REAL_PRODUCTS
 export const PRODUCTS = [...featured, ...fallback];
 
 export const SEGMENTS = [
-  { id: 'asc', title: 'Ambulatory Surgery Centers', line: 'Procedure-specific bundles. No MOQs.', tam: '$45.6B', stat: '21% growth · 2029' },
+  { id: 'asc', title: 'Ambulatory Surgery Centers', line: 'Procedure-specific bundles. No MOQs on stocked items.', tam: '$45.6B', stat: '21% growth · 2029' },
   { id: 'gov', title: 'Government & VA', line: 'BPA · Veteran-owned · Berry compliant.', tam: '$5–10B', stat: 'CAGE 8MK70' },
   { id: 'pharma', title: 'Independent Pharmacies', line: 'Private-label diagnostics + Clyne telehealth.', tam: '$15–20B', stat: 'Drop-ship ready' },
   { id: 'dist', title: 'Regional Distributors', line: 'FDA-registered import. White-label. Drop-ship.', tam: '$10–15B', stat: 'FDA #3015727296' },

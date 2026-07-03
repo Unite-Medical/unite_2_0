@@ -17,7 +17,7 @@ import { seed } from './seed.js';
  */
 
 const STORAGE_KEY = 'um.db.v1';
-const SCHEMA_VERSION = 14;
+const SCHEMA_VERSION = 15;
 
 const TABLES = [
   'profiles', 'organizations', 'organization_users', 'addresses',
@@ -81,6 +81,9 @@ const TABLES = [
   'inventory_lots', 'distributor_products', 'scan_events', 'consignment_movements',
   'distributor_ship_identities', 'distributor_documents', 'distributor_carrier_accounts',
   'shipping_markup_config', 'distributor_po_uploads', 'distributor_sku_map',
+  // PRD-29 §4.1: customer-item ↔ Unite-SKU cross-reference DB (data moat),
+  // fed by shortage-list uploads + customer-approved substitutes
+  'cross_references',
 ];
 
 function load() {

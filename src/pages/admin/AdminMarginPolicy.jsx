@@ -16,7 +16,7 @@ import { loadMarginPolicy, saveMarginPolicy, DEFAULT_MARGIN_POLICY } from '../..
 
 const TIER_DESCRIPTIONS = {
   A:           'Large hospital systems, gov / VA, large retail (CVS, Publix, etc.)',
-  B:           'Mid-tier ASCs, regional dealers',
+  B:           'Mid-tier ASCs, regional distributors',
   C:           'Small clinics, one-off purchases (default for new accounts)',
   distributor: 'Approved distributor program — volume, lower margin',
   gov:         'BPA / VA channel — contract pricing',

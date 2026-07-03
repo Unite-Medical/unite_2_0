@@ -24,7 +24,7 @@ export function SegmentASC() {
   useSEO({
     title: 'Medical Supply for Ambulatory Surgery Centers · Unite Medical',
     description:
-      'Procedure-specific products sourced, stocked, and shipped same-day. Orthotics, surgical disposables, diagnostic kits, and PPE for ASCs of any size. No minimums on stocked items.',
+      'Procedure-specific products — stocked and shipped same-day, with sourcing for everything else. We supply ASCs of any size, with no minimum orders on stocked items.',
     canonical: '/segments/asc',
   });
   return (
@@ -33,7 +33,7 @@ export function SegmentASC() {
       <PageHead
         eyebrow="SEGMENT · AMBULATORY SURGERY CENTERS"
         title={<>Medical Supply for Ambulatory Surgery Centers</>}
-        sub="Procedure-specific products sourced, stocked, and shipped — same day. From orthotics and surgical disposables to diagnostic kits and PPE, we supply ASCs of any size with no minimum orders on stocked items."
+        sub="Procedure-specific products — stocked and shipped same-day, with sourcing for everything else. We supply ASCs of any size, with no minimum orders on stocked items."
       />
       <div style={{ maxWidth: 1100, margin: '0 auto', padding: `12px ${padX}px ${isMobile ? 56 : 80}px` }}>
         <h2 style={{ fontFamily: D.display, fontSize: 'clamp(24px, 4vw, 36px)', letterSpacing: -0.6, margin: '24px 0 14px 0' }}>What we supply for ASCs</h2>

@@ -3,11 +3,18 @@
  *
  * Two jobs:
  *   1. parse + match a free-text shortage / backorder list against the
- *      stocked catalog (exact SKU, HCPCS, or fuzzy description match), and
+ *      full supply chain (exact SKU, HCPCS, or fuzzy description match), and
  *   2. suggest stocked functional equivalents ("substitutes") for any
  *      product or unmatched description.
  *
- * Pure, deterministic, synchronous — runs entirely in the browser so the
+ * PRD-29 §4.1: a line "matches" if Unite can supply via ANY of the 3 supply
+ * states — (1) In Stock = real availability (on-hand − reserved, the B2 fix),
+ * (2) Source = catalog / vetted-manufacturer line with no shelf stock right
+ * now, (3) Available to Quote = no match, goes to open RFQ. Confirmed
+ * customer cross-reference pairs (cross_references table) are consulted
+ * before fuzzy scoring so validated equivalents always win.
+ *
+ * Deterministic and synchronous — runs entirely in the browser so the
  * matcher feels instant (results re-rank on every keystroke). On the real
  * backend this same scoring moves behind POST /v1/shortage-lists with
  * pg_trgm doing the heavy lifting; the Claude layer (prompts/) can then
@@ -15,6 +22,8 @@
  */
 
 import { REAL_PRODUCTS } from '../data/realCatalog.js';
+import { db } from './db.js';
+import { availability } from './wms/availability.js';
 
 /* ------------------------------------------------------------------ */
 /* Tokenizing                                                          */
@@ -198,19 +207,49 @@ export function parseShortageList(text) {
 const MATCH_THRESHOLD = 38;
 
 /**
- * Match a pasted shortage list against the stocked catalog.
+ * Customer-validated cross-reference lookup (PRD-29 §4.1.3): pairs captured
+ * from submitted shortage lists + client-approved substitutes. A confirmed
+ * pair beats fuzzy scoring — these are the only "equivalents" we assert
+ * without the client's own approval (medical-safety guardrail §4.1.4).
+ */
+function crossReferenceFor(code, desc) {
+  if (!code && !desc) return null;
+  const nCode = normCode(code);
+  const rows = db.list('cross_references');
+  const hit = rows.find((r) =>
+    (nCode && normCode(r.customer_code) === nCode) ||
+    (r.customer_desc && desc && r.customer_desc.toLowerCase() === desc.toLowerCase()));
+  if (!hit) return null;
+  return REAL_PRODUCTS.find((p) => p.sku === hit.unite_sku) || null;
+}
+
+/**
+ * Match a pasted shortage list against all 3 supply states (PRD-29 §4.1).
  * Each output line: { ...parsed, status, match, score, alternates }.
- *   status: 'stocked' (confident match) | 'equivalent' (substitute only) | 'sourcing' (no match)
+ *   status:
+ *     'stocked'    — matched + REAL available inventory (on-hand − reserved)
+ *     'source'     — matched to a catalog / vetted-manufacturer line, no
+ *                    shelf stock right now → sourced through the network
+ *     'equivalent' — no direct match, but we can supply alternates
+ *     'sourcing'   — no match at all → open RFQ (Available to Quote)
  */
 export function matchShortageList(text) {
   const lines = parseShortageList(text).map((line) => {
+    const crossRef = crossReferenceFor(line.code, line.desc);
     const ranked = rankCatalog(line.desc, { code: line.code, limit: 4 });
-    const top = ranked[0];
+    const top = crossRef
+      ? { product: crossRef, score: 100 }
+      : ranked[0];
     if (top && top.score >= MATCH_THRESHOLD) {
+      // B2 fix: 'stocked' requires real available inventory, not mere
+      // catalog presence.
+      const available = availability.availableToPromise(top.product.sku);
       return {
         ...line,
-        status: 'stocked',
+        status: available > 0 ? 'stocked' : 'source',
         match: top.product,
+        available,
+        crossRef: !!crossRef,
         score: Math.round(top.score),
         alternates: findSubstitutes(top.product, 2),
       };
@@ -220,18 +259,63 @@ export function matchShortageList(text) {
         ...line,
         status: 'equivalent',
         match: null,
+        available: 0,
+        crossRef: false,
         score: Math.round(top.score),
         alternates: ranked.slice(0, 3).map((r) => r.product),
       };
     }
-    return { ...line, status: 'sourcing', match: null, score: 0, alternates: [] };
+    return { ...line, status: 'sourcing', match: null, available: 0, crossRef: false, score: 0, alternates: [] };
   });
 
   const summary = {
     total: lines.length,
     stocked: lines.filter((l) => l.status === 'stocked').length,
+    source: lines.filter((l) => l.status === 'source').length,
     equivalent: lines.filter((l) => l.status === 'equivalent').length,
     sourcing: lines.filter((l) => l.status === 'sourcing').length,
   };
   return { lines, summary };
+}
+
+/**
+ * Persist customer-item ↔ Unite-equivalent pairs from a submitted shortage
+ * list into the cross-reference DB (PRD-29 §4.1.3 — the data-moat asset).
+ * Matched lines are recorded as machine-proposed; pairs the customer listed
+ * as acceptable substitutes (§4.1.4) are recorded as customer-validated.
+ */
+export function captureCrossReferences({ lines, requestId, email, approvedPairs = [] }) {
+  const now = new Date().toISOString();
+  let captured = 0;
+  for (const l of lines) {
+    if (!l.match || (!l.code && !l.desc)) continue;
+    db.insert('cross_references', {
+      id: `xref_${requestId}_${captured}`,
+      customer_code: l.code || null,
+      customer_desc: l.desc || null,
+      unite_sku: l.match.sku,
+      validated: !!l.crossRef,
+      source: 'shortage-list',
+      request_id: requestId,
+      submitted_by: email,
+      created_at: now,
+    });
+    captured += 1;
+  }
+  // Explicit customer-approved substitutes: "their code = our SKU" lines.
+  for (const pair of approvedPairs) {
+    db.insert('cross_references', {
+      id: `xref_${requestId}_appr_${captured}`,
+      customer_code: pair.customer_code || null,
+      customer_desc: pair.customer_desc || null,
+      unite_sku: pair.unite_sku,
+      validated: true,
+      source: 'customer-approved',
+      request_id: requestId,
+      submitted_by: email,
+      created_at: now,
+    });
+    captured += 1;
+  }
+  return captured;
 }

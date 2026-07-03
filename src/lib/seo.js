@@ -14,7 +14,7 @@ const SITE_NAME = 'Unite Medical';
 const SITE_URL = 'https://unitemedical.net';
 const DEFAULT_OG_IMAGE = '/favicon-512.png';
 const DEFAULT_DESCRIPTION =
-  'FDA-registered, veteran-owned wholesale medical supply distribution for ASCs, pharmacies, government, EMS, and regional distributors. Same-day shipping on orders before 2pm EST from our Georgia & Nevada warehouses.';
+  'FDA-registered, veteran-owned wholesale medical supply distribution for ASCs, pharmacies, government, EMS, and regional distributors. Same-day shipping on orders before 2pm EST from our Georgia warehouse.';
 
 /**
  * Returns the title formatted for `<title>` — adds the site suffix unless
@@ -223,21 +223,25 @@ export function productSchema(product, { stock = 0, image } = {}) {
         '@type': 'PropertyValue', name: 'MSPV listed', value: 'Yes',
       },
     ].filter(Boolean),
-    offers: {
-      '@type': 'Offer',
-      priceCurrency: 'USD',
-      price: product.price,
-      availability: stock > 0
-        ? 'https://schema.org/InStock'
-        : 'https://schema.org/OutOfStock',
-      seller: { '@type': 'Organization', name: SITE_NAME },
-      url: `${SITE_URL}/products/${product.sku}`,
-    },
-    aggregateRating: {
-      '@type': 'AggregateRating',
-      ratingValue: '4.8',
-      reviewCount: 142,
-    },
+    // Quote-only products (no public price) get no Offer / rating markup —
+    // never advertise a null price or a fabricated rating for them.
+    ...(product.quote_only || product.price == null ? {} : {
+      offers: {
+        '@type': 'Offer',
+        priceCurrency: 'USD',
+        price: product.price,
+        availability: stock > 0
+          ? 'https://schema.org/InStock'
+          : 'https://schema.org/OutOfStock',
+        seller: { '@type': 'Organization', name: SITE_NAME },
+        url: `${SITE_URL}/products/${product.sku}`,
+      },
+      aggregateRating: {
+        '@type': 'AggregateRating',
+        ratingValue: '4.8',
+        reviewCount: 142,
+      },
+    }),
   };
 }
 
