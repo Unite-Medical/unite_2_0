@@ -1044,7 +1044,20 @@ Goal: cross-check manufacturer claims ourselves instead of relying on them to pr
   2. **Full private label (BYO brand):** customer brings their own brand/GPO — we tell them the required files, give them a way to upload, and Unite checks compliance for them.
 - **The big vision:** done right, large labs / hospitals / GPOs can create and bring their OWN private label / GPO product to market THROUGH Unite (sourcing + FDA listing + UDI/GUDID + labeling + import all handled). Huge selling feature — turns the quoting engine into a private-label go-to-market PLATFORM, not just a sourcing tool. Earmark for build planning.
 
+### E2. Two paths + buy-it-now + feedback loop (CONFIRMED — Damon)
+- **Every quoting-engine customer decides up front: Unite brand ("Unite Ready") or their own ("Unite Custom").** That's the fork. Present as a transparent SIDE-BY-SIDE (import price vs. in-stock price shown together) — never bait-and-switch. Side-by-side is a TRUST requirement, not just UX.
+- **Unite Ready** = Unite brand, faster, lower/no MOQ, higher unit price at low qty (speed/convenience premium), Unite owns compliance. **Unite Custom** = customer's brand/GPO, full import cycle, best unit price at volume, Unite does compliance FOR them (the value-add).
+- **Buy-It-Now (in-stock): LIVE TODAY for any quoted SKU that matches Unite's EXISTING stock/portfolio.** We already stock certain items — a quote hit on one = instant purchase at in-stock price, any qty. We are NOT speculatively stocking non-common / out-of-portfolio items just for this tool. That expansion GROWS OVER TIME from demand signals: quote data reveals what to bring in-house; future identical requests then convert to instant higher-margin sales. The engine is a demand-sensing system that tells us what to stock.
+- **SKU-match runs first** on every custom quote (against stock + prior quotes / cross-ref SKU DB) → ranked results: 🟢 in-stock now / 🟡 import Unite Ready / 🔵 import Unite Custom, each with price·MOQ·lead·what-you-provide.
+- **BUILD — "no quote returned" feedback loop:** customer can flag "didn't see / didn't receive a quote for a requested item" → routes to Unite to source it, pull a cross-ref from the DB to add it, or find a supplier. Never silently drop a requested item — every miss is a demand signal to capture + close.
+
+### E3. Vendor dashboard HOOK (Damon idea — Alex input wanted)
+- Multilingual (ALL languages) vendor dashboard to motivate foreign manufacturers to upload clean data. Completion benchmarks (gamified: "60% complete — add carton dims + certs to become quote-ready"; more complete = more/faster quotes).
+- Carrot data to show them: import frequency of products they carry, their rank vs competitors on the import chart, MOQ competitiveness, pricing to Unite, product-mix vs competitors (gaps to fill). Populate credibly via trade data (ImportGenius, PRD-15).
+- Thesis: find the hook that makes foreign mfrs WANT to upload → Unite makes the US-market bridge seamless → defensible platform. Aggregated/anonymized trade+demand intel is the incentive; clean data is what we get back.
+
 ### F. Template column notes (v2)
+- Full Alex briefing doc: `docs/ALEX-BRIEFING-quoting-engine-vendor-onboarding.md` (attach v2 spreadsheet when sending).
 - Reframed HTS: vendor gives "Mfr HS Code (their country)"; "US HTSUS" column is Unite-fills (we validate via USITC/Flexport).
 - Added: volume price breaks (qty→FOB tiers), tooling/setup (NRE), sample cost + lead time, unit net weight + unit dims, pallet config, hazmat/lithium flag, sterile/single-use/Rx-OTC/latex/DEHP flags, shelf life, Device Class, 510(k)/exempt, actual mfr name+address, product_type + image_link (for Flexport).
 - 3 Unite-fills (plum): US HTSUS, US Agent, GTIN/UPC — vendor leaves blank.
