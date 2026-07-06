@@ -1004,3 +1004,47 @@ ALEX: make the Returns page and the Purchase Policy state this SAME policy (no c
 - **Damon owes:** log into the Unite customer/admin account, pull the existing brace marketing flyers, and drop them into `Desktop/Unite Medical/Site Migration for Alex/03_Marketing Flyers`. Then agent reconciles **1-to-1 against all 27 brace/orthotic products** (same as the PDAC-letter reconciliation) to confirm none are missing.
 - **All brace flyers must be REDONE under the NEW brand guidelines** (rebrand existing + create net-new for any brace missing a flyer). The 27-brace master checklist is saved in the 03_Marketing Flyers folder for Damon to tick off while logged in.
 - 27 braces to verify flyers for: (Knee 8) Cryo Pneumatic ROM, Deluxe Universal ROM, Double Upright, Post-Operative, Single Upright, Sized ROM, Suspension Sleeve, Universal ROM; (Back/Lumbar 4) Lumbar Orthosis, Lumbar Sacral w/ Rigid Panels, Lumbar Sacral Orthosis, Baby Cradle; (Hip 2) Hip Orthosis, Bilateral Hip; (Cervical 1) Cervical Collar; (Foot/Ankle 6) Ankle Foot Orthosis, Foot & Ankle Extender Panel, Cryo Pneumatic Ankle, Heel Stabilizer, Short Walking Boot, Tall Walking Boot; (Shoulder/Elbow 4) Cryo Pneumatic Elbow, Cryo Pneumatic Shoulder, Shoulder Abduction, Telescoping ROM Elbow; (Wrist 2) Wrist Hand Finger Orthosis, Wrist Hand Orthosis.
+
+
+---
+
+## QUOTING ENGINE — Vendor onboarding template + compliance-as-a-service (Damon, Pentastar pilot)
+
+**Context:** Building the vendor data-collection template that feeds the quoting engine (vendorSheet.js canonical fields + landed-cost Tier-B fields). Piloting with Pentastar Medical (Owen) — a broker/rep repping 500+ manufacturers, so per-SKU the ACTUAL manufacturer differs. Template v2 lives at Desktop/Unite Medical/Quoting Engine_Suppliers/Unite_Quoting_Engine_Vendor_Template_v2.xlsx (53 cols: 36 required, 14 requested, 3 Unite-fills).
+
+### A. Free APIs to wire as a PRE-Flexport validation layer (all verified live 2026-07-06)
+Goal: cross-check manufacturer claims ourselves instead of relying on them to provide all the right info, and avoid paying Flexport $20/entry to classify SKUs we haven't committed to.
+- **USITC HTS REST (free, no key):** `hts.usitc.gov/reststop/exportList?from=<hts>&to=<hts>&format=JSON` and `/reststop/search?keyword=` — confirms the real US 10-digit HTSUS + MFN/general/other duty. Manufacturers give us their FOREIGN HS code; we validate the US HTSUS. (Verified: 9021.10.00 → "Orthopedic appliances, General: Free".)
+- **openFDA 510k (free):** `api.fda.gov/device/510k.json?search=k_number:<K#>` — exposes the ACTUAL clearance holder behind a broker (verified K210381 → Bq Plus Medical, Shanghai — the real maker behind a Pentastar listing).
+- **openFDA classification (free):** product_code → device class + regulation #.
+- **openFDA registrationlisting (free):** establishment, type (e.g. "Foreign Exporter"), public points of contact / US Agent.
+- **openFDA udi (free)** + **openFDA enforcement (free)** for UDI cross-check + recall history.
+- **exchangerate-api (free, cached):** FOB non-USD → USD (already in PRD-22).
+- **CAVEAT — Section 301 / AD-CVD: NO clean free API.** USITC record has additionalDuties + Chapter 99 (9903.88.xx) refs but resolving "does this HTS+China origin trigger 301 and at what %" is not a single free call. This is exactly what Flexport's $20/entry classification resolves. ARCHITECTURE: free APIs pre-filter + catch obvious errors on all SKUs → Flexport confirms full duty (incl. 301) only on SKUs we're actively quoting. Don't pay $20 x 500.
+
+### B. Flexport (Tier 4) — ALEX ACTION
+- All freight/landed logistics ride on Unite's Flexport account + API. **CONFIRM what the Flexport API pulls today vs. missing** — booking_quotes (LCL/FCL/air)? classification? full duty resolution incl. Section 301 / Chapter 99? 
+- The Flexport Classification Template (Desktop/.../Flexport/HTS Codes/Classification Template.xlsx) requires: price, sku, title, description, product_type, link, image_link, condition, coo, hs_hint (prev classification). ALL already captured in our v2 template → **auto-generate the Flexport classification upload from our vendor template** (no re-keying). Build this export.
+
+### C. FDA listing strategy — CONFIRMED model (Damon), NO compliance issue
+- Unite is importer of record + FDA-registered (est. 3015727296). Onboarding a new mfr's product = Unite logs into FDA portal, adds the product code → FDA assigns the DEVICE LISTING to Unite. So listings are UNITE's (keeps the supplier relationship private at the commercial/listing layer).
+- Pentastar lists 150+ products as "Foreign Exporter" for products it doesn't make; clicking the 510(k) exposes the real maker (public, unavoidable). Unite already does the same — Unite's FDA page shows Unite as "Specification Developer" (braces) + "Complaint File Establishment" (Medava gloves/masks).
+- **MODEL for Pentastar SKUs:** replicate what Unite already does — add each product code under Unite's FDA listing, list Pentastar (or the real mfr) as the foreign exporter/contract mfr behind it. Device listing = Unite's.
+- **HONESTY CAVEAT (not a blocker):** the underlying 510(k) clearance still belongs to the original maker and is PUBLIC. Supplier relationship stays private at the commercial layer, but the 510(k) origin is discoverable by anyone (true for every importer incl. Pentastar). Do NOT promise a customer the 510(k) origin is invisible — it isn't. Positioning holds at the commercial layer; don't overstate secrecy.
+- Per-SKU template therefore captures ACTUAL manufacturer legal name + address (critical since Pentastar is a broker) so our FDA/compliance data attaches to the right entity.
+
+### D. UDI/GUDID + labeling = compliance-as-a-service (FLAG: Alex + Damon — big value-add)
+- Unite holds GUDID/UDI access + GS1 prefix. Class 1 device → often just a UPC (Unite issues via GS1); Class 2 → full GUDID submission. Add **Device Class (1/2)** field (done in v2) — it routes the workflow.
+- Not a quote blocker; it's a POST-quote / PRE-production gate. Build **GUDID requirement TEMPLATES for Class 1 AND Class 2**: customer either (a) "use our standard label template" by uploading the required info, or (b) uploads their own approved label files → Unite checks compliance. Automate as much as possible (case label + product label details).
+- **UPC/label flow:** order committed → gate: Unite generates GS1 UPC from Unite's prefix, OR customer uploads their own UPC image file → generate case + product label details.
+
+### E. PRIVATE-LABEL PLATFORM — STRATEGIC (FLAG: Alex + Damon)
+- Unite needs its OWN private label with TWO customer paths:
+  1. **Unite private label (turnkey):** most/all work done — customer quotes + purchases Unite's private-label product with minimal effort.
+  2. **Full private label (BYO brand):** customer brings their own brand/GPO — we tell them the required files, give them a way to upload, and Unite checks compliance for them.
+- **The big vision:** done right, large labs / hospitals / GPOs can create and bring their OWN private label / GPO product to market THROUGH Unite (sourcing + FDA listing + UDI/GUDID + labeling + import all handled). Huge selling feature — turns the quoting engine into a private-label go-to-market PLATFORM, not just a sourcing tool. Earmark for build planning.
+
+### F. Template column notes (v2)
+- Reframed HTS: vendor gives "Mfr HS Code (their country)"; "US HTSUS" column is Unite-fills (we validate via USITC/Flexport).
+- Added: volume price breaks (qty→FOB tiers), tooling/setup (NRE), sample cost + lead time, unit net weight + unit dims, pallet config, hazmat/lithium flag, sterile/single-use/Rx-OTC/latex/DEHP flags, shelf life, Device Class, 510(k)/exempt, actual mfr name+address, product_type + image_link (for Flexport).
+- 3 Unite-fills (plum): US HTSUS, US Agent, GTIN/UPC — vendor leaves blank.
