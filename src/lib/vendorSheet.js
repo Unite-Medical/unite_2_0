@@ -31,6 +31,19 @@
  *   cross_reference_skus (optional — competitor / customer part numbers this
  *                      product substitutes for; feeds the cross-reference
  *                      SKU database, PRD-29 §4.1.3)
+ *
+ * Tier B (vendor template v2/v4 — landed-cost + compliance inputs):
+ *   manufacturer_model_no, product_type, image_link, price_break_qty_1/2,
+ *   price_break_fob_1/2, tooling_setup_cost_usd, sample_cost_usd,
+ *   sample_lead_time_days, fob_price_valid_until, payment_terms,
+ *   mfr_hs_code (the manufacturer's OWN country HS code — used as a hint,
+ *   never as the final US HTSUS), alternate_factory_locations, device_class,
+ *   premarket_510k_or_exempt, actual_manufacturer_name/_address,
+ *   manufacturer_fda_registration, us_agent, sterile, single_use, rx_or_otc,
+ *   latex, dehp_phthalates, shelf_life_months, certifications,
+ *   unit_net_weight_g, unit_l/w/h_cm, units_per_carton, carton_l/w/h_cm,
+ *   carton_gross_weight_kg, cartons_per_pallet, cartons_per_20ft/40ft,
+ *   shipping_port, incoterm, hazmat_lithium
  */
 
 import { isValidGtin } from './external/gs1.js';
@@ -64,6 +77,55 @@ export const COLUMN_ALIASES = {
   // PRD-29 §4.1.3 — cross-reference SKUs on the manufacturer product sheet
   // (competitor / customer part numbers this product substitutes for).
   cross_reference_skus: ['cross_reference_skus', 'cross reference', 'cross-reference', 'cross ref', 'xref', 'equivalent sku', 'equivalent skus', 'substitute for', 'competitor part number', 'competitor sku', 'oem part number'],
+
+  // --- Tier B — vendor template v2/v4 (landed-cost + compliance) ---------
+  // Product
+  manufacturer_model_no: ['manufacturer_model_no', 'model no', 'model number', 'model #', 'part number', 'part no', 'mfr model', 'item number', 'item no', 'sku'],
+  product_type:          ['product_type', 'product category', 'category', 'category path'],
+  image_link:            ['image_link', 'image url', 'product image url', 'image', 'photo url', 'picture url'],
+  // Pricing
+  price_break_qty_1:     ['price_break_qty_1', 'price break qty 1', 'tier 1 qty', 'volume qty 1'],
+  price_break_fob_1:     ['price_break_fob_1', 'price break fob 1', 'tier 1 price', 'volume price 1'],
+  price_break_qty_2:     ['price_break_qty_2', 'price break qty 2', 'tier 2 qty', 'volume qty 2'],
+  price_break_fob_2:     ['price_break_fob_2', 'price break fob 2', 'tier 2 price', 'volume price 2'],
+  tooling_setup_cost_usd: ['tooling_setup_cost_usd', 'tooling cost', 'setup cost', 'tooling / setup', 'nre', 'mold cost'],
+  sample_cost_usd:       ['sample_cost_usd', 'sample cost', 'sample price'],
+  sample_lead_time_days: ['sample_lead_time_days', 'sample lead time', 'sample lead time (days)'],
+  fob_price_valid_until: ['fob_price_valid_until', 'price valid until', 'valid until', 'price validity', 'quote valid until'],
+  payment_terms:         ['payment_terms', 'payment term', 'payment', 'terms of payment'],
+  // Classification — mfr_hs_code is THEIR country's HS code (hint only).
+  mfr_hs_code:           ['mfr_hs_code', 'mfr hs code', 'manufacturer hs code', 'origin hs code', 'export hs code', 'local hs code', 'your hs code'],
+  alternate_factory_locations: ['alternate_factory_locations', 'alternate factory locations', 'alt factory', 'other factories'],
+  // Compliance
+  device_class:          ['device_class', 'device class', 'fda class', 'fda device class'],
+  premarket_510k_or_exempt: ['premarket_510k_or_exempt', '510k', '510(k)', '510k number', '510(k) # or exempt', 'premarket'],
+  actual_manufacturer_name: ['actual_manufacturer_name', 'actual manufacturer', 'legal manufacturer', 'manufacturer name', 'manufacturer'],
+  actual_manufacturer_address: ['actual_manufacturer_address', 'manufacturer address', 'factory address', 'actual mfr address'],
+  manufacturer_fda_registration: ['manufacturer_fda_registration', 'fda registration', 'fda reg #', 'establishment registration', 'fei number', 'fei'],
+  us_agent:              ['us_agent', 'us agent'],
+  sterile:               ['sterile', 'sterile?', 'sterile y/n', 'supplied sterile'],
+  single_use:            ['single_use', 'single use', 'single-use?', 'disposable'],
+  rx_or_otc:             ['rx_or_otc', 'rx or otc', 'rx/otc', 'prescription or otc'],
+  latex:                 ['latex', 'contains latex', 'latex?', 'natural rubber latex'],
+  dehp_phthalates:       ['dehp_phthalates', 'dehp', 'phthalates', 'dehp/phthalates'],
+  shelf_life_months:     ['shelf_life_months', 'shelf life', 'shelf life (months)', 'expiry months'],
+  certifications:        ['certifications', 'certs', 'certificates', 'quality certifications'],
+  // Logistics (container math)
+  unit_net_weight_g:     ['unit_net_weight_g', 'unit net weight', 'net weight (g)', 'unit weight g'],
+  unit_l_cm:             ['unit_l_cm', 'unit l (cm)', 'unit length cm'],
+  unit_w_cm:             ['unit_w_cm', 'unit w (cm)', 'unit width cm'],
+  unit_h_cm:             ['unit_h_cm', 'unit h (cm)', 'unit height cm'],
+  units_per_carton:      ['units_per_carton', 'units per carton', 'qty per carton', 'pcs per carton', 'pcs/ctn', 'carton pack qty'],
+  carton_l_cm:           ['carton_l_cm', 'carton l (cm)', 'carton length cm', 'ctn l'],
+  carton_w_cm:           ['carton_w_cm', 'carton w (cm)', 'carton width cm', 'ctn w'],
+  carton_h_cm:           ['carton_h_cm', 'carton h (cm)', 'carton height cm', 'ctn h'],
+  carton_gross_weight_kg: ['carton_gross_weight_kg', 'carton gross weight', 'gross weight (kg)', 'carton gw', 'gw kg'],
+  cartons_per_pallet:    ['cartons_per_pallet', 'cartons per pallet', 'ctns per pallet'],
+  cartons_per_20ft:      ['cartons_per_20ft', "cartons per 20'", 'cartons per 20ft', 'ctns per 20', '20ft loadability'],
+  cartons_per_40ft:      ['cartons_per_40ft', "cartons per 40'", 'cartons per 40ft', 'ctns per 40', '40ft loadability', '40hq loadability'],
+  shipping_port:         ['shipping_port', 'fob port', 'port of loading', 'origin port', 'loading port', 'shipping port'],
+  incoterm:              ['incoterm', 'incoterms', 'trade term', 'trade terms'],
+  hazmat_lithium:        ['hazmat_lithium', 'hazmat', 'dangerous goods', 'lithium', 'hazmat / lithium'],
 };
 
 // PRD-18 §5 Layer 2 — multilingual aliases (Chinese / Korean / Vietnamese).
@@ -277,6 +339,29 @@ function str(v) {
   return v == null ? '' : String(v).trim();
 }
 
+/** Coerce Y/N-ish cells ("Y", "yes", "true", "N", "no") → boolean|null. */
+function yn(v) {
+  const s = str(v).toLowerCase();
+  if (!s) return null;
+  if (['y', 'yes', 'true', '1', 'si', '是', '예', 'có'].includes(s)) return true;
+  if (['n', 'no', 'false', '0', '否', '아니오', 'không'].includes(s)) return false;
+  return null;
+}
+
+/**
+ * Normalize an HS/HTS code to dotted form for USITC lookup:
+ * "902110" → "9021.10", "9021.10.00" → "9021.10.00". Returns '' when the
+ * cell doesn't contain at least 4 digits.
+ */
+export function normalizeHsCode(v) {
+  const digits = String(v || '').replace(/\D/g, '');
+  if (digits.length < 4) return '';
+  const parts = [digits.slice(0, 4)];
+  if (digits.length >= 6) parts.push(digits.slice(4, 6));
+  if (digits.length >= 8) parts.push(digits.slice(6, Math.min(10, digits.length)));
+  return parts.join('.');
+}
+
 function hasNonAscii(s) {
   const str = String(s || '');
   for (let i = 0; i < str.length; i++) {
@@ -367,12 +452,56 @@ export function parseVendorSheetRows({ rows, filename = 'sheet.csv', vendorHint 
 
     const fdaProvided = Boolean(str(cell('fda_product_code')));
     const fda = str(cell('fda_product_code')).toUpperCase() || 'KGN';
-    const hts = str(cell('hts_code'));
     const moq = int(cell('moq')) ?? 1;
     const target_qty = int(cell('target_quantity')) ?? moq;
     const gtin = str(cell('gtin'));
     const country = str(cell('country_of_origin'));
     const description = str(cell('description'));
+
+    // HTS resolution (template v2 fix): the vendor's `hts_code` column is
+    // usually BLANK by design (Unite fills the US HTSUS). Never silently
+    // default duty math to 6307.90 when the manufacturer supplied their own
+    // country's HS code — the 6-digit prefix is internationally harmonized,
+    // so it's a legitimate USITC lookup hint pending Unite confirmation.
+    const vendorHts = str(cell('hts_code'));
+    const mfrHs = normalizeHsCode(cell('mfr_hs_code'));
+    let htsResolved;
+    let htsSource;
+    if (vendorHts) {
+      htsResolved = vendorHts;
+      htsSource = 'vendor';
+    } else if (mfrHs) {
+      htsResolved = mfrHs.split('.').slice(0, 2).join('.'); // 6-digit harmonized prefix
+      htsSource = 'mfr_hint';
+      result.warnings.push(`Row ${r + 1} (${name}): US HTSUS pending — using the manufacturer's HS code ${mfrHs} (6-digit prefix) until Unite confirms via USITC/Flexport.`);
+    } else {
+      htsResolved = '6307.90';
+      htsSource = 'default';
+      result.warnings.push(`Row ${r + 1} (${name}): no HS/HTS code provided — defaulting to 6307.90 (7% MFN). Classify before sending the quote.`);
+    }
+    const hts = htsResolved;
+
+    // Tier B — pricing extras
+    const priceBreaks = [];
+    for (const n of [1, 2]) {
+      const q = int(cell(`price_break_qty_${n}`));
+      const p = num(cell(`price_break_fob_${n}`));
+      if (q > 0 && p > 0) priceBreaks.push({ qty: q, fob: p });
+    }
+    priceBreaks.sort((a, b) => a.qty - b.qty);
+
+    // Tier B — carton / container math
+    const cartonL = num(cell('carton_l_cm'));
+    const cartonW = num(cell('carton_w_cm'));
+    const cartonH = num(cell('carton_h_cm'));
+    const cartonCbm = cartonL > 0 && cartonW > 0 && cartonH > 0
+      ? +((cartonL * cartonW * cartonH) / 1e6).toFixed(4)
+      : null;
+
+    const incoterm = str(cell('incoterm')).toUpperCase() || null;
+    if (incoterm && !['FOB', 'EXW', 'FCA', 'CIF', 'CFR', 'DDP', 'DAP'].includes(incoterm)) {
+      result.warnings.push(`Row ${r + 1} (${name}): unrecognized incoterm "${incoterm}" — FOB preferred.`);
+    }
 
     if (gtin) {
       if (!isValidGtin(gtin)) {
@@ -397,7 +526,10 @@ export function parseVendorSheetRows({ rows, filename = 'sheet.csv', vendorHint 
       converted: false,
       moq,
       target_qty,
-      hts: hts || '6307.90',
+      hts,
+      hts_source: htsSource,                       // 'vendor' | 'mfr_hint' | 'default'
+      hts_pending: htsSource !== 'vendor',         // Unite must confirm the US HTSUS
+      mfr_hs_code: mfrHs || null,
       fda_product_code: fda,
       fda_inferred: !fdaProvided,
       gtin: gtin || null,
@@ -408,6 +540,54 @@ export function parseVendorSheetRows({ rows, filename = 'sheet.csv', vendorHint 
       lead_time_days: int(cell('lead_time_days')) ?? null,
       notes: str(cell('notes')) || null,
       needs_translation: hasNonAscii(name) || hasNonAscii(description),
+      cross_reference_skus: str(cell('cross_reference_skus')) || null,
+
+      // --- Tier B: product ---
+      model_no: str(cell('manufacturer_model_no')) || null,
+      product_type: str(cell('product_type')) || null,
+      image_link: str(cell('image_link')) || null,
+
+      // --- Tier B: pricing ---
+      price_breaks: priceBreaks,                   // [{ qty, fob }] ascending
+      tooling_setup_cost_usd: num(cell('tooling_setup_cost_usd')),
+      sample_cost_usd: num(cell('sample_cost_usd')),
+      sample_lead_time_days: int(cell('sample_lead_time_days')),
+      fob_price_valid_until: str(cell('fob_price_valid_until')) || null,
+      payment_terms: str(cell('payment_terms')) || null,
+
+      // --- Tier B: classification / compliance ---
+      alternate_factory_locations: str(cell('alternate_factory_locations')) || null,
+      device_class: str(cell('device_class')) || null,
+      premarket_510k_or_exempt: str(cell('premarket_510k_or_exempt')) || null,
+      actual_manufacturer_name: str(cell('actual_manufacturer_name')) || null,
+      actual_manufacturer_address: str(cell('actual_manufacturer_address')) || null,
+      manufacturer_fda_registration: str(cell('manufacturer_fda_registration')) || null,
+      us_agent: str(cell('us_agent')) || null,
+      sterile: yn(cell('sterile')),
+      single_use: yn(cell('single_use')),
+      rx_or_otc: str(cell('rx_or_otc')).toUpperCase() || null,
+      latex: yn(cell('latex')),
+      dehp_phthalates: yn(cell('dehp_phthalates')),
+      shelf_life_months: int(cell('shelf_life_months')),
+      certifications: str(cell('certifications')) || null,
+
+      // --- Tier B: logistics (container math) ---
+      unit_net_weight_g: num(cell('unit_net_weight_g')),
+      unit_l_cm: num(cell('unit_l_cm')),
+      unit_w_cm: num(cell('unit_w_cm')),
+      unit_h_cm: num(cell('unit_h_cm')),
+      units_per_carton: int(cell('units_per_carton')),
+      carton_l_cm: cartonL,
+      carton_w_cm: cartonW,
+      carton_h_cm: cartonH,
+      carton_cbm: cartonCbm,
+      carton_gross_weight_kg: num(cell('carton_gross_weight_kg')),
+      cartons_per_pallet: int(cell('cartons_per_pallet')),
+      cartons_per_20ft: int(cell('cartons_per_20ft')),
+      cartons_per_40ft: int(cell('cartons_per_40ft')),
+      shipping_port: str(cell('shipping_port')) || null,
+      incoterm,
+      hazmat_lithium: yn(cell('hazmat_lithium')),
     });
     result.totals.accepted += 1;
   }
@@ -418,6 +598,38 @@ export function parseVendorSheetRows({ rows, filename = 'sheet.csv', vendorHint 
 
   result.ok = result.lines.length > 0;
   return result;
+}
+
+/**
+ * Real shipment CBM + weight from the vendor's carton data (Tier B).
+ * Lines with carton dims use exact container math (qty → cartons → CBM /
+ * gross weight); lines without fall back to the old per-unit estimate.
+ *
+ * @returns {{ cbm:number, weight_kg:number, exact_lines:number, estimated_lines:number }}
+ */
+export function computeShipmentMetrics(lines = []) {
+  let cbm = 0;
+  let weightKg = 0;
+  let exact = 0;
+  for (const l of lines) {
+    const qty = l.target_qty || l.moq || 1;
+    if (l.units_per_carton > 0 && l.carton_cbm > 0) {
+      const cartons = Math.ceil(qty / l.units_per_carton);
+      cbm += cartons * l.carton_cbm;
+      // ~120 kg/CBM is a sane density fallback when gross weight is missing.
+      weightKg += cartons * (l.carton_gross_weight_kg > 0 ? l.carton_gross_weight_kg : l.carton_cbm * 120);
+      exact += 1;
+    } else {
+      cbm += qty * 0.0008;
+      weightKg += qty * 0.12;
+    }
+  }
+  return {
+    cbm: Math.max(1, +cbm.toFixed(2)),
+    weight_kg: Math.max(40, Math.round(weightKg)),
+    exact_lines: exact,
+    estimated_lines: lines.length - exact,
+  };
 }
 
 /** CSV text entrypoint (kept for paste-in flows + tests). */

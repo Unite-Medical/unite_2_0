@@ -29,6 +29,10 @@ import { delay, uid } from './format.js';
 import { loadMarginPolicy, marginForTier, applyMargin } from './marginPolicy.js';
 import { isValidGtin } from './external/gs1.js';
 import { ai } from './ai/client.js';
+import { section301Lookup } from './external/section301.js';
+import { portCodeFor } from './external/flexport.js';
+import { computeShipmentMetrics } from './vendorSheet.js';
+import { buildOfferVariants, fobAtQuantity, matchLineToStock } from './offers.js';
 
 /**
  * Fill missing FDA product codes via Claude (PRD-19). Lines flagged
@@ -72,14 +76,6 @@ export const WAREHOUSE_RECEIVING_PER_UNIT = 0.25;
 export const MARGIN_FLOOR = 0.10;
 // How total freight decomposes into landed-cost components.
 const FREIGHT_SPLIT = { ocean: 0.78, brokerage: 0.14, drayage: 0.08 };
-
-/** Estimate shipment CBM from line items (rough; real CBM comes from the
- *  vendor's packaging data when present). */
-function estimateCbm(lines) {
-  const units = lines.reduce((a, l) => a + (l.target_qty || l.moq || 1), 0);
-  // ~0.0008 m³/unit average for mixed medical disposables, min 1 CBM.
-  return Math.max(1, +(units * 0.0008).toFixed(2));
-}
 
 /** Normalize one Flexport quote response into a comparable option. */
 function toFreightOption(q) {
@@ -179,21 +175,42 @@ export async function runQuotingEngine({
   const cleared = fda.filter((r) => r.results.length).length;
   onProgress({ step: 'openfda', label: `${cleared}/${lines.length} cleared` });
 
-  // 2) HTS duty rates
+  // 2) HTS duty rates — USITC MFN + Section 301 pre-filter (briefing §3).
+  //    The 301 layer is free + deterministic; Flexport classification
+  //    confirms the full duty before a quote is committed.
   onProgress({ step: 'hts', label: 'Pulling USITC duty rates' });
   const dutyRates = await Promise.all(lines.map((l) => hts.lookup(l.hts || '6307.90')));
-  const avgDuty = dutyRates.reduce((a, r) => a + r.mfn, 0) / dutyRates.length;
-  onProgress({ step: 'hts', label: `Avg ${avgDuty.toFixed(1)}%` });
+  const s301 = lines.map((l, i) => section301Lookup(dutyRates[i].hts_code || l.hts, l.country_of_origin));
+  const avgDuty = dutyRates.reduce((a, r, i) => a + r.mfn + (s301[i].applies ? s301[i].rate_pct : 0), 0) / dutyRates.length;
+  const s301Count = s301.filter((s) => s.applies).length;
+  onProgress({
+    step: 'hts',
+    label: `Avg ${avgDuty.toFixed(1)}% incl. duties${s301Count ? ` · Section 301 pre-filter hit ${s301Count} line(s) — Flexport confirms before commit` : ''}`,
+  });
 
   // 3) Freight — LCL vs FCL vs AIR, all options kept for the desk.
-  onProgress({ step: 'flexport', label: 'Requesting freight quotes (LCL + FCL + AIR)' });
-  const cbm = estimateCbm(lines);
+  //    CBM/weight use the vendor's real carton data when present (Tier B);
+  //    origin resolves from the sheet's shipping_port.
   const totalUnits = Math.max(1, lines.reduce((a, l) => a + (l.target_qty || l.moq || 1), 0));
-  const weightKg = Math.max(40, Math.round(totalUnits * 0.12));
+  const metrics = computeShipmentMetrics(lines);
+  const cbm = metrics.cbm;
+  const weightKg = metrics.weight_kg;
+  const portCounts = new Map();
+  for (const l of lines) {
+    if (!l.shipping_port) continue;
+    portCounts.set(l.shipping_port, (portCounts.get(l.shipping_port) || 0) + 1);
+  }
+  const topPort = [...portCounts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] || '';
+  const originPort = portCodeFor(topPort, 'CNSHA');
+  onProgress({
+    step: 'flexport',
+    label: `Requesting freight quotes (LCL + FCL + AIR) · ${originPort} → USATL · ${cbm} CBM / ${weightKg} kg`
+      + (metrics.exact_lines ? ` (carton math on ${metrics.exact_lines}/${lines.length} lines)` : ' (estimated)'),
+  });
   const [lcl, fcl, air] = await Promise.all([
-    flexport.getFreightQuote({ origin: 'CNSHA', destination: 'USATL', mode: 'LCL', cbm, weight_kg: weightKg }),
-    flexport.getFreightQuote({ origin: 'CNSHA', destination: 'USATL', mode: 'FCL', cbm, weight_kg: weightKg }),
-    flexport.getFreightQuote({ origin: 'CNSHA', destination: 'USATL', mode: 'AIR', cbm, weight_kg: weightKg }),
+    flexport.getFreightQuote({ origin: originPort, destination: 'USATL', mode: 'LCL', cbm, weight_kg: weightKg }),
+    flexport.getFreightQuote({ origin: originPort, destination: 'USATL', mode: 'FCL', cbm, weight_kg: weightKg }),
+    flexport.getFreightQuote({ origin: originPort, destination: 'USATL', mode: 'AIR', cbm, weight_kg: weightKg }),
   ]);
   const freightOptions = [lcl, fcl, air].map(toFreightOption).filter(Boolean);
   const freight = selectFreightOption(freightOptions, freight_preference)
@@ -204,13 +221,19 @@ export async function runQuotingEngine({
   const { ocean_freight: oceanPU, customs_brokerage: brokeragePU, drayage: drayagePU } = freightComponents(freight, totalUnits);
   const receivingPU = +Number(warehouse_receiving_per_unit || 0).toFixed(4);
 
-  // 4) Landed cost (6 components) + tier margin + floor
+  // 4) Landed cost (6 components) + tier margin + floor.
+  //    Duty = USITC MFN + Section 301 pre-filter; FOB honors the vendor's
+  //    price breaks at the quoted quantity (Tier B).
   onProgress({ step: 'margin', label: `Applying ${Math.round(margin * 100)}% margin (tier ${tier})` });
   const priced = lines.map((l, i) => {
-    const dutyPct = dutyRates[i].mfn / 100;
-    const dutyPU = +(l.fob * dutyPct).toFixed(4);
+    const qty = l.target_qty || l.moq || 1;
+    const fobEffective = fobAtQuantity(l, qty);
+    const mfnPct = dutyRates[i].mfn;
+    const s301Pct = s301[i].applies ? s301[i].rate_pct : 0;
+    const dutyPct = (mfnPct + s301Pct) / 100;
+    const dutyPU = +(fobEffective * dutyPct).toFixed(4);
     const components = {
-      fob: +l.fob.toFixed(4),
+      fob: +fobEffective.toFixed(4),
       duty: dutyPU,
       ocean_freight: oceanPU,
       customs_brokerage: brokeragePU,
@@ -218,11 +241,17 @@ export async function runQuotingEngine({
       warehouse_receiving: receivingPU,
     };
     const { landed, sell, floored } = priceLine(components, margin);
-    const qty = l.target_qty || l.moq || 1;
     const fdaHit = fda[i]?.results?.[0] || null;
     return {
       ...l,
-      duty_pct: dutyRates[i].mfn,
+      fob_effective: +fobEffective.toFixed(4),
+      price_break_applied: fobEffective !== l.fob,
+      duty_pct: +(mfnPct + s301Pct).toFixed(2),
+      duty_components: { mfn: mfnPct, section_301: s301Pct },
+      section_301_list: s301[i].list,
+      chapter99: s301[i].chapter99,
+      // False until Flexport classification confirms (incl. exclusions).
+      duty_confirmed: !s301[i].needs_confirmation && !l.hts_pending,
       hts_desc: dutyRates[i].description,
       cost_components: components,
       // Per-line compliance evidence (PRD-16 compliance panel).
@@ -237,6 +266,23 @@ export async function runQuotingEngine({
       ext_sell: +(sell * qty).toFixed(2),
     };
   });
+
+  // 4b) SKU-match + offer variants (briefing §6) — every line carries the
+  //     Unite Ready / Unite Custom side-by-side; in-stock buy-now appears
+  //     only when the match hits real availability.
+  onProgress({ step: 'offers', label: 'SKU-matching against Unite stock + building Ready/Custom offers' });
+  let stockHits = 0;
+  for (const p of priced) {
+    const stockMatch = matchLineToStock(p);
+    p.stock_match = stockMatch;
+    p.offers = buildOfferVariants({
+      line: p, priced: p, margin,
+      transitDays: freight.transit_days,
+      stockMatch,
+    });
+    if (stockMatch && stockMatch.available > 0) stockHits += 1;
+  }
+  if (stockHits) onProgress({ step: 'offers', label: `${stockHits} line(s) in stock now — buy-now offered` });
 
   const total = +priced.reduce((a, p) => a + p.ext_sell, 0).toFixed(2);
   const totalLanded = +priced.reduce((a, p) => a + p.landed_per_unit * (p.target_qty || p.moq || 1), 0).toFixed(2);
@@ -266,6 +312,14 @@ export async function runQuotingEngine({
     total_landed: totalLanded,
     total_units: totalUnits,
     margin_target: margin,
+    origin_port: originPort,
+    shipment_cbm: cbm,
+    shipment_weight_kg: weightKg,
+    // Any line with unconfirmed HTS/301 flags the whole quote for the
+    // Flexport classification pass before it can be committed.
+    duty_confirmed: priced.every((p) => p.duty_confirmed),
+    section_301_lines: priced.filter((p) => (p.duty_components?.section_301 || 0) > 0).length,
+    stock_match_lines: stockHits,
     freight_mode: freight.mode,
     freight_total: +Number(freight.total_usd).toFixed(2),
     freight_quote_id: freight.quote_id,
@@ -392,14 +446,15 @@ export async function refreshQuote(quoteId, { actor = 'rep' } = {}) {
   if (['accepted', 'declined'].includes(quote.status)) return { ok: false, reason: 'locked' };
 
   const items = db.list('quote_items', { where: { quote_id: quoteId } });
-  const totalUnits = Math.max(1, quote.total_units || items.reduce((a, it) => a + (it.target_qty || it.moq || 1), 0));
-  const cbm = Math.max(1, +(totalUnits * 0.0008).toFixed(2));
-  const weightKg = Math.max(40, Math.round(totalUnits * 0.12));
+  // Items carry their Tier-B carton fields, so refresh reuses real
+  // container math when the original sheet provided it.
+  const { cbm, weight_kg: weightKg } = computeShipmentMetrics(items);
+  const origin = quote.origin_port || 'CNSHA';
 
   const [lcl, fcl, air] = await Promise.all([
-    flexport.getFreightQuote({ origin: 'CNSHA', destination: 'USATL', mode: 'LCL', cbm, weight_kg: weightKg }),
-    flexport.getFreightQuote({ origin: 'CNSHA', destination: 'USATL', mode: 'FCL', cbm, weight_kg: weightKg }),
-    flexport.getFreightQuote({ origin: 'CNSHA', destination: 'USATL', mode: 'AIR', cbm, weight_kg: weightKg }),
+    flexport.getFreightQuote({ origin, destination: 'USATL', mode: 'LCL', cbm, weight_kg: weightKg }),
+    flexport.getFreightQuote({ origin, destination: 'USATL', mode: 'FCL', cbm, weight_kg: weightKg }),
+    flexport.getFreightQuote({ origin, destination: 'USATL', mode: 'AIR', cbm, weight_kg: weightKg }),
   ]);
   const freightOptions = [lcl, fcl, air].map(toFreightOption).filter(Boolean);
   const freight = selectFreightOption(freightOptions, quote.freight_mode) || freightOptions[0];
@@ -425,6 +480,76 @@ export async function refreshQuote(quoteId, { actor = 'rep' } = {}) {
   });
   db.insert('audit_log', { id: uid('aud'), kind: 'quote.refreshed', ref_id: quoteId, payload: { actor, freight_mode: freight.mode, revision: (quote.revision || 1) + 1 } });
   return { ok: repriced.ok, quote: db.get('quotes', quoteId), items: repriced.items };
+}
+
+/**
+ * Confirm duty via Flexport classification (briefing §3/§4) — the PAID
+ * step, run only on quotes we're actively committing (never $20 × 500).
+ * Free pre-filter values (USITC MFN + 301 table) are replaced with the
+ * confirmed classification; every line is repriced from its stored
+ * components and the quote's `duty_confirmed` flag flips.
+ */
+export async function confirmQuoteDuty(quoteId, { actor = 'rep' } = {}) {
+  const quote = db.get('quotes', quoteId);
+  if (!quote) return { ok: false, reason: 'not_found' };
+  if (['accepted', 'declined'].includes(quote.status)) return { ok: false, reason: 'locked' };
+
+  const items = db.list('quote_items', { where: { quote_id: quoteId } });
+  if (!items.length) return { ok: false, reason: 'no_items' };
+
+  const { data: classified } = await flexport.classifyProducts(items.map((it) => ({
+    sku: it.model_no || it.gtin || it.name,
+    title: it.name,
+    description: it.description,
+    product_type: it.product_type,
+    coo: it.country_of_origin,
+    hs_hint: it.mfr_hs_code || it.hts,
+    price: it.fob,
+  })));
+
+  const bySku = new Map(classified.map((c) => [c.sku, c]));
+  let confirmed = 0;
+  for (const it of items) {
+    const c = bySku.get(it.model_no || it.gtin || it.name);
+    if (!c) continue;
+    const fob = Number(it.fob_effective ?? it.fob) || 0;
+    const components = {
+      ...(it.cost_components || {}),
+      duty: +(fob * (c.duty_pct / 100)).toFixed(4),
+    };
+    const { landed, sell, floored } = priceLine(components, it.margin_pct ?? quote.margin_target ?? TARGET_MARGIN);
+    const qty = it.target_qty || it.moq || 1;
+    db.update('quote_items', it.id, {
+      hts: c.hts_code || it.hts,
+      hts_pending: false,
+      duty_pct: c.duty_pct,
+      duty_components: { mfn: c.mfn_pct, section_301: c.section_301_pct },
+      chapter99: c.chapter99,
+      duty_confirmed: Boolean(c.confirmed),
+      cost_components: components,
+      landed_per_unit: landed,
+      margin_floored: floored,
+      sell_per_unit: sell,
+      ext_sell: +(sell * qty).toFixed(2),
+    });
+    if (c.confirmed) confirmed += 1;
+  }
+
+  const fresh = db.list('quote_items', { where: { quote_id: quoteId } });
+  const { total, landed } = quoteTotalsFromItems(fresh);
+  db.update('quotes', quoteId, {
+    total,
+    total_landed: landed,
+    duty_confirmed: fresh.every((it) => it.duty_confirmed),
+    section_301_lines: fresh.filter((it) => (it.duty_components?.section_301 || 0) > 0).length,
+  });
+  db.insert('audit_log', {
+    id: uid('aud'),
+    kind: 'quote.duty_confirmed',
+    ref_id: quoteId,
+    payload: { actor, lines: items.length, confirmed, total },
+  });
+  return { ok: true, quote: db.get('quotes', quoteId), items: fresh, confirmed };
 }
 
 /**

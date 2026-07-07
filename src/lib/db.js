@@ -17,7 +17,7 @@ import { seed } from './seed.js';
  */
 
 const STORAGE_KEY = 'um.db.v1';
-const SCHEMA_VERSION = 15;
+const SCHEMA_VERSION = 16;
 
 const TABLES = [
   'profiles', 'organizations', 'organization_users', 'addresses',
@@ -84,6 +84,9 @@ const TABLES = [
   // PRD-29 §4.1: customer-item ↔ Unite-SKU cross-reference DB (data moat),
   // fed by shortage-list uploads + customer-approved substitutes
   'cross_references',
+  // Briefing §6: "no quote returned" feedback loop — every requested item
+  // we couldn't quote is a demand signal, captured + worked, never dropped
+  'quote_misses',
 ];
 
 function load() {

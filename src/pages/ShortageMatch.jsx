@@ -27,6 +27,7 @@ import { db } from '../lib/db.js';
 import { uid } from '../lib/format.js';
 import { cartStore } from '../store/cart.js';
 import { matchShortageList, captureCrossReferences } from '../lib/matching.js';
+import { captureShortageListMisses } from '../lib/quoteMisses.js';
 
 const SAMPLE = `12 x nitrile exam gloves, large
 Influenza A&B rapid test 25ct — 4 boxes
@@ -167,6 +168,9 @@ export function ShortageMatch() {
     // Cross-reference SKU capture (PRD-29 §4.1.3) — every uploaded list
     // enriches the customer-item ↔ Unite-SKU database.
     captureCrossReferences({ lines: result.lines, requestId: id, email: email.trim() });
+    // "No quote returned" feedback loop (briefing §6): unmatched /
+    // low-confidence lines are demand signals — never silently dropped.
+    captureShortageListMisses({ lines: result.lines, customer_name: org.trim() || email.trim(), email: email.trim(), request_id: id });
     db.insert('leads', {
       id: uid('lead'),
       name: org.trim() || email.trim(),

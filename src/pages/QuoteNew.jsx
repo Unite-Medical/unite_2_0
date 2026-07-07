@@ -29,6 +29,9 @@ import { runQuotingEngine, resolveOrgTier, compareVendorOffers } from '../lib/qu
 import { loadMarginPolicy, marginForTier } from '../lib/marginPolicy.js';
 import { generateTemplateXlsx, generateTemplateCsv, TEMPLATE_VERSION } from '../lib/quoteTemplate.js';
 import { downloadBlob } from '../lib/xlsxWrite.js';
+import { generateFlexportClassificationCsv } from '../lib/flexportExport.js';
+import { matchLineToStock } from '../lib/offers.js';
+import { captureParserSkips } from '../lib/quoteMisses.js';
 
 const SAMPLE_CSV = `product_name,fda_product_code,hts_code,fob_price_usd,moq,target_quantity,country_of_origin,gtin
 Compression stockings 20-30mmHg,NHM,6115.10,2.40,5000,5000,CN,
@@ -98,6 +101,13 @@ export function QuoteNew() {
   const comparison = useMemo(
     () => (offers.length >= 2 ? compareVendorOffers(offers) : null),
     [offers],
+  );
+
+  // SKU-match preview (briefing §6): flag lines Unite already stocks so
+  // the desk sees the buy-now candidates before the engine even runs.
+  const stockMatches = useMemo(
+    () => (parsed?.lines || []).map((l) => { try { return matchLineToStock(l); } catch { return null; } }),
+    [parsed],
   );
 
   function addToComparison() {
@@ -196,10 +206,19 @@ export function QuoteNew() {
     }
   }
 
+  function exportFlexportCsv() {
+    if (!parsed?.ok || !parsed.lines.length) return;
+    const csv = generateFlexportClassificationCsv(parsed.lines);
+    downloadBlob(new Blob([csv], { type: 'text/csv' }), `flexport-classification-${(vendorName || parsed.vendor || 'vendor').replace(/\s+/g, '-').toLowerCase()}.csv`);
+  }
+
   async function runEngine() {
     if (!parsed?.ok) return;
     setRunning(true); setError(null); setProgress([]);
     try {
+      // Feedback loop (briefing §6): rows the parser skipped are products
+      // the vendor listed that never reach the quote — capture as misses.
+      captureParserSkips({ parseResult: parsed, vendor: vendorName || parsed.vendor });
       const res = await runQuotingEngine({
         vendor: vendorName || parsed.vendor,
         customer_name: customerName,
@@ -292,9 +311,14 @@ export function QuoteNew() {
                       {parsed.totals.accepted}/{parsed.totals.rows} lines accepted
                     </span>
                     {parsed.ok && parsed.lines.length > 0 && (
-                      <button type="button" onClick={addToComparison} style={btnGhost(D)} title="Stage this sheet and upload another vendor's to compare landed cost per product">
-                        + Add to vendor comparison
-                      </button>
+                      <>
+                        <button type="button" onClick={exportFlexportCsv} style={btnGhost(D)} title="Generate the Flexport classification upload (price, sku, title, description, product_type, link, image_link, condition, coo, hs_hint) straight from this sheet — no re-keying">
+                          Flexport classification CSV
+                        </button>
+                        <button type="button" onClick={addToComparison} style={btnGhost(D)} title="Stage this sheet and upload another vendor's to compare landed cost per product">
+                          + Add to vendor comparison
+                        </button>
+                      </>
                     )}
                   </div>
 
@@ -360,7 +384,7 @@ export function QuoteNew() {
                       <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12, minWidth: 720 }}>
                         <thead>
                           <tr style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>
-                            {['PRODUCT', 'FDA', 'HTS', 'FOB', 'MOQ', 'QTY', 'GTIN', 'COO'].map((h) => (
+                            {['PRODUCT', 'FDA', 'HTS', 'FOB', 'MOQ', 'QTY', 'GTIN', 'COO', 'STOCK'].map((h) => (
                               <th key={h} style={{ textAlign: 'left', padding: '8px 6px', borderBottom: `1px solid ${D.line}` }}>{h}</th>
                             ))}
                           </tr>
@@ -378,12 +402,28 @@ export function QuoteNew() {
                                 )}
                               </td>
                               <td style={{ padding: '8px 6px', fontFamily: D.mono }}>{l.fda_product_code}</td>
-                              <td style={{ padding: '8px 6px', fontFamily: D.mono }}>{l.hts}</td>
+                              <td style={{ padding: '8px 6px', fontFamily: D.mono }}>
+                                {l.hts}
+                                {l.hts_pending && (
+                                  <span title={l.hts_source === 'mfr_hint' ? `Manufacturer's HS code ${l.mfr_hs_code} — Unite confirms the US HTSUS` : 'No HS code provided — classify before sending'} style={{ marginLeft: 5, fontFamily: D.mono, fontSize: 9, color: '#7c5b1d', background: '#fdf6e3', borderRadius: 4, padding: '1px 5px' }}>
+                                    {l.hts_source === 'mfr_hint' ? 'hint' : 'default'}
+                                  </span>
+                                )}
+                              </td>
                               <td style={{ padding: '8px 6px', fontFamily: D.mono }}>${l.fob.toFixed(2)}</td>
                               <td style={{ padding: '8px 6px', fontFamily: D.mono }}>{l.moq}</td>
                               <td style={{ padding: '8px 6px', fontFamily: D.mono }}>{l.target_qty}</td>
                               <td style={{ padding: '8px 6px', fontFamily: D.mono, fontSize: 10, color: D.ink3 }}>{l.gtin || '—'}</td>
                               <td style={{ padding: '8px 6px', fontFamily: D.mono, fontSize: 10, color: D.ink3 }}>{l.country_of_origin || '—'}</td>
+                              <td style={{ padding: '8px 6px', fontFamily: D.mono, fontSize: 10 }}>
+                                {stockMatches[i]?.available > 0 ? (
+                                  <span title={`${stockMatches[i].name} — ${stockMatches[i].available} available now`} style={{ color: '#1f7a4d', background: '#e3f5ec', borderRadius: 4, padding: '2px 6px' }}>
+                                    IN STOCK ({stockMatches[i].available})
+                                  </span>
+                                ) : stockMatches[i] ? (
+                                  <span title={`${stockMatches[i].name} — catalog match, no shelf stock`} style={{ color: D.ink3 }}>match</span>
+                                ) : '—'}
+                              </td>
                             </tr>
                           ))}
                         </tbody>

@@ -71,8 +71,9 @@ class PhaseResult:
 
 SOURCE_GLOBS = ("**/*.jsx", "**/*.js", "**/*.html", "**/*.json", "**/*.css")
 
-# Files that legitimately discuss the old copy (PRD, source spec, scripts).
-DOC_EXEMPT_DIRS = {"node_modules", "dist", ".git", "docs", "scripts", "prompts", "forecasting"}
+# Files that legitimately discuss the old copy (PRD, source spec, scripts,
+# automated tests — none of these are customer-facing).
+DOC_EXEMPT_DIRS = {"node_modules", "dist", ".git", "docs", "scripts", "prompts", "forecasting", "tests"}
 
 # Files where vendor / tool names (ShipStation, Cin7, QBO, Flexport)
 # are legitimately required. The rule targets *customer-facing marketing

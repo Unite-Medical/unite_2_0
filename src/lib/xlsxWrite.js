@@ -27,7 +27,12 @@ const NS_PKG_RELS = 'http://schemas.openxmlformats.org/package/2006/relationship
 const NS_CONTENT_TYPES = 'http://schemas.openxmlformats.org/package/2006/content-types';
 
 // Named styles → cellXfs index (must match buildStyles()).
-const STYLE_INDEX = { default: 0, header: 1, title: 2, text: 3, subtle: 4, sample: 5 };
+// headerReq/headerOpt/headerUnite are the vendor-template requirement
+// colors (red = required, amber = requested, plum = Unite fills).
+const STYLE_INDEX = {
+  default: 0, header: 1, title: 2, text: 3, subtle: 4, sample: 5,
+  headerReq: 6, headerOpt: 7, headerUnite: 8,
+};
 
 // ---------------------------------------------------------------------------
 // XML helpers
@@ -159,24 +164,30 @@ function buildStyles() {
     + '<font><b/><sz val="16"/><name val="Calibri"/></font>'
     + '<font><i/><sz val="11"/><color rgb="FF6B7280"/><name val="Calibri"/></font>'
     + '</fonts>'
-    + '<fills count="4">'
+    + '<fills count="7">'
     + '<fill><patternFill patternType="none"/></fill>'
     + '<fill><patternFill patternType="gray125"/></fill>'
     + '<fill><patternFill patternType="solid"><fgColor rgb="FF5B2A4A"/><bgColor indexed="64"/></patternFill></fill>'
     + '<fill><patternFill patternType="solid"><fgColor rgb="FFF5EFF3"/><bgColor indexed="64"/></patternFill></fill>'
+    + '<fill><patternFill patternType="solid"><fgColor rgb="FFB8502C"/><bgColor indexed="64"/></patternFill></fill>'
+    + '<fill><patternFill patternType="solid"><fgColor rgb="FFE0A54A"/><bgColor indexed="64"/></patternFill></fill>'
+    + '<fill><patternFill patternType="solid"><fgColor rgb="FF5E2963"/><bgColor indexed="64"/></patternFill></fill>'
     + '</fills>'
     + '<borders count="2">'
     + '<border><left/><right/><top/><bottom/><diagonal/></border>'
     + '<border><left/><right/><top/><bottom style="thin"><color rgb="FFBFA8B8"/></bottom><diagonal/></border>'
     + '</borders>'
     + '<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>'
-    + '<cellXfs count="6">'
+    + '<cellXfs count="9">'
     + '<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>'
     + '<xf numFmtId="0" fontId="2" fillId="2" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="left" vertical="center"/></xf>'
     + '<xf numFmtId="0" fontId="3" fillId="0" borderId="0" xfId="0" applyFont="1"/>'
     + '<xf numFmtId="49" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/>'
     + '<xf numFmtId="0" fontId="4" fillId="0" borderId="0" xfId="0" applyFont="1"/>'
     + '<xf numFmtId="0" fontId="0" fillId="3" borderId="0" xfId="0" applyFill="1"/>'
+    + '<xf numFmtId="0" fontId="2" fillId="4" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="left" vertical="center"/></xf>'
+    + '<xf numFmtId="0" fontId="1" fillId="5" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="left" vertical="center"/></xf>'
+    + '<xf numFmtId="0" fontId="2" fillId="6" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="left" vertical="center"/></xf>'
     + '</cellXfs>'
     + '<cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles>'
     + '</styleSheet>';
