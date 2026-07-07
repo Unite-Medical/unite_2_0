@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { D } from '../../tokens.js';
 import { AdminShell } from '../../components/layout/AdminShell.jsx';
 import { db } from '../../lib/db.js';
@@ -6,6 +6,9 @@ import { fmt } from '../../lib/format.js';
 import { useViewport } from '../../lib/viewport.js';
 import { consignment } from '../../lib/consignment.js';
 import { shippingRates } from '../../lib/shippingRates.js';
+
+// Load-time timestamp for near-expiry checks; render must stay pure.
+const PAGE_LOADED_AT = Date.now();
 
 // PRD-27 §9 — admin consignment console: per-distributor stock, scan-event
 // audit, markup overrides, settlement.
@@ -24,14 +27,16 @@ export function AdminConsignment() {
   const markupRows = db.useTable('shipping_markup_config');
   const globalMarkup = markupRows.find((r) => r.scope === 'global')?.markup_pct ?? 10;
 
-  const inventory = useMemo(() => (active ? consignment.inventoryFor(active.id) : []), [active, distProducts]);
+  // useTable subscriptions above rerender this component on any relevant
+  // table change, so recomputing inline stays fresh without memo deps.
+  const inventory = active ? consignment.inventoryFor(active.id) : [];
   const settlement = active ? consignment.settlementFor(active.id) : { movements: [], owed: 0, settled: 0, units: 0 };
   const scans = active ? db.list('scan_events').filter((s) => {
     const lot = s.inventory_lot_id ? db.get('inventory_lots', s.inventory_lot_id) : null;
     return lot?.owner_org_id === active.id;
   }).slice(-10).reverse() : [];
   const overridePct = active ? markupRows.find((r) => r.scope === 'distributor' && r.owner_org_id === active.id)?.markup_pct : null;
-  const soon = (d) => d && (new Date(d) - Date.now()) < 60 * 86400000;
+  const soon = (d) => d && (new Date(d) - PAGE_LOADED_AT) < 60 * 86400000;
 
   return (
     <AdminShell active="consignment">

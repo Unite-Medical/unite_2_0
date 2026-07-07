@@ -13,6 +13,9 @@ import { poIngestion } from '../lib/poIngestion.js';
 import { placeOrder } from '../lib/orders.js';
 import { resolveCustomerPrice } from '../lib/customerPricing.js';
 
+// Load-time timestamp for near-expiry checks; render must stay pure.
+const PAGE_LOADED_AT = Date.now();
+
 const TABS = [['inventory', 'My inventory'], ['po', 'Upload PO'], ['shipping', 'Shipping'], ['settlement', 'Settlement'], ['documents', 'Documents']];
 
 function resolveDistributorOrg(session) {
@@ -57,7 +60,7 @@ export function DistributorPortal() {
 function Inventory({ org }) {
   db.useTable('inventory_lots');
   const inv = consignment.inventoryFor(org.id);
-  const soon = (d) => d && (new Date(d) - Date.now()) < 60 * 86400000;
+  const soon = (d) => d && (new Date(d) - PAGE_LOADED_AT) < 60 * 86400000;
   return (
     <div style={{ background: D.card, border: `1px solid ${D.line}`, borderRadius: 12, overflow: 'hidden' }}>
       <div className="um-scroll-x">
