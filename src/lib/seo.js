@@ -168,7 +168,7 @@ export function organizationSchema() {
       { '@type': 'PropertyValue', propertyID: 'FDA Establishment Registration', value: '3015727296' },
       { '@type': 'PropertyValue', propertyID: 'CAGE', value: '8MK70' },
       { '@type': 'PropertyValue', propertyID: 'DUNS', value: '117553945' },
-      { '@type': 'PropertyValue', propertyID: 'BPA', value: '36F79725D0203' },
+      { '@type': 'PropertyValue', propertyID: 'BPA', value: '36C24123A0077' },
     ],
   };
 }

@@ -97,11 +97,11 @@ const STATIC_ROUTES = {
   },
   '/government': {
     title: 'Government & VA',
-    description: 'Veteran-owned, FDA-registered supplier on BPA 36F79725D0203. TAA and Berry compliant products for VA, DoD, and federal buyers.',
+    description: 'Veteran-owned, FDA-registered supplier on MSPV BPA 36C24123A0077. TAA and Berry compliant products for VA, DoD, and federal buyers.',
   },
   '/procurement': {
     title: 'Procurement credentials',
-    description: 'CAGE 8MK70, DUNS 117553945, FDA establishment 3015727296, BPA 36F79725D0203 — everything your contracting officer needs.',
+    description: 'CAGE 8MK70, DUNS 117553945, FDA establishment 3015727296, MSPV BPA 36C24123A0077 — everything your contracting officer needs.',
   },
   '/about': {
     title: 'About',

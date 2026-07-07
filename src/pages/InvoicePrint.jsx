@@ -91,7 +91,7 @@ export function InvoicePrint() {
             <div className="um-print-mono">UNITE MEDICAL · INVOICE</div>
             <h1 className="um-print-h1" style={{ marginTop: 6 }}>{invoice.id}</h1>
             <div style={{ fontSize: 13, color: D.ink2, marginTop: 8, lineHeight: 1.6 }}>
-              FDA 3015727296 · CAGE 8MK70 · BPA 36F79725D0203<br />
+              FDA 3015727296 · CAGE 8MK70 · MSPV BPA 36C24123A0077<br />
               1487 Trae Lane, Lithia Springs, GA 30122 · 833.868.6483
             </div>
           </div>

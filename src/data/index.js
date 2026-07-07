@@ -55,7 +55,7 @@ export const SEGMENTS = [
 // the no-longer-trustworthy "median ship to ASC" reframed.
 export const TRUST_METRICS = [
   { big: '500M+', small: 'Units Distributed' },
-  { big: '36F79725D0203', small: 'BPA' },
+  { big: '36C24123A0077', small: 'MSPV BPA' },
   { big: '3015727296', small: 'FDA Registration' },
   { big: 'Same-day', small: 'Shipping · Before 2pm EST' },
 ];

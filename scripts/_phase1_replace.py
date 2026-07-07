@@ -50,10 +50,10 @@ PHONE_NUMS = ("0142", "0180", "0219", "0255", "0277")
 RULES: list[tuple[re.Pattern[str], str]] = []
 
 # Credentials
-RULES.append((re.compile(r"36C24123A0077"), "36F79725D0203"))
-RULES.append((re.compile(r"MSPV BPA"), "BPA"))
+# Per Damon 2026-06-29: contract number is 36C24123A0077, labeled "MSPV BPA".
+RULES.append((re.compile(r"36F79725D0203"), "36C24123A0077"))
+RULES.append((re.compile(r"(?<!MSPV )BPA(?= ?[·:]? ?36C24123A0077)"), "MSPV BPA"))
 RULES.append((re.compile(r"MSPV-NG"), "MSPV-NG"))  # keep — different concept
-RULES.append((re.compile(r"\bmspv_bpa\b"), "bpa"))
 
 # Phone display
 for tail in PHONE_NUMS:

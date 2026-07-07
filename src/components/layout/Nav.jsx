@@ -74,7 +74,7 @@ export function Nav({ overlay = false }) {
           <div style={{ borderBottom: '1px solid rgba(243,242,235,.1)', color: 'rgba(243,242,235,.6)', fontFamily: D.mono, fontSize: 10.5, letterSpacing: 1 }}>
             <div style={{ maxWidth: 1440, margin: '0 auto', padding: `7px ${padX}px`, display: 'flex', gap: 22, alignItems: 'center' }}>
               <span>FDA 3015727296</span>
-              <span>BPA 36F79725D0203</span>
+              <span>MSPV BPA 36C24123A0077</span>
               <span>CAGE 8MK70</span>
               <span>VETERAN-OWNED · LITHIA SPRINGS, GA</span>
               <span style={{ flex: 1 }} />

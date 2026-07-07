@@ -303,7 +303,7 @@ def check_phase_1() -> PhaseResult:
     # Utility bar (Nav.jsx) must say the new things.
     nav = SRC / "components/layout/Nav.jsx"
     res.violations.extend(
-        require_in_file(nav, r"36F79725D0203", phase=1, rule="Nav: new BPA")
+        require_in_file(nav, r"36C24123A0077", phase=1, rule="Nav: MSPV BPA number")
     )
     res.violations.extend(
         require_in_file(nav, r"CAGE\s*[·]?\s*8MK70", phase=1, rule="Nav: CAGE row")

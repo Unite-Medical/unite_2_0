@@ -175,7 +175,7 @@ const SEGMENTS = [
   { n: '01', h: 'Surgery centers', sub: 'Case-cart staples, bracing, and recovery DME with no minimums and Net-30 on approved credit.', path: '/segments/asc' },
   { n: '02', h: 'Pharmacies & retail', sub: 'OTC, diagnostics, and front-of-store lines — from single stores to regional chains.', path: '/segments/pharmacy' },
   { n: '03', h: 'EMS & fire', sub: 'First-response consumables and trauma supplies, quoted by the pallet or the case.', path: '/segments/ems' },
-  { n: '04', h: 'Government & VA', sub: 'BPA 36F79725D0203 · CAGE 8MK70. A veteran-owned prime with the paperwork done.', path: '/government' },
+  { n: '04', h: 'Government & VA', sub: 'MSPV BPA 36C24123A0077 · CAGE 8MK70. A veteran-owned prime with the paperwork done.', path: '/government' },
   { n: '05', h: 'Distributors & resellers', sub: 'Wholesale pricing, opt-in catalog exposure, and custom sourcing under your own brand.', path: '/segments/distributors' },
   { n: '06', h: 'Health systems & physician groups', sub: 'Shortage matching, cross-referenced substitutes, and white-label patient programs.', path: '/shortage-list' },
 ];

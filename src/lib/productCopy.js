@@ -208,7 +208,7 @@ export function productCompliance(product) {
     { id: 'pdac', label: 'PDAC approved', sub: 'Determination letter on file for the assigned HCPCS code.', available: !!product.pdac_approved },
     { id: 'taa', label: 'TAA compliant', sub: 'Country-of-origin documented per Trade Agreements Act.', available: !!product.taa_compliant },
     { id: 'berry', label: 'Berry compliant', sub: 'Domestic content per Buy America Act for federal customers.', available: !!product.berry_compliant },
-    { id: 'mspv', label: 'MSPV listed', sub: 'Active under VA Medical Surgical Prime Vendor 36F79725D0203.', available: !!product.mspv_listed },
+    { id: 'mspv', label: 'MSPV listed', sub: 'Active under VA Medical Surgical Prime Vendor 36C24123A0077.', available: !!product.mspv_listed },
     { id: 'latex', label: 'Latex-free', sub: 'No natural rubber latex used in product or primary packaging.', available: true },
   ];
 }

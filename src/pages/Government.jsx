@@ -10,7 +10,7 @@ import { useViewport } from '../lib/viewport.js';
 import { useSEO } from '../lib/seo.js';
 
 const credentials = [
-  { label: 'BPA', value: '36F79725D0203', sub: 'via authorized SDVOSB partner' },
+  { label: 'MSPV BPA', value: '36C24123A0077', sub: 'via authorized SDVOSB partner' },
   { label: 'CAGE', value: '8MK70', sub: 'Federal contracting identifier' },
   { label: 'Berry', value: 'Medava PPE line', sub: 'Buy America Act' },
   { label: 'Buy America', value: 'TAA Eligible', sub: 'Prioritized sourcing' },
@@ -20,7 +20,7 @@ const mechanisms = [
   {
     label: 'MSPV-NG',
     description:
-      'Medava products available through SDVOSB partner contract 36F79725D0203 · VA-wide',
+      'Medava products available through SDVOSB partner contract 36C24123A0077 · VA-wide',
   },
   {
     label: 'SAM.GOV',
@@ -41,7 +41,7 @@ export function Government() {
   useSEO({
     title: 'Government & VA Procurement · Unite Medical',
     description:
-      'Medava products available through MSPV-NG and GSA Advantage via authorized partner contract 36F79725D0203. Berry-compliant PPE, TAA-compliant sourcing, full compliance documentation on request.',
+      'Medava products available through MSPV-NG and GSA Advantage via authorized partner contract 36C24123A0077. Berry-compliant PPE, TAA-compliant sourcing, full compliance documentation on request.',
     canonical: '/government',
   });
 

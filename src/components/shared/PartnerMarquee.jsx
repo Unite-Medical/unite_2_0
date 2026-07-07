@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { D } from '../../tokens.js';
 
 /**
@@ -11,22 +12,47 @@ import { D } from '../../tokens.js';
  */
 // eslint-disable-next-line react-refresh/only-export-components
 export const DEFAULT_PARTNER_LOGOS = [
-  { slug: 'veterans-affairs', name: 'U.S. Department of Veterans Affairs', tall: true },
-  { slug: 'cvs-health',       name: 'CVS Health' },
-  { slug: 'walgreens',        name: 'Walgreens' },
-  { slug: 'publix',           name: 'Publix' },
-  { slug: 'gopuff',           name: 'goPuff' },
-  { slug: 'amazon',           name: 'Amazon' },
-  { slug: 'kaiser-permanente', name: 'Kaiser Permanente', tall: true },
-  { slug: 'hca-healthcare',   name: 'HCA Healthcare' },
-  { slug: 'ascoa',            name: 'Ambulatory Surgical Centers of America' },
-  { slug: 'surgery-partners', name: 'Surgery Partners' },
+  { slug: 'restore-robotics',       name: 'Restore Robotics' },
+  { slug: 'gopuff',                 name: 'goPuff' },
+  { slug: 'veterans-affairs',       name: 'U.S. Department of Veterans Affairs', tall: true },
+  { slug: 'publix',                 name: 'Publix' },
+  { slug: 'henry-ford-hospital',    name: 'Henry Ford Hospital' },
+  { slug: 'ardent-health',          name: 'Ardent Health' },
+  { slug: 'harps-food',             name: 'Harps Food Stores' },
+  { slug: 'uf-health',              name: 'UF Health' },
+  { slug: 'orlando-health',         name: 'Orlando Health' },
+  { slug: 'total-joint-specialists', name: 'Total Joint Specialists' },
 ];
 
 function PartnerLogo({ slug, name, tall, variant, height }) {
   const h = tall ? Math.round(height * 1.15) : height;
   const svg = `/logos/partners/processed/${slug}--${variant}.svg`;
   const png = `/logos/partners/raster-fallback/${slug}--${variant}.png`;
+  // When no logo asset exists for a slug, render a styled text wordmark instead
+  // of hiding the entry. This lets the list be edited by NAME alone — real
+  // logos can be dropped into /public/logos/partners/ later with no code change.
+  const [textFallback, setTextFallback] = useState(false);
+
+  if (textFallback) {
+    return (
+      <span
+        title={name}
+        style={{
+          fontFamily: D.sans,
+          fontWeight: 600,
+          fontSize: Math.round(h * 0.62),
+          letterSpacing: '-0.01em',
+          whiteSpace: 'nowrap',
+          color: variant === 'paper' ? D.paper : D.ink,
+          opacity: 0.7,
+          flexShrink: 0,
+        }}
+      >
+        {name}
+      </span>
+    );
+  }
+
   return (
     <img
       src={svg}
@@ -42,9 +68,9 @@ function PartnerLogo({ slug, name, tall, variant, height }) {
         opacity: 0.78, // softens the wordmarks so they sit behind the design rather than competing
       }}
       onError={(e) => {
-        // SVG failed to load -> fall back to PNG, then hide if that fails too.
+        // SVG failed -> try PNG -> finally a styled text wordmark (never blank).
         if (e.currentTarget.dataset.fallback) {
-          e.currentTarget.style.display = 'none';
+          setTextFallback(true);
           return;
         }
         e.currentTarget.dataset.fallback = '1';
