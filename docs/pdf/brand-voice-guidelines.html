@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Unite Medical — Brand &amp; Voice Guidelines</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Archivo:ital,wght@0,400..700;1,400..700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="_brand.css" />
+</head>
+<body>
+
+<header class="masthead">
+  <div class="datastrip">
+    <span>FDA · 3015727296</span><span>/</span>
+    <span>MSPV BPA · 36C24123A0077</span><span>/</span>
+    <span>CAGE · 8MK70</span><span>/</span>
+    <span>DUNS · 117553945</span>
+  </div>
+  <div class="lockup">
+    <svg width="34" height="34" viewBox="0 0 1024 1024"><rect width="1024" height="1024" rx="144" fill="#1d5c4d"/><g transform="translate(195 256) scale(26.46 25.6)" fill="none" stroke="#f3f2eb" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v9a5 5 0 0 0 10 0V3"/><path d="M13 17V9l4 5 4-5v8" opacity="0.92"/></g></svg>
+    <div class="word">Unite <span>Medical</span></div>
+  </div>
+  <div class="eyebrow">Design system · Precision</div>
+  <h1>Brand &amp; voice <em>guidelines.</em></h1>
+  <p class="sub">The complete visual and verbal identity — logo, color, type, graphic language, and the copy rules the build enforces. Everything on this sheet exists in code; if the sheet and the code disagree, the code is right.</p>
+  <div class="meta">Version 1.0 · Jul 7, 2026 · Source of truth: src/tokens.js · Logo.jsx · phase_check.py</div>
+</header>
+
+<main>
+
+<section>
+  <div class="sec-label">01 · The brand idea</div>
+  <h2>Precision, not <em>gloss.</em></h2>
+  <p>Unite Medical sells to people who buy for institutions: materials managers, pharmacy buyers, VA contracting officers, EMS chiefs, regional distributors. These buyers are professionally skeptical — they read <strong>precision</strong> as trust and <strong>gloss</strong> as risk. So the brand is built like a technical document, not a landing page:</p>
+  <ul>
+    <li>Bone paper, green-black ink, one deep surgical-green accent.</li>
+    <li>Hairline rules instead of drop shadows.</li>
+    <li>A heavy monospace "data layer" — registration numbers, SKUs, HTS codes, lead times — presented as chrome. For this audience the data <em class="acc">is</em> the decoration.</li>
+    <li><strong>No</strong> decorative gradients, glassmorphism, floating orbs, or shimmer. Those read "AI-generated startup" — the opposite of what a hospital buyer wants to see.</li>
+  </ul>
+  <div class="plate dark"><div class="kv"><div class="k">One line</div><div>Institutional procurement reads precision, not gloss.</div></div></div>
+</section>
+
+<section>
+  <div class="sec-label">02 · Logo</div>
+  <h2>The mark and the <em>lockup.</em></h2>
+  <div class="plate" style="display:flex; gap:28px; align-items:center;">
+    <svg width="72" height="72" viewBox="0 0 1024 1024"><rect width="1024" height="1024" rx="144" fill="#1d5c4d"/><g transform="translate(195 256) scale(26.46 25.6)" fill="none" stroke="#f3f2eb" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v9a5 5 0 0 0 10 0V3"/><path d="M13 17V9l4 5 4-5v8" opacity="0.92"/></g></svg>
+    <div style="display:flex; align-items:center; gap:12px;">
+      <svg width="30" height="30" viewBox="0 0 1024 1024"><rect width="1024" height="1024" rx="144" fill="#1d5c4d"/><g transform="translate(195 256) scale(26.46 25.6)" fill="none" stroke="#f3f2eb" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v9a5 5 0 0 0 10 0V3"/><path d="M13 17V9l4 5 4-5v8" opacity="0.92"/></g></svg>
+      <div style="font-weight:600; font-size:14pt; letter-spacing:-0.2px;">Unite <span style="opacity:.62; font-weight:500;">Medical</span></div>
+    </div>
+  </div>
+  <p>A "UM" monogram — a U ligature joined by an M — drawn in bone strokes (round caps and joins) on a solid surgical-green field with corners rounded to 14% of the mark's size. The flat single-color mark is deliberate: it prints, embroiders, and engraves cleanly. The old orange-to-magenta gradient chip is <span class="warn">retired — never use it.</span></p>
+  <p>The lockup sets the wordmark in Archivo: "Unite" at weight 600 in full ink, "Medical" one weight lighter at 62% opacity. In product code, use the <code>UMLogo</code> / <code>UMLogoMark</code> components — don't rebuild the lockup by hand.</p>
+  <table>
+    <thead><tr><th style="width:2.4in">Asset</th><th>Path</th></tr></thead>
+    <tbody>
+      <tr><td>Master SVG</td><td class="mono">public/favicon.svg</td></tr>
+      <tr><td>Favicons (16 / 32 / 96 / 180 / 192 / 512 + .ico)</td><td class="mono">public/favicon-*.png · public/favicon.ico</td></tr>
+      <tr><td>Apple touch icon</td><td class="mono">public/apple-touch-icon.png</td></tr>
+      <tr><td>Raster source</td><td class="mono">public/images/source/um-logo-mark.png</td></tr>
+      <tr><td>Regeneration script</td><td class="mono">scripts/render_favicons.py</td></tr>
+    </tbody>
+  </table>
+  <h3>Rules</h3>
+  <ul>
+    <li>Minimum size 16&nbsp;px for the mark; the lockup needs ≥ 20&nbsp;px height.</li>
+    <li>Clear space: half the mark's height on all sides.</li>
+    <li>On dark grounds the mark is unchanged (its field carries the contrast); the wordmark flips to bone.</li>
+    <li>Never: recolor the field, add a gradient or shadow, outline, rotate, or place on a photo without a solid backing.</li>
+  </ul>
+</section>
+
+<section>
+  <div class="sec-label">03 · Color</div>
+  <h2>One accent does all the <em>work.</em></h2>
+  <p>All colors live in <code>src/tokens.js</code> as the <code>D</code> object. Legacy key names (<code>plum</code>, <code>terra</code>) were kept so 49 pages could retheme without a rename sweep — <strong>the key says plum, the value is green.</strong> Always reference tokens; never paste hex into components.</p>
+  <table>
+    <thead><tr><th>Token</th><th>Hex</th><th>Name</th><th>Role</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">D.paper</td><td class="mono"><span class="swatch" style="background:#f3f2eb"></span>#f3f2eb</td><td>Bone</td><td>Primary background</td></tr>
+      <tr><td class="mono">D.paperAlt</td><td class="mono"><span class="swatch" style="background:#e9e7dc"></span>#e9e7dc</td><td>Deep bone</td><td>Alternating bands, table stripes</td></tr>
+      <tr><td class="mono">D.card</td><td class="mono"><span class="swatch" style="background:#fcfbf6"></span>#fcfbf6</td><td>Raised bone</td><td>Cards and raised surfaces</td></tr>
+      <tr><td class="mono">D.ink</td><td class="mono"><span class="swatch" style="background:#16201a"></span>#16201a</td><td>Green-black</td><td>Primary text</td></tr>
+      <tr><td class="mono">D.inkDeep</td><td class="mono"><span class="swatch" style="background:#0e1713"></span>#0e1713</td><td>Evergreen black</td><td>Dark bands, footer, hero plates</td></tr>
+      <tr><td class="mono">D.ink2</td><td class="mono"><span class="swatch" style="background:#57635a"></span>#57635a</td><td>Slate green</td><td>Secondary text</td></tr>
+      <tr><td class="mono">D.ink3</td><td class="mono"><span class="swatch" style="background:#8b968d"></span>#8b968d</td><td>Fog green</td><td>Tertiary / meta text, table headers</td></tr>
+      <tr><td class="mono">D.line</td><td class="mono"><span class="swatch" style="background:#dbd9cc"></span>#dbd9cc</td><td>Hairline</td><td>1 px rules and borders</td></tr>
+      <tr><td class="mono">D.plum</td><td class="mono"><span class="swatch" style="background:#1d5c4d"></span>#1d5c4d</td><td class="green">Surgical green</td><td><strong>The</strong> accent: links, eyebrows, emphasis, logo field, primary buttons</td></tr>
+      <tr><td class="mono">D.plumSoft</td><td class="mono"><span class="swatch" style="background:#9dbcae"></span>#9dbcae</td><td>Sage</td><td>Accent on dark grounds only</td></tr>
+      <tr><td class="mono">D.terra</td><td class="mono"><span class="swatch" style="background:#b3592b"></span>#b3592b</td><td>Clay</td><td>Signal / warning accent — sparingly (near-expiry, alerts, pending)</td></tr>
+      <tr><td class="mono">D.terraSoft</td><td class="mono"><span class="swatch" style="background:#dcc0a8"></span>#dcc0a8</td><td>Soft clay</td><td>Muted warning surfaces</td></tr>
+      <tr><td class="mono">D.grad</td><td class="mono">135° green</td><td>—</td><td>Functional depth on dark plates only — never decoration</td></tr>
+    </tbody>
+  </table>
+  <ul>
+    <li><strong>One accent.</strong> Surgical green does all the emphasis work. If everything is green, nothing is — keep accent coverage under ~10% of any view.</li>
+    <li>Clay means "pay attention": warnings, near-dated stock, pending confirmations. Never decorative.</li>
+    <li>Dark sections use evergreen-black grounds with bone text and sage accents.</li>
+    <li>Contrast: ink on paper ≈ 13.5:1, green on paper ≈ 6.9:1 — both pass WCAG AA. Fog green is for meta text ≥ 11 px only.</li>
+  </ul>
+</section>
+
+<section>
+  <div class="sec-label">04 · Typography</div>
+  <h2>Three families, three <em>jobs.</em></h2>
+  <table>
+    <thead><tr><th>Token</th><th>Family</th><th>Job</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">D.display</td><td style="font-family:'Instrument Serif',Georgia,serif; font-size:12pt;">Instrument Serif</td><td>Headlines and display only. Weight 400 always — size does the work, not weight. Tight letter-spacing (−1 px and beyond at large sizes).</td></tr>
+      <tr><td class="mono">D.sans</td><td style="font-weight:600;">Archivo</td><td>Everything readable: body, UI, buttons, forms. 400 body / 600 emphasis and buttons.</td></tr>
+      <tr><td class="mono">D.mono</td><td class="mono">IBM Plex Mono</td><td>The data layer: SKUs, registration numbers, prices, table headers, eyebrows, timestamps. Uppercase + 1–2 px letter-spacing for labels.</td></tr>
+    </tbody>
+  </table>
+  <p class="muted">Loaded from Google Fonts: Instrument Serif (400 + italic) · Archivo (400–700 variable + italic) · IBM Plex Mono (400, 500). Headline scale is fluid — <code>clamp(34px, 5.6vw, 56px)</code> for page titles, up to 60 px for heroes, line-height ≈ 1.02.</p>
+  <h3>Signature moves</h3>
+  <ul>
+    <li><strong>Italic serif emphasis</strong> — emphasis inside a headline is italic Instrument Serif in surgical green (the <code>Grad</code> component): quiet, editorial, print-like. It replaced the old gradient-shimmer text, which is banned.</li>
+    <li><strong>The eyebrow</strong> — sections open with a short 28 px rule + mono caps label in green (the <code>Eyebrow</code> component), like a figure label in a technical document. Realtime contexts may swap the rule for a pulsing dot.</li>
+    <li><strong>Data as chrome</strong> — the nav utility strip sets FDA, MSPV BPA, and CAGE numbers in 10.5 px mono. Credentials are part of the interface, not buried in a footer.</li>
+  </ul>
+</section>
+
+<section>
+  <div class="sec-label">05 · Graphic language</div>
+  <h2>Hairlines, plates, and <em>grids.</em></h2>
+  <ul>
+    <li><strong>Hairlines, not shadows.</strong> Structure comes from 1 px rules. Border radii are 0–4 px on structural elements (sharp = institutional); 12 px only on large cards.</li>
+    <li><strong>Photography is documentary:</strong> real warehouse, real product, natural light — framed by a hairline with a mono data strip beneath, like a plate in a report. No stock-photo handshakes, no lens flares.</li>
+    <li><strong>Tables and grids everywhere.</strong> Mono uppercase column headers in fog green on deep-bone strips. Data is a first-class visual citizen.</li>
+    <li><strong>Motion is minimal:</strong> fade-ups on scroll, a 2.6 s pulse for live indicators. Nothing loops for decoration.</li>
+    <li><span class="warn">Banned outright:</span> glassmorphism, decorative gradients, orbs/blobs, shimmer, emoji in UI copy, drop shadows as decoration.</li>
+  </ul>
+</section>
+
+<section>
+  <div class="sec-label">06 · Voice</div>
+  <h2>Write like a <em>counterparty.</em></h2>
+  <ol>
+    <li><strong>Precise beats impressive.</strong> "Ships same-day on orders before 2pm EST" — never "lightning-fast shipping."</li>
+    <li><strong>Honest to a fault.</strong> No fake team pages, invented headcount, inflated SKU counts, or phantom warehouses. Where we're small, we say so plainly — the Blog is empty rather than filled with filler; Careers is an honest contact page.</li>
+    <li><strong>Talk like a counterparty, not a vendor.</strong> The reader manages procurement for a living. Skip the wind-up; lead with the term sheet: price, lead time, compliance status, minimums.</li>
+    <li><strong>The data carries the emotion.</strong> A real FDA registration number is more persuasive than any adjective.</li>
+    <li><strong>Lowercase confidence.</strong> Understatement over exclamation. One exclamation point per site, ideally zero.</li>
+  </ol>
+  <h3>Style mechanics</h3>
+  <ul>
+    <li>Sentence case for headlines and buttons ("Source &amp; quote"). ALL-CAPS is reserved for the mono data layer.</li>
+    <li>Numerals over words for anything a buyer might compare: "500M+ units", "before 2pm EST".</li>
+    <li>Em dashes and middots are house punctuation for data strings: <span class="mono">FDA 3015727296 · CAGE 8MK70</span>.</li>
+    <li>Times are EST. Dates are unambiguous (Jul 7, 2026). "Distributors," never "dealers."</li>
+  </ul>
+  <h3>Voice by context</h3>
+  <table>
+    <thead><tr><th style="width:1.7in">Context</th><th>Register</th></tr></thead>
+    <tbody>
+      <tr><td>Marketing pages</td><td>Editorial and spare. Serif headline, one italic-green emphasis, short declarative subhead — then let the data grid talk.</td></tr>
+      <tr><td>Product / quote / portal UI</td><td>Terse and mono-forward. Labels over sentences: "HTS PENDING · CONFIRM AT DESK" beats a paragraph.</td></tr>
+      <tr><td>Vendor-facing (manufacturers)</td><td>Plain instructional English, short sentences, no idioms — most readers are ESL. Say exactly what to put in each field and what happens next.</td></tr>
+      <tr><td>Government / compliance</td><td>Formal, citation-heavy, zero superlatives. Contract numbers up front.</td></tr>
+      <tr><td>Errors &amp; empty states</td><td>Honest and useful. Say what happened and the one next action. Never chirpy ("Oops!").</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <div class="sec-label">07 · Hard copy rules · machine-enforced</div>
+  <h2>The build fails if copy says <em>this.</em></h2>
+  <p class="muted"><code>scripts/phase_check.py</code> scans all customer-facing copy on every build.</p>
+  <table>
+    <thead><tr><th style="width:2.55in">Never say</th><th>Because / say instead</th></tr></thead>
+    <tbody>
+      <tr><td>BPA <span class="mono">36F79725D0203</span></td><td>Retired. <strong>MSPV BPA 36C24123A0077</strong> (confirmed by Damon, Jun 29, 2026)</td></tr>
+      <tr><td>VOSB / SDVOSB as a self-claim</td><td>Unite doesn't hold these. Only "via authorized SDVOSB partner" (external attribution) is allowed</td></tr>
+      <tr><td>"48-hour shipping" · "4 DCs" · "3 coasts" · Reno / Dallas warehouses · "12,400 SKUs"</td><td>Fiction. One warehouse — <strong>Lithia Springs, GA</strong>: "same-day on orders before 2pm EST to all 50 states"</td></tr>
+      <tr><td>Flexport · ShipStation · QuickBooks/QBO · Cin7 · PunchOut/cXML/OCI</td><td>Vendor internals never appear in customer-facing copy — describe the capability, not the tool</td></tr>
+      <tr><td>"22 years" · "U.S. Army" · "Army logistics officer"</td><td>Unverified founder-bio claims</td></tr>
+      <tr><td>"EST. 2018"</td><td>Wrong founding year</td></tr>
+      <tr><td>Any <span class="mono">@unitemedical.com</span> address</td><td>Domain is <strong>@unitemedical.net</strong></td></tr>
+      <tr><td>"HCPC"</td><td>It's <strong>HCPCS</strong></td></tr>
+      <tr><td>"Big 3" digs</td><td>We don't punch at competitors by name</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <div class="sec-label">08 · Canonical facts</div>
+  <h2>The only approved <em>versions.</em></h2>
+  <table>
+    <thead><tr><th style="width:2.3in">Fact</th><th>Value</th></tr></thead>
+    <tbody>
+      <tr><td>Legal name</td><td>Unite Medical Supply</td></tr>
+      <tr><td>Address</td><td>1487 Trae Lane, Lithia Springs, GA 30122</td></tr>
+      <tr><td>Phone</td><td>833.868.6483 (accounting / billing: ext. 3)</td></tr>
+      <tr><td>Email domain</td><td><span class="mono">@unitemedical.net</span> (support@, accounting@)</td></tr>
+      <tr><td>FDA establishment registration</td><td class="mono">3015727296</td></tr>
+      <tr><td>MSPV BPA</td><td class="mono">36C24123A0077 <span style="font-family:var(--sans)">(label it "MSPV BPA")</span></td></tr>
+      <tr><td>CAGE</td><td class="mono">8MK70</td></tr>
+      <tr><td>DUNS</td><td class="mono">117553945</td></tr>
+      <tr><td>Footprint</td><td>One warehouse: Lithia Springs, GA — ships to all 50 states + territories</td></tr>
+      <tr><td>Shipping claim</td><td>Same-day on orders placed before 2pm EST, Mon–Fri</td></tr>
+      <tr><td>Scale claim</td><td>500M+ units distributed</td></tr>
+      <tr><td>Ownership claim</td><td>Veteran-owned (no VOSB / SDVOSB certification claims)</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="avoid-break">
+  <div class="sec-label">09 · Quick reference</div>
+  <div class="plate dark">
+    <div class="kv">
+      <div class="k">Background</div><div><span class="mono">#f3f2eb</span> bone &nbsp;·&nbsp; surface <span class="mono">#fcfbf6</span> &nbsp;·&nbsp; dark band <span class="mono">#0e1713</span></div>
+      <div class="k">Text</div><div><span class="mono">#16201a</span> green-black &nbsp;·&nbsp; hairline <span class="mono">#dbd9cc</span></div>
+      <div class="k">Accent</div><div><span class="mono">#1d5c4d</span> surgical green &nbsp;·&nbsp; warning <span class="mono">#b3592b</span> clay</div>
+      <div class="k">Display</div><div>Instrument Serif 400 — italic = emphasis, always in green</div>
+      <div class="k">Body / UI</div><div>Archivo 400 / 600</div>
+      <div class="k">Data</div><div>IBM Plex Mono 400 / 500 — caps + tracking for labels</div>
+      <div class="k">Voice</div><div>precise · honest · counterparty-to-counterparty · data-first</div>
+      <div class="k">Never</div><div>gradients-as-decoration · glass · orbs · vendor names in copy · self-claimed certifications · invented numbers · @unitemedical.com</div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<div class="docfoot">
+  <span>UNITE MEDICAL SUPPLY · BRAND &amp; VOICE GUIDELINES V1.0</span>
+  <span>PRECISION SYSTEM · JUL 7, 2026</span>
+</div>
+
+</body>
+</html>

@@ -149,7 +149,7 @@ Headline scale is fluid: `clamp(34px, 5.6vw, 56px)` for page titles, up to `clam
 
 | Never say | Because / say instead |
 |---|---|
-| BPA `36F79725D0203` | Retired. **MSPV BPA 36C24123A0077** (confirmed by Damon, 6/29) |
+| BPA `36F79725D0203` | Retired. **MSPV BPA 36C24123A0077** (confirmed by Damon, Jun 29, 2026) |
 | VOSB / SDVOSB as a self-claim | Unite doesn't hold these. Only "via authorized SDVOSB partner" (external attribution) is allowed |
 | "48-hour shipping", "4 DCs", "3 coasts", Reno/Dallas warehouses, "12,400 SKUs" | Fiction. One warehouse: **Lithia Springs, GA** — "same-day on orders before 2pm EST to all 50 states" |
 | Flexport, ShipStation, QuickBooks/QBO, Cin7, PunchOut/cXML/OCI | Vendor internals never appear in customer-facing copy — describe the capability, not the tool |

@@ -1,7 +1,7 @@
 # Damon — Status Brief
 
 **From:** Alex · **Date:** July 7, 2026
-**TLDR:** Everything is merged to `main` and pushed. Your entire quoting-engine briefing (all eight §8 checks) is built, tested, and passing — 32 automated tests plus all four compliance checkers are green. The redesign and the PRD-28/29 copy sweep are in the same push, including your MSPV BPA correction applied site-wide. Below: what's live, what it does, and the calls I need from you.
+**TLDR:** Everything is merged to `main` and pushed. Seven of the eight §8 checks from your quoting-engine briefing are built, tested, and passing — 32 automated tests plus all four compliance checkers are green — and the eighth (the vendor dashboard hook) has its foundation in place. The redesign and the PRD-28/29 copy sweep are in the same push, including your MSPV BPA correction applied site-wide. Below: what's live, what it does, and the calls I need from you.
 
 ---
 
@@ -15,7 +15,7 @@ One merge to `main` containing three bodies of work:
 
 I also reconciled your two June 29 commits during the merge: **MSPV BPA 36C24123A0077** is now the only contract number anywhere on the site (nav, homepage, government page, printed quotes/invoices, meta tags), labeled "MSPV BPA" as you specified. The BPA-number conflict from my last handback is closed.
 
-## 2. Your §8 checks — all eight, built and tested
+## 2. Your §8 checks — seven built and tested, one scoped
 
 | Your check | Status | What's actually there |
 |---|---|---|
@@ -49,7 +49,7 @@ Two bugs from the audit worth knowing about, both fixed:
 
 ## 5. Decisions / items I need from you
 
-1. **Flexport API credentials** (blocks #2 above).
+1. **Flexport API credentials** — needed to take item 2 in §4 live.
 2. **Confirm the inboxes** `privacy@`, `billing@`, `surplus@unitemedical.net` exist — they appear in customer-facing copy. Otherwise I route them to support@/accounting@.
 3. **Priority order for §4.** My recommendation: dashboard hook → miss digest → GUDID.
 4. **Deployment:** `main` is pushed and ready; say the word if you want it promoted to production hosting now versus after you click through the new quote flow.
