@@ -10,6 +10,8 @@ import {
   MODEL_C_TERMS,
   recordAcknowledgment,
   promoteGateRecord,
+  updateUdiFields,
+  fieldsForClass,
   generateLabelSpec,
   complianceCheckLabel,
   markSubmitted,
@@ -72,6 +74,71 @@ function GateIntake({ rec, onDone }) {
       )}
       <button onClick={go} style={BTN}>Assign DI + intake</button>
       {err && <span style={{ color: D.terra, fontFamily: D.mono, fontSize: 11 }}>{err}</span>}
+    </div>
+  );
+}
+
+/**
+ * Intake editor for draft records — captures the Class 1/2 GUDID fields
+ * in-app with the same validation the engine enforces, so a draft can
+ * reach ready_to_label without a spreadsheet round-trip.
+ */
+function IntakeEditor({ rec, onDone }) {
+  const [values, setValues] = useState({ ...rec.fields });
+  const [errors, setErrors] = useState(rec.field_errors || []);
+  const errFor = (key) => errors.find((e) => e.field === key)?.problem;
+  const set = (key, v) => setValues((prev) => ({ ...prev, [key]: v }));
+
+  function save() {
+    const res = updateUdiFields(rec.id, values);
+    if (!res.ok) return;
+    setErrors(res.validation.errors);
+    if (res.validation.ok) onDone?.();
+  }
+
+  return (
+    <div style={{ marginTop: 10, borderTop: `1px dashed ${D.line}`, paddingTop: 12 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(230px, 1fr))', gap: 10 }}>
+        {fieldsForClass().map((f) => {
+          const err = errFor(f.key);
+          const label = (
+            <div style={{ fontFamily: D.mono, fontSize: 9.5, letterSpacing: 0.8, color: err ? D.terra : D.ink3, marginBottom: 3, textTransform: 'uppercase' }}>
+              {f.label}{err ? ` — ${err}` : ''}
+            </div>
+          );
+          const style = { ...INPUT, width: '100%', borderColor: err ? D.terra : D.line };
+          if (f.type === 'yn') {
+            return (
+              <div key={f.key}>{label}
+                <select value={values[f.key] || ''} onChange={(e) => set(f.key, e.target.value)} style={style}>
+                  <option value="">—</option><option value="Y">Y</option><option value="N">N</option>
+                </select>
+              </div>
+            );
+          }
+          if (f.options) {
+            return (
+              <div key={f.key}>{label}
+                <select value={values[f.key] || ''} onChange={(e) => set(f.key, e.target.value)} style={style}>
+                  <option value="">—</option>
+                  {f.options.map((o) => <option key={o} value={o}>{o}</option>)}
+                </select>
+              </div>
+            );
+          }
+          return (
+            <div key={f.key}>{label}
+              <input value={values[f.key] || ''} onChange={(e) => set(f.key, e.target.value)} placeholder={f.hint || ''} style={style} />
+            </div>
+          );
+        })}
+      </div>
+      <div style={{ marginTop: 12, display: 'flex', gap: 10, alignItems: 'center' }}>
+        <button onClick={save} style={BTN}>Validate &amp; save intake</button>
+        <span style={{ fontFamily: D.mono, fontSize: 11, color: errors.length ? D.terra : '#3b8760' }}>
+          {errors.length ? `${errors.length} field(s) outstanding` : 'Complete'}
+        </span>
+      </div>
     </div>
   );
 }
@@ -188,8 +255,14 @@ export function AdminUdi() {
               {r.status === 'gate_open' && <div style={{ marginTop: 10 }}><GateIntake rec={r} onDone={() => setExpanded(null)} /></div>}
 
               {r.status === 'draft' && (
-                <div style={{ marginTop: 8, fontSize: 12, color: D.terra }}>
-                  {r.field_errors?.length || 0} intake field(s) outstanding — capture via the Class {r.device_class} template, then re-validate.
+                <div style={{ marginTop: 8 }}>
+                  <div style={{ fontSize: 12, color: D.terra, marginBottom: 6 }}>
+                    {r.field_errors?.length || 0} intake field(s) outstanding — Class {r.device_class} record.
+                  </div>
+                  <button onClick={() => setExpanded(expanded === r.id ? null : r.id)} style={BTN_GHOST}>
+                    {expanded === r.id ? 'Close intake' : 'Capture intake fields…'}
+                  </button>
+                  {expanded === r.id && <IntakeEditor rec={r} onDone={() => setExpanded(null)} />}
                 </div>
               )}
 
