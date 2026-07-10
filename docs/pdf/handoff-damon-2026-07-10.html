@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Unite Medical — Launch Handoff · Jul 10, 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Archivo:ital,wght@0,400..700;1,400..700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="_brand.css" />
+</head>
+<body>
+
+<header class="masthead">
+  <div class="datastrip">
+    <span>FDA · 3015727296</span><span>/</span>
+    <span>MSPV BPA · 36C24123A0077</span><span>/</span>
+    <span>CAGE · 8MK70</span><span>/</span>
+    <span>DUNS · 117553945</span>
+  </div>
+  <div class="lockup">
+    <svg width="34" height="34" viewBox="0 0 1024 1024"><rect width="1024" height="1024" rx="144" fill="#1d5c4d"/><g transform="translate(195 256) scale(26.46 25.6)" fill="none" stroke="#f3f2eb" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v9a5 5 0 0 0 10 0V3"/><path d="M13 17V9l4 5 4-5v8" opacity="0.92"/></g></svg>
+    <div class="word">Unite <span>Medical</span></div>
+  </div>
+  <div class="eyebrow">Internal · Alex → Damon</div>
+  <h1>Launch handoff — it's <em>deployed.</em></h1>
+  <p class="sub">Everything from your Jul 10 handoff is built and live on production hosting — including the GUDID/UDI compliance service you prioritized, with your Flexport key active server-side. The public domain still serves the old site; that cutover is the last switch and it's yours to call after the walkthrough.</p>
+  <div class="meta">From Alex · Jul 10, 2026 · Walkthrough: unite-2-0.vercel.app · Repo: unite_2_0 / main</div>
+</header>
+
+<main>
+
+<section>
+  <div class="sec-label">01 · Your walkthrough link</div>
+  <h2>Click through it <em>here.</em></h2>
+  <div class="plate dark"><div class="kv">
+    <div class="k">Production URL</div><div><span class="mono">https://unite-2-0.vercel.app</span> — the real deployment, not a preview</div>
+    <div class="k">Admin desk</div><div><span class="mono">/admin</span> · UDI board at <span class="mono">/admin/udi</span> · new quote at <span class="mono">/admin/quotes</span></div>
+  </div></div>
+  <p>Suggested route, matching what you said you wanted to verify:</p>
+  <ol>
+    <li><strong>Quote flow</strong> — Admin → Quotes → New quote. Upload a vendor sheet (v2 template or any messy CSV). The preview shows HTS hints, stock-match badges, and the classification-export button.</li>
+    <li><strong>301 math on a China line</strong> — include a China-origin item; the quote breaks out MFN + Section 301 duty components and flags unconfirmed HTS as pending.</li>
+    <li><strong>Side-by-side offers</strong> — every line carries Unite Ready / Unite Custom variants with price breaks and amortized tooling.</li>
+    <li><strong>SKU-match buy-now</strong> — upload a line matching catalog stock; the in-stock badge and buy-now path appear on the quote itself.</li>
+    <li><strong>UDI / GUDID desk</strong> — prefix capacity board, gate queue, Model C acknowledgment, intake editor, label paths. Accept a quote with an import or private-label line and watch the gate open automatically.</li>
+  </ol>
+</section>
+
+<section>
+  <div class="sec-label">02 · GUDID / UDI</div>
+  <h2>Your spec, <em>finished.</em></h2>
+  <p class="muted">Everything in the Phase 1 spec is built, tested (16 dedicated tests), and live.</p>
+  <table>
+    <thead><tr><th style="width:1.75in">Spec item</th><th>What's live</th></tr></thead>
+    <tbody>
+      <tr><td>Prefix registry</td><td>All 5 GS1 prefixes seeded with medical flags. New Unite DIs draw from <span class="mono">0850089282</span>; the non-medical <span class="mono">0850052096</span> can never issue a device DI.</td></tr>
+      <tr><td>DI assignment + capacity</td><td>Sequential GTIN-13s with valid check digits; used-vs-remaining per prefix on the admin board; alert at ≤ 20 remaining.</td></tr>
+      <tr><td>Models A / B / C</td><td>A assigns our DI. B requires the customer's DI (they submit GUDID). C is <strong>hard-blocked until the customer signs all four acknowledgment terms</strong> — the gate you asked for, enforced in code.</td></tr>
+      <tr><td>Class 1 / 2 intake</td><td>In-app intake editor with live validation (Class 2 demands a real K-number; Class 1 takes "Exempt"), plus a downloadable intake workbook generated from the same field list — sheet and validator can't drift.</td></tr>
+      <tr><td>Both label paths</td><td>Path 1 generates the label spec from captured fields — Model C labels automatically carry "Distributed by Unite Medical". Path 2 compliance-checks uploaded artwork against the required-elements list.</td></tr>
+      <tr><td>Post-quote gate</td><td>Opens on order commit for import / private-label lines without a GTIN. Never blocks a quote or an acceptance. PI data (lot / expiry / mfg) stays at production; flags only at intake.</td></tr>
+      <tr><td>Portal submission</td><td>Records march draft → ready to label → ready for GUDID → submitted. You submit via the portal and mark it here; Model B records can't be marked — the customer submits those.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <div class="sec-label">03 · Flexport</div>
+  <h2>Wired and <em>live.</em></h2>
+  <ul>
+    <li><strong>Your question — no OAuth needed.</strong> The bearer API key is sufficient; don't generate the Client ID / Secret.</li>
+    <li>The key is set in Vercel production env (<span class="mono">FLEXPORT_API_KEY</span>, encrypted, server-side only — never in the browser bundle, never in git). The live health check confirms <strong>Flexport = configured</strong> in production.</li>
+    <li><span class="warn">Housekeeping:</span> the one-pager also carried the OAuth client secret in plaintext. We're not using it, but since it traveled by document, consider deleting or rotating that credential pair in Flexport admin. The API key itself is fine.</li>
+  </ul>
+</section>
+
+<section>
+  <div class="sec-label">04 · Your other two decisions</div>
+  <h2>Both <em>done.</em></h2>
+  <ul>
+    <li><strong>Inboxes</strong> — <span class="mono">billing@</span> → <span class="mono">accounting@</span>; <span class="mono">privacy@</span> and <span class="mono">surplus@</span> → <span class="mono">support@</span>, everywhere they appeared (legal pages, invoices, surplus marketplace, finance notifications).</li>
+    <li><strong>Priority order</strong> — GUDID built first, as directed. Next in your order: vendor dashboard hook, then the quote-miss digest. Both ready to start on your go.</li>
+  </ul>
+</section>
+
+<section class="avoid-break">
+  <div class="sec-label">05 · The one switch left</div>
+  <h2>The <em>domain.</em></h2>
+  <p><span class="mono">www.unitemedical.net</span> still serves the old site. The new platform is fully deployed behind <span class="mono">unite-2-0.vercel.app</span>. When your walkthrough checks out, say go and I'll do the cutover — add the domain to the Vercel project and update DNS. Until then nothing customer-facing has changed; exactly the hold you asked for.</p>
+  <div class="plate"><div class="kv">
+    <div class="k">Tests</div><div><strong>48 / 48 passing</strong> · 45 / 45 compliance checks · lint clean · 122 routes prerendered</div>
+    <div class="k">Shakedowns</div><div>Quote flow is ready for Umendra's sheet and the Pentastar pilot — the 53-column mapper tolerates trimmed sheets, so Pentastar Lite parses through the same path</div>
+    <div class="k">Parked</div><div>UFLPA / forced-labor layer — logged in the spec docs, not built, per your hold</div>
+  </div></div>
+</section>
+
+</main>
+
+<div class="docfoot">
+  <span>UNITE MEDICAL SUPPLY · INTERNAL LAUNCH HANDOFF</span>
+  <span>ALEX → DAMON · JUL 10, 2026</span>
+</div>
+
+</body>
+</html>
