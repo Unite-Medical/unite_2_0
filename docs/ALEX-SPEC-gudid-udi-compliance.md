@@ -38,9 +38,14 @@ The GUDID **labeler** = the entity whose brand/responsible-party identity is on 
 |---|---|---|---|---|
 | **A — Unite Ready** | Unite or Medava | Unite/Medava GS1 prefix | Unite/Medava (we're the labeler) | ✅ Clean — build |
 | **B — Unite Custom (customer has GS1 + know-how)** | Customer's brand | Customer's DI / their GS1 prefix | Customer (they're the labeler) | ✅ Clean — build |
-| **C — Unite Custom (customer lacks GS1/know-how)** | Customer's brand + "Distributed by Unite Medical" | Unite-owned prefix, assigned under customer brand name | Unite acts as labeler/agent | ⚠️ PENDING REGULATORY SIGN-OFF — build the plumbing but gate behind a "compliance review" flag; do NOT market as settled |
+| **C — Unite Custom (customer lacks GS1/know-how)** | Customer's brand + "Distributed by Unite Medical" | Unite-owned prefix, assigned under customer brand name | **Unite is the labeler of record** | ✅ APPROVED (Damon) as a PAID compliance service — REQUIRES signed customer agreement acknowledging Unite = labeler |
 
-**Model C is the compliance-as-a-service upside** (small brands who can't do GUDID themselves) but is a regulatory gray area: "Distributed by Unite" only makes Unite the labeler if Unite is genuinely the responsible-party identity on the label. Damon is getting this blessed by regulatory/counsel. Build A + B as the launch paths; stage C behind a flag.
+**Model C — APPROVED as a paid compliance-as-a-service offering (Damon, confirmed).** Unite is genuinely the labeler of record ("Distributed by Unite Medical" = Unite is the responsible party), so Unite's DI + Unite's GUDID is correct. REQUIREMENT: the customer must sign off in writing and be made explicitly aware that:
+- Unite is the **labeler of record** (their brand shows, but Unite is the responsible party)
+- Unite holds the DI + files/maintains the GUDID record
+- **Unite assumes the labeler's regulatory obligations** — GUDID accuracy, complaint handling, MDR/adverse-event reporting, recalls, corrections/removals
+- This is a **paid service**, and the fee reflects Unite assuming that regulatory accountability
+Build a customer agreement/acknowledgment gate into the Model C flow — the customer cannot proceed on Model C without accepting these terms. (This is the moat: Unite isn't selling a barcode, it's assuming regulatory responsibility.)
 
 ---
 
@@ -95,7 +100,7 @@ Alex builds: Class 1 / Class 2 intake forms, the field-validation, the label-tem
 ## 5. DI assignment + capacity management
 
 - **DI assignment:** sequential from the appropriate medical-flagged prefix for the labeler/brand. System reserves + records each DI as assigned.
-- 🔴 **CAPACITY ALERT:** Unite has used **299 of 300** GTIN capacity across its 3 prefixes. Effectively full. Before scaling Unite-branded onboarding, Damon must either (a) **retract** retired/duplicate GTINs to reclaim capacity, or (b) **buy another prefix batch.** Medava (`0850058304`) has fresh ~100 capacity.
+- 🔴 **CAPACITY:** Unite had used **299 of 300** GTINs across its original 3 prefixes (effectively full). Damon has now **purchased a new prefix `0850089282` (+100 fresh slots)** — new Unite-branded onboarding draws from this prefix. Confirm `0850089282` medical-device flag = YES in GS1 Prefix Verification before assigning device DIs from it.
 - **BUILD: DI-capacity tracking per prefix** — show used vs. remaining per prefix, and **alert when a prefix nears its cap** (e.g., within 20). This is how we manage prefix batches as adoption grows instead of guessing. (GS1 only shows total capacity, not remaining — we track consumption on our side.)
 - 🔴 **RENEWAL:** Unite's 3 prefixes expire **2026-08-31**; Medava's expires **2026-10-31**. Don't assign DIs from a prefix about to lapse — Damon to renew.
 
@@ -123,7 +128,7 @@ Alex builds: Class 1 / Class 2 intake forms, the field-validation, the label-tem
 ## 8. Actions Damon owes (tracked)
 
 1. ✅ Unite DUNS `117553945`, Medava DUNS `127447715` — provided.
-2. 🔴 Resolve Unite GS1 capacity (retract or buy batch) before scaling Unite onboarding.
+2. ✅ Unite GS1 capacity resolved — new prefix `0850089282` (+100 slots) purchased.
 3. 🔴 Renew Unite prefixes before 2026-08-31.
-4. ⬜ Regulatory/counsel sign-off on Model C ("Distributed by Unite" labeler question).
-5. ⬜ Confirm Medava prefix `0850058304` medical-device flag = YES in GS1 Prefix Verification.
+4. ✅ Model C APPROVED as a paid service (Damon) — Unite is labeler of record; REQUIRES signed customer acknowledgment. Build the agreement/acknowledgment gate.
+5. ⬜ Confirm medical-device flag = YES in GS1 Prefix Verification for the DI-source prefixes: Unite `0850012035`, `0850063323`, `0850089282`; Medava `0850058304`.
