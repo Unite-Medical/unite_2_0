@@ -129,6 +129,6 @@ Alex builds: Class 1 / Class 2 intake forms, the field-validation, the label-tem
 
 1. ✅ Unite DUNS `117553945`, Medava DUNS `127447715` — provided.
 2. ✅ Unite GS1 capacity resolved — new prefix `0850089282` (+100 slots) purchased.
-3. 🔴 Renew Unite prefixes before 2026-08-31.
+3. ✅ Unite prefixes renewed (all 3).
 4. ✅ Model C APPROVED as a paid service (Damon) — Unite is labeler of record; REQUIRES signed customer acknowledgment. Build the agreement/acknowledgment gate.
-5. ⬜ Confirm medical-device flag = YES in GS1 Prefix Verification for the DI-source prefixes: Unite `0850012035`, `0850063323`, `0850089282`; Medava `0850058304`.
+5. ✅ Medical-device flag confirmed = YES for DI-source prefixes: Unite `0850012035`, `0850063323`, `0850089282`; Medava `0850058304`.
