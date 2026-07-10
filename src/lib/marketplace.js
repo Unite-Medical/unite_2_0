@@ -185,7 +185,7 @@ export async function acceptOffer(offer_id) {
 
   await gmail.send({
     to: offer.buyer_email,
-    from: 'surplus@unitemedical.net',
+    from: 'support@unitemedical.net',
     subject: `Offer accepted · ${line?.normalized_name || line?.raw_description || 'surplus listing'} — bridge fee invoice`,
     body: `${(offer.buyer_name || '').split(' ')[0] || 'Hi'} —\n\nThe seller accepted your offer of $${offer.offer_usd_per_unit.toFixed(2)}/unit × ${offer.qty} ($${offer.offer_usd_total.toLocaleString()}). The deal is now binding.\n\nUnite's connection fee for this transaction is $${offer.fee_usd.toLocaleString()} (${Math.round(offer.fee_pct * 100)}%), due before we connect you with the seller. Once the fee clears, we release contact details to both sides and you settle the goods directly.\n\nUnite doesn't want to stand in the way of you moving product — we earn a transparent fee for the connection, and we can also handle freight, compliance docs, and payments if you want them.\n\n— Unite Medical Surplus Desk`,
     template_key: 'surplus/fee_invoice',
@@ -216,7 +216,7 @@ export async function confirmFeePaid(offer_id) {
   const itemName = line?.normalized_name || line?.raw_description || 'surplus listing';
   await gmail.send({
     to: offer.buyer_email,
-    from: 'surplus@unitemedical.net',
+    from: 'support@unitemedical.net',
     subject: `Connection released · ${itemName}`,
     body: `Fee received — you're connected.\n\nSeller: ${submission?.hospital_name || 'the seller'} · ${submission?.contact_name || ''} · ${submission?.contact_email || 'contact shared separately'}\n\nSettle the goods directly. If you'd like Unite to handle freight, compliance documentation, or payment escrow, reply to this email.\n\n— Unite Medical Surplus Desk`,
     template_key: 'surplus/connection_released',
@@ -225,7 +225,7 @@ export async function confirmFeePaid(offer_id) {
   if (submission?.contact_email) {
     await gmail.send({
       to: submission.contact_email,
-      from: 'surplus@unitemedical.net',
+      from: 'support@unitemedical.net',
       subject: `Buyer connected · ${itemName}`,
       body: `${submission.contact_name?.split(' ')[0] || 'Hi'} —\n\nYour listing sold: $${offer.offer_usd_per_unit.toFixed(2)}/unit × ${offer.qty} ($${offer.offer_usd_total.toLocaleString()}).\n\nBuyer: ${offer.buyer_org || offer.buyer_name} · ${offer.buyer_email}\n\nSettle the goods directly with the buyer. If you'd like Unite to handle freight, compliance documentation, or payment escrow, reply to this email.\n\n— Unite Medical Surplus Desk`,
       template_key: 'surplus/connection_released_seller',

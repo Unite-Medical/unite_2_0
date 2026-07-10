@@ -174,7 +174,7 @@ export function InvoicePrint() {
         </div>
 
         <div style={{ marginTop: 24, fontSize: 11, color: D.ink3, lineHeight: 1.6 }}>
-          Prices in USD. Questions on this invoice? Email billing@unitemedical.net or call 833.868.6483.
+          Prices in USD. Questions on this invoice? Email accounting@unitemedical.net or call 833.868.6483.
         </div>
       </div>
     </div>

@@ -196,7 +196,7 @@ export function Surplus() {
 
       setSubmittedId(submission.id);
     } catch (err) {
-      setError(err?.message || 'Something went wrong. Please email surplus@unitemedical.net directly.');
+      setError(err?.message || 'Something went wrong. Please email support@unitemedical.net directly.');
     } finally {
       setSubmitting(false);
     }

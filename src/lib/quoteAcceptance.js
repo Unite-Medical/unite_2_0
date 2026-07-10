@@ -79,6 +79,26 @@ export async function acceptQuote(token, { runPipeline = false, acceptedBy = 'cu
   db.update('quotes', quote.id, { status: 'accepted', accepted_at: new Date().toISOString(), accepted_by: acceptedBy, order_id: orderId });
   db.insert('audit_log', { id: uid('aud'), kind: 'quote.accepted', ref_id: quote.id, payload: { order_id: orderId, total: quote.total } });
 
+  // GUDID spec §6 — UDI is a post-quote / pre-production gate, opened on
+  // order commit for import/private-label lines. Never blocks acceptance.
+  try {
+    const { openUdiGateForOrder } = await import('./gudid.js');
+    openUdiGateForOrder({
+      order_id: orderId,
+      quote_id: quote.id,
+      customer_name: quote.customer_name,
+      lines: items.map((it) => ({
+        id: it.id,
+        sku: it.sku || null,
+        gtin: it.gtin || null,
+        name: it.name,
+        brand: it.brand || null,
+        private_label: Boolean(it.offer_variant === 'import-custom' || it.private_label),
+        import_line: Boolean(it.hts_code || it.origin_country),
+      })),
+    });
+  } catch { /* gate failures never block acceptance */ }
+
   if (runPipeline) {
     try {
       const { runFulfillment } = await import('./fulfillment.js');

@@ -70,7 +70,7 @@ export function AdminFinance() {
       const d = daysOverdue(inv);
       await gmail.send({
         to: org?.billing_email || `ap@${(org?.name || 'customer').toLowerCase().replace(/[^a-z]+/g, '')}.example.com`,
-        from: 'billing@unitemedical.net',
+        from: 'accounting@unitemedical.net',
         subject: `Invoice ${inv.id} — ${d > 0 ? `${d} days past due` : 'payment reminder'}`,
         body: `Hi —\n\nFriendly nudge on invoice ${inv.id} for ${fmt.money(inv.amount)} (terms ${inv.terms?.toUpperCase() || 'NET30'}, due ${fmt.date(inv.due_date, { year: true })}).\n\nRemit via ACH on file, or reply here if anything on the invoice needs correcting and we'll turn it around same day.\n\n— Unite Medical billing`,
         template_key: 'ar_reminder',

@@ -31,6 +31,7 @@ const NAV = [
   ['Vendors',       'vendors',    '/admin/vendors'],
   ['Discovery',     'discovery',  '/admin/discovery'],
   ['Compliance',    'compliance', '/admin/compliance'],
+  ['UDI / GUDID',   'udi',        '/admin/udi'],
   ['Webhooks',      'webhooks',   '/admin/webhooks'],
   ['Surplus',       'surplus',    '/admin/surplus'],
   ['CMS',           'cms',        '/admin/cms'],

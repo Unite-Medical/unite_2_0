@@ -56,9 +56,9 @@ export function Privacy() {
         // not Unite itself — worded accordingly until verified otherwise.
         { title: 'Where it lives', body: 'Customer records and order history are hosted in SOC 2 Type II data centers in the United States. Backups are encrypted at rest.' },
         { title: 'Sharing', body: 'We share order, payment, and shipping data with the third-party processors that move your goods (our WMS, FedEx, UPS, your bank, QuickBooks Online, Stripe) under contractual obligations to keep it confidential.' },
-        { title: 'Your rights', body: 'You may request a copy of the personal data we hold about you, request corrections, or request deletion. Email privacy@unitemedical.net and we will respond within 30 days.' },
+        { title: 'Your rights', body: 'You may request a copy of the personal data we hold about you, request corrections, or request deletion. Email support@unitemedical.net and we will respond within 30 days.' },
         { title: 'Children', body: 'The platform is intended for business use only and is not directed at anyone under 16.' },
-        { title: 'Contact', body: 'Privacy Officer · privacy@unitemedical.net · 1487 Trae Lane, Lithia Springs GA 30122.' },
+        { title: 'Contact', body: 'Privacy Officer · support@unitemedical.net · 1487 Trae Lane, Lithia Springs GA 30122.' },
       ]}
     />
   );

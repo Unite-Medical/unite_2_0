@@ -17,7 +17,7 @@ import { seed } from './seed.js';
  */
 
 const STORAGE_KEY = 'um.db.v1';
-const SCHEMA_VERSION = 16;
+const SCHEMA_VERSION = 17;
 
 const TABLES = [
   'profiles', 'organizations', 'organization_users', 'addresses',
@@ -87,6 +87,9 @@ const TABLES = [
   // Briefing §6: "no quote returned" feedback loop — every requested item
   // we couldn't quote is a demand signal, captured + worked, never dropped
   'quote_misses',
+  // GUDID spec (Damon, Jul 10): DI assignment + capacity tracking per GS1
+  // prefix, device GUDID records, and Model C labeler acknowledgments
+  'gs1_prefixes', 'udi_records', 'labeler_acknowledgments',
 ];
 
 function load() {

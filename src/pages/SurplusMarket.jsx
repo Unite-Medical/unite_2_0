@@ -106,7 +106,7 @@ export function SurplusMarket() {
               <div style={{ fontFamily: D.display, fontSize: 26 }}>No open listings right now.</div>
               <p style={{ fontSize: 14, color: D.ink2, marginTop: 10, lineHeight: 1.6 }}>
                 Listings publish as sellers submit inventory — usually a few times a week.
-                Email <a href="mailto:surplus@unitemedical.net" style={{ color: D.plum }}>surplus@unitemedical.net</a> to get the release list, or check back shortly.
+                Email <a href="mailto:support@unitemedical.net" style={{ color: D.plum }}>support@unitemedical.net</a> to get the release list, or check back shortly.
               </p>
             </div>
           )}
