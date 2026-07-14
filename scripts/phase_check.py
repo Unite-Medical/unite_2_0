@@ -230,19 +230,29 @@ FORBIDDEN_PATTERNS: list[tuple[str, str]] = [
     ("old sales phone tel:", r"tel:\+1?6785550(142|180|219|255|277)"),
     ("old sales phone tel (no +)", r"tel:6785550(142|180|219|255|277)"),
     ("VOSB self-claim", r"\bVOSB\b"),
-    # Spec §4h/§4i/§4l explicitly permit:
-    #   - "via authorized SDVOSB partner" (BPA partner attribution)
-    #   - "SDVOSB partner contract" / "SDVOSB contract channels" (gov page)
-    #   - "SDVOSB suppliers" (diversity-network attribution)
-    # All three reference an *external* SDVOSB entity, not Unite. Anything
+    # Spec §4h/§4i/§4l + Damon go-live sign-off (2026-07) permit:
+    #   - "via authorized SDVOSB distributor" (BPA attribution — the
+    #     distributor HOLDS the contract; approved phrasing)
+    #   - "SDVOSB partner" / "SDVOSB partner contract" (legacy allowed)
+    #   - "SDVOSB contract channels" / "SDVOSB suppliers"
+    # All reference an *external* SDVOSB entity, not Unite. Anything
     # outside those contexts is a Unite-side self-claim and is forbidden.
     # (Procurement.jsx is exempted below: PRD-28 §3.3 mandates listing
     # VOSB/SDVOSB among the diversity classifications *partners* hold.)
     (
         "SDVOSB self-claim",
-        r"\bSDVOSB\b(?!\s+(?:partner|contract|suppliers))",
+        r"\bSDVOSB\b(?!\s+(?:partner|contract|suppliers|distributor))",
     ),
     ("wrong founding year", r"EST\.?\s*2018"),
+    ("wrong foundingDate (JSON-LD)", r"foundingDate:\s*['\"]201[678]['\"]"),
+    # Damon go-live sign-off fixes (2026-07) — must never return:
+    ("500-million-units claim", r"500\s+million\s+units"),
+    ("largest drop-shipper claim", r"largest\s+direct-to-patient\s+drop\s*shippers?"),
+    ("since-2016 bio conflict", r"[Ss]ince\s+2016"),
+    ("Jackie leadership listing", r"Jackie\s+S\."),
+    ("practicing-physician tagline", r"veteran supply-chain operator and a practicing physician"),
+    ("info@ address (use support@/accounting@)", r"info@unitemedical\.net"),
+    ("net-30 promised at signup", r"net-30 terms, (?:and a )?dedicated rep"),
     ("HCPC without S", r"\bHCPC\b(?!S)"),
     ("FOB Atlanta", r"FOB\s+Atlanta"),
     ("12,400 SKUs", r"12,?400\s+SKUs"),
@@ -505,7 +515,6 @@ PAGE_CHECKS: list[tuple[str, list[tuple[str, str]], list[tuple[str, str]]]] = [
         [
             ("new H1", r"Built on discipline\. Driven by demand\."),
             ("letter from Damon", r"A letter from Damon"),
-            ("Jackie S. card", r"Jackie\s*S\."),
         ],
         [],
     ),

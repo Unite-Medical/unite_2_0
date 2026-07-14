@@ -18,7 +18,7 @@ const CREDENTIALS = [
   { label: 'CAGE', val: '8MK70', sub: 'Federal contracting identifier' },
   { label: 'DUNS', val: '117553945', sub: 'SAM.gov registered' },
   { label: 'FDA', val: '3015727296', sub: 'Establishment registration' },
-  { label: 'MSPV BPA', val: '36C24123A0077', sub: 'Via authorized SDVOSB partner' },
+  { label: 'MSPV BPA', val: '36C24123A0077', sub: 'Medava SKUs · via authorized SDVOSB distributor (contract holder)' },
 ];
 
 // Diversity classifications Unite's distributor partners hold — placed lower

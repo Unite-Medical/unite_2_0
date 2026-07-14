@@ -18,12 +18,6 @@ const LEADERS = [
     bio:
       'Veteran. 10+ years in global medical supply chain. Founded and sold an orthotic bracing company. Also operates Unite Pharma and Clyne Health. Manages sourcing, manufacturing, distribution, and partner operations.',
   },
-  {
-    name: 'Jackie S.',
-    title: 'Co-Owner',
-    bio:
-      'Doctor of Podiatric Medicine. Years of clinical and surgical experience across OR and outpatient settings. Brings direct clinical insight to product selection, formulary development, and quality standards.',
-  },
 ];
 
 // Unite family of companies (PRD-28 §3.1) — brief context for the companies
@@ -43,7 +37,7 @@ const FAMILY_COMPANIES = [
 // unsubstantiated SBA-certification tiles, no fabricated SKU counts.
 const CREDENTIALS = [
   ['FDA Registered', '3015727296', 'Device distribution'],
-  ['MSPV BPA', '36C24123A0077', 'Via authorized SDVOSB partner'],
+  ['MSPV BPA', '36C24123A0077', 'Medava SKUs · via authorized SDVOSB distributor (contract holder)'],
   ['CAGE Code', '8MK70', 'Federal contracting'],
   ['DUNS', '117553945', 'SAM registered'],
   ['Veteran-Owned', 'DD214 Verified', 'ID.me verified'],
@@ -58,7 +52,7 @@ export function About() {
   useSEO({
     title: 'About · Built on discipline. Driven by demand. · Unite Medical',
     description:
-      'Built by a veteran supply-chain operator and a practicing physician — the medical supply partner the industry was missing. Lithia Springs, Georgia, est. 2019. FDA-registered, CAGE 8MK70. Over 500 million units distributed.',
+      'Built by a veteran supply-chain operator — the medical supply partner the industry was missing. Lithia Springs, Georgia, est. 2019. FDA-registered, CAGE 8MK70.',
     canonical: '/about',
   });
   return (
@@ -75,8 +69,8 @@ export function About() {
             </h1>
           </div>
           <div style={{ fontSize: isMobile ? 16 : 17, lineHeight: 1.6, color: D.ink2, maxWidth: 460 }}>
-            Built by a veteran supply-chain operator and a practicing physician — the medical
-            supply partner the industry was missing.
+            Built by a veteran supply-chain operator — the medical supply partner the
+            industry was missing.
           </div>
         </div>
       </div>
@@ -109,17 +103,16 @@ export function About() {
           {/* Approved founder-letter rewrite — PRD-28 §3.1, apply verbatim. */}
           <div style={{ fontSize: isMobile ? 16 : 18, lineHeight: 1.75, color: D.ink2 }}>
             <p style={{ marginTop: 0 }}>
-              I&apos;ve spent my career in supply chain. Since 2016 I&apos;ve worked every link of
-              it — sourcing, manufacturing, private label, logistics, fulfillment — and I learned
+              I&apos;ve spent my career in supply chain — sourcing, manufacturing, private
+              label, logistics, fulfillment — and I learned
               early how often the chain breaks and what it costs the people depending on it. In
               2019 I founded Unite Medical to be the partner I kept wishing existed: disciplined,
               accountable, and built to deliver when it matters most.
             </p>
             <p style={{ marginTop: 18 }}>
               That conviction was tested during the pandemic. When the traditional supply chain
-              failed, Unite became one of the largest direct-to-patient drop shippers in the
-              country, moving over 500 million units of tests, PPE, and critical supplies to the
-              labs, hospitals, pharmacies, and retailers who needed them. We didn&apos;t just
+              failed, Unite shipped tests, PPE, and critical supplies at national scale — direct
+              to the labs, hospitals, pharmacies, and retailers who needed them. We didn&apos;t just
               survive that period — we proved what a focused, vertically capable supply chain
               partner could do under pressure.
             </p>

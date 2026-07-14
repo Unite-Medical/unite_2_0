@@ -19,7 +19,7 @@ import { useSEO } from '../lib/seo.js';
 // the unverified PDAC SKU count have been removed.
 const CREDENTIALS = [
   { label: 'FDA Registered', val: '3015727296', sub: 'Device distribution', anchor: 'fda' },
-  { label: 'MSPV BPA', val: '36C24123A0077', sub: 'Via authorized SDVOSB partner', anchor: 'bpa' },
+  { label: 'MSPV BPA', val: '36C24123A0077', sub: 'Medava SKUs · via authorized SDVOSB distributor (contract holder)', anchor: 'bpa' },
   { label: 'CAGE Code', val: '8MK70', sub: 'Federal contracting identifier', anchor: 'cage' },
   { label: 'DUNS', val: '117553945', sub: 'SAM.gov registered', anchor: 'duns' },
   { label: 'Veteran-Owned', val: 'DD214 Verified', sub: 'ID.me verified', anchor: 'veteran' },

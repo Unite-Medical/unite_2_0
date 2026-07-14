@@ -24,7 +24,7 @@ export function Register() {
   useSEO({
     title: 'Request a B2B account',
     description:
-      'Open a Unite Medical wholesale account in two minutes. Approved within one business day. Wholesale pricing, net-30 terms, dedicated rep.',
+      'Open a Unite Medical wholesale account in two minutes. Approved within one business day. Wholesale pricing, card or ACH payment, dedicated rep. Flexible terms available with approved credit.',
     canonical: '/register',
   });
   const [form, setForm] = useState({
@@ -37,7 +37,7 @@ export function Register() {
     password: '',
     segment: 'asc',
     state: 'GA',
-    terms: 'net30',
+    terms: 'card',
   });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
@@ -75,7 +75,7 @@ export function Register() {
           Tell us about your <Grad>organization</Grad>.
         </h1>
         <p style={{ fontSize: 16, color: D.ink2, marginTop: 22, maxWidth: 600, lineHeight: 1.55 }}>
-          We approve accounts within one business day. You&apos;ll get wholesale pricing, net-30 terms, and a dedicated rep for your segment.
+          We approve accounts within one business day. You&apos;ll get wholesale pricing, a dedicated rep for your segment, and card or ACH checkout from day one — flexible terms available with approved credit.
         </p>
 
         <form onSubmit={handleSubmit} style={{ marginTop: 48, display: 'grid', gap: 20 }}>

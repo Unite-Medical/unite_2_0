@@ -151,8 +151,8 @@ export function Portfolio() {
                 <div style={{ fontFamily: D.display, fontSize: isMobile ? 22 : 30, letterSpacing: -0.4, marginTop: 8 }}>Medava SKUs on the national MSPV contract</div>
                 <p style={{ fontSize: 14.5, color: D.ink2, lineHeight: 1.6, margin: '10px 0 0', maxWidth: 640 }}>
                   Medava products are carried on the national Medical/Surgical Prime Vendor
-                  contract via our authorized SDVOSB partner — supplying VA medical centers
-                  nationwide.
+                  contract via an authorized SDVOSB distributor who holds the contract —
+                  supplying VA medical centers nationwide.
                 </p>
               </div>
             </div>

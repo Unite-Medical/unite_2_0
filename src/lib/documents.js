@@ -24,7 +24,7 @@ const LIGHT = [0.96, 0.94, 0.95];
 const GREEN = [0.12, 0.48, 0.30];
 
 const MARGIN = 54;
-const FOOTER_TEXT = 'Unite Medical · Lithia Springs, GA · FDA Reg. #3015727296 · Veteran-owned (SDVOSB partner)';
+const FOOTER_TEXT = 'Unite Medical · Lithia Springs, GA · FDA Reg. #3015727296 · Veteran-owned';
 
 function money(n) {
   return `$${(Number(n) || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;

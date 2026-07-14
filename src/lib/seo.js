@@ -136,7 +136,7 @@ export function organizationSchema() {
     logo: `${SITE_URL}/favicon-512.png`,
     description:
       'Veteran-owned, FDA-registered wholesale medical supply distribution.',
-    foundingDate: '2018',
+    foundingDate: '2019',
     foundingLocation: {
       '@type': 'Place',
       address: {

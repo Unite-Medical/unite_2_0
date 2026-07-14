@@ -10,7 +10,7 @@ import { useViewport } from '../lib/viewport.js';
 import { useSEO } from '../lib/seo.js';
 
 const credentials = [
-  { label: 'MSPV BPA', value: '36C24123A0077', sub: 'via authorized SDVOSB partner' },
+  { label: 'MSPV BPA', value: '36C24123A0077', sub: 'Medava SKUs · via authorized SDVOSB distributor (contract holder)' },
   { label: 'CAGE', value: '8MK70', sub: 'Federal contracting identifier' },
   { label: 'Berry', value: 'Medava PPE line', sub: 'Buy America Act' },
   { label: 'Buy America', value: 'TAA Eligible', sub: 'Prioritized sourcing' },
@@ -20,7 +20,7 @@ const mechanisms = [
   {
     label: 'MSPV-NG',
     description:
-      'Medava products available through SDVOSB partner contract 36C24123A0077 · VA-wide',
+      'Medava-branded SKUs on MSPV BPA 36C24123A0077 via an authorized SDVOSB distributor · VA-wide',
   },
   {
     label: 'SAM.GOV',
@@ -106,9 +106,9 @@ export function Government() {
           Set-Asides
         </h2>
         <p style={{ fontSize: 15, lineHeight: 1.6, color: D.ink2, maxWidth: 760 }}>
-          Medava products are available through SDVOSB contract channels via authorized
-          partner. Unite Medical is a veteran-owned small business (CAGE 8MK70, SAM
-          registered).
+          Medava-branded SKUs are available on the MSPV BPA via an authorized SDVOSB
+          distributor who holds the contract. Unite Medical is a veteran-owned small
+          business (CAGE 8MK70, SAM registered).
         </p>
 
         <div style={{ background: D.plum, color: D.paper, borderRadius: 18, padding: isMobile ? 28 : 40, marginTop: isMobile ? 48 : 72 }}>

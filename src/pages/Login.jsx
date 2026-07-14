@@ -61,7 +61,7 @@ export function Login() {
             Welcome <Grad>back</Grad>.
           </h1>
           <p style={{ fontSize: 15, color: D.ink2, marginTop: 18, lineHeight: 1.55 }}>
-            Your net-30 terms, saved lists, and dedicated rep — all behind one login.
+            Your saved lists, order history, and dedicated rep — all behind one login.
           </p>
           <div style={{ marginTop: 32 }}>
             <label style={{ display: 'block', marginBottom: 14 }}>
