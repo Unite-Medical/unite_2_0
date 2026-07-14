@@ -9,7 +9,7 @@
 // Conversion paths → HubSpot: hospitals (savings analysis / consultation,
 // capturing facility, contact, da Vinci model, instrument volume) and
 // sub-distributors (rep the program under Unite).
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { D } from '../tokens.js';
 import { Nav } from '../components/layout/Nav.jsx';
@@ -127,9 +127,32 @@ function LeadForm({ isMobile }) {
   );
 }
 
+/**
+ * Live savings figure (PRD-28): reads the CDN-cached snapshot pushed by
+ * Restore via /api/hooks/restore. Until the bridge is live (or if the
+ * fetch fails) we show the static, Damon-approved "$900K+" — never a
+ * fabricated live number.
+ */
+function useLiveSavings() {
+  const [live, setLive] = useState(null);
+  useEffect(() => {
+    let on = true;
+    fetch('/api/metrics/savings')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (on && d?.ok && Number.isFinite(Number(d.total_savings_usd))) setLive(Number(d.total_savings_usd));
+      })
+      .catch(() => {});
+    return () => { on = false; };
+  }, []);
+  if (live == null) return '$900K+';
+  return live >= 1e6 ? `$${(live / 1e6).toFixed(2)}M` : `$${Math.round(live / 1e3)}K+`;
+}
+
 export function Robotics() {
   const { isMobile } = useViewport();
   const padX = isMobile ? 20 : 40;
+  const savings = useLiveSavings();
   useSEO({
     title: 'Robotic Surgery Instruments — FDA 510(k) remanufactured da Vinci · Unite Medical',
     description:
@@ -163,7 +186,7 @@ export function Robotics() {
             {/* Program stat band */}
             <div style={{ marginTop: isMobile ? 40 : 64, display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(4, 1fr)', gap: isMobile ? '0 20px' : '0 40px' }}>
               {[
-                ['$900K+', 'Saved for hospital systems to date'],
+                [savings, 'Saved for hospital systems to date'],
                 ['20%', 'Savings · remanufactured'],
                 ['25%', 'Savings · certified pre-owned'],
                 ['510(k)', 'The only FDA clearance · Restore Robotics'],
