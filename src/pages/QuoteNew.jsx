@@ -2,10 +2,9 @@
  * /quote/new — PRD-08 Phase 1 + 7, PRD-18 (advanced parsing).
  *
  * The "real" entry point to the quoting engine:
- *   1. Download the branded Excel/CSV template (data validation built in).
- *   2. Upload CSV or XLSX (multi-sheet, multilingual headers, non-English
+ *   1. Upload CSV or XLSX (multi-sheet, multilingual headers, non-English
  *      product names) → smart column mapping → translation → preview.
- *   3. Run the engine into the landed-cost quote at /quotes/:id/print.
+ *   2. Run the engine into the landed-cost quote at /quotes/:id/print.
  *
  * Column mapping is layered (alias → fuzzy → Claude) and shown to the
  * user for confirmation; non-English text is translated with the original
@@ -27,7 +26,6 @@ import { fmt } from '../lib/format.js';
 import { ingestVendorFile, parseVendorSheetText, CANONICAL_FIELDS } from '../lib/vendorSheet.js';
 import { runQuotingEngine, resolveOrgTier, compareVendorOffers } from '../lib/quoting.js';
 import { loadMarginPolicy, marginForTier } from '../lib/marginPolicy.js';
-import { generateTemplateXlsx, generateTemplateCsv, TEMPLATE_VERSION } from '../lib/quoteTemplate.js';
 import { downloadBlob } from '../lib/xlsxWrite.js';
 import { generateFlexportClassificationCsv } from '../lib/flexportExport.js';
 import { matchLineToStock } from '../lib/offers.js';
@@ -83,7 +81,6 @@ export function QuoteNew() {
   const [running, setRunning] = useState(false);
   const [progress, setProgress] = useState([]);
   const [error, setError] = useState(null);
-  const [tplBusy, setTplBusy] = useState(false);
   // Multi-vendor comparison (PRD-16 Phase 6): staged offers to compare.
   const [offers, setOffers] = useState([]);
 
@@ -189,23 +186,6 @@ export function QuoteNew() {
     setVendorName('Sample Manufacturer');
   }
 
-  async function downloadTemplate(kind) {
-    setTplBusy(true);
-    try {
-      if (kind === 'xlsx') {
-        const blob = await generateTemplateXlsx();
-        downloadBlob(blob, `unite-quote-template-${TEMPLATE_VERSION}.xlsx`);
-      } else {
-        const blob = new Blob([generateTemplateCsv()], { type: 'text/csv' });
-        downloadBlob(blob, `unite-quote-template-${TEMPLATE_VERSION}.csv`);
-      }
-    } catch (err) {
-      setError(`Couldn't build the template: ${err.message}`);
-    } finally {
-      setTplBusy(false);
-    }
-  }
-
   function exportFlexportCsv() {
     if (!parsed?.ok || !parsed.lines.length) return;
     const csv = generateFlexportClassificationCsv(parsed.lines);
@@ -255,22 +235,6 @@ export function QuoteNew() {
         <section style={{ padding: `0 ${padX}px ${isMobile ? 56 : 80}px` }}>
           <div style={{ maxWidth: 1100, margin: '0 auto', display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'minmax(0, 1fr) 360px', gap: isMobile ? 28 : 36 }}>
             <div>
-              {/* STEP 0 — template */}
-              <div style={{ background: D.paperAlt, border: `1px solid ${D.line}`, borderRadius: 14, padding: isMobile ? 18 : 22, marginBottom: 18 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-                  <div>
-                    <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.plum }}>STEP 0 · GET THE TEMPLATE</div>
-                    <div style={{ fontSize: 13, color: D.ink2, marginTop: 4 }}>
-                      Pre-formatted with dropdowns, validation, and an instructions tab. Vendors fill it in and send it back. <span style={{ color: D.ink3 }}>({TEMPLATE_VERSION})</span>
-                    </div>
-                  </div>
-                  <div style={{ marginLeft: 'auto', display: 'flex', gap: 8 }}>
-                    <button type="button" disabled={tplBusy} onClick={() => downloadTemplate('xlsx')} style={btnSolid(D)}>Excel template</button>
-                    <button type="button" disabled={tplBusy} onClick={() => downloadTemplate('csv')} style={btnGhost(D)}>CSV</button>
-                  </div>
-                </div>
-              </div>
-
               {/* STEP 1 — upload */}
               <div style={{ background: D.card, border: `1px solid ${D.line}`, borderRadius: 14, padding: isMobile ? 22 : 28 }}>
                 <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.plum }}>STEP 1 · UPLOAD OR PASTE</div>
