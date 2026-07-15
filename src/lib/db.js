@@ -17,7 +17,7 @@ import { seed } from './seed.js';
  */
 
 const STORAGE_KEY = 'um.db.v1';
-const SCHEMA_VERSION = 17;
+const SCHEMA_VERSION = 18;
 
 const TABLES = [
   'profiles', 'organizations', 'organization_users', 'addresses',

@@ -35,6 +35,8 @@ import { transfers } from '../src/lib/wms/transfers.js';
 import { counts } from '../src/lib/wms/counts.js';
 import { adjustments } from '../src/lib/wms/adjustments.js';
 import { bundles } from '../src/lib/wms/bundles.js';
+import { receiving } from '../src/lib/wms/receiving.js';
+import { generateLotBarcode } from '../src/lib/scanning.js';
 import { wmsCan } from '../src/lib/wms/access.js';
 
 let pass = 0; let fail = 0;
@@ -392,6 +394,64 @@ section('PRD-25 · hardening (reverse / reconcile / roles)');
   ok(wmsCan('reverse', { role: 'admin', wms_role: 'operator' }) === false, 'operator cannot reverse');
   ok(wmsCan('receive', { role: 'admin', wms_role: 'operator' }) === true, 'operator can receive');
   ok(wmsCan('adjust', { role: 'customer' }) === false, 'customers have no WMS access');
+}
+
+// ── PRD-33: scan-to-receive + goods-receipt reconciliation ─────────────────
+section('PRD-33 · scan-to-receive + reconciliation');
+{
+  // A product with a known UPC + GTIN, exactly like the seed shape.
+  const sku = `WMS-SCAN-${uid('x')}`;
+  const upc = '086009312344'; // valid UPC-A (mod-10 check digit)
+  db.insert('products', { id: sku, sku, name: 'Scan receive test', price: 4, cogs: 2, upc, gtin: `00${upc}` });
+
+  // 1) Resolve a BARE UPC → product SKU.
+  const byUpc = receiving.resolveScan(upc);
+  ok(byUpc.matched && byUpc.sku === sku, 'bare UPC-A resolves to the product SKU');
+  ok(byUpc.capture_method === 'upc', 'UPC scan tagged capture_method=upc');
+
+  // 2) Resolve a GS1/UDI barcode → SKU + lot + expiration in one scan.
+  const gs1code = generateLotBarcode({ gtin: `00${upc}`, lot: 'LOT9', expiration: '2027-05-01' });
+  const byGs1 = receiving.resolveScan(gs1code);
+  ok(byGs1.matched && byGs1.sku === sku, 'GS1/UDI barcode resolves to the product SKU');
+  ok(byGs1.lot_number === 'LOT9' && byGs1.expiration_date === '2027-05-01', 'GS1 scan carries lot + expiration');
+
+  // 3) An unknown code does not match (and is not silently invented).
+  const unknown = receiving.resolveScan('012345678905'); // valid check digit, not in catalog
+  ok(unknown.ok && !unknown.matched && unknown.reason === 'upc_not_in_catalog', 'unknown UPC reports not-in-catalog (no fabrication)');
+
+  // 4) Scan-to-receive against a PO posts a real ledger receipt.
+  const po = purchaseOrders.create({ vendor_name: 'Scan Vendor', line_items: [{ sku, name: 'Scan receive test', qty: 50, cost: 2 }], warehouse_id: 'wh_atl' });
+  purchaseOrders.approve(po.id);
+  await purchaseOrders.send(po.id);
+  const onHandBefore = availability.onHand(sku, 'wh_atl');
+  const scanRes = await receiving.receiveScans(
+    [{ sku, qty: 30, lot_number: 'LOT9', expiration_date: '2027-05-01', resolution: byGs1 }],
+    { po_id: po.id, warehouse_id: 'wh_atl', received_by: 'verifier' },
+  );
+  ok(scanRes.ok && scanRes.mode === 'po' && scanRes.received === 30, 'scan-to-receive posted 30 against the PO');
+  ok(availability.onHand(sku, 'wh_atl') === onHandBefore + 30, 'on_hand += 30 via ledger receipt');
+  ok(scanRes.events === 1, 'a scan_events provenance row was written');
+  ok(db.list('scan_events').some((e) => e.ref_id === po.id && e.kind === 'receive'), 'scan_events links to the PO');
+
+  // 5) Reconcile: 30 of 50 received → SHORT by 20, not balanced.
+  const rec1 = receiving.reconcilePO(po.id);
+  ok(rec1.ok && rec1.totals.ordered === 50 && rec1.totals.received === 30, 'reconcile totals: ordered 50, received 30 (ledger truth)');
+  ok(rec1.lines[0].state === 'short' && rec1.lines[0].variance === -20, 'short line flagged (variance −20)');
+  ok(rec1.balanced === false, 'PO not balanced while short');
+
+  // 6) Receive the remaining 20 → reconcile balances exactly.
+  await receiving.receiveScans([{ sku, qty: 20, lot_number: 'LOT9', expiration_date: '2027-05-01', resolution: byGs1 }], { po_id: po.id, warehouse_id: 'wh_atl', received_by: 'verifier' });
+  const rec2 = receiving.reconcilePO(po.id);
+  ok(rec2.balanced === true && rec2.totals.variance === 0, 'reconcile balances after full receipt (variance 0)');
+  ok(rec2.lines[0].state === 'exact', 'line reconciles to exact');
+  ok(availability.ledgerOnHand(sku, 'wh_atl') === availability.onHand(sku, 'wh_atl'), 'ledger invariant holds through scan-receive');
+
+  // 7) Over-receipt is detected (receive 5 more than ordered on a fresh PO).
+  const po2 = purchaseOrders.create({ vendor_name: 'Over Vendor', line_items: [{ sku, name: 'Scan receive test', qty: 10, cost: 2 }], warehouse_id: 'wh_atl' });
+  purchaseOrders.approve(po2.id); await purchaseOrders.send(po2.id);
+  await receiving.receiveScans([{ sku, qty: 15, resolution: byUpc }], { po_id: po2.id, warehouse_id: 'wh_atl', received_by: 'verifier' });
+  const rec3 = receiving.reconcilePO(po2.id);
+  ok(rec3.lines[0].state === 'over' && rec3.lines[0].variance === 5, 'over-receipt flagged (variance +5)');
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

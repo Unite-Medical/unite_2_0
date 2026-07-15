@@ -20,6 +20,23 @@ function deterministicStock(sku) {
   return 80 + (h % 25920);
 }
 
+// Deterministic, check-digit-valid UPC-A (12 digits) per SKU so scan-to-receive
+// resolves against the catalog in the demo (real cartons carry a UPC/GTIN
+// barcode). All share a plausible GS1 company prefix (0860093…). The GTIN-14 is
+// the zero-padded UPC — padding by an even number of leading zeros preserves
+// the mod-10 check digit, so the SAME code validates through
+// gs1.isValidGtin() and parses through the GS1/UDI receiving path.
+function upcForSku(sku) {
+  let h = 2166136261;
+  for (let i = 0; i < String(sku).length; i++) { h ^= String(sku).charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; }
+  const body = String(h).padStart(10, '0').slice(0, 4); // 4 deterministic hash digits
+  const base = `0860093${body}`; // 7-digit company prefix + 4 item digits = 11
+  let sum = 0;
+  for (let i = 0; i < 11; i++) sum += Number(base[i]) * (i % 2 === 0 ? 3 : 1);
+  const check = (10 - (sum % 10)) % 10;
+  return `${base}${check}`; // 12-digit UPC-A
+}
+
 function legacyTier(category) {
   switch (category) {
     case 'Orthotics':    return 'Bracing';
@@ -234,9 +251,12 @@ export function seed(db) {
 
   STATIC_PRODUCTS.forEach((p) => {
     const charCodes = (p.sku || '').padEnd(10, 'X');
+    const upc = upcForSku(p.sku);
     db.products.push({
       id: p.sku,
       sku: p.sku,
+      upc,               // 12-digit UPC-A printed on the carton (scan target)
+      gtin: `00${upc}`,  // GTIN-14 (zero-padded UPC) for GS1/UDI receiving
       handle: p.handle,
       name: p.name,
       vendor: p.vendor,
