@@ -28,3 +28,8 @@ test('shopifySnapshotDatasets includes navigation and URL redirects', async () =
   assert.ok(shopifySnapshotDatasets.includes('menus'));
   assert.ok(shopifySnapshotDatasets.includes('urlRedirects'));
 });
+
+test('requestedDatasets restricts an explicit read-only snapshot request', async () => {
+  const { requestedDatasets } = await import('../api/internal/shopify-snapshot.js');
+  assert.deepEqual(requestedDatasets('urlRedirects,collections'), ['urlRedirects', 'collections']);
+});

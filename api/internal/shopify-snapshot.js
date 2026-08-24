@@ -1,6 +1,12 @@
 import { SERVICES } from '../_lib/services.js';
-import { exportShopifySnapshot } from '../_lib/shopifySnapshot.js';
+import { exportShopifySnapshot, shopifySnapshotDatasets } from '../_lib/shopifySnapshot.js';
 import { sendJson } from '../_lib/http.js';
+
+export function requestedDatasets(value) {
+  if (!value) return shopifySnapshotDatasets;
+  const datasets = String(value).split(',').map((item) => item.trim()).filter(Boolean);
+  return datasets.length ? datasets : shopifySnapshotDatasets;
+}
 
 function protectedDeploymentHost(req) {
   const host = String(req.headers?.host || '').split(':')[0].toLowerCase();
@@ -17,7 +23,7 @@ export default async function handler(req, res) {
   try {
     const endpoint = service.buildUrl(`/admin/api/${process.env.SHOPIFY_API_VERSION || '2026-04'}/graphql.json`, {});
     const headers = await service.headers();
-    const snapshot = await exportShopifySnapshot({ endpoint, token: headers['X-Shopify-Access-Token'] });
+    const snapshot = await exportShopifySnapshot({ endpoint, token: headers['X-Shopify-Access-Token'], datasets: requestedDatasets(req.query?.datasets) });
     return sendJson(res, 200, { ok: true, read_only: true, snapshot });
   } catch (error) {
     return sendJson(res, 502, { error: 'shopify_snapshot_failed', detail: error.message });
