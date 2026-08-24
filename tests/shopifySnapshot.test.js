@@ -33,3 +33,10 @@ test('requestedDatasets restricts an explicit read-only snapshot request', async
   const { requestedDatasets } = await import('../api/internal/shopify-snapshot.js');
   assert.deepEqual(requestedDatasets('urlRedirects,collections'), ['urlRedirects', 'collections']);
 });
+
+test('isAuthorizedSnapshotRequest rejects missing or wrong snapshot tokens', async () => {
+  const { isAuthorizedSnapshotRequest } = await import('../api/internal/shopify-snapshot.js');
+  assert.equal(isAuthorizedSnapshotRequest({}, 'secret'), false);
+  assert.equal(isAuthorizedSnapshotRequest({ authorization: 'Bearer wrong' }, 'secret'), false);
+  assert.equal(isAuthorizedSnapshotRequest({ authorization: 'Bearer secret' }, 'secret'), true);
+});
