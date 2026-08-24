@@ -30,6 +30,20 @@ const QUERIES = {
         nodes { id legacyResourceId name isActive fulfillsOnlineOrders address { address1 address2 city provinceCode zip countryCode phone } }
       }
     }`,
+  menus: `
+    query Menus($cursor: String) {
+      menus(first: 250, after: $cursor) {
+        pageInfo { hasNextPage endCursor }
+        nodes { id handle title items { id title type url resourceId tags items { id title type url resourceId tags } } }
+      }
+    }`,
+  urlRedirects: `
+    query UrlRedirects($cursor: String) {
+      urlRedirects(first: 250, after: $cursor) {
+        pageInfo { hasNextPage endCursor }
+        nodes { id path target }
+      }
+    }`,
 };
 
 export async function exportShopifySnapshot({ endpoint, token, datasets = Object.keys(QUERIES), fetchImpl = fetch } = {}) {

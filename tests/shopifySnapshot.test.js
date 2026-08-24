@@ -22,3 +22,9 @@ test('exportShopifySnapshot paginates collections without sending mutations', as
   assert.ok(calls.every((call) => /^\s*query\b/.test(call.query)));
   assert.ok(calls.every((call) => !/mutation\b/i.test(call.query)));
 });
+
+test('shopifySnapshotDatasets includes navigation and URL redirects', async () => {
+  const { shopifySnapshotDatasets } = await import('../api/_lib/shopifySnapshot.js');
+  assert.ok(shopifySnapshotDatasets.includes('menus'));
+  assert.ok(shopifySnapshotDatasets.includes('urlRedirects'));
+});
