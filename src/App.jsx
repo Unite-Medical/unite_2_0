@@ -98,6 +98,7 @@ const AdminCount = lazy(() => import('./pages/admin/AdminCount.jsx').then((m) =>
 const AdminTransfers = lazy(() => import('./pages/admin/AdminTransfers.jsx').then((m) => ({ default: m.AdminTransfers })));
 const AdminTeam = lazy(() => import('./pages/admin/AdminTeam.jsx').then((m) => ({ default: m.AdminTeam })));
 const AdminConsignment = lazy(() => import('./pages/admin/AdminConsignment.jsx').then((m) => ({ default: m.AdminConsignment })));
+const AdminShopifyHistory = lazy(() => import('./pages/admin/AdminShopifyHistory.jsx').then((m) => ({ default: m.AdminShopifyHistory })));
 const AccountOrder = lazy(() => import('./pages/AccountOrder.jsx').then((m) => ({ default: m.AccountOrder })));
 const DistributorPortal = lazy(() => import('./pages/DistributorPortal.jsx').then((m) => ({ default: m.DistributorPortal })));
 const VendorPurchaseOrderReview = lazy(() => import('./pages/VendorPurchaseOrderReview.jsx').then((m) => ({ default: m.VendorPurchaseOrderReview })));
@@ -212,6 +213,7 @@ export default function App() {
           <Route path="/admin/customers" element={<RequireAdmin><AdminCustomers /></RequireAdmin>} />
           <Route path="/admin/team"      element={<RequireAdmin><AdminTeam /></RequireAdmin>} />
           <Route path="/admin/consignment" element={<RequireAdmin><AdminConsignment /></RequireAdmin>} />
+          <Route path="/admin/shopify-history" element={<RequireAdmin><AdminShopifyHistory /></RequireAdmin>} />
           <Route path="/admin/quotes"    element={<RequireAdmin><AdminQuotes /></RequireAdmin>} />
           <Route path="/admin/sourcing"  element={<RequireAdmin><AdminSourcing /></RequireAdmin>} />
           <Route path="/admin/orders"    element={<RequireAdmin><AdminOrders /></RequireAdmin>} />

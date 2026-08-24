@@ -18,7 +18,7 @@ import { seed as seedPublicDatabase } from './publicSeed.js';
  */
 
 const STORAGE_KEY = 'um.db.v1';
-const SCHEMA_VERSION = 22;
+const SCHEMA_VERSION = 23;
 
 const TABLES = [
   'profiles', 'organizations', 'organization_users', 'addresses',
@@ -68,6 +68,8 @@ const TABLES = [
   'tier_pricing', 'catalog_visibility',
   // PRD-04: Shopify headless commerce mirrors (orders + products)
   'shopify_orders', 'shopify_products',
+  // Read-only historical evidence imported from the Shopify migration snapshot.
+  'shopify_history_rows',
   // PRD-25: UniteWMS — append-only ledger + projection support tables
   'stock_movements', 'bins', 'lots', 'lot_tracking', 'reservations',
   'count_sessions', 'count_lines', 'transfers', 'transfer_lines', 'bundles',

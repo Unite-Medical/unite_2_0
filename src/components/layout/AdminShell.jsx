@@ -11,6 +11,7 @@ const NAV = [
   ['Overview',      'overview',   '/admin'],
   ['Morning brief', 'digest',     '/admin/digest'],
   ['Products',      'products',   '/admin/products'],
+  ['Shopify history', 'shopify-history', '/admin/shopify-history'],
   ['Orders',        'orders',     '/admin/orders'],
   ['Fulfillment',   'fulfillment', '/admin/fulfillment'],
   ['Quotes',        'quotes',     '/admin/quotes'],
