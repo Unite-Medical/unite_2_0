@@ -61,7 +61,10 @@ export async function exportShopifySnapshot({ endpoint, token, datasets = Object
         body: JSON.stringify({ query, variables: { cursor } }),
       });
       const payload = await response.json();
-      if (!response.ok || payload.errors) throw new Error(`shopify_snapshot_fetch_failed:${dataset}`);
+      if (!response.ok || payload.errors) {
+        const reason = payload.errors?.map((entry) => entry.message).join('; ') || `http_${response.status}`;
+        throw new Error(`shopify_snapshot_fetch_failed:${dataset}:${reason}`);
+      }
       const connection = payload.data?.[dataset];
       if (!connection) throw new Error(`shopify_snapshot_shape_invalid:${dataset}`);
       rows.push(...(connection.nodes || []));
