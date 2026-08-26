@@ -3,6 +3,10 @@
    that a future migration to Supabase is mostly mechanical.            */
 
 import { REAL_PRODUCTS, REAL_CATEGORIES, REAL_COLLECTIONS } from '../data/realCatalog.js';
+import damonCatalogDecisions from '../data/damonCatalogDecisions.generated.json';
+import { applyDamonDecisionsToCatalog } from './catalogLaunchPolicy.js';
+
+const LAUNCH_PRODUCTS = applyDamonDecisionsToCatalog(REAL_PRODUCTS, damonCatalogDecisions.products);
 
 const isoDaysAgo = (d) => new Date(Date.now() - d * 86400000).toISOString();
 
@@ -48,7 +52,7 @@ function legacyTier(category) {
   }
 }
 
-const STATIC_PRODUCTS = REAL_PRODUCTS.map((p) => {
+const STATIC_PRODUCTS = LAUNCH_PRODUCTS.map((p) => {
   // Quote-only products (e.g. RegeniCool™ Pro) have no public price and no
   // warehoused stock — they route to the quote flow, never "in stock".
   const stock = p.quote_only ? 0 : deterministicStock(p.sku);
@@ -79,6 +83,11 @@ const STATIC_PRODUCTS = REAL_PRODUCTS.map((p) => {
     product_type: p.product_type,
     m6_category: p.m6_category,
     quote_only: p.quote_only ?? false,
+    launch_decision: p.launch_decision,
+    launch_visibility: p.launch_visibility,
+    status: p.status,
+    available: p.available,
+    published: p.published,
     fda_registered:    p.fda_registered,
     pdac_approved:     p.pdac_approved,
     taa_compliant:     p.taa_compliant,
