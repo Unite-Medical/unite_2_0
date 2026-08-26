@@ -2,11 +2,11 @@
    Designed to match the brief's table shapes (Section 7) closely enough
    that a future migration to Supabase is mostly mechanical.            */
 
-import { REAL_PRODUCTS, REAL_CATEGORIES, REAL_COLLECTIONS } from '../data/realCatalog.js';
-import damonCatalogDecisions from '../data/damonCatalogDecisions.generated.json';
-import { applyDamonDecisionsToCatalog } from './catalogLaunchPolicy.js';
+import { REAL_CATEGORIES, REAL_COLLECTIONS } from '../data/realCatalog.js';
+import { EXTRA_PRODUCTS } from '../data/extraProducts.js';
+import shopifyLaunchCatalog from '../data/shopifyLaunchCatalog.generated.json' with { type: 'json' };
 
-const LAUNCH_PRODUCTS = applyDamonDecisionsToCatalog(REAL_PRODUCTS, damonCatalogDecisions.products, { allowUnmanaged: true });
+const LAUNCH_PRODUCTS = [...shopifyLaunchCatalog.products, ...EXTRA_PRODUCTS];
 
 const isoDaysAgo = (d) => new Date(Date.now() - d * 86400000).toISOString();
 
@@ -298,6 +298,11 @@ export function seed(db) {
       variants: p.variants,
       m6_category: p.m6_category,
       quote_only: p.quote_only ?? false,
+      launch_decision: p.launch_decision,
+      launch_visibility: p.launch_visibility,
+      status: p.status,
+      available: p.available,
+      published: p.published,
       country_of_origin: p.country_of_origin || 'CN',
       fda_registered: p.fda_registered ?? true,
       taa_compliant: p.taa_compliant ?? false,
@@ -327,7 +332,11 @@ export function seed(db) {
         price:     v.price,
         compare_at_price: v.compare_at_price ?? null,
         available: v.available,
-        weight_grams: v.weight_grams,
+        weight_grams: v.grams ?? v.weight_grams,
+        shipping_weight_lb: v.shipping_weight_lb,
+        barcode: v.barcode ?? null,
+        requires_shipping: v.requires_shipping,
+        taxable: v.taxable,
         options:   v.options || {},
         image:     v.image || '',
       });

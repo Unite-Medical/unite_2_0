@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { applyDamonCatalogDecision, applyDamonDecisionsToCatalog, summarizeDamonCatalogDecisions } from '../src/lib/catalogLaunchPolicy.js';
+import launchCatalog from '../src/data/shopifyLaunchCatalog.generated.json' with { type: 'json' };
 
 test('Damon catalog policy archives test-product and prevents ordering', () => {
   const product = { handle: 'test-product', sku: 'test-product', available: true, published: true };
@@ -29,4 +30,11 @@ test('Damon catalog projection requires every product to have a decision', () =>
 test('Damon catalog projection can preserve Unite-native products outside Shopify', () => {
   const products = [{ handle: 'regenicool-pro', source: 'unite_native', available: true }];
   assert.deepEqual(applyDamonDecisionsToCatalog(products, [], { allowUnmanaged: true }), products);
+});
+
+test('generated launch catalog contains every Shopify product and confirmed SynGuard weight', () => {
+  assert.equal(launchCatalog.products.length, 175);
+  assert.equal(launchCatalog.products.filter((product) => product.launch_decision === 'Launch').length, 140);
+  const synguard = launchCatalog.products.find((product) => product.variants.some((variant) => variant.sku === 'NGPF7000'));
+  assert.equal(synguard.variants.find((variant) => variant.sku === 'NGPF7000').shipping_weight_lb, 8);
 });
