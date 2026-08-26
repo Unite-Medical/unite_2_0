@@ -16,6 +16,7 @@ const membership = { user_id: 'usr_buyer', org_id: 'org_customer', role: 'buyer'
 test('commerce authorization requires current approved organization and owner or buyer membership', () => {
   assert.equal(authorizeCommerceContext({ session, profile, organization, membership }).ok, true);
   assert.equal(authorizeCommerceContext({ session, profile, organization: { ...organization, approval_status: 'manual_review' }, membership }).reason, 'account_not_approved');
+  assert.equal(authorizeCommerceContext({ session, profile, organization: { ...organization, commerce_hold_reason: 'customer_pricing_source_missing' }, membership }).reason, 'customer_pricing_source_missing');
   assert.equal(authorizeCommerceContext({ session, profile: { ...profile, status: 'suspended' }, organization, membership }).reason, 'profile_inactive');
   assert.equal(authorizeCommerceContext({ session, profile, organization, membership: { ...membership, role: 'viewer' } }).reason, 'buyer_authority_required');
   assert.equal(authorizeCommerceContext({ session: { ...session, org_id: 'org_forged' }, profile, organization, membership }).reason, 'organization_mismatch');

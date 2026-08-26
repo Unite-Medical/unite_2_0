@@ -5,7 +5,10 @@ const INTERNAL_COMMERCE_ROLES = new Set([
 export function commerceAccessFor(session, organization) {
   const authenticated = Boolean(session?.user_id);
   const internal = authenticated && INTERNAL_COMMERCE_ROLES.has(session.role);
+  const commerceHold = session?.commerce_hold_reason
+    || (organization?.id === session?.org_id ? organization?.commerce_hold_reason : null);
   const approvedAccount = authenticated
+    && !commerceHold
     && ['customer', 'distributor'].includes(session.role)
     && (
       session.approval_status === 'approved'

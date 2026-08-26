@@ -20,6 +20,7 @@ export function authorizeCommerceContext({ session, profile, organization, membe
     return { ok: false, reason: 'organization_mismatch' };
   }
   if (organization.status && organization.status !== 'active') return { ok: false, reason: 'organization_inactive' };
+  if (organization.commerce_hold_reason) return { ok: false, reason: organization.commerce_hold_reason };
   if (organization.approval_status !== 'approved') return { ok: false, reason: 'account_not_approved' };
   if (!membership || membership.user_id !== profile.id || membership.org_id !== organization.id) {
     return { ok: false, reason: 'membership_not_found' };

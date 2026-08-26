@@ -23,6 +23,7 @@ export function createSessionToken(session, { secret, now = Date.now(), ttlMs = 
     role: String(session.role || ''),
     org_id: session.org_id || null,
     approval_status: session.approval_status || null,
+    commerce_hold_reason: session.commerce_hold_reason || null,
     tier: session.tier || null,
     session_revision: Number(session.session_revision || 0),
     iat: Math.floor(now / 1000),

@@ -34,6 +34,18 @@ dist-ssr
 ~$*
 docs/Unite_Medical_Keys_and_Accounts.pdf
 
+# Restricted migration inputs and customer documents
+migration-data/
+customer-data/
+customer-certificates/
+*customers_export*.csv
+*orders_export*.csv
+*transactions_export*.csv
+*payouts_export*.csv
+*customer*address*.jsonl
+*tax*certificate*.pdf
+*tax*certificate*.xlsx
+
 # Generated email previews
 emails/preview/
 

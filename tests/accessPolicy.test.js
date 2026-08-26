@@ -52,6 +52,16 @@ test('server-approved account session can transact without hydrating the organiz
   assert.equal(access.can_order, true);
 });
 
+test('migrated account pricing hold blocks commerce even after approval', () => {
+  const access = commerceAccessFor({
+    user_id: 'usr_migrated', role: 'customer', org_id: 'org_migrated', approval_status: 'approved',
+    commerce_hold_reason: 'customer_pricing_source_missing',
+  }, { id:'org_migrated', approval_status:'approved', commerce_hold_reason:'customer_pricing_source_missing' });
+  assert.equal(access.can_view_prices, false);
+  assert.equal(access.can_order, false);
+  assert.equal(access.can_quick_quote, true);
+});
+
 test('internal staff sessions may see commercial pricing without a customer organization', () => {
   for (const role of ['admin', 'sales', 'sales_manager', 'customer_service', 'finance']) {
     assert.equal(commerceAccessFor({ user_id: `usr_${role}`, role }, null).can_view_prices, true);

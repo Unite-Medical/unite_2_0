@@ -42,7 +42,7 @@ export default async function handler(req, res) {
     const orderIds = new Set(ownOrders.map((row) => row.id));
     const payload = {
       profile: pick(profile, ['id', 'email', 'name', 'role', 'org_id', 'title', 'status']),
-      organization: pick(organization, ['id', 'name', 'segment', 'tier', 'terms', 'approval_status', 'status', 'account_rep', 'contact_email']),
+      organization: pick(organization, ['id', 'name', 'segment', 'tier', 'terms', 'approval_status', 'status', 'account_rep', 'contact_email', 'commerce_hold_reason', 'pricing_reconciliation_status', 'shopify_tax_exempt', 'certificate_status']),
       membership: pick(membership, ['id', 'user_id', 'org_id', 'role', 'status']),
       addresses: addresses.filter((row) => row.org_id === organization.id).map((row) => pick(row, ['id', 'org_id', 'label', 'line1', 'line2', 'city', 'state', 'zip', 'country', 'is_default'])),
       payment_methods: paymentMethods.filter((row) => row.org_id === organization.id && row.status === 'active').map((row) => pick(row, ['id', 'org_id', 'method', 'status', 'credit_limit'])),

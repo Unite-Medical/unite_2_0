@@ -26,6 +26,7 @@ function safeSession(profile, organization = null) {
     role: profile.role,
     org_id: profile.org_id || null,
     approval_status: organization?.approval_status || profile.approval_status || null,
+    commerce_hold_reason: organization?.commerce_hold_reason || null,
     tier: organization?.tier || profile.tier || null,
     session_revision: Number(profile.session_revision || 0),
   };
