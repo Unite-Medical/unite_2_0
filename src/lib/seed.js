@@ -5,8 +5,11 @@
 import { REAL_CATEGORIES, REAL_COLLECTIONS } from '../data/realCatalog.js';
 import { EXTRA_PRODUCTS } from '../data/extraProducts.js';
 import shopifyLaunchCatalog from '../data/shopifyLaunchCatalog.generated.json' with { type: 'json' };
+import shopifyInventoryOpening from '../data/shopifyInventoryOpening.generated.json' with { type: 'json' };
+import { buildDamonInventoryOpening } from './inventoryOpeningPolicy.js';
 
 const LAUNCH_PRODUCTS = [...shopifyLaunchCatalog.products, ...EXTRA_PRODUCTS];
+const INVENTORY_OPENING = buildDamonInventoryOpening(shopifyInventoryOpening.rows);
 
 const isoDaysAgo = (d) => new Date(Date.now() - d * 86400000).toISOString();
 
@@ -106,9 +109,8 @@ const STATIC_CATEGORIES = REAL_CATEGORIES.map((c) => ({
 }));
 
 const STATIC_WAREHOUSES = [
-  { id: 'wh_atl', code: 'ATL', name: 'Atlanta, GA · main', city: 'Atlanta', state: 'GA', utilization: 0.74, capacity_units: 1_400_000, lat: 33.749, lng: -84.388 },
-  { id: 'wh_reno', code: 'RNO', name: 'Reno, NV', city: 'Reno', state: 'NV', utilization: 0.52, capacity_units: 820_000, lat: 39.529, lng: -119.813 },
-  { id: 'wh_lit', code: 'LIT', name: 'Lithia Springs · overflow', city: 'Lithia Springs', state: 'GA', utilization: 0.88, capacity_units: 280_000, lat: 33.794, lng: -84.665 },
+  { id: 'wh_unite', code: 'UNITE', name: 'Unite Medical Warehouse', city: 'Lithia Springs', state: 'GA', active: true, provisional_opening: true },
+  { id: 'wh_cato', code: 'CATO', name: 'CATO Warehouse', active: true, sellable: false, opening_balance_zeroed: true },
 ];
 
 const STATIC_ORGS = [
@@ -314,9 +316,6 @@ export function seed(db) {
       hts_code: ['9021.10', '3822.19', '4015.19', '3005.10', '3004.90'][Math.abs(charCodes.charCodeAt(7)) % 5],
     });
 
-    db.inventory.push({ id: `inv_atl_${p.sku}`, sku: p.sku, warehouse_id: 'wh_atl', on_hand: p.stock, reorder_at: Math.floor(p.stock * 0.2), reorder_qty: Math.floor(p.stock * 0.5) });
-    db.inventory.push({ id: `inv_reno_${p.sku}`, sku: p.sku, warehouse_id: 'wh_reno', on_hand: Math.floor(p.stock * 0.3), reorder_at: Math.floor(p.stock * 0.06), reorder_qty: Math.floor(p.stock * 0.15) });
-
     if (p.price != null) {
       db.pricing.push({ id: `prc_${p.sku}_1`, sku: p.sku, tier: 1, min_qty: 1, unit_price: p.price });
       db.pricing.push({ id: `prc_${p.sku}_2`, sku: p.sku, tier: 2, min_qty: 50, unit_price: +(p.price * 0.93).toFixed(2) });
@@ -340,6 +339,24 @@ export function seed(db) {
         options:   v.options || {},
         image:     v.image || '',
       });
+    });
+  });
+
+  INVENTORY_OPENING.opening.forEach((row, index) => {
+    db.inventory.push({
+      id: `inv_opening_${row.warehouse_id}_${row.sku}_${index}`,
+      ...row,
+      source: 'shopify_snapshot_2026_08_24',
+      reconciliation_status: 'physical_count_required',
+    });
+  });
+  INVENTORY_OPENING.audit_only.forEach((row, index) => {
+    db.audit_log.push({
+      id: `aud_inventory_opening_${index}`,
+      kind: 'inventory.opening_exception',
+      ref_id: row.SKU || row.Title || `source-row-${index}`,
+      payload: row,
+      created_at: new Date().toISOString(),
     });
   });
 
