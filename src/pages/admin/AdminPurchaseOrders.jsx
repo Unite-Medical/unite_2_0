@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { D } from '../../tokens.js';
 import { AdminShell } from '../../components/layout/AdminShell.jsx';
@@ -7,7 +7,7 @@ import { db } from '../../lib/db.js';
 import { fmt } from '../../lib/format.js';
 import { useViewport } from '../../lib/viewport.js';
 import { purchaseOrders } from '../../lib/wms/purchaseOrders.js';
-import { draftPurchaseOrders } from '../../lib/replenishment.js';
+import { draftServerPurchaseOrders, mutatePurchaseOrder } from '../../lib/serverPurchaseOrders.js';
 
 const STATUS_COLOR = {
   draft: D.ink3, approved: '#b8a04a', sent: '#4a78b8', partial: '#b8a04a',
@@ -20,6 +20,8 @@ export function AdminPurchaseOrders() {
   const pos = db.useTable('purchase_orders', { orderBy: 'created_at', dir: 'desc' });
   const [busy, setBusy] = useState(null);
   const [filter, setFilter] = useState('all');
+  const [notice, setNotice] = useState(null);
+  const draftKey = useRef(null);
 
   const filtered = useMemo(
     () => (filter === 'all' ? pos : pos.filter((p) => p.status === filter)),
@@ -28,7 +30,35 @@ export function AdminPurchaseOrders() {
 
   async function act(fn, id) {
     setBusy(id);
-    try { await fn(); } finally { setBusy(null); }
+    setNotice(null);
+    try {
+      const result = await fn();
+      if (result?.ok === false) setNotice(`Could not complete ${id}: ${result.reason}`);
+      else if (result?.po?.status === 'sent') setNotice(result.delivery_status !== 'sent'
+        ? `${id} is queued for supplier delivery. Vendor acknowledgment pending.`
+        : `${id} sent to ${result.po.sent_to}. Vendor acknowledgment pending.`);
+    } finally { setBusy(null); }
+  }
+
+  async function sendPurchaseOrder(po) {
+    const response = await fetch('/api/vendor/purchase-orders/send', {
+      method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ po_id: po.id, expected_revision: Number(po.revision || 1), idempotency_key: `send:${po.id}:${Number(po.revision || 1)}` }),
+    });
+    const body = await response.json().catch(() => ({}));
+    if (!response.ok && response.status !== 202) return { ok: false, reason: body.error || `HTTP ${response.status}` };
+    if (body.purchase_order) db.applyRemoteSnapshot({ purchase_orders: [body.purchase_order] });
+    return { ok: true, po: body.purchase_order, delivery_status: body.delivery_status };
+  }
+
+  async function draftFromReplenishment() {
+    draftKey.current ||= `replenishment:${crypto.randomUUID()}`;
+    const result = await draftServerPurchaseOrders('replenishment', { idempotency_key: draftKey.current });
+    if (result.ok) {
+      draftKey.current = null;
+      setNotice(`${result.purchase_orders?.length || 0} server-backed draft PO(s) created.`);
+    }
+    return result;
   }
 
   const counts = useMemo(() => {
@@ -44,7 +74,7 @@ export function AdminPurchaseOrders() {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'end', marginBottom: 22, flexWrap: 'wrap', gap: 10 }}>
           <h1 style={{ fontFamily: D.display, fontSize: 'clamp(34px, 5.6vw, 56px)', fontWeight: 400, letterSpacing: -1.3, margin: 0 }}>Purchase orders.</h1>
           <button
-            onClick={() => act(async () => { await draftPurchaseOrders(); }, 'draft-all')}
+            onClick={() => act(draftFromReplenishment, 'draft-all')}
             disabled={busy === 'draft-all'}
             style={{ background: D.plum, color: D.paper, border: 'none', padding: '11px 18px', borderRadius: 4, cursor: 'pointer', fontSize: 13, fontWeight: 600 }}
           >
@@ -60,6 +90,8 @@ export function AdminPurchaseOrders() {
             }}>{s.toUpperCase()}{s !== 'all' && counts[s] ? ` · ${counts[s]}` : ''}</button>
           ))}
         </div>
+
+        {notice && <div style={{ marginBottom: 14, padding: '11px 14px', background: D.paperAlt, border: `1px solid ${D.line}`, borderRadius: 8, fontSize: 13 }}>{notice}</div>}
 
         <AdminCard title={`${filtered.length} purchase order(s)`}>
           <div className="um-scroll-x">
@@ -79,7 +111,10 @@ export function AdminPurchaseOrders() {
                       <td style={{ padding: '12px', fontFamily: D.mono, fontSize: 12 }}>
                         <Link to={`/admin/purchase-orders/${p.id}/print`} style={{ color: D.plum }}>{p.id}</Link>
                       </td>
-                      <td style={{ padding: '12px', fontWeight: 500 }}>{p.vendor_name}</td>
+                      <td style={{ padding: '12px', fontWeight: 500 }}>
+                        {p.vendor_name}
+                        {p.vendor_response && <div style={{ marginTop: 3, fontFamily: D.mono, fontSize: 9, color: p.vendor_response === 'acknowledged' ? '#3b8760' : D.ink3 }}>{p.vendor_response.toUpperCase()}</div>}
+                      </td>
                       <td style={{ padding: '12px', color: D.ink2 }}>{p.line_items?.length || 0}</td>
                       <td style={{ padding: '12px', fontFamily: D.mono }}>{prog.received}/{prog.ordered}</td>
                       <td style={{ padding: '12px', fontFamily: D.mono }}>{fmt.money(p.total_cost || 0, { cents: false })}</td>
@@ -87,11 +122,12 @@ export function AdminPurchaseOrders() {
                         <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12, color: STATUS_COLOR[p.status] || D.ink2 }}>● {p.status}</span>
                       </td>
                       <td style={{ padding: '12px', display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-                        {p.status === 'draft' && <Act label="Approve" busy={busy === p.id} onClick={() => act(() => purchaseOrders.approve(p.id), p.id)} />}
-                        {p.status === 'approved' && <Act label="Send" busy={busy === p.id} onClick={() => act(() => purchaseOrders.send(p.id), p.id)} />}
-                        {(p.status === 'sent' || p.status === 'partial') && <Link to="/admin/inventory/receive" style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1, color: D.plum }}>RECEIVE</Link>}
-                        {p.status === 'received' && <Act label="Close" busy={busy === p.id} onClick={() => act(() => purchaseOrders.close(p.id), p.id)} />}
-                        {['draft', 'approved', 'sent'].includes(p.status) && <Act label="Cancel" danger busy={busy === p.id} onClick={() => act(() => purchaseOrders.cancel(p.id), p.id)} />}
+                        {p.status === 'draft' && <Act label="Approve" busy={busy === p.id} onClick={() => act(() => mutatePurchaseOrder(p, 'approve'), p.id)} />}
+                        {p.status === 'approved' && <Act label="Send PO" busy={busy === p.id} onClick={() => act(() => sendPurchaseOrder(p), p.id)} />}
+                        {p.status === 'sent' && p.vendor_response === 'changes_requested' && <Act label="Create revision" busy={busy === p.id} onClick={() => act(() => mutatePurchaseOrder(p, 'revise'), p.id)} />}
+                        {p.po_type !== 'consignment_settlement' && (p.status === 'sent' || p.status === 'partial') && <Link to="/admin/inventory/receive" style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1, color: D.plum }}>RECEIVE</Link>}
+                        {p.po_type !== 'consignment_settlement' && p.status === 'received' && <Act label="Close" busy={busy === p.id} onClick={() => act(() => mutatePurchaseOrder(p, 'close'), p.id)} />}
+                        {['draft', 'approved', 'sent'].includes(p.status) && p.vendor_response !== 'acknowledged' && <Act label="Cancel" danger busy={busy === p.id} onClick={() => act(() => mutatePurchaseOrder(p, 'cancel'), p.id)} />}
                       </td>
                     </tr>
                   );

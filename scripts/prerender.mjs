@@ -190,12 +190,12 @@ function renderRoute(baseHtml, route, { title, description, type = 'website', js
 }
 
 function productMeta(p) {
-  const quoteOnly = p.quote_only || p.price == null;
+  const quoteOnly = Boolean(p.quote_only);
   const desc = `${p.name} — ${p.category || 'medical supply'}, SKU ${p.sku}.`
     + (p.hcpcs && p.hcpcs !== '—' ? ` HCPCS ${p.hcpcs}.` : '')
     + (quoteOnly
       ? ' Quote-only — priced per order from Unite Medical.'
-      : ' Wholesale pricing, same-day shipping before 2pm EST, no minimums on stocked items.');
+      : ' Company pricing is available after account approval. Same-day shipping before 2pm EST on stocked items.');
   return {
     title: p.name,
     description: desc.slice(0, 300),
@@ -208,18 +208,6 @@ function productMeta(p) {
       category: p.category,
       brand: { '@type': 'Brand', name: SITE_NAME },
       image: DEFAULT_OG_IMAGE,
-      // Quote-only products have no public price — omit the Offer rather
-      // than emit a null price / false InStock signal.
-      ...(quoteOnly ? {} : {
-        offers: {
-          '@type': 'Offer',
-          priceCurrency: 'USD',
-          price: p.price,
-          availability: 'https://schema.org/InStock',
-          seller: { '@type': 'Organization', name: SITE_NAME },
-          url: `${SITE_URL}/products/${p.sku}`,
-        },
-      }),
     },
   };
 }

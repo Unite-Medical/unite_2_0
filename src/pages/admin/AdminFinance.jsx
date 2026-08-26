@@ -10,10 +10,11 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { D } from '../../tokens.js';
 import { AdminShell } from '../../components/layout/AdminShell.jsx';
+import { AccountsPayable } from '../../components/finance/AccountsPayable.jsx';
 import { db } from '../../lib/db.js';
 import { fmt, uid } from '../../lib/format.js';
 import { useViewport } from '../../lib/viewport.js';
-import { qbo, gmail } from '../../lib/services.js';
+import { gmail } from '../../lib/services.js';
 
 const BUCKETS = [
   ['Current', 0, 0],
@@ -32,9 +33,11 @@ export function AdminFinance() {
   const { isMobile } = useViewport();
   const padX = isMobile ? 18 : 40;
   const invoices = db.useTable('invoices', { orderBy: 'due_date', dir: 'asc' });
+  const [section, setSection] = useState('ar');
   const [tab, setTab] = useState('open');
   const [busyId, setBusyId] = useState(null);
   const [notice, setNotice] = useState(null);
+  const [paymentEvidence, setPaymentEvidence] = useState({});
 
   const open = invoices.filter((i) => i.status === 'open');
   const overdue = open.filter((i) => daysOverdue(i) > 0);
@@ -51,15 +54,24 @@ export function AdminFinance() {
   async function recordPayment(inv) {
     setBusyId(inv.id); setNotice(null);
     try {
-      await qbo.recordPayment({ qbo_invoice_id: inv.qbo_id, amount: inv.amount, method: 'ach' });
-      db.update('invoices', inv.id, { status: 'paid', paid_at: new Date().toISOString() });
-      db.insert('payments', { id: uid('pay'), invoice_id: inv.id, order_id: inv.order_id, amount: inv.amount, method: 'ach', received_at: new Date().toISOString() });
-      if (inv.order_id) {
-        const order = db.get('orders', inv.order_id);
-        if (order) db.update('orders', inv.order_id, { payment_status: 'paid' });
-      }
-      db.insert('audit_log', { id: uid('aud'), kind: 'finance.payment_recorded', ref_id: inv.id, payload: { amount: inv.amount } });
-      setNotice(`Payment of ${fmt.money(inv.amount)} recorded on ${inv.id} and synced to the books.`);
+      const evidence = paymentEvidence[inv.id] || {};
+      const response = await fetch('/api/finance/record-payment', {
+        method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          invoice_id: inv.id,
+          provider: evidence.provider || 'accounting',
+          payment_reference: evidence.reference,
+          amount: Number(evidence.amount),
+          method: 'ach',
+        }),
+      });
+      const body = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(body.error || `HTTP ${response.status}`);
+      if (body.invoice) db.update('invoices', inv.id, body.invoice);
+      if (body.order) db.update('orders', body.order.id, body.order);
+      setNotice(`Payment evidence of ${fmt.money(body.payment.amount)} recorded on ${inv.id}.`);
+    } catch (error) {
+      setNotice(`Payment blocked: ${error.message}`);
     } finally { setBusyId(null); }
   }
 
@@ -99,6 +111,13 @@ export function AdminFinance() {
       </div>
 
       <div style={{ padding: isMobile ? 20 : 32 }}>
+        <div style={{ display: 'flex', gap: 8, marginBottom: 18 }}>
+          {[['ar', 'Accounts receivable'], ['ap', 'Accounts payable']].map(([key, label]) => (
+            <button key={key} type="button" onClick={() => setSection(key)} style={{ padding: '9px 16px', borderRadius: 6, border: `1px solid ${section === key ? D.plum : D.line}`, background: section === key ? D.plum : D.card, color: section === key ? D.paper : D.ink, cursor: 'pointer', fontWeight: 600 }}>{label}</button>
+          ))}
+        </div>
+        {section === 'ap' && <AccountsPayable />}
+        <div style={{ display: section === 'ar' ? 'block' : 'none' }}>
         <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(4, 1fr)', gap: 14 }}>
           {[
             ['OPEN AR', fmt.short(openAr), D.ink],
@@ -167,14 +186,17 @@ export function AdminFinance() {
                     </td>
                     <td style={{ padding: 12, whiteSpace: 'nowrap' }}>
                       {!isPaid && (
-                        <>
+                        <div style={{ display: 'grid', gridTemplateColumns: '92px 130px 92px auto', gap: 6, alignItems: 'center' }}>
+                          <select value={paymentEvidence[inv.id]?.provider || 'accounting'} onChange={(event) => setPaymentEvidence((current) => ({ ...current, [inv.id]: { ...current[inv.id], provider: event.target.value } }))} style={{ padding: '6px 7px', border: `1px solid ${D.line}`, borderRadius: 5, background: D.paper }}><option value="accounting">Accounting</option><option value="off_platform">Other</option></select>
+                          <input value={paymentEvidence[inv.id]?.reference || ''} onChange={(event) => setPaymentEvidence((current) => ({ ...current, [inv.id]: { ...current[inv.id], reference: event.target.value } }))} placeholder="Payment ref" style={{ padding: '6px 7px', border: `1px solid ${D.line}`, borderRadius: 5, minWidth: 0 }} />
+                          <input type="number" min="0.01" step="0.01" value={paymentEvidence[inv.id]?.amount ?? inv.balance ?? inv.amount} onChange={(event) => setPaymentEvidence((current) => ({ ...current, [inv.id]: { ...current[inv.id], amount: event.target.value } }))} style={{ padding: '6px 7px', border: `1px solid ${D.line}`, borderRadius: 5, minWidth: 0 }} />
                           <button onClick={() => recordPayment(inv)} disabled={busyId === inv.id} style={{ padding: '6px 12px', borderRadius: 6, fontSize: 12, cursor: 'pointer', background: D.plum, color: '#fff', border: 'none', fontFamily: D.sans }}>
-                            {busyId === inv.id ? '…' : 'Record payment'}
+                            {busyId === inv.id ? '…' : 'Record evidence'}
                           </button>
-                          <button onClick={() => sendReminder(inv)} disabled={busyId === inv.id} style={{ marginLeft: 8, padding: '6px 12px', borderRadius: 6, fontSize: 12, cursor: 'pointer', background: 'transparent', color: D.ink, border: `1px solid ${D.line}`, fontFamily: D.sans }}>
+                          <button onClick={() => sendReminder(inv)} disabled={busyId === inv.id} style={{ gridColumn: '1 / -1', padding: '6px 12px', borderRadius: 6, fontSize: 12, cursor: 'pointer', background: 'transparent', color: D.ink, border: `1px solid ${D.line}`, fontFamily: D.sans }}>
                             {inv.last_reminder_at ? `Remind again (${fmt.ago(inv.last_reminder_at)})` : 'Send reminder'}
                           </button>
-                        </>
+                        </div>
                       )}
                       {isPaid && <span style={{ fontSize: 12, color: D.ink3 }}>{inv.paid_at ? `paid ${fmt.ago(inv.paid_at)}` : 'paid'}</span>}
                       <Link to={`/invoices/${inv.id}/print`} style={{ marginLeft: 8, padding: '6px 12px', borderRadius: 6, fontSize: 12, background: 'transparent', color: D.plum, border: `1px solid ${D.line}`, textDecoration: 'none', fontFamily: D.sans }}>PDF</Link>
@@ -185,6 +207,7 @@ export function AdminFinance() {
               {visible.length === 0 && <tr><td colSpan={8} style={{ padding: 24, color: D.ink3 }}>Nothing here.</td></tr>}
             </tbody>
           </table>
+        </div>
         </div>
       </div>
     </AdminShell>

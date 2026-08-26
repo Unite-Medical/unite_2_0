@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { D } from '../tokens.js';
 import { UMLogo } from '../components/shared/Logo.jsx';
 import { Grad } from '../components/shared/Grad.jsx';
 import { auth } from '../lib/auth.js';
-import { hubspot, gmail } from '../lib/services.js';
+
 import { useViewport } from '../lib/viewport.js';
 import { useSEO } from '../lib/seo.js';
 
@@ -19,26 +19,28 @@ const SEGMENTS = [
 
 export function Register() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const quoteToken = searchParams.get('quote_token');
+  const quoteEmail = searchParams.get('email') || '';
   const { isMobile } = useViewport();
   const padX = isMobile ? 22 : 40;
   useSEO({
     title: 'Request a B2B account',
     description:
-      'Open a Unite Medical wholesale account in two minutes. Approved within one business day. Wholesale pricing, card or ACH payment, dedicated rep. Flexible terms available with approved credit.',
+      'Request a Unite Medical company account. Approved accounts start with default pricing and invoice payment by ACH. Pay-later terms require separate credit approval.',
     canonical: '/register',
   });
-  const [form, setForm] = useState({
-    org_name: 'Sunrise Ambulatory Surgery Center',
-    website: 'sunrise-asc.com',
-    spend: '$1-5M',
-    name: 'Jessica Garcia',
-    email: 'jessica@sunrise-asc.com',
+  const [form, setForm] = useState(() => ({
+    org_name: import.meta.env.DEV ? 'Sunrise Ambulatory Surgery Center' : '',
+    website: import.meta.env.DEV ? 'sunrise-asc.com' : '',
+    spend: '',
+    name: import.meta.env.DEV ? 'Jessica Garcia' : '',
+    email: quoteEmail || (import.meta.env.DEV ? 'jessica@sunrise-asc.com' : ''),
     phone: '',
     password: '',
     segment: 'asc',
     state: 'GA',
-    terms: 'card',
-  });
+  }));
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
 
@@ -48,12 +50,8 @@ export function Register() {
     e.preventDefault();
     setError(null); setSubmitting(true);
     try {
-      const session = await auth.register({ email: form.email, password: form.password || 'demo', name: form.name, org_name: form.org_name, segment: form.segment, website: form.website });
-      await Promise.all([
-        hubspot.createContact({ email: form.email, firstname: form.name.split(' ')[0], lastname: form.name.split(' ').slice(1).join(' '), company: form.org_name, phone: form.phone, lifecyclestage: 'customer' }),
-        gmail.send({ to: form.email, subject: 'Welcome to Unite Medical', body: `Hi ${form.name.split(' ')[0]} — your account is live. Your dedicated rep will reach out within one business day.`, from: 'support@unitemedical.net' }),
-      ]);
-      navigate(session.role === 'admin' ? '/admin' : '/dashboard');
+      const session = await auth.register({ email: form.email, password: form.password, name: form.name, org_name: form.org_name, segment: form.segment, website: form.website });
+      navigate(quoteToken ? `/q/${encodeURIComponent(quoteToken)}` : session.role === 'admin' ? '/admin' : '/dashboard');
     } catch (err) {
       setError(err.message || 'Could not create account.');
     } finally {
@@ -75,7 +73,7 @@ export function Register() {
           Tell us about your <Grad>organization</Grad>.
         </h1>
         <p style={{ fontSize: 16, color: D.ink2, marginTop: 22, maxWidth: 600, lineHeight: 1.55 }}>
-          We approve accounts within one business day. You&apos;ll get wholesale pricing, a dedicated rep for your segment, and card or ACH checkout from day one — flexible terms available with approved credit.
+          Approved accounts start with validated default pricing and invoices payable by ACH. Pay-later terms require separate credit approval. Manual reviews receive a decision within one business day.
         </p>
 
         <form onSubmit={handleSubmit} style={{ marginTop: 48, display: 'grid', gap: 20 }}>
@@ -95,7 +93,7 @@ export function Register() {
               <Field label="Full name" value={form.name} onChange={(v) => set('name', v)} required />
               <Field label="Work email" value={form.email} onChange={(v) => set('email', v)} type="email" required />
               <Field label="Phone (optional)" value={form.phone} onChange={(v) => set('phone', v)} />
-              <Field label="Choose a password" value={form.password} onChange={(v) => set('password', v)} type="password" placeholder="leave blank for demo" />
+              <Field label="Choose a password" value={form.password} onChange={(v) => set('password', v)} type="password" required />
             </div>
           </fieldset>
 

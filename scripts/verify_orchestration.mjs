@@ -16,9 +16,12 @@ import { buildQuotePdf } from '../src/lib/documents.js';
 import { convert, normalizeCurrency } from '../src/lib/external/exchangeRates.js';
 import { parseVendorSheetText, convertLineCurrencies } from '../src/lib/vendorSheet.js';
 import { recordEvent, processEvent, replayEvent, MAX_ATTEMPTS, busStats } from '../src/lib/webhookBus.js';
-import { runFulfillment, createReturn, PIPELINE_STEPS } from '../src/lib/fulfillment.js';
+import {
+  approveReturn, confirmShipmentHandoff, createReturn, inspectReturn,
+  issueReturnRefund, PIPELINE_STEPS, receiveReturn, runFulfillment,
+} from '../src/lib/fulfillment.js';
 import { compareVendorOffers } from '../src/lib/quoting.js';
-import { acceptQuote } from '../src/lib/quoteAcceptance.js';
+import { acceptQuote, requestSignerVerification, verifySignerCode } from '../src/lib/quoteAcceptance.js';
 import { buildSelfServeQuote, requestSourcing } from '../src/lib/selfServeQuote.js';
 import { inviteTeammate, updateMemberRole, removeMember, listTeam } from '../src/lib/team.js';
 import { mailer } from '../src/lib/mailer.js';
@@ -103,16 +106,23 @@ section('PRD-24 · fulfillment');
   // Build a synthetic order with one in-stock SKU and one short SKU.
   const sku = db.list('inventory')[0]?.sku || 'SKU-1';
   const orderId = `UM-TEST-${db.count('orders')}`;
-  db.insert('orders', { id: orderId, customer_id: 'org_test', customer_name: 'Verifier Health', total: 500, payment_method: 'ach', payment_terms: 'net30', payment_status: 'invoiced', status: 'processing', segment: 'asc' });
+  db.insert('orders', { id: orderId, customer_id: 'org_test', customer_name: 'Verifier Health', contact_email: 'buyer@verifier.example', total: 500, payment_method: 'ach', payment_terms: 'prepaid', payment_status: 'pending', status: 'payment_pending', segment: 'asc' });
   db.insert('order_items', { id: uid('oi'), order_id: orderId, sku, name: 'In-stock item', qty: 1, unit_price: 100, ext_price: 100 });
   db.insert('order_items', { id: uid('oi'), order_id: orderId, sku: 'SKU-NONEXISTENT', name: 'Short item', qty: 999999, unit_price: 1, ext_price: 999999 });
 
+  const held = await runFulfillment(orderId);
+  ok(held.payment_pending === true, 'unpaid ACH order stops at payment');
+  ok(db.list('shipments', { where: { order_id: orderId } }).length === 0, 'unpaid order has no shipment');
+  db.update('orders', orderId, { payment_status: 'paid', paid_at: new Date().toISOString() });
   const res = await runFulfillment(orderId);
   const steps = db.list('fulfillment_pipeline', { where: { order_id: orderId } });
   ok(steps.length === PIPELINE_STEPS.length, `all ${PIPELINE_STEPS.length} pipeline steps recorded`);
   ok(steps.find((s) => s.step === 'validate')?.status === 'completed', 'validate completed');
   ok(res.backorders.length >= 1, 'shortfall created a backorder');
   ok(db.list('shipments', { where: { order_id: orderId } }).length >= 1, 'shipment created');
+  ok(db.list('shipments', { where: { order_id: orderId } })[0].status === 'label_created', 'label creation does not mark shipped');
+  const handoff = await confirmShipmentHandoff(orderId, { actor_id: 'verifier', handoff_reference: 'VERIFY-CARRIER-SCAN' });
+  ok(handoff.ok, 'physical handoff posts shipment');
   ok(db.list('documents', { where: { document_type: 'packing_slip', ref_id: orderId } }).length >= 1, 'packing slip document generated');
 
   // Idempotent re-run: completed steps skip.
@@ -120,8 +130,13 @@ section('PRD-24 · fulfillment');
   ok(res2.steps.length === PIPELINE_STEPS.length, 're-run keeps step count stable (idempotent)');
 
   // Returns
-  const rma = await createReturn(orderId, [{ sku, qty: 1, unit_price: 100 }]);
-  ok(rma.status === 'refunded', `return processed (${rma.status})`);
+  const request = await createReturn(orderId, [{ sku, qty: 1, unit_price: 100 }]);
+  ok(request.ok && request.rma.status === 'requested', 'return request does not immediately restock or refund');
+  approveReturn(request.rma.id, { approved_by: 'verifier' });
+  receiveReturn(request.rma.id, { received_by: 'verifier' });
+  inspectReturn(request.rma.id, { inspected_by: 'verifier', disposition: 'quality_hold', accepted_items: request.rma.items });
+  const refund = await issueReturnRefund(request.rma.id, { approved_by: 'verifier-finance' });
+  ok(refund.ok && refund.rma.status === 'refunded', 'approved inspected return reaches refund');
 }
 
 // ── PRD-16/19: quote acceptance + compare ──────────────────────────────────
@@ -129,9 +144,14 @@ section('PRD-16/19 · acceptance + compare');
 {
   const token = `tok_${uid('x')}`;
   const qid = `Q-TEST-${db.count('quotes')}`;
-  db.insert('quotes', { id: qid, customer_name: 'Verifier Health', total: 240, status: 'draft', acceptance_token: token, valid_until: new Date(Date.now() + 7 * 864e5).toISOString() });
+  db.insert('quotes', { id: qid, customer_id: 'org_test', customer_name: 'Verifier Health', contact_email: 'signer@verifier.example', total: 240, status: 'sent', revision: 1, acceptance_token: token, valid_until: new Date(Date.now() + 7 * 864e5).toISOString() });
   db.insert('quote_items', { id: `${qid}-li-0`, quote_id: qid, name: 'Gauze', target_qty: 1000, sell_per_unit: 0.24, ext_sell: 240 });
-  const acc = await acceptQuote(token, { runPipeline: false });
+  const challenge = await requestSignerVerification(token, 'signer@verifier.example', { code: '123456' });
+  await verifySignerCode(challenge.challenge_id, '123456');
+  const acc = await acceptQuote(token, {
+    runPipeline: false, challengeId: challenge.challenge_id, bindingAcknowledged: true,
+    signerName: 'Verifier Signer', signerTitle: 'Buyer', signerEmail: 'signer@verifier.example', poNumber: 'PO-VERIFY',
+  });
   ok(acc.ok && acc.order, 'quote accepted → order created');
   ok(db.get('quotes', qid).status === 'accepted', 'quote marked accepted');
   const again = await acceptQuote(token);
@@ -150,11 +170,17 @@ section('PRD-19 · self-serve quoting');
 {
   const sku = db.list('products')[0]?.sku;
   ok(Boolean(sku), 'catalog has products to quote');
-  const res = buildSelfServeQuote({ items: [{ sku, qty: 100 }], org: { id: 'org_atlsurgical', name: 'Atlanta Surgical Center', tier: 'A' } });
+  const res = await buildSelfServeQuote({ items: [{ sku, qty: 100 }], org: { id: 'org_atlsurgical', name: 'Atlanta Surgical Center', contact_email: 'buyer@atlanta-surgical.com', tier: 'A' } });
   ok(res.ok && res.quote, 'self-serve quote built');
   ok(res.quote.acceptance_token && res.quote.source === 'self_serve', 'quote has acceptance token + source');
   ok(res.lines[0].sell_per_unit > 0 && res.lines[0].ext_sell > 0, 'line priced via tier engine');
-  const acc = await acceptQuote(res.quote.acceptance_token);
+  db.update('quotes', res.quote.id, { status: 'sent', contact_email: 'buyer@atlanta-surgical.com', revision: 1 });
+  const challenge = await requestSignerVerification(res.quote.acceptance_token, 'buyer@atlanta-surgical.com', { code: '654321' });
+  await verifySignerCode(challenge.challenge_id, '654321');
+  const acc = await acceptQuote(res.quote.acceptance_token, {
+    challengeId: challenge.challenge_id, bindingAcknowledged: true,
+    signerName: 'Self Serve Buyer', signerTitle: 'Buyer', signerEmail: 'buyer@atlanta-surgical.com', poNumber: 'PO-SELF-SERVE',
+  });
   ok(acc.ok, 'self-serve quote is acceptable end-to-end');
   const src = requestSourcing({ description: '5000 nitrile gloves size L', org: { id: 'org_x', name: 'X' } });
   ok(src.ok && src.lead, 'sourcing request captured as lead');
@@ -225,7 +251,7 @@ section('PRD-25 · PO receiving + lots (FEFO)');
 {
   const sku = `WMS-PO-${uid('x')}`;
   db.insert('products', { id: sku, sku, name: 'PO receive test', price: 2, cogs: 1 });
-  const po = purchaseOrders.create({ vendor_name: 'Test Vendor', line_items: [{ sku, name: 'PO receive test', qty: 100, cost: 1 }], warehouse_id: 'wh_atl' });
+  const po = purchaseOrders.create({ vendor_name: 'Test Vendor', vendor_email: 'orders@test-vendor.example', line_items: [{ sku, name: 'PO receive test', qty: 100, cost: 1 }], warehouse_id: 'wh_atl' });
   ok(po.status === 'draft', 'PO created in draft');
   ok(purchaseOrders.approve(po.id).ok, 'PO approved');
   await purchaseOrders.send(po.id);
@@ -264,9 +290,9 @@ section('PRD-25 · ship FEFO + recall (<1s)');
 {
   const sku = `WMS-SHIP-${uid('x')}`;
   db.insert('products', { id: sku, sku, name: 'Ship FEFO test', price: 5, cogs: 2 });
-  // Two lots: LATER (expires 2028) received first, SOONER (expires 2026) second.
-  lotsApi.receiveLot({ sku, lot_number: 'LATER', expiration_date: '2028-01-01', warehouse_id: 'wh_atl', qty: 30, ref_id: 'seed', idempotency_key: `r1_${sku}` });
-  lotsApi.receiveLot({ sku, lot_number: 'SOONER', expiration_date: '2026-03-01', warehouse_id: 'wh_atl', qty: 30, ref_id: 'seed', idempotency_key: `r2_${sku}` });
+  // Two unexpired lots: LATER received first, SOONER second.
+  lotsApi.receiveLot({ sku, lot_number: 'LATER', expiration_date: '2031-01-01', warehouse_id: 'wh_atl', qty: 30, ref_id: 'seed', idempotency_key: `r1_${sku}` });
+  lotsApi.receiveLot({ sku, lot_number: 'SOONER', expiration_date: '2030-03-01', warehouse_id: 'wh_atl', qty: 30, ref_id: 'seed', idempotency_key: `r2_${sku}` });
 
   const orderId = `UM-SHIP-${uid('x')}`;
   db.insert('orders', { id: orderId, customer_id: 'org_atlsurgical', customer_name: 'Recall Test ASC', status: 'processing', total: 100 });
@@ -420,7 +446,7 @@ section('PRD-33 · scan-to-receive + reconciliation');
   ok(unknown.ok && !unknown.matched && unknown.reason === 'upc_not_in_catalog', 'unknown UPC reports not-in-catalog (no fabrication)');
 
   // 4) Scan-to-receive against a PO posts a real ledger receipt.
-  const po = purchaseOrders.create({ vendor_name: 'Scan Vendor', line_items: [{ sku, name: 'Scan receive test', qty: 50, cost: 2 }], warehouse_id: 'wh_atl' });
+  const po = purchaseOrders.create({ vendor_name: 'Scan Vendor', vendor_email: 'orders@scan-vendor.example', line_items: [{ sku, name: 'Scan receive test', qty: 50, cost: 2 }], warehouse_id: 'wh_atl' });
   purchaseOrders.approve(po.id);
   await purchaseOrders.send(po.id);
   const onHandBefore = availability.onHand(sku, 'wh_atl');
@@ -446,12 +472,11 @@ section('PRD-33 · scan-to-receive + reconciliation');
   ok(rec2.lines[0].state === 'exact', 'line reconciles to exact');
   ok(availability.ledgerOnHand(sku, 'wh_atl') === availability.onHand(sku, 'wh_atl'), 'ledger invariant holds through scan-receive');
 
-  // 7) Over-receipt is detected (receive 5 more than ordered on a fresh PO).
-  const po2 = purchaseOrders.create({ vendor_name: 'Over Vendor', line_items: [{ sku, name: 'Scan receive test', qty: 10, cost: 2 }], warehouse_id: 'wh_atl' });
+  // 7) Over-receipt is a hard stop before inventory moves.
+  const po2 = purchaseOrders.create({ vendor_name: 'Over Vendor', vendor_email: 'orders@over-vendor.example', line_items: [{ sku, name: 'Scan receive test', qty: 10, cost: 2 }], warehouse_id: 'wh_atl' });
   purchaseOrders.approve(po2.id); await purchaseOrders.send(po2.id);
-  await receiving.receiveScans([{ sku, qty: 15, resolution: byUpc }], { po_id: po2.id, warehouse_id: 'wh_atl', received_by: 'verifier' });
-  const rec3 = receiving.reconcilePO(po2.id);
-  ok(rec3.lines[0].state === 'over' && rec3.lines[0].variance === 5, 'over-receipt flagged (variance +5)');
+  const over = await receiving.receiveScans([{ sku, qty: 15, lot_number: 'LOT-OVER', expiration_date: '2027-06-01', resolution: byUpc }], { po_id: po2.id, warehouse_id: 'wh_atl', received_by: 'verifier' });
+  ok(over.ok === false && over.reason === 'overage_requires_manager', 'over-receipt is blocked before posting inventory');
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

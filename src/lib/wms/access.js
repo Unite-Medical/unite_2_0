@@ -24,6 +24,8 @@ export function wmsRole(session) {
   if (!session) return null;
   if (session.wms_role && CAPABILITIES[session.wms_role]) return session.wms_role;
   if (session.role === 'admin') return 'admin';
+  if (session.role === 'warehouse_manager') return 'manager';
+  if (session.role === 'warehouse_operator') return 'operator';
   return null;
 }
 

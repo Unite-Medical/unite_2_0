@@ -3,7 +3,8 @@ import { D } from '../../tokens.js';
 import { AdminShell } from '../../components/layout/AdminShell.jsx';
 import { db } from '../../lib/db.js';
 import { useViewport } from '../../lib/viewport.js';
-import { GRANTS, GRANT_LABEL, repAuthority } from '../../lib/repAuthority.js';
+import { GRANTS, GRANT_LABEL } from '../../lib/repAuthority.js';
+import { updateRepGrant } from '../../lib/serverAccountAdmin.js';
 
 // PRD-26 §9 — rep order-entry authority matrix. Admin grants per-rep
 // permissions; placeOrder enforces them and audits every override + denial.
@@ -15,17 +16,28 @@ export function AdminTeam() {
   const reps = profiles.filter((p) => p.role === 'admin' || p.role === 'rep');
   const [activeId, setActiveId] = useState(reps[0]?.id);
   const active = reps.find((r) => r.id === activeId) || reps[0];
+  const [notice, setNotice] = useState('');
 
   const has = (repId, grant) => grantRows.some((g) => g.rep_id === repId && g.grant === grant);
   const rowFor = (repId, grant) => grantRows.find((g) => g.rep_id === repId && g.grant === grant);
 
-  function toggle(grant) {
+  async function toggle(grant) {
     if (!active) return;
-    if (has(active.id, grant)) repAuthority.revoke(active.id, grant);
-    else repAuthority.grant({ rep_id: active.id, grant, max_discount_pct: grant === 'discount' ? 10 : null, granted_by: 'usr_admin' });
+    setNotice('Saving authority…');
+    try {
+      await updateRepGrant(active.id, grant, has(active.id, grant) ? 'revoke' : 'grant', grant === 'discount' ? 10 : null);
+      setNotice('Authority saved');
+    } catch (error) {
+      setNotice(`Not saved: ${error.message}`);
+    }
   }
-  function setCap(grant, val) {
-    repAuthority.grant({ rep_id: active.id, grant, max_discount_pct: Number(val) || 0, granted_by: 'usr_admin' });
+  async function setCap(grant, val) {
+    try {
+      await updateRepGrant(active.id, grant, 'grant', Number(val) || 0);
+      setNotice('Authority saved');
+    } catch (error) {
+      setNotice(`Not saved: ${error.message}`);
+    }
   }
 
   const denials = db.useTable('audit_log').filter((a) => a.kind === 'rep.authority_denied').slice(-8).reverse();
@@ -36,6 +48,7 @@ export function AdminTeam() {
         <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 12 }}>TEAM · ORDER-ENTRY AUTHORITY (RBAC)</div>
         <h1 style={{ fontFamily: D.display, fontSize: 'clamp(34px, 5.6vw, 56px)', fontWeight: 400, letterSpacing: -1.3, lineHeight: 1.02, margin: 0 }}>Rep authority</h1>
         <p style={{ color: D.ink2, marginTop: 10, maxWidth: 640 }}>What each rep may change when placing an order for a customer. Every override is bounded and audited; attempts beyond a grant are rejected and logged.</p>
+        {notice && <p style={{ color: notice.startsWith('Not saved') ? D.terra : D.ink3, marginTop: 6, fontSize: 12 }}>{notice}</p>}
       </div>
 
       <div style={{ padding: isMobile ? 20 : 32, display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '260px 1fr', gap: 20 }}>

@@ -9,29 +9,47 @@
  */
 
 import { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { D } from '../tokens.js';
 import { Nav } from '../components/layout/Nav.jsx';
 import { auth } from '../lib/auth.js';
 import { db } from '../lib/db.js';
 import { fmt } from '../lib/format.js';
-import { priceFor } from '../lib/pricing.js';
 import { useViewport } from '../lib/viewport.js';
 import { useSEO } from '../lib/seo.js';
-import { buildSelfServeQuote, requestSourcing } from '../lib/selfServeQuote.js';
+import { commerceAccessFor } from '../lib/accessPolicy.js';
+
+const newQuoteKey = () => globalThis.crypto?.randomUUID?.() || `quick_quote_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+const scopedPrice = (rows, sku, qty, orgId) => rows
+  .filter((row) => row.sku === sku && (!orgId || row.org_id === orgId) && row.ok !== false && Number(row.quantity || 1) <= qty)
+  .sort((a, b) => Number(b.quantity || 1) - Number(a.quantity || 1))[0] || null;
 
 export function PortalQuote() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const session = auth.use();
   const org = auth.org();
+  const commerce = commerceAccessFor(session, org);
   const { isMobile } = useViewport();
   const products = db.useTable('products', { orderBy: 'name', dir: 'asc' });
+  const accountPrices = db.useTable('account_prices');
 
   const [query, setQuery] = useState('');
-  const [cart, setCart] = useState({}); // sku -> qty
+  const [cart, setCart] = useState(() => {
+    const sku = searchParams.get('sku');
+    const qty = Math.max(1, Number(searchParams.get('qty')) || 1);
+    return sku ? { [sku]: qty } : {};
+  }); // sku -> qty
   const [busy, setBusy] = useState(false);
   const [sourceText, setSourceText] = useState('');
   const [sourceDone, setSourceDone] = useState(false);
+  const [sourceBusy, setSourceBusy] = useState(false);
+  const [sourceError, setSourceError] = useState(null);
+  const [sourceIdempotencyKey] = useState(newQuoteKey);
+  const [identity, setIdentity] = useState({ company_name: '', contact_name: '', email: '', website: '', shipping_zip: '' });
+  const [identityError, setIdentityError] = useState(null);
+  const [quoteError, setQuoteError] = useState(null);
+  const [idempotencyKey, setIdempotencyKey] = useState(newQuoteKey);
 
   useSEO({ title: 'Build a quote', description: 'Self-serve catalog quoting — priced at your account tier, accept online.', canonical: '/portal/quote', noindex: true });
 
@@ -45,31 +63,98 @@ export function PortalQuote() {
     .filter(([, qty]) => qty > 0)
     .map(([sku, qty]) => {
       const p = db.get('products', sku) || db.list('products', { where: { sku } })[0];
-      const price = priceFor({ sku, qty, basePrice: p?.price, org });
-      return { sku, name: p?.name || sku, qty, unit: price.unit_price, list: price.list_price, ext: +(price.unit_price * qty).toFixed(2), contract: price.contract, discount: price.tier_discount_pct };
-    }), [cart, org]);
+      if (!commerce.can_view_prices) return { sku, name: p?.name || sku, qty, unit: null, list: null, ext: null, contract: false, discount: 0 };
+      const price = scopedPrice(accountPrices, sku, qty, org?.id);
+      return {
+        sku, name: p?.name || sku, qty,
+        unit: price?.unit_price ?? null, list: price?.list_price ?? null,
+        ext: price ? +(price.unit_price * qty).toFixed(2) : null,
+        contract: price?.basis === 'contract',
+        discount: price && price.list_price > price.unit_price ? Math.round((1 - price.unit_price / price.list_price) * 100) : 0,
+      };
+    }), [cart, org, commerce.can_view_prices, accountPrices]);
 
-  const total = lines.reduce((a, l) => a + l.ext, 0);
+  const total = commerce.can_view_prices && lines.every((line) => line.ext != null) ? lines.reduce((a, l) => a + l.ext, 0) : null;
 
   function setQty(sku, qty) {
     setCart((c) => ({ ...c, [sku]: Math.max(0, Math.round(qty || 0)) }));
+    setIdempotencyKey(newQuoteKey());
+    setQuoteError(null);
+  }
+
+  async function generateFor(extra = {}) {
+    setQuoteError(null);
+    const response = await fetch('/api/quotes/quick', {
+      method: 'POST', credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        ...extra,
+        idempotency_key: idempotencyKey,
+        lines: lines.map((line) => ({ sku: line.sku, qty: line.qty })),
+      }),
+    });
+    const payload = await response.json().catch(() => ({}));
+    if (response.ok && payload.ok && payload.token) {
+      navigate(`/q/${payload.token}`);
+      return payload;
+    }
+    const message = {
+      work_email_required: 'Use a company work email, not a personal mailbox.',
+      email_website_mismatch: 'Your work email domain must match the company website.',
+      business_domain_unverified: 'We could not verify that company email domain.',
+      business_website_unreachable: 'We could not reach the company website.',
+    }[payload.error] || 'We could not generate this quote. Check the details and try again.';
+    setQuoteError(message);
+    return { ok: false, reason: payload.error || 'quick_quote_failed' };
   }
 
   async function generate() {
     setBusy(true);
-    const res = buildSelfServeQuote({
-      items: lines.map((l) => ({ sku: l.sku, qty: l.qty })),
-      org,
-      customerName: org?.name,
-      contactEmail: session?.email,
-    });
+    await generateFor({ shipping_zip: org?.shipping_zip || '00000' });
     setBusy(false);
-    if (res.ok) navigate(`/q/${res.quote.acceptance_token}`);
   }
 
-  function submitSourcing() {
-    const res = requestSourcing({ description: sourceText, org, contactEmail: session?.email });
-    if (res.ok) { setSourceDone(true); setSourceText(''); }
+  async function verifyAndGenerate() {
+    setIdentityError(null);
+    setBusy(true);
+    if (!identity.company_name || !identity.contact_name || !identity.email || !identity.website || !identity.shipping_zip) {
+      setIdentityError('Complete company, contact, work email, website, and shipping ZIP.');
+      setBusy(false);
+      return;
+    }
+    await generateFor(identity);
+    setBusy(false);
+  }
+
+  async function submitSourcing() {
+    const email = session?.email || identity.email;
+    if (!email) {
+      setSourceError('Enter your company and work email in the quote form first.');
+      return;
+    }
+    setSourceBusy(true);
+    setSourceError(null);
+    try {
+      const response = await fetch('/api/sourcing/request', {
+        method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          idempotency_key: sourceIdempotencyKey,
+          path: 'source',
+          organization_name: org?.name || identity.company_name,
+          contact_name: session?.name || identity.contact_name,
+          contact_email: email,
+          product_description: sourceText,
+        }),
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok || !payload.ok) throw new Error(payload.error || 'sourcing_request_failed');
+      setSourceDone(true);
+      setSourceText('');
+    } catch {
+      setSourceError('We could not save this sourcing request. Please try again.');
+    } finally {
+      setSourceBusy(false);
+    }
   }
 
   const pad = isMobile ? 20 : 40;
@@ -82,7 +167,9 @@ export function PortalQuote() {
           <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum }}>SELF-SERVE QUOTING</div>
           <h1 style={{ fontFamily: D.display, fontSize: 'clamp(36px, 7vw, 72px)', fontWeight: 400, letterSpacing: -1.4, margin: '12px 0 0', lineHeight: 1.02 }}>Build your quote</h1>
           <div style={{ fontSize: isMobile ? 14 : 16, color: D.ink2, marginTop: 14, maxWidth: 640 }}>
-            Add stocked items below — pricing reflects {org ? <>your <strong>{org.name}</strong> account tier ({org.tier})</> : 'list pricing (sign in for your account tier)'}. Generate the quote and accept it online to convert it into an order.
+            {commerce.can_view_prices
+              ? <>Add stocked items below. Pricing reflects your <strong>{org?.name}</strong> account tier ({org?.tier}).</>
+              : <>Build an unpriced list first. We only reveal pricing after work-email and company verification.</>}
           </div>
         </div>
 
@@ -102,7 +189,7 @@ export function PortalQuote() {
                   <div key={p.sku} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', borderTop: i === 0 ? 'none' : `1px solid ${D.line}` }}>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ fontSize: 14, fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.name}</div>
-                      <div style={{ fontFamily: D.mono, fontSize: 11, color: D.ink3 }}>{p.sku} · {fmt.money(p.price)} list</div>
+                      <div style={{ fontFamily: D.mono, fontSize: 11, color: D.ink3 }}>{p.sku} · {commerce.can_view_prices ? (scopedPrice(accountPrices, p.sku, 1, org?.id) ? `${fmt.money(scopedPrice(accountPrices, p.sku, 1, org?.id).unit_price)} account price` : 'pricing loading') : 'pricing after verification'}</div>
                     </div>
                     <input
                       type="number" min="0" value={qty || ''}
@@ -126,7 +213,8 @@ export function PortalQuote() {
                 <>
                   <textarea value={sourceText} onChange={(e) => setSourceText(e.target.value)} rows={3} placeholder="e.g. 5,000 units nitrile exam gloves, blue, size L, EN455"
                     style={{ width: '100%', marginTop: 12, padding: 12, borderRadius: 10, border: `1px solid ${D.line}`, fontSize: 14, fontFamily: D.sans, background: D.paper, color: D.ink, boxSizing: 'border-box', resize: 'vertical' }} />
-                  <button type="button" onClick={submitSourcing} disabled={!sourceText.trim()} style={{ marginTop: 10, background: 'transparent', color: D.ink, border: `1.5px solid ${D.ink}`, padding: '10px 18px', borderRadius: 4, cursor: sourceText.trim() ? 'pointer' : 'not-allowed', fontSize: 14, fontWeight: 600, opacity: sourceText.trim() ? 1 : 0.5 }}>Request sourcing</button>
+                  <button type="button" onClick={submitSourcing} disabled={!sourceText.trim() || sourceBusy} style={{ marginTop: 10, background: 'transparent', color: D.ink, border: `1.5px solid ${D.ink}`, padding: '10px 18px', borderRadius: 4, cursor: sourceText.trim() && !sourceBusy ? 'pointer' : 'not-allowed', fontSize: 14, fontWeight: 600, opacity: sourceText.trim() && !sourceBusy ? 1 : 0.5 }}>{sourceBusy ? 'Saving…' : 'Request sourcing'}</button>
+                  {sourceError && <div style={{ color: '#c3382d', fontSize: 12, marginTop: 8 }}>{sourceError}</div>}
                 </>
               )}
             </div>
@@ -145,20 +233,39 @@ export function PortalQuote() {
                       <div style={{ minWidth: 0 }}>
                         <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.name}</div>
                         <div style={{ fontFamily: D.mono, fontSize: 11, color: D.ink3 }}>
-                          {l.qty.toLocaleString()} × {fmt.money(l.unit)}
-                          {l.discount > 0 && <span style={{ color: '#3b8760' }}> · −{l.discount}%{l.contract ? ' contract' : ''}</span>}
+                          {commerce.can_view_prices && l.unit != null ? <>{l.qty.toLocaleString()} × {fmt.money(l.unit)}</> : <>{l.qty.toLocaleString()} units</>}
+                          {commerce.can_view_prices && l.discount > 0 && <span style={{ color: '#3b8760' }}> · −{l.discount}%{l.contract ? ' contract' : ''}</span>}
                         </div>
                       </div>
-                      <div style={{ fontFamily: D.mono, fontWeight: 600 }}>{fmt.money(l.ext)}</div>
+                      {commerce.can_view_prices && l.ext != null && <div style={{ fontFamily: D.mono, fontWeight: 600 }}>{fmt.money(l.ext)}</div>}
                     </div>
                   ))}
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: 6 }}>
-                    <span style={{ fontFamily: D.mono, fontSize: 11, color: D.ink3 }}>TOTAL (FOB GA)</span>
-                    <span style={{ fontFamily: D.display, fontSize: 28, color: D.plum }}>{fmt.money(total)}</span>
-                  </div>
-                  <button type="button" onClick={generate} disabled={busy} style={{ marginTop: 8, background: D.plum, color: D.paper, border: 'none', padding: '14px', borderRadius: 4, cursor: 'pointer', fontSize: 15, fontWeight: 600 }}>
-                    {busy ? 'Generating…' : 'Generate quote →'}
-                  </button>
+                  {commerce.can_view_prices ? (
+                    <>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: 6 }}>
+                        <span style={{ fontFamily: D.mono, fontSize: 11, color: D.ink3 }}>TOTAL (FOB GA)</span>
+                        <span style={{ fontFamily: D.display, fontSize: 28, color: D.plum }}>{total == null ? 'Pricing loading' : fmt.money(total)}</span>
+                      </div>
+                      <button type="button" onClick={generate} disabled={busy || total == null} style={{ marginTop: 8, background: D.plum, color: D.paper, border: 'none', padding: '14px', borderRadius: 4, cursor: busy || total == null ? 'not-allowed' : 'pointer', fontSize: 15, fontWeight: 600, opacity: busy || total == null ? 0.6 : 1 }}>
+                        {busy ? 'Generating…' : 'Generate quote →'}
+                      </button>
+                      {quoteError && <div style={{ color: '#c3382d', fontSize: 12 }}>{quoteError}</div>}
+                    </>
+                  ) : (
+                    <div style={{ display: 'grid', gap: 8, marginTop: 8 }}>
+                      {[
+                        ['company_name', 'Company name'], ['contact_name', 'Contact name'],
+                        ['email', 'Work email'], ['website', 'Company website'], ['shipping_zip', 'Shipping ZIP'],
+                      ].map(([field, label]) => (
+                        <input key={field} value={identity[field]} onChange={(event) => setIdentity((current) => ({ ...current, [field]: event.target.value }))} placeholder={label} inputMode={field === 'shipping_zip' ? 'postal-code' : undefined} style={{ width: '100%', boxSizing: 'border-box', padding: '10px 11px', border: `1px solid ${D.line}`, borderRadius: 6, background: D.paper, color: D.ink }} />
+                      ))}
+                      {identityError && <div style={{ color: '#c3382d', fontSize: 12 }}>{identityError}</div>}
+                      {quoteError && <div style={{ color: '#c3382d', fontSize: 12 }}>{quoteError}</div>}
+                      <button type="button" onClick={verifyAndGenerate} disabled={busy} style={{ background: D.plum, color: D.paper, border: 'none', padding: '14px', borderRadius: 4, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>
+                        {busy ? 'Verifying…' : 'Verify business and generate quote →'}
+                      </button>
+                    </div>
+                  )}
                   <div style={{ fontSize: 11, color: D.ink3, textAlign: 'center' }}>You&apos;ll be able to review and accept it on the next screen.</div>
                 </div>
               )}

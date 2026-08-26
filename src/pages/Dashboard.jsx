@@ -16,8 +16,8 @@ export function Dashboard() {
   const { isMobile } = useViewport();
   const padX = isMobile ? 20 : 40;
   useSEO({ title: 'Dashboard', noindex: true });
-  const orgId = session?.org_id || 'org_atlsurgical';
-  const userId = session?.user_id || 'usr_demo';
+  const orgId = session.org_id;
+  const userId = session.user_id;
 
   const allOrders = db.useTable('orders', { where: { customer_id: orgId }, orderBy: 'placed_at', dir: 'desc' });
   const orders = allOrders.slice(0, 5);

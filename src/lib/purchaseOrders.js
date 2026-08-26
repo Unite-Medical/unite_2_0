@@ -14,7 +14,6 @@
 
 import { db } from './db.js';
 import { uid } from './format.js';
-import { qbo } from './services.js';
 import { gmail } from './services.js';
 import { recalcReorderPoints } from './replenishment.js';
 
@@ -42,11 +41,6 @@ export function vendorEmail(vendorName) {
   return `purchasing@${slug || 'vendor'}.example.com`;
 }
 
-/** Resolve (and cache) a vendor's QBO id so bills/POs link correctly. */
-function vendorQboId(vendorName) {
-  const v = db.list('vendors').find((r) => r.name === vendorName);
-  return v?.qbo_vendor_id || undefined;
-}
 
 /** Outstanding (ordered − received) quantity per line for a PO. */
 export function outstandingLines(po) {
@@ -61,25 +55,13 @@ export function isFullyReceived(po) {
   return outstandingLines(po).every((l) => l.outstanding === 0);
 }
 
-/**
- * Approve a draft PO. Optionally pushes a matching PurchaseOrder into
- * QBO so the books reflect the open commitment.
- */
-export async function approvePurchaseOrder(po_id, { approved_by = 'admin', syncQbo = true } = {}) {
+/** Approve a draft PO. Accounting writes occur only through dedicated server APIs. */
+export async function approvePurchaseOrder(po_id, { approved_by = 'admin' } = {}) {
   const po = db.get('purchase_orders', po_id);
   if (!po) return { ok: false, reason: 'not_found' };
   if (po.status !== PO_STATUS.DRAFT) return { ok: false, reason: `cannot_approve_from_${po.status}` };
 
-  let qbo_po_id = po.qbo_po_id || null;
-  if (syncQbo) {
-    try {
-      const res = await qbo.createPurchaseOrder({ po, vendor_qbo_id: vendorQboId(po.vendor_name) });
-      qbo_po_id = res?.id || null;
-    } catch (err) {
-      log('po.qbo_sync_failed', po_id, { error: err.message });
-    }
-  }
-
+  const qbo_po_id = po.qbo_po_id || null;
   const updated = db.update('purchase_orders', po_id, {
     status: PO_STATUS.APPROVED,
     approved_by,
@@ -143,6 +125,7 @@ export async function sendPurchaseOrderToVendor(po_id, { sent_by = 'admin' } = {
 export async function receivePurchaseOrder(po_id, { receipts = null, warehouse_id = 'wh_atl', received_by = 'admin' } = {}) {
   const po = db.get('purchase_orders', po_id);
   if (!po) return { ok: false, reason: 'not_found' };
+  if (po.po_type === 'consignment_settlement') return { ok: false, reason: 'settlement_po_not_receivable' };
   if (!RECEIVABLE.has(po.status)) return { ok: false, reason: `cannot_receive_from_${po.status}` };
 
   const lines = po.line_items || [];
@@ -197,25 +180,24 @@ export async function receivePurchaseOrder(po_id, { receipts = null, warehouse_i
   let reorderRows = 0;
   try { reorderRows = recalcReorderPoints(); } catch (err) { log('po.reorder_recalc_failed', po_id, { error: err.message }); }
 
-  // On full receipt, post the vendor Bill (AP) to QBO and close the PO.
-  let bill = null;
-  if (fullyReceived) {
-    try {
-      bill = await qbo.createBillFromPO({ po: poAfter, vendor_qbo_id: vendorQboId(po.vendor_name) });
-    } catch (err) {
-      log('po.bill_failed', po_id, { error: err.message });
-    }
-  }
+  // A receipt creates payable evidence, never a QBO bill. Finance submits and
+  // approves the actual vendor invoice through /api/ap/vendor-bills.
+  const intakeId = `ap_intake_${po_id}`;
+  const apIntake = fullyReceived
+    ? (db.get('ap_intake_queue', intakeId) || db.insert('ap_intake_queue', {
+      id: intakeId, po_id, status: 'awaiting_vendor_invoice',
+      receipt_ids: db.list('po_receipts', { where: { po_id } }).map((row) => row.id),
+      created_at: new Date().toISOString(),
+    }))
+    : null;
 
   const updated = db.update('purchase_orders', po_id, {
     line_items: nextLines,
     status: fullyReceived ? PO_STATUS.RECEIVED : PO_STATUS.PARTIAL,
     received_at: fullyReceived ? new Date().toISOString() : po.received_at || null,
-    qbo_bill_id: bill?.id || po.qbo_bill_id || null,
-    bill_amount: bill?.amount ?? po.bill_amount ?? null,
   });
 
-  return { ok: true, po: updated, receipt, fully_received: fullyReceived, reorder_rows: reorderRows, bill };
+  return { ok: true, po: updated, receipt, fully_received: fullyReceived, reorder_rows: reorderRows, bill: null, ap_intake: apIntake };
 }
 
 /**
@@ -286,7 +268,18 @@ export async function cancelPurchaseOrder(po_id, { reason = '', cancelled_by = '
 export function closePurchaseOrder(po_id) {
   const po = db.get('purchase_orders', po_id);
   if (!po) return { ok: false, reason: 'not_found' };
-  if (po.status !== PO_STATUS.RECEIVED) return { ok: false, reason: `cannot_close_from_${po.status}` };
+  if (po.po_type === 'consignment_settlement') {
+    if (!po.paid_at || Number(po.paid_amount || 0) + 0.001 < Number(po.total_cost || 0)) {
+      return { ok: false, reason: 'settlement_payment_evidence_required' };
+    }
+  } else {
+    const bills = db.list('vendor_bills', { where: { po_id } });
+    const openVariances = db.list('vendor_bill_variances', { where: { po_id, status: 'open' } });
+    const unbilled = (po.line_items || []).some((line) => Number(line.accepted_qty ?? line.received_qty ?? 0) > Number(line.billed_qty || 0));
+    const pendingBill = bills.some((bill) => !['approved', 'cancelled'].includes(bill.status));
+    if (po.ap_posting_lock || unbilled || pendingBill || openVariances.length) return { ok: false, reason: 'ap_unresolved' };
+  }
+  if (po.status !== PO_STATUS.RECEIVED && po.po_type !== 'consignment_settlement') return { ok: false, reason: `cannot_close_from_${po.status}` };
   const updated = db.update('purchase_orders', po_id, { status: PO_STATUS.CLOSED, closed_at: new Date().toISOString() });
   log('po.closed', po_id, {});
   return { ok: true, po: updated };

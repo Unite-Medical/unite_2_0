@@ -5,6 +5,7 @@ import { ScrollToTop } from './components/layout/ScrollToTop.jsx';
 import { PageLoader } from './components/layout/PageLoader.jsx';
 import { Bootstrap } from './components/layout/Bootstrap.jsx';
 import { RequireAdmin } from './components/layout/RequireAdmin.jsx';
+import { RequireSession } from './components/layout/RequireSession.jsx';
 
 const Homepage = lazy(() => import('./pages/Homepage.jsx').then((m) => ({ default: m.Homepage })));
 const Catalog = lazy(() => import('./pages/Catalog.jsx').then((m) => ({ default: m.Catalog })));
@@ -72,6 +73,7 @@ const AdminOrders = lazy(() => import('./pages/admin/AdminOrders.jsx').then((m) 
 const AdminCMS = lazy(() => import('./pages/admin/AdminCMS.jsx').then((m) => ({ default: m.AdminCMS })));
 const AdminVendorApproval = lazy(() => import('./pages/admin/AdminVendorApproval.jsx').then((m) => ({ default: m.AdminVendorApproval })));
 const AdminQuotes = lazy(() => import('./pages/admin/AdminQuotes.jsx').then((m) => ({ default: m.AdminQuotes })));
+const AdminSourcing = lazy(() => import('./pages/admin/AdminSourcing.jsx').then((m) => ({ default: m.AdminSourcing })));
 const AdminCustomers = lazy(() => import('./pages/admin/AdminCustomers.jsx').then((m) => ({ default: m.AdminCustomers })));
 const AdminProducts = lazy(() => import('./pages/admin/AdminProducts.jsx').then((m) => ({ default: m.AdminProducts })));
 const AdminProductEdit = lazy(() => import('./pages/admin/AdminProductEdit.jsx').then((m) => ({ default: m.AdminProductEdit })));
@@ -98,6 +100,7 @@ const AdminTeam = lazy(() => import('./pages/admin/AdminTeam.jsx').then((m) => (
 const AdminConsignment = lazy(() => import('./pages/admin/AdminConsignment.jsx').then((m) => ({ default: m.AdminConsignment })));
 const AccountOrder = lazy(() => import('./pages/AccountOrder.jsx').then((m) => ({ default: m.AccountOrder })));
 const DistributorPortal = lazy(() => import('./pages/DistributorPortal.jsx').then((m) => ({ default: m.DistributorPortal })));
+const VendorPurchaseOrderReview = lazy(() => import('./pages/VendorPurchaseOrderReview.jsx').then((m) => ({ default: m.VendorPurchaseOrderReview })));
 
 export default function App() {
   return (
@@ -112,20 +115,21 @@ export default function App() {
           {/* A5 quote router (PRD-28 §5.4) — the chooser is the front door;
               the engine demo moves to /quote/engine. */}
           <Route path="/quote" element={<QuoteStart />} />
-          <Route path="/quote/engine" element={<Quote />} />
-          <Route path="/quote/new" element={<QuoteNew />} />
-          <Route path="/quotes/:id/print" element={<QuotePrint />} />
+          <Route path="/quote/engine" element={<RequireSession roles={['sales', 'sales_manager', 'customer_service', 'admin']}><Quote /></RequireSession>} />
+          <Route path="/quote/new" element={<RequireSession roles={['sales', 'sales_manager', 'customer_service', 'admin']}><QuoteNew /></RequireSession>} />
+          <Route path="/quotes/:id/print" element={<RequireSession roles={['sales', 'sales_manager', 'customer_service', 'admin']}><QuotePrint /></RequireSession>} />
           <Route path="/q/:token" element={<QuoteAccept />} />
+          <Route path="/vendor/purchase-orders/:id" element={<VendorPurchaseOrderReview />} />
           <Route path="/surplus" element={<Surplus />} />
           <Route path="/surplus/market" element={<SurplusMarket />} />
           <Route path="/shortage-list" element={<ShortageMatch />} />
           <Route path="/supply-risk" element={<SupplyRisk />} />
           <Route path="/products/:id" element={<ProductDetail />} />
 
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/orders/:id/confirmed" element={<OrderSuccess />} />
-          <Route path="/orders/:id/track" element={<TrackOrder />} />
+          <Route path="/cart" element={<RequireSession approvedAccount><Cart /></RequireSession>} />
+          <Route path="/checkout" element={<RequireSession approvedAccount><Checkout /></RequireSession>} />
+          <Route path="/orders/:id/confirmed" element={<RequireSession><OrderSuccess /></RequireSession>} />
+          <Route path="/orders/:id/track" element={<RequireSession><TrackOrder /></RequireSession>} />
 
           <Route path="/about" element={<About />} />
           {/* /about/veteran-owned 301→ /procurement at the Vercel edge; client fallback for dev. */}
@@ -180,24 +184,24 @@ export default function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/account/settings" element={<AccountSettings />} />
-          <Route path="/account/invoices" element={<Invoices />} />
-          <Route path="/account/quotes" element={<AccountQuotes />} />
-          <Route path="/account/order" element={<AccountOrder />} />
-          <Route path="/account/reorder" element={<AccountOrder />} />
-          <Route path="/account/team" element={<AccountTeam />} />
+          <Route path="/dashboard" element={<RequireSession roles={['customer', 'distributor']}><Dashboard /></RequireSession>} />
+          <Route path="/account/settings" element={<RequireSession roles={['customer', 'distributor']}><AccountSettings /></RequireSession>} />
+          <Route path="/account/invoices" element={<RequireSession roles={['customer', 'distributor']}><Invoices /></RequireSession>} />
+          <Route path="/account/quotes" element={<RequireSession roles={['customer', 'distributor']}><AccountQuotes /></RequireSession>} />
+          <Route path="/account/order" element={<RequireSession approvedAccount roles={['customer', 'distributor']}><AccountOrder /></RequireSession>} />
+          <Route path="/account/reorder" element={<RequireSession approvedAccount roles={['customer', 'distributor']}><AccountOrder /></RequireSession>} />
+          <Route path="/account/team" element={<RequireSession roles={['customer', 'distributor']}><AccountTeam /></RequireSession>} />
 
-          <Route path="/distributor" element={<DistributorPortal />} />
-          <Route path="/distributor/inventory" element={<DistributorPortal />} />
-          <Route path="/distributor/order" element={<DistributorPortal />} />
-          <Route path="/distributor/po-upload" element={<DistributorPortal />} />
-          <Route path="/distributor/shipping" element={<DistributorPortal />} />
-          <Route path="/distributor/settlement" element={<DistributorPortal />} />
-          <Route path="/distributor/documents" element={<DistributorPortal />} />
-          <Route path="/invoices/:id/print" element={<InvoicePrint />} />
+          <Route path="/distributor" element={<RequireSession roles={['distributor']}><DistributorPortal /></RequireSession>} />
+          <Route path="/distributor/inventory" element={<RequireSession roles={['distributor']}><DistributorPortal /></RequireSession>} />
+          <Route path="/distributor/order" element={<RequireSession roles={['distributor']}><DistributorPortal /></RequireSession>} />
+          <Route path="/distributor/po-upload" element={<RequireSession roles={['distributor']}><DistributorPortal /></RequireSession>} />
+          <Route path="/distributor/shipping" element={<RequireSession roles={['distributor']}><DistributorPortal /></RequireSession>} />
+          <Route path="/distributor/settlement" element={<RequireSession roles={['distributor']}><DistributorPortal /></RequireSession>} />
+          <Route path="/distributor/documents" element={<RequireSession roles={['distributor']}><DistributorPortal /></RequireSession>} />
+          <Route path="/invoices/:id/print" element={<RequireSession><InvoicePrint /></RequireSession>} />
           <Route path="/portal/quote" element={<PortalQuote />} />
-          <Route path="/rep" element={<RepPortal />} />
+          <Route path="/rep" element={<RequireSession roles={['sales', 'sales_manager', 'customer_service', 'admin']}><RepPortal /></RequireSession>} />
 
           <Route path="/admin"           element={<RequireAdmin><AdminOverview /></RequireAdmin>} />
           <Route path="/admin/analytics" element={<RequireAdmin><AdminAnalytics /></RequireAdmin>} />
@@ -209,6 +213,7 @@ export default function App() {
           <Route path="/admin/team"      element={<RequireAdmin><AdminTeam /></RequireAdmin>} />
           <Route path="/admin/consignment" element={<RequireAdmin><AdminConsignment /></RequireAdmin>} />
           <Route path="/admin/quotes"    element={<RequireAdmin><AdminQuotes /></RequireAdmin>} />
+          <Route path="/admin/sourcing"  element={<RequireAdmin><AdminSourcing /></RequireAdmin>} />
           <Route path="/admin/orders"    element={<RequireAdmin><AdminOrders /></RequireAdmin>} />
           <Route path="/admin/cms"       element={<RequireAdmin><AdminCMS /></RequireAdmin>} />
           <Route path="/admin/vendors"   element={<RequireAdmin><AdminVendorApproval /></RequireAdmin>} />
@@ -224,13 +229,13 @@ export default function App() {
           <Route path="/admin/replenishment"    element={<RequireAdmin><AdminReplenishment /></RequireAdmin>} />
           <Route path="/admin/purchase-orders/:id/print" element={<RequireAdmin><PurchaseOrderPrint /></RequireAdmin>} />
           <Route path="/admin/digest"           element={<RequireAdmin><AdminDigest /></RequireAdmin>} />
-          <Route path="/admin/finance"          element={<RequireAdmin><AdminFinance /></RequireAdmin>} />
+          <Route path="/admin/finance"          element={<RequireSession roles={['admin', 'finance']}><AdminFinance /></RequireSession>} />
           <Route path="/admin/discovery"        element={<RequireAdmin><AdminDiscovery /></RequireAdmin>} />
           <Route path="/admin/compliance"       element={<RequireAdmin><AdminCompliance /></RequireAdmin>} />
           <Route path="/admin/udi"              element={<RequireAdmin><AdminUdi /></RequireAdmin>} />
           <Route path="/admin/fulfillment"      element={<RequireAdmin><AdminFulfillment /></RequireAdmin>} />
           <Route path="/admin/purchase-orders"  element={<RequireAdmin><AdminPurchaseOrders /></RequireAdmin>} />
-          <Route path="/admin/inventory/receive" element={<RequireAdmin><AdminReceiving /></RequireAdmin>} />
+          <Route path="/admin/inventory/receive" element={<RequireSession roles={['admin', 'warehouse_manager', 'warehouse_operator']}><AdminReceiving /></RequireSession>} />
           <Route path="/admin/inventory/lots"   element={<RequireAdmin><AdminLots /></RequireAdmin>} />
           <Route path="/admin/inventory/count"  element={<RequireAdmin><AdminCount /></RequireAdmin>} />
           <Route path="/admin/inventory/transfers" element={<RequireAdmin><AdminTransfers /></RequireAdmin>} />

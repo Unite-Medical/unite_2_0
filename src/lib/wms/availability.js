@@ -13,6 +13,7 @@
  */
 
 import { db } from '../db.js';
+import { isLotSellable } from './lots.js';
 
 function num(v) { return Number(v) || 0; }
 
@@ -20,7 +21,9 @@ function num(v) { return Number(v) || 0; }
 function rows(sku, warehouse_id) {
   const where = { sku };
   if (warehouse_id) where.warehouse_id = warehouse_id;
-  return db.list('inventory', { where });
+  return db.list('inventory', { where })
+    .filter((row) => (row.inventory_owner_type || row.owner_type || 'unite') === 'unite'
+      && !(row.inventory_owner_org_id || row.owner_org_id));
 }
 
 /** On-hand units for a sku (summed across warehouses unless one is given). */
@@ -35,7 +38,15 @@ export function reserved(sku, warehouse_id = null) {
 
 /** Available-to-promise = on_hand − reserved. */
 export function availableToPromise(sku, warehouse_id = null) {
-  return onHand(sku, warehouse_id) - reserved(sku, warehouse_id);
+  const base = onHand(sku, warehouse_id) - reserved(sku, warehouse_id);
+  const trackedLots = db.list('lots', { where: { product_sku: sku } })
+    .filter((lot) => !warehouse_id || lot.warehouse_id === warehouse_id)
+    .filter((lot) => (lot.inventory_owner_type || lot.owner_type || 'unite') === 'unite'
+      && !(lot.inventory_owner_org_id || lot.owner_org_id));
+  if (!trackedLots.length) return base;
+  const held = trackedLots.filter((lot) => !isLotSellable(lot))
+    .reduce((sum, lot) => sum + num(lot.qty_remaining), 0);
+  return Math.max(0, base - held);
 }
 
 /** Lots holding a sku (qty_remaining > 0), FEFO-ordered (earliest expiry first). */
@@ -43,7 +54,10 @@ export function byLot(sku, warehouse_id = null) {
   const where = { product_sku: sku };
   if (warehouse_id) where.warehouse_id = warehouse_id;
   return db.list('lots', { where })
+    .filter((lot) => (lot.inventory_owner_type || lot.owner_type || 'unite') === 'unite'
+      && !(lot.inventory_owner_org_id || lot.owner_org_id))
     .filter((l) => num(l.qty_remaining) > 0)
+    .filter((l) => isLotSellable(l))
     .sort((a, b) => {
       const ax = a.expiration_date || '9999-12-31';
       const bx = b.expiration_date || '9999-12-31';
@@ -54,7 +68,10 @@ export function byLot(sku, warehouse_id = null) {
 /** Raw movement history for a sku (most recent first), optionally per-warehouse. */
 export function movements(sku, warehouse_id = null) {
   const all = db.list('stock_movements', { orderBy: 'occurred_at', dir: 'desc' });
-  return all.filter((m) => (m.sku || m.product_sku) === sku && (!warehouse_id || m.warehouse_id === warehouse_id));
+  return all.filter((m) => (m.sku || m.product_sku) === sku
+    && (!warehouse_id || m.warehouse_id === warehouse_id)
+    && (m.inventory_owner_type || m.owner_type || 'unite') === 'unite'
+    && !(m.inventory_owner_org_id || m.owner_org_id));
 }
 
 /** Sum of movement deltas for a sku — the ledger's own answer for on-hand. */
@@ -68,7 +85,8 @@ export function ledgerOnHand(sku, warehouse_id = null) {
  */
 export function stockBySku() {
   const m = new Map();
-  for (const r of db.list('inventory')) {
+  for (const r of db.list('inventory').filter((row) => (row.inventory_owner_type || row.owner_type || 'unite') === 'unite'
+    && !(row.inventory_owner_org_id || row.owner_org_id))) {
     const cur = m.get(r.sku) || { on_hand: 0, reserved: 0, available: 0 };
     cur.on_hand += num(r.on_hand);
     cur.reserved += num(r.reserved);
@@ -80,7 +98,8 @@ export function stockBySku() {
 
 /** Portfolio-level rollup for the /admin/inventory header cards. */
 export function summary() {
-  const inv = db.list('inventory');
+  const inv = db.list('inventory').filter((row) => (row.inventory_owner_type || row.owner_type || 'unite') === 'unite'
+    && !(row.inventory_owner_org_id || row.owner_org_id));
   const totalOnHand = inv.reduce((a, r) => a + num(r.on_hand), 0);
   const totalReserved = inv.reduce((a, r) => a + num(r.reserved), 0);
   const low = inv.filter((r) => num(r.on_hand) <= num(r.reorder_at)).length;

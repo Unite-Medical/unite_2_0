@@ -45,9 +45,14 @@ const INTEGRATIONS = [
     label: 'QuickBooks Online',
     prd: 'PRD-02',
     client: qbo,
-    envVars: ['QBO_CLIENT_ID', 'QBO_CLIENT_SECRET', 'QBO_REALM_ID', 'QBO_REFRESH_TOKEN'],
+    envVars: ['QBO_CLIENT_ID', 'QBO_CLIENT_SECRET', 'QBO_TOKEN_ENCRYPTION_KEY', 'DATABASE_URL'],
     docsUrl: 'https://developer.intuit.com/app/developer/qbo/docs/api/accounting/most-commonly-used/invoice',
-    sample: () => qbo.ping(),
+    sample: async () => {
+      const response = await fetch('/api/qbo/company-info', { credentials: 'include' });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(payload.error || 'qbo_company_info_failed');
+      return payload;
+    },
     tablesWatched: ['qbo_invoices'],
     connectUrl: '/api/auth/qbo/connect',
   },
@@ -108,7 +113,7 @@ const INTEGRATIONS = [
     client: stripe,
     envVars: ['STRIPE_SECRET_KEY', 'STRIPE_WEBHOOK_SECRET'],
     docsUrl: 'https://docs.stripe.com/api',
-    sample: () => stripe.upsertCustomer({ org: { id: 'org_atlsurgical', name: 'Atlanta Surgical', segment: 'asc', tier: 'A', billing_email: 'ar@atlanta-surgical.com' } }),
+    sample: () => stripe.upsertCustomer({ org: { id: 'org_example', name: 'Example Medical Organization', segment: 'asc', tier: 'C', billing_email: 'billing@example.invalid' } }),
     tablesWatched: ['invoices', 'stripe_payments'],
   },
   {
@@ -154,8 +159,23 @@ const INTEGRATIONS = [
     tablesWatched: ['ai_usage'],
   },
   {
+    key: 'customerio',
+    label: 'Customer.io · transactional messaging',
+    prd: 'PRD-05',
+    client: null,
+    envVars: ['CUSTOMERIO_APP_API_KEY', 'CUSTOMERIO_WEBHOOK_SIGNING_SECRET (or Basic webhook credentials)', 'CRON_SECRET'],
+    docsUrl: 'https://docs.customer.io/integrations/api/',
+    sample: async () => {
+      const response = await fetch(`${API_BASE}/customerio/outbox`, { credentials: 'include' });
+      const body = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(body.error || `HTTP ${response.status}`);
+      return body;
+    },
+    tablesWatched: ['customerio_outbox', 'customerio_events'],
+  },
+  {
     key: 'resend',
-    label: 'Resend · email (primary)',
+    label: 'Resend · email fallback',
     prd: 'PRD-05',
     client: resend,
     envVars: ['RESEND_API_KEY'],
@@ -210,7 +230,7 @@ const INTEGRATIONS = [
     label: 'Postgres (durable persistence)',
     prd: 'PRD-13',
     client: null,
-    envVars: ['DATABASE_URL', 'DB_SYNC_TOKEN', 'VITE_DB_SYNC_TOKEN (build-time)'],
+    envVars: ['DATABASE_URL', 'DB_SYNC_TOKEN'],
     docsUrl: 'https://neon.tech/docs/serverless/serverless-driver',
     sample: async () => remoteDbStatus(),
     tablesWatched: [],

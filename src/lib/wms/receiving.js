@@ -29,7 +29,6 @@ import { uid } from '../format.js';
 import { parseGs1 } from '../scanning.js';
 import { isValidGtin } from '../external/gs1.js';
 import { purchaseOrders } from './purchaseOrders.js';
-import { lots as lotsApi } from './lots.js';
 import { ledger } from './ledger.js';
 
 function num(v) { return Number(v) || 0; }
@@ -160,50 +159,82 @@ function recordScanEvent({ kind = 'receive', resolution, qty, lot_id = null, ref
  * Receive a batch of already-resolved scan lines. Each line is
  * { sku, qty, lot_number, expiration_date, unit_cost?, resolution? }.
  *
- * With a PO: delegates to purchaseOrders.receive (advances line received_qty,
- * flips partial/received, posts the QBO bill on full receipt). Without a PO:
- * a blind receipt via lots.receiveLot. Either way, every line also drops a
- * scan_events row. Idempotent through the underlying ledger idempotency keys.
+ * A valid PO is mandatory. The function delegates to purchaseOrders.receive
+ * and records scan provenance only after the PO validation succeeds.
  *
  * @returns {Promise<{ok:boolean, mode:'po'|'blind', received:number, po_status?:string, events:number, reason?:string}>}
  */
-export async function receiveScans(lines, { po_id = null, warehouse_id = 'wh_atl', received_by = 'workstation', station = 'RECV-1' } = {}) {
+export async function receiveScans(lines, {
+  po_id = null,
+  warehouse_id = 'wh_atl',
+  received_by = 'workstation',
+  station = 'RECV-1',
+  idempotency_key = null,
+} = {}) {
+  if (!po_id) return { ok: false, mode: 'po', received: 0, events: 0, reason: 'po_required' };
   const clean = (lines || []).filter((l) => l && l.sku && num(l.qty) > 0);
-  if (clean.length === 0) return { ok: false, mode: po_id ? 'po' : 'blind', received: 0, events: 0, reason: 'no_lines' };
+  if (clean.length === 0) return { ok: false, mode: 'po', received: 0, events: 0, reason: 'no_lines' };
+
+  if (typeof window !== 'undefined') {
+    try {
+      const key = idempotency_key || globalThis.crypto?.randomUUID?.() || `receipt_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+      const response = await fetch('/api/wms/receive', {
+        method: 'POST', credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ref_type: 'purchase_order', ref_id: po_id, warehouse_id, station,
+          idempotency_key: key,
+          lines: clean.map((line) => ({
+            sku: line.sku,
+            qty: num(line.qty),
+            lot_number: line.lot_number,
+            expiration_date: line.expiration_date,
+            capture_method: line.capture_method || line.resolution?.capture_method || 'manual',
+            not_applicable_reason: line.not_applicable_reason || null,
+            raw_barcode: line.resolution?.raw || line.raw_barcode || null,
+            gtin: line.resolution?.gtin || line.gtin || null,
+            serial_number: line.serial_number || null,
+            udi: line.udi || null,
+            bin_id: line.bin_id || null,
+          })),
+        }),
+      });
+      const body = await response.json().catch(() => ({}));
+      if (response.ok && body.ok) {
+        db.applyRemoteSnapshot({
+          purchase_orders: body.updated_po ? [body.updated_po] : [],
+          po_receipts: body.receipt ? [body.receipt] : [],
+          lots: body.lots || [],
+          stock_movements: body.movements || [],
+          scan_events: body.scan_events || [],
+          inventory: body.inventory || [],
+        });
+        return { ...body, mode: 'po' };
+      }
+      if (!import.meta.env?.DEV) return { ok: false, mode: 'po', received: 0, events: 0, reason: body.reason || body.error || 'receive_failed' };
+    } catch (error) {
+      if (!import.meta.env?.DEV) return { ok: false, mode: 'po', received: 0, events: 0, reason: 'receive_unreachable', detail: error.message };
+    }
+  }
 
   let received = 0;
   let events = 0;
   let poStatus;
 
-  if (po_id) {
-    const res = await purchaseOrders.receive(
-      po_id,
-      clean.map((l) => ({ sku: l.sku, qty: num(l.qty), lot_number: l.lot_number || null, expiration_date: l.expiration_date || null, unit_cost: l.unit_cost ?? null })),
-      { warehouse_id, received_by },
-    );
-    if (!res.ok) return { ok: false, mode: 'po', received: 0, events: 0, reason: res.reason };
-    received = res.received;
-    poStatus = res.status;
-    // Provenance: one scan_events row per scanned line, linked to the PO.
-    for (const l of clean) {
-      recordScanEvent({ resolution: l.resolution, qty: l.qty, ref_type: 'purchase_order', ref_id: po_id, station, by: received_by });
-      events += 1;
-    }
-    return { ok: true, mode: 'po', received, po_status: poStatus, events };
-  }
-
-  // Blind receipt (no PO on file).
+  const res = await purchaseOrders.receive(
+    po_id,
+    clean.map((l) => ({ sku: l.sku, qty: num(l.qty), lot_number: l.lot_number || null, expiration_date: l.expiration_date || null, unit_cost: l.unit_cost ?? null })),
+    { warehouse_id, received_by },
+  );
+  if (!res.ok) return { ok: false, mode: 'po', received: 0, events: 0, reason: res.reason, sku: res.sku };
+  received = res.received;
+  poStatus = res.status;
+  // Provenance: one scan_events row per scanned line, linked to the PO.
   for (const l of clean) {
-    const r = lotsApi.receiveLot({
-      sku: l.sku, lot_number: l.lot_number || null, expiration_date: l.expiration_date || null,
-      warehouse_id, qty: num(l.qty), unit_cost: l.unit_cost ?? null,
-      received_by, ref_type: 'manual', ref_id: 'blind_receipt',
-    });
-    if (r.ok && !r.duplicate) received += num(l.qty);
-    recordScanEvent({ resolution: l.resolution, qty: l.qty, lot_id: r.lot?.id || null, ref_type: 'manual', ref_id: 'blind_receipt', station, by: received_by });
+    recordScanEvent({ resolution: l.resolution, qty: l.qty, ref_type: 'purchase_order', ref_id: po_id, station, by: received_by });
     events += 1;
   }
-  return { ok: true, mode: 'blind', received, events };
+  return { ok: true, mode: 'po', received, po_status: poStatus, events };
 }
 
 /**

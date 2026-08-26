@@ -14,6 +14,7 @@ const NAV = [
   ['Orders',        'orders',     '/admin/orders'],
   ['Fulfillment',   'fulfillment', '/admin/fulfillment'],
   ['Quotes',        'quotes',     '/admin/quotes'],
+  ['Sourcing',      'sourcing',   '/admin/sourcing'],
   ['Inventory',     'inventory',  '/admin/inventory'],
   ['Receiving',     'receiving',  '/admin/inventory/receive'],
   ['Lots & recall', 'lots',       '/admin/inventory/lots'],
@@ -59,6 +60,7 @@ export function AdminShell({ active, children }) {
   }, [open]);
 
   const isActive = (id, path) => active === id || location.pathname === path;
+  const visibleNav = session?.role === 'finance' ? NAV.filter(([, id]) => id === 'finance') : NAV;
 
   const Sidebar = (
     <>
@@ -67,7 +69,7 @@ export function AdminShell({ active, children }) {
       </Link>
       <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1.2, color: D.plumSoft, marginTop: 6 }}>ADMIN CONSOLE</div>
       <nav style={{ marginTop: 24 }}>
-        {NAV.map(([label, id, path]) => (
+        {visibleNav.map(([label, id, path]) => (
           <Link key={id} to={path} style={{
             display: 'block',
             padding: '11px 12px', borderRadius: 6, fontSize: 13,
@@ -80,7 +82,7 @@ export function AdminShell({ active, children }) {
       <div style={{ marginTop: 40, padding: 14, background: 'rgba(255,255,255,.06)', borderRadius: 10 }}>
         <div style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, color: D.plumSoft }}>LOGGED IN AS</div>
         <div style={{ fontSize: 13, marginTop: 6 }}>{session?.name || 'Damon Reed'}</div>
-        <div style={{ fontSize: 11, color: '#8b9a90' }}>{session?.role === 'admin' ? 'Super admin' : session ? 'Customer' : 'Demo · sign in'}</div>
+        <div style={{ fontSize: 11, color: '#8b9a90' }}>{session?.role === 'admin' ? 'Super admin' : session?.role === 'finance' ? 'Finance' : session ? 'Customer' : 'Demo · sign in'}</div>
         {session ? (
           <button onClick={() => { auth.logout(); navigate('/'); }} style={{ marginTop: 10, fontSize: 11, fontFamily: D.mono, letterSpacing: 1, color: D.plumSoft, background: 'transparent', border: 'none', cursor: 'pointer', padding: 0 }}>SIGN OUT</button>
         ) : (

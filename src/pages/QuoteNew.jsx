@@ -71,8 +71,8 @@ export function QuoteNew() {
   });
 
   const [vendorName, setVendorName] = useState('');
-  const [customerName, setCustomerName] = useState('Atlanta Surgical Center');
-  const [contactName, setContactName] = useState('Mariah Patel');
+  const [customerName, setCustomerName] = useState('');
+  const [contactName, setContactName] = useState('');
   const [customerTier, setCustomerTier] = useState('A');
   const [freightPref, setFreightPref] = useState('cheapest');
   const [csvText, setCsvText] = useState('');

@@ -1,5 +1,6 @@
 import { useEffect, useSyncExternalStore } from 'react';
 import { seed } from './seed.js';
+import { seed as seedPublicDatabase } from './publicSeed.js';
 
 /**
  * Lightweight reactive client-side "DB" — designed so a future
@@ -17,7 +18,7 @@ import { seed } from './seed.js';
  */
 
 const STORAGE_KEY = 'um.db.v1';
-const SCHEMA_VERSION = 18;
+const SCHEMA_VERSION = 22;
 
 const TABLES = [
   'profiles', 'organizations', 'organization_users', 'addresses',
@@ -30,7 +31,7 @@ const TABLES = [
   'leads', 'contacts', 'activities', 'tasks',
   'blog_posts', 'cms_pages', 'banners', 'doc_requests', 'vendors',
   'qbo_invoices', 'flexport_shipments', 'shipstation_labels',
-  'stripe_payments', 'stripe_invoices', 'hubspot_contacts', 'hubspot_companies', 'hubspot_deals', 'gmail_outbox', 'audit_log',
+  'stripe_payments', 'stripe_invoices', 'hubspot_contacts', 'hubspot_companies', 'hubspot_deals', 'gmail_outbox', 'customerio_events', 'audit_log',
   // PRD-09 / PRD-12: goods-receipt records against purchase orders
   'po_receipts',
   // PRD-11: AI usage tracking
@@ -40,7 +41,7 @@ const TABLES = [
   // PRD-07: vendor compliance evidence
   'vendor_evidence', 'product_compliance', 'compliance_events',
   // PRD-12: replenishment (run-rate model output + draft POs)
-  'purchase_orders',
+  'purchase_orders', 'vendor_bills', 'vendor_bill_variances', 'vendor_bill_approvals',
   // PRD-05: CEO morning brief history
   'daily_digests',
   // Brief §7: trade-data discovery (vendor/customer lead mining)
@@ -72,13 +73,14 @@ const TABLES = [
   'count_sessions', 'count_lines', 'transfers', 'transfer_lines', 'bundles',
   // PRD-26: customer order management (per-customer pricing, payment allowlist,
   // notifications, reorder lists, rep order-entry authority)
-  'customer_contract_prices', 'volume_breaks', 'account_payment_methods',
+  'customer_contract_prices', 'volume_breaks', 'account_payment_methods', 'account_prices',
   'account_notification_recipients', 'reorder_lists', 'reorder_list_items',
   'rep_order_grants',
   // PRD-27: distributor consignment / 3PL (owner-tagged stock, scan provenance,
   // sell-through settlement, blind-ship identities, carrier accounts, markup,
   // customer-PO ingestion)
   'inventory_lots', 'distributor_products', 'scan_events', 'consignment_movements',
+  'consignment_settlement_links', 'distributor_notifications', 'distributor_pickups', 'distributor_pickup_events',
   'distributor_ship_identities', 'distributor_documents', 'distributor_carrier_accounts',
   'shipping_markup_config', 'distributor_po_uploads', 'distributor_sku_map',
   // PRD-29 §4.1: customer-item ↔ Unite-SKU cross-reference DB (data moat),
@@ -87,6 +89,11 @@ const TABLES = [
   // Briefing §6: "no quote returned" feedback loop — every requested item
   // we couldn't quote is a demand signal, captured + worked, never dropped
   'quote_misses',
+  // Founder walkthrough checkpoint: unified sourcing, normalized vendor offers,
+  // and durable purchase-order communication/acknowledgment events.
+  'sourcing_requests', 'vendor_offers', 'po_communications', 'recall_notice_drafts',
+  'customerio_outbox', 'customerio_events',
+  'quote_signer_challenges',
   // GUDID spec (Damon, Jul 10): DI assignment + capacity tracking per GS1
   // prefix, device GUDID records, and Model C labeler acknowledgments
   'gs1_prefixes', 'udi_records', 'labeler_acknowledgments',
@@ -319,7 +326,23 @@ export const db = {
     return this.get(table, id);
   },
 
-  /** Force re-seed (useful for "reset demo" buttons). */
+  /** Purge all hydrated rows, then restore only the allowlisted public projection. */
+  clearPublic() {
+    const fresh = { __schema: SCHEMA_VERSION, ...Object.fromEntries(TABLES.map((table) => [table, []])) };
+    seedPublicDatabase(fresh);
+    state = fresh;
+    persist(state);
+    subs.forEach((set) => set.forEach((fn) => fn()));
+  },
+
+  /** Purge all hydrated rows without reintroducing any seed data. */
+  clear() {
+    state = { __schema: SCHEMA_VERSION, ...Object.fromEntries(TABLES.map((table) => [table, []])) };
+    persist(state);
+    subs.forEach((set) => set.forEach((fn) => fn()));
+  },
+
+  /** Force re-seed (useful for explicit local demo reset buttons only). */
   reset() {
     const fresh = { __schema: SCHEMA_VERSION, ...Object.fromEntries(TABLES.map((t) => [t, []])) };
     seed(fresh);

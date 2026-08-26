@@ -11,12 +11,18 @@
  */
 
 import crypto from 'node:crypto';
+import { neon } from '@neondatabase/serverless';
+import { authorizeLiveRequest } from '../../_lib/auth.js';
 import { sendJson } from '../../_lib/http.js';
 
 export default async function handler(req, res) {
+  if (req.method !== 'GET') return sendJson(res, 405, { error: 'method_not_allowed' });
+  if (!process.env.DATABASE_URL) return sendJson(res, 503, { error: 'not_configured' });
+  const live = await authorizeLiveRequest(req, neon(process.env.DATABASE_URL), { roles: ['admin'] });
+  if (!live.ok) return sendJson(res, live.reason === 'authentication_required' ? 401 : 403, { error: live.reason });
   const clientId = process.env.QBO_CLIENT_ID;
-  if (!clientId) {
-    return sendJson(res, 503, { error: 'not_configured', hint: 'Set QBO_CLIENT_ID + QBO_CLIENT_SECRET in Vercel env.' });
+  if (!clientId || !process.env.QBO_CLIENT_SECRET || !process.env.QBO_TOKEN_ENCRYPTION_KEY) {
+    return sendJson(res, 503, { error: 'not_configured', hint: 'Configure the protected QBO client credentials and token-encryption key.' });
   }
   const host = req.headers['x-forwarded-host'] || req.headers.host;
   const proto = req.headers['x-forwarded-proto'] || 'https';

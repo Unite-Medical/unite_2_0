@@ -1,0 +1,68 @@
+/* Homepage-scoped styles for the "Night Freight" redesign.
+   All classes are rh- prefixed so nothing leaks into the other 49 pages. */
+
+.rh-root {
+  --rh-ink: #0a1210;
+  --rh-ink2: #0e1713;
+  --rh-panel: #101b16;
+  --rh-bone: #f3f2eb;
+  --rh-bone2: rgba(243, 242, 235, 0.72);
+  --rh-bone3: rgba(243, 242, 235, 0.5);
+  --rh-line: rgba(243, 242, 235, 0.14);
+  --rh-line-strong: rgba(243, 242, 235, 0.32);
+  --rh-sage: #9dbcae;
+  --rh-green: #2e7d5f;
+  --rh-amber: #dcc0a8;
+  background: var(--rh-ink);
+  color: var(--rh-bone);
+}
+
+/* Headline word-assembly (GSAP animates .rh-w inside the clip) */
+.rh-wclip { display: inline-block; overflow: hidden; vertical-align: bottom; padding-bottom: 0.08em; margin-bottom: -0.08em; }
+.rh-w { display: inline-block; will-change: transform; }
+html.rh-nojs .rh-w, html.rh-reduced .rh-w { transform: none !important; opacity: 1 !important; }
+
+/* Scroll reveals — hidden state only applies when JS is live */
+html.rh-js .rh-rv { opacity: 0; transform: translateY(28px); }
+html.rh-js .rh-rv.rh-in { opacity: 1; transform: none; transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1), transform 0.9s cubic-bezier(0.22, 1, 0.36, 1); }
+html.rh-reduced .rh-rv { opacity: 1 !important; transform: none !important; }
+
+.rh-hero-canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+
+.rh-hairline { border-top: 1px solid var(--rh-line); }
+
+.rh-index-row { transition: background 0.35s ease, color 0.35s ease, padding-left 0.35s ease; }
+.rh-index-row:hover { background: var(--rh-bone); color: var(--rh-ink) !important; padding-left: 18px; }
+.rh-index-row:hover .rh-row-num { color: var(--rh-green) !important; }
+.rh-index-row:hover .rh-row-sub { color: #57635a !important; }
+.rh-index-row:hover .rh-row-arrow { transform: translateX(6px); }
+.rh-row-arrow { transition: transform 0.35s ease; }
+
+.rh-panel-btn { transition: background 0.4s ease, border-color 0.4s ease, transform 0.4s ease; }
+.rh-panel-btn:hover { background: var(--rh-panel); border-color: var(--rh-sage) !important; transform: translateY(-4px); }
+.rh-panel-btn:hover .rh-panel-cta { background: var(--rh-sage); color: var(--rh-ink); }
+.rh-panel-cta { transition: background 0.35s ease, color 0.35s ease; }
+
+.rh-card { transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.45s ease; }
+.rh-card:hover { transform: translateY(-6px); border-color: var(--rh-line-strong); }
+.rh-card:hover .rh-card-img { transform: scale(1.045); }
+.rh-card-img { transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1); }
+
+.rh-btn-primary { transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease; }
+.rh-btn-primary:hover { transform: translateY(-2px); }
+.rh-btn-ghost { transition: border-color 0.3s ease, background 0.3s ease; }
+.rh-btn-ghost:hover { border-color: var(--rh-sage) !important; background: rgba(157, 188, 174, 0.08); }
+
+.rh-media-band { position: relative; overflow: hidden; }
+.rh-media-band img { will-change: transform; }
+
+.rh-rail { scrollbar-width: none; }
+.rh-rail::-webkit-scrollbar { display: none; }
+
+@keyframes rhPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+.rh-pulse { animation: rhPulse 2.6s ease-in-out infinite; }
+html.rh-reduced .rh-pulse { animation: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .rh-index-row, .rh-panel-btn, .rh-card, .rh-card-img, .rh-btn-primary { transition: none; }
+}

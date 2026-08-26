@@ -33,16 +33,11 @@ export const API_BASE =
   (typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_BASE)
   || (typeof window !== 'undefined' ? '/api' : '');
 
-/** Lightweight env reader. Browser: Vite injects via `import.meta.env`.
- *  Node: `process.env`. We use `globalThis.process` so the browser
- *  build doesn't try to resolve the `process` global. */
+/** Server-only environment reader. Browser integrations use authenticated
+ *  same-origin API endpoints and must never inspect or embed credential values. */
 export function env(name) {
   const proc = globalThis.process;
-  if (proc?.env?.[name]) return proc.env[name];
-  if (typeof import.meta !== 'undefined' && import.meta.env) {
-    return import.meta.env[`VITE_${name}`] || import.meta.env[name] || '';
-  }
-  return '';
+  return proc?.env?.[name] || '';
 }
 
 /** Dev-only console warning, namespaced. */
@@ -57,7 +52,7 @@ export async function fetchJson(url, init = {}, { timeout = DEFAULT_TIMEOUT_MS }
   const ctl = new AbortController();
   const t = setTimeout(() => ctl.abort(), timeout);
   try {
-    const res = await fetch(url, { ...init, signal: ctl.signal });
+    const res = await fetch(url, { credentials: 'include', ...init, signal: ctl.signal });
     if (!res.ok) {
       // 404 often means "no record" upstream — let callers decide.
       const text = await res.text().catch(() => '');

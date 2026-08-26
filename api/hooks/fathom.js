@@ -35,7 +35,7 @@ export default async function handler(req, res) {
     return sendJson(res, 400, { error: 'invalid_json' });
   }
 
-  const evt = pushEvent({ source: 'fathom', type: event.event || 'recording.completed', payload: event, verified: true });
-  logEvent('hooks.fathom', 'accepted', { recording: event?.data?.recording_id, seq: evt.seq });
-  sendJson(res, 200, { received: true, seq: evt.seq });
+  const evt = await pushEvent({ source: 'fathom', type: event.event || 'recording.completed', payload: event, verified: true });
+  logEvent('hooks.fathom', 'accepted', { recording: event?.data?.recording_id, event_id: evt.id, duplicate: evt.duplicate });
+  sendJson(res, 200, { received: true, event_id: evt.id, duplicate: evt.duplicate });
 }

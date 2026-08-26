@@ -18,10 +18,77 @@ import { uid } from './format.js';
 import { assertMethodAllowed, TERMS_METHODS } from './paymentMethods.js';
 import { assertRepAuthority } from './repAuthority.js';
 import { runFulfillment } from './fulfillment.js';
+import { auth } from './auth.js';
 
 const TERMS_DAYS = { net15: 15, net30: 30, net60: 60, ach: 7, card: 0, wire: 7, mspv: 30 };
 export function dueDateFor(terms) {
   return new Date(Date.now() + (TERMS_DAYS[terms] ?? 30) * 86400000).toISOString().slice(0, 10);
+}
+
+export async function placeCustomerOrder({
+  idempotency_key,
+  po_number,
+  payment_method,
+  ship_to_address_id,
+  ship_method = 'fedex_ground',
+  notes = '',
+  order_source = 'catalog',
+  lines = [],
+} = {}) {
+  if (typeof window !== 'undefined') {
+    try {
+      const response = await fetch('/api/orders/place', {
+        method: 'POST', credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          idempotency_key, po_number, payment_method, ship_to_address_id,
+          ship_method, notes, order_source,
+          lines: lines.map((line) => ({ sku: line.sku, qty: line.qty })),
+        }),
+      });
+      const body = await response.json().catch(() => ({}));
+      if (response.ok) {
+        if (body.order) {
+          if (db.get('orders', body.order.id)) db.update('orders', body.order.id, body.order);
+          else db.insert('orders', body.order);
+        }
+        for (const [index, line] of (body.lines || []).entries()) {
+          const row = { id: `${body.order.id}-line-${index + 1}`, order_id: body.order.id, customer_id: body.order.customer_id, ...line };
+          if (db.get('order_items', row.id)) db.update('order_items', row.id, row);
+          else db.insert('order_items', row);
+        }
+        return body;
+      }
+      if (!import.meta.env?.DEV) {
+        const error = new Error(body.error || 'Could not place order.');
+        error.code = body.error;
+        throw error;
+      }
+    } catch (error) {
+      if (!import.meta.env?.DEV) throw error;
+    }
+  }
+
+  const session = auth.current();
+  const organization = session?.org_id ? db.get('organizations', session.org_id) : null;
+  const address = db.get('addresses', ship_to_address_id);
+  return placeOrder({
+    customer: {
+      user_id: session?.user_id,
+      org_id: session?.org_id,
+      org_name: organization?.name,
+      segment: organization?.segment,
+      email: session?.email,
+    },
+    address,
+    items: lines,
+    payment_terms: payment_method,
+    payment_method,
+    po_number,
+    ship_method,
+    notes,
+    order_source,
+  });
 }
 
 export async function placeOrder({

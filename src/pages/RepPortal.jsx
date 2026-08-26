@@ -153,7 +153,7 @@ export function RepPortal() {
                 <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>OPEN QUOTES</div>
                 <div style={{ marginTop: 10, display: 'grid', gap: 8 }}>
                   {openQuotes.slice(0, 6).map((q) => (
-                    <Link key={q.id} to={`/quotes/${q.id}/print?view=internal`} style={{ display: 'flex', justifyContent: 'space-between', gap: 8, textDecoration: 'none', color: D.ink, fontSize: 13 }}>
+                    <Link key={q.id} to={`/quotes/${q.id}/print`} style={{ display: 'flex', justifyContent: 'space-between', gap: 8, textDecoration: 'none', color: D.ink, fontSize: 13 }}>
                       <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{q.customer_name}</span>
                       <span style={{ fontFamily: D.mono, color: D.plum }}>{fmt.money(q.total || 0)}</span>
                     </Link>

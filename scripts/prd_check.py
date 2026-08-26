@@ -332,10 +332,10 @@ def check_prd_10_v2() -> Result:
 # ---------- PRD-03 v2: inbound receiving pipeline ----------
 
 def check_prd_03_v2() -> Result:
-    res = Result(prd="03b", title="Inbound receiving — cleared → inventory → bill → reorder")
+    res = Result(prd="03b", title="Inbound receiving — cleared → inventory → AP intake → reorder")
     file_must_exist(res, ROOT / "src/lib/receiving.js", "receiving pipeline")
     file_must_contain(res, ROOT / "src/lib/receiving.js", r"receiveClearedShipment", "receive entry point exists")
-    file_must_contain(res, ROOT / "src/lib/receiving.js", r"createBillFromFlexport", "landed-cost bill posted")
+    file_must_contain(res, ROOT / "src/lib/receiving.js", r"ap_intake_queue", "landed-cost evidence queued for AP")
     file_must_contain(res, ROOT / "src/lib/receiving.js", r"recalcReorderPoints", "reorder recalc chained")
     file_must_contain(res, ROOT / "src/lib/external/flexport.js", r"receiveClearedShipment", "webhook triggers receiving chain")
     return res
@@ -396,7 +396,9 @@ def check_prd_07_v2() -> Result:
     res = Result(prd="07b", title="Continuous recall monitoring")
     file_must_exist(res, ROOT / "src/pages/admin/AdminCompliance.jsx", "compliance admin page")
     file_must_contain(res, ROOT / "src/pages/admin/AdminCompliance.jsx", r"recallHistory", "openFDA sweep wired")
-    file_must_contain(res, ROOT / "src/pages/admin/AdminCompliance.jsx", r"vendor/recall_notice", "AI notice drafting wired")
+    file_must_contain(res, ROOT / "src/pages/admin/AdminCompliance.jsx", r"recall_notice_drafts", "internal recall draft is durable")
+    file_must_contain(res, ROOT / "src/pages/admin/AdminCompliance.jsx", r"assigned_owner:\s*['\"]Jacoby['\"]", "Jacoby owns recall drafts")
+    file_must_not_contain(res, ROOT / "src/pages/admin/AdminCompliance.jsx", r"gmail\.send|mailer\.send|customerio\.send", "monitoring-only recall screen cannot contact customers")
     file_must_contain(res, ROOT / "src/App.jsx", r"/admin/compliance", "compliance route mounted")
     return res
 

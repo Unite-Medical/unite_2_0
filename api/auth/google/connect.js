@@ -12,6 +12,8 @@
  */
 
 import crypto from 'node:crypto';
+import { neon } from '@neondatabase/serverless';
+import { authorizeLiveRequest } from '../../_lib/auth.js';
 import { sendJson } from '../../_lib/http.js';
 
 const SCOPES = [
@@ -21,6 +23,10 @@ const SCOPES = [
 ].join(' ');
 
 export default async function handler(req, res) {
+  if (req.method !== 'GET') return sendJson(res, 405, { error: 'method_not_allowed' });
+  if (!process.env.DATABASE_URL) return sendJson(res, 503, { error: 'not_configured' });
+  const live = await authorizeLiveRequest(req, neon(process.env.DATABASE_URL), { roles: ['admin'] });
+  if (!live.ok) return sendJson(res, live.reason === 'authentication_required' ? 401 : 403, { error: live.reason });
   const clientId = process.env.GOOGLE_CLIENT_ID;
   if (!clientId) {
     return sendJson(res, 503, { error: 'not_configured', hint: 'Set GOOGLE_CLIENT_ID + GOOGLE_CLIENT_SECRET in Vercel env.' });

@@ -3,10 +3,8 @@
  *
  * Sweeps the FDA enforcement database (openFDA — live, free, no key)
  * for every vendor/manufacturer we stock, mirrors hits into
- * `compliance_events`, and drafts customer notices for affected SKUs.
- *
- * The backend runs this nightly via cron once deployed; this page is
- * both the manual trigger and the review queue.
+ * `compliance_events`, and creates internal review drafts only.
+ * Damon’s existing recall system remains authoritative.
  */
 
 import { useMemo, useState } from 'react';
@@ -15,8 +13,7 @@ import { AdminShell } from '../../components/layout/AdminShell.jsx';
 import { db } from '../../lib/db.js';
 import { fmt, uid } from '../../lib/format.js';
 import { useViewport } from '../../lib/viewport.js';
-import { openfda, gmail } from '../../lib/services.js';
-import { ai } from '../../lib/ai/client.js';
+import { openfda } from '../../lib/services.js';
 
 const CLASS_COLOR = {
   'Class I':   '#c3382d',
@@ -97,35 +94,22 @@ export function AdminCompliance() {
   async function draftNotice(ev) {
     setBusyId(ev.id); setNotice(null);
     try {
-      const sku = ev.affected_skus?.[0];
-      const product = sku ? db.get('products', sku) : null;
-      const { data } = await ai.run('vendor/recall_notice', {
-        input: {
-          product_name: product?.name || ev.product_description || 'affected product',
-          sku: sku || 'multiple',
-          gtin: product?.gtin || 'see packaging',
-          lot_numbers: 'per FDA notice',
-          recall_class: ev.classification,
-          recall_reason: ev.reason,
-          fda_recall_id: ev.recall_number,
-          recall_date: ev.recall_initiation_date || 'recent',
-          customer_name: 'affected customers',
-          qty_shipped: 'per order records',
-          ship_date: 'per order records',
-          order_id: 'multiple',
-        },
-        source: 'compliance',
-      });
-      await gmail.send({
-        to: 'affected-customers@list.unitemedical.net',
-        from: 'compliance@unitemedical.net',
-        subject: data.subject || `Important product notice · ${ev.recall_number}`,
-        body: data.body || data.content || '',
-        template_key: 'recall_notice',
-        drafted_by: 'ai-assist:vendor/recall_notice',
-      });
-      db.update('compliance_events', ev.id, { status: 'reviewed', notice_drafted_at: new Date().toISOString() });
-      setNotice(`Customer notice for ${ev.recall_number} queued in the outbox for legal review before send.`);
+      const draftId = `recall_draft_${ev.id}`;
+      if (!db.get('recall_notice_drafts', draftId)) {
+        db.insert('recall_notice_drafts', {
+          id: draftId,
+          compliance_event_id: ev.id,
+          external_case_id: ev.external_case_id || null,
+          assigned_owner: 'Jacoby',
+          status: 'internal_draft',
+          recipients: [],
+          subject: `Internal recall draft · ${ev.recall_number}`,
+          body: 'NOT APPROVED FOR DELIVERY. Link Damon’s recall case, select exact canonical lots, verify shipment genealogy, and obtain Jacoby approval before creating any customer communication.',
+          created_at: new Date().toISOString(),
+        });
+      }
+      db.update('compliance_events', ev.id, { assigned_owner: 'Jacoby', notice_draft_id: draftId, notice_drafted_at: new Date().toISOString() });
+      setNotice(`Internal draft created for ${ev.recall_number}. Nothing was sent. Jacoby must link Damon’s case and verify exact lot genealogy.`);
     } finally { setBusyId(null); }
   }
 
@@ -139,7 +123,7 @@ export function AdminCompliance() {
         <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 12 }}>COMPLIANCE · FDA ENFORCEMENT</div>
         <h1 style={{ fontFamily: D.display, fontSize: 'clamp(32px, 5vw, 52px)', fontWeight: 400, letterSpacing: -1.2, lineHeight: 1.02, margin: 0 }}>Recall monitoring</h1>
         <div style={{ marginTop: 10, fontSize: 13, color: D.ink2, maxWidth: 640 }}>
-          Live sweep of the FDA enforcement database for all {monitored.length} manufacturers we stock or have approved. Runs nightly once the backend cron is deployed; runs on demand today.
+          Monitoring-only FDA sweep for {monitored.length} manufacturers. Damon’s existing recall system remains authoritative, with Jacoby as case owner. This screen does not send customer notices.
         </div>
       </div>
 
@@ -200,15 +184,11 @@ export function AdminCompliance() {
                 <div style={{ marginTop: 12, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                   {ev.status === 'new' && (
                     <button onClick={() => draftNotice(ev)} disabled={busyId === ev.id} style={{ padding: '7px 14px', borderRadius: 6, fontSize: 12, cursor: 'pointer', background: D.plum, color: '#fff', border: 'none', fontFamily: D.sans }}>
-                      {busyId === ev.id ? 'Drafting…' : 'Draft customer notice'}
+                      {busyId === ev.id ? 'Creating…' : 'Create internal Jacoby draft'}
                     </button>
                   )}
-                  {ev.status !== 'resolved' && (
-                    <button onClick={() => db.update('compliance_events', ev.id, { status: 'resolved', resolved_at: new Date().toISOString() })} style={{ padding: '7px 14px', borderRadius: 6, fontSize: 12, cursor: 'pointer', background: 'transparent', color: D.ink, border: `1px solid ${D.line}`, fontFamily: D.sans }}>
-                      Mark resolved
-                    </button>
-                  )}
-                  {ev.notice_drafted_at && <span style={{ fontSize: 12, color: D.ink3, alignSelf: 'center' }}>notice drafted {fmt.ago(ev.notice_drafted_at)}</span>}
+                  <span style={{ padding: '7px 0', color: D.ink3, fontSize: 12 }}>Resolve in Damon’s authoritative recall system.</span>
+                  {ev.notice_drafted_at && <span style={{ fontSize: 12, color: D.ink3, alignSelf: 'center' }}>internal draft created {fmt.ago(ev.notice_drafted_at)}</span>}
                 </div>
               </div>
             );

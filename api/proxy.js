@@ -23,32 +23,53 @@
  */
 
 import { SERVICES } from './_lib/services.js';
+import { neon } from '@neondatabase/serverless';
 import { readRawBody, sendJson, logEvent } from './_lib/http.js';
+import { authorizeLiveRequest } from './_lib/auth.js';
+import { canUseServiceProxy } from './_lib/rowStore.js';
 
 export default async function handler(req, res) {
   const raw = req.query.__proxypath;
   const joined = Array.isArray(raw) ? raw[0] : (raw || '');
   const segments = String(joined).split('/').filter(Boolean);
   const [service, ...rest] = segments;
+  if (!process.env.DATABASE_URL) return sendJson(res, 503, { error: 'authorization_not_configured' });
+  let live;
+  try {
+    live = await authorizeLiveRequest(req, neon(process.env.DATABASE_URL));
+  } catch {
+    return sendJson(res, 503, { error: 'authorization_unavailable' });
+  }
+  if (!live.ok) return sendJson(res, live.reason === 'authentication_required' ? 401 : 403, { error: live.reason });
+  const session = live.session;
   const svc = SERVICES[service];
   if (!svc) {
     return sendJson(res, 404, { error: 'unknown_service', service, known: Object.keys(SERVICES) });
   }
+  const upstreamPath = '/' + rest.join('/');
+  if (!canUseServiceProxy(session, service, upstreamPath, req.method)) return sendJson(res, 403, { error: 'proxy_forbidden', service });
   if (!svc.configured()) {
     return sendJson(res, 503, { error: 'not_configured', service, hint: `Set the ${svc.label} env vars in Vercel to enable this proxy.` });
   }
 
-  const upstreamPath = '/' + rest.join('/');
+  let context = null;
+  try {
+    context = svc.context ? await svc.context() : null;
+  } catch (err) {
+    logEvent('proxy', 'auth_failed', { service, error: err.message });
+    return sendJson(res, 502, { error: 'upstream_auth_failed', service, detail: err.message });
+  }
+
   let url;
   try {
-    url = svc.buildUrl(upstreamPath, req.query);
+    url = await svc.buildUrl(upstreamPath, req.query, context);
   } catch (err) {
     return sendJson(res, 500, { error: 'url_build_failed', detail: err.message });
   }
 
   let headers;
   try {
-    headers = await svc.headers();
+    headers = await svc.headers(context);
   } catch (err) {
     // Token refresh failures land here — surface as 502 so the client stubs.
     logEvent('proxy', 'auth_failed', { service, error: err.message });

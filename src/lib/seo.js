@@ -189,7 +189,7 @@ export function websiteSchema() {
 }
 
 /** Product schema for PDPs. */
-export function productSchema(product, { stock = 0, image } = {}) {
+export function productSchema(product, { stock = 0, image, includePricing = true } = {}) {
   return {
     '@context': 'https://schema.org',
     '@type': 'Product',
@@ -225,7 +225,7 @@ export function productSchema(product, { stock = 0, image } = {}) {
     ].filter(Boolean),
     // Quote-only products (no public price) get no Offer / rating markup —
     // never advertise a null price or a fabricated rating for them.
-    ...(product.quote_only || product.price == null ? {} : {
+    ...(!includePricing || product.quote_only || product.price == null ? {} : {
       offers: {
         '@type': 'Offer',
         priceCurrency: 'USD',

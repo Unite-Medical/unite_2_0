@@ -32,7 +32,7 @@ Set the env var(s) in Vercel and redeploy. The surface is live immediately.
 | GS1 US | `GS1_API_KEY`, `GS1_ACCOUNT_ID` | GTIN validation in product onboarding |
 | ImportGenius | `IMPORTGENIUS_API_KEY` | vendor discovery / trade intelligence |
 | ShipStation | `SHIPSTATION_API_KEY`, `SHIPSTATION_API_SECRET` | label creation + tracking |
-| Persistence | `DATABASE_URL`, `DB_SYNC_TOKEN`, `VITE_DB_SYNC_TOKEN` | durable Neon-backed multi-device state |
+| Persistence | `DATABASE_URL`, `DB_SYNC_TOKEN` | durable Neon-backed state; raw browser sync requires a signed privileged session |
 
 **Email:** `RESEND_API_KEY` is the only credential needed for outbound mail.
 The sender is a provider chain (`src/lib/mailer.js`): Resend → Gmail → local

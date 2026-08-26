@@ -6,6 +6,7 @@ import { Icon } from '../shared/Icon.jsx';
 import { useCart } from '../../store/cart.js';
 import { useViewport } from '../../lib/viewport.js';
 import { auth } from '../../lib/auth.js';
+import { commerceAccessFor } from '../../lib/accessPolicy.js';
 
 // Primary nav per Unite_CTO_Site_Document.md §2.1 — five items, no Solutions.
 const LINKS = [
@@ -27,6 +28,8 @@ export function Nav({ overlay = false }) {
   const location = useLocation();
   const cart = useCart();
   const session = auth.use();
+  const organization = auth.org();
+  const commerce = commerceAccessFor(session, organization);
   const cartCount = cart.items.reduce((a, b) => a + b.qty, 0);
   const { isMobile } = useViewport();
   const [open, setOpen] = useState(false);
@@ -78,7 +81,7 @@ export function Nav({ overlay = false }) {
               <span>CAGE 8MK70</span>
               <span>VETERAN-OWNED · LITHIA SPRINGS, GA</span>
               <span style={{ flex: 1 }} />
-              <Link to="/admin" style={{ color: 'inherit', letterSpacing: 1.4 }} title="Open admin console">ADMIN</Link>
+              {session?.role === 'admin' && <Link to="/admin" style={{ color: 'inherit', letterSpacing: 1.4 }} title="Open admin console">ADMIN</Link>}
               <a href="tel:+18338686483" style={{ color: D.plumSoft }}>SALES 833.868.6483</a>
             </div>
           </div>
@@ -137,13 +140,19 @@ export function Nav({ overlay = false }) {
               </button>
             )}
             {!isMobile && (
-              <Link to={session ? '/dashboard' : '/login'} style={{ background: 'none', color: 'rgba(243,242,235,.85)', fontFamily: D.sans, fontSize: 13.5 }}>
+              <Link to={session ? (session.role === 'admin' ? '/admin' : ['warehouse_manager', 'warehouse_operator'].includes(session.role) ? '/admin/inventory/receive' : session.role === 'distributor' ? '/distributor' : '/dashboard') : '/login'} style={{ background: 'none', color: 'rgba(243,242,235,.85)', fontFamily: D.sans, fontSize: 13.5 }}>
                 {session ? 'Dashboard' : 'Sign in'}
               </Link>
             )}
-            <Link to="/cart" aria-label={`Cart, ${cartCount} items`} style={{ display: 'flex', alignItems: 'center', gap: 7, background: D.paper, color: D.ink, padding: isMobile ? '9px 12px' : '10px 16px', borderRadius: 4, fontSize: isMobile ? 12 : 13, fontWeight: 600, fontFamily: D.sans }}>
-              <Icon.cart /> {cartCount ? cartCount : (isMobile ? '' : 'Cart')}
-            </Link>
+            {commerce.can_use_cart ? (
+              <Link to="/cart" aria-label={`Cart, ${cartCount} items`} style={{ display: 'flex', alignItems: 'center', gap: 7, background: D.paper, color: D.ink, padding: isMobile ? '9px 12px' : '10px 16px', borderRadius: 4, fontSize: isMobile ? 12 : 13, fontWeight: 600, fontFamily: D.sans }}>
+                <Icon.cart /> {cartCount ? cartCount : (isMobile ? '' : 'Cart')}
+              </Link>
+            ) : (
+              <Link to="/portal/quote" style={{ background: D.paper, color: D.ink, padding: isMobile ? '9px 12px' : '10px 16px', borderRadius: 4, fontSize: isMobile ? 12 : 13, fontWeight: 600, fontFamily: D.sans }}>
+                Quick Quote
+              </Link>
+            )}
             {isMobile && (
               <button
                 onClick={() => setOpen(true)}
@@ -190,7 +199,7 @@ export function Nav({ overlay = false }) {
                 ['/blog', 'Blog'],
                 ['/compliance', 'Compliance'],
                 ['/case-studies/tjs', 'TJS Case Study'],
-                ['/admin', 'Admin Console'],
+                ...(session?.role === 'admin' ? [['/admin', 'Admin Console']] : []),
               ].map(([path, label]) => (
                 <Link key={path} to={path} style={{
                   display: 'block', padding: '10px 14px',
@@ -199,7 +208,7 @@ export function Nav({ overlay = false }) {
               ))}
             </nav>
             <div style={{ padding: 18, marginTop: 8, borderTop: `1px solid ${D.line}`, display: 'grid', gap: 10 }}>
-              <Link to={session ? '/dashboard' : '/login'} style={{ background: D.plum, color: D.paper, padding: '13px 16px', borderRadius: 4, fontSize: 14, fontWeight: 600, textAlign: 'center' }}>
+              <Link to={session ? (session.role === 'admin' ? '/admin' : ['warehouse_manager', 'warehouse_operator'].includes(session.role) ? '/admin/inventory/receive' : session.role === 'distributor' ? '/distributor' : '/dashboard') : '/login'} style={{ background: D.plum, color: D.paper, padding: '13px 16px', borderRadius: 4, fontSize: 14, fontWeight: 600, textAlign: 'center' }}>
                 {session ? 'Open dashboard' : 'Sign in'}
               </Link>
               <Link to="/quote" style={{ background: 'transparent', color: D.ink, border: `1px solid ${D.ink}`, padding: '12px 16px', borderRadius: 4, fontSize: 14, fontWeight: 500, textAlign: 'center' }}>

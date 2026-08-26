@@ -92,8 +92,27 @@ export function AdminQuotes() {
     setTimeout(() => setFlash(null), 3500);
   }
 
-  function handleStatus(s) {
-    if (active) db.update('quotes', active.id, { status: s });
+  async function handleIssue() {
+    if (!active || busy) return;
+    setBusy(true);
+    try {
+      const response = await fetch('/api/quotes/issue', {
+        method: 'POST', credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ quote_id: active.id, expected_revision: Number(active.revision || 0) }),
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok || !payload.ok) {
+        notify(`Could not issue quote (${payload.error || 'issue failed'}).`);
+        return;
+      }
+      if (payload.quote) db.applyRemoteSnapshot({ quotes: [payload.quote] });
+      notify(payload.delivery === 'sent'
+        ? `Quote revision ${payload.quote.revision} issued to ${payload.quote.issued_to}.`
+        : `Quote revision ${payload.quote.revision} issued. Delivery is queued for retry.`);
+    } finally {
+      setBusy(false);
+    }
   }
 
   function handleMarginOverride() {
@@ -227,8 +246,7 @@ export function AdminQuotes() {
                 </div>
                 <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
                   <Link to={`/quotes/${active.id}/print?view=internal`} style={{ color: D.ink, border: `1px solid ${D.line}`, padding: '10px 16px', borderRadius: 4, fontSize: 13, textDecoration: 'none' }}>Print view</Link>
-                  {activeStatus === 'draft' && <button onClick={() => handleStatus('sent')} style={{ background: 'transparent', color: D.ink, border: `1.5px solid ${D.ink}`, padding: '10px 18px', borderRadius: 4, fontSize: 13, cursor: 'pointer' }}>Mark sent</button>}
-                  {['draft', 'sent'].includes(activeStatus) && <button onClick={() => handleStatus('accepted')} style={{ background: D.plum, color: D.paper, border: 'none', padding: '10px 18px', borderRadius: 4, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>Mark accepted</button>}
+                  {['draft', 'sent'].includes(activeStatus) && <button onClick={handleIssue} disabled={busy} style={{ background: D.plum, color: D.paper, border: 'none', padding: '10px 18px', borderRadius: 4, fontSize: 13, fontWeight: 600, cursor: busy ? 'wait' : 'pointer', opacity: busy ? 0.65 : 1 }}>{busy ? 'Issuing…' : activeStatus === 'sent' ? 'Reissue secure quote' : 'Issue secure quote'}</button>}
                 </div>
               </div>
 

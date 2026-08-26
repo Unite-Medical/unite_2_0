@@ -4,13 +4,14 @@ import { AdminShell } from '../../components/layout/AdminShell.jsx';
 import { db } from '../../lib/db.js';
 import { fmt } from '../../lib/format.js';
 import { useViewport } from '../../lib/viewport.js';
-import { contractPricing, resolveCustomerPrice } from '../../lib/customerPricing.js';
-import { PAYMENT_METHODS, METHOD_LABEL, TERMS_METHODS, paymentMethods, approvedMethodsFor } from '../../lib/paymentMethods.js';
-import { NOTIFY_EVENTS, notificationRecipients } from '../../lib/notifications.js';
+import { resolveCustomerPrice } from '../../lib/customerPricing.js';
+import { PAYMENT_METHODS, METHOD_LABEL, TERMS_METHODS, approvedMethodsFor } from '../../lib/paymentMethods.js';
+import { NOTIFY_EVENTS } from '../../lib/notifications.js';
+import { updateAccountPaymentMethod, updateContractPrice, updateNotificationRecipient, updateOrganizationPolicy } from '../../lib/serverAccountAdmin.js';
 
 const TIER_COLOR = { A: '#3b8760', B: D.plum, C: D.terra };
 const TIERS = ['A', 'B', 'C'];
-const TERMS = ['net30', 'net60', 'card', 'mspv', 'wire'];
+const TERMS = ['ach', 'net15', 'net30', 'net60', 'card', 'mspv', 'wire'];
 const SEGMENTS = ['asc', 'pharmacy', 'gov', 'distributors', 'ems', 'hospital'];
 const REPS = ['Damon Reed', 'Meredith Cole', 'Aidan Park', 'Terrell Jenkins', 'Miguel Vasquez'];
 
@@ -23,10 +24,17 @@ export function AdminCustomers() {
   const recentOrders = db.useTable('orders', { where: { customer_id: activeId }, orderBy: 'placed_at', dir: 'desc' }).slice(0, 6);
   const teammates = db.useTable('profiles', { where: { org_id: activeId } });
   const addresses = db.useTable('addresses', { where: { org_id: activeId } });
+  const [notice, setNotice] = useState('');
 
-  function patchOrg(p) {
+  async function patchOrg(p) {
     if (!active) return;
-    db.update('organizations', active.id, p);
+    setNotice('Saving…');
+    try {
+      await updateOrganizationPolicy(active.id, p);
+      setNotice('Saved');
+    } catch (error) {
+      setNotice(`Not saved: ${error.message}`);
+    }
   }
 
   return (
@@ -58,18 +66,19 @@ export function AdminCustomers() {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', flexWrap: 'wrap', gap: 12 }}>
                 <div style={{ flex: '1 1 320px' }}>
                   <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.plum }}>{(active.segment || '').toUpperCase()} · TIER {active.tier}</div>
-                  <input
-                    value={active.name || ''}
-                    onChange={(e) => patchOrg({ name: e.target.value })}
-                    aria-label="Customer name"
-                    style={{ fontFamily: D.display, fontSize: 36, letterSpacing: -0.7, lineHeight: 1.05, marginTop: 6, width: '100%', background: 'transparent', border: 'none', borderBottom: `1px solid transparent`, color: D.ink, outline: 'none', padding: 0, fontWeight: 400 }}
-                    onFocus={(e) => (e.currentTarget.style.borderBottomColor = D.line)}
-                    onBlur={(e) => (e.currentTarget.style.borderBottomColor = 'transparent')}
-                  />
+                  <div style={{ fontFamily: D.display, fontSize: 36, letterSpacing: -0.7, lineHeight: 1.05, marginTop: 6, color: D.ink, fontWeight: 400 }}>{active.name}</div>
+                  {notice && <div style={{ marginTop: 6, fontSize: 12, color: notice.startsWith('Not saved') ? D.terra : D.ink3 }}>{notice}</div>}
                 </div>
               </div>
 
               <div style={{ marginTop: 18, padding: 16, background: D.paper, borderRadius: 10, border: `1px solid ${D.line}`, display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(4, 1fr)', gap: 12 }}>
+                <EditField label="Approval">
+                  <select value={active.approval_status || 'manual_review'} onChange={(e) => patchOrg({ approval_status: e.target.value })} style={inputStyle}>
+                    <option value="manual_review">Manual review</option>
+                    <option value="approved">Approved</option>
+                    <option value="suspended">Suspended</option>
+                  </select>
+                </EditField>
                 <EditField label="Account rep">
                   <select value={active.account_rep || ''} onChange={(e) => patchOrg({ account_rep: e.target.value })} style={inputStyle}>
                     {REPS.map((r) => <option key={r} value={r}>{r}</option>)}
@@ -99,32 +108,23 @@ export function AdminCustomers() {
                   />
                 </EditField>
                 <EditField label="Lifetime spend">
-                  <input
-                    type="number"
-                    value={active.total_spend || 0}
-                    onChange={(e) => patchOrg({ total_spend: Number(e.target.value) || 0 })}
-                    style={inputStyle}
-                  />
+                  <div style={{ ...inputStyle, border: 'none', paddingLeft: 0 }}>{fmt.money(active.total_spend || 0)}</div>
                 </EditField>
                 <EditField label="Status">
                   <select value={active.status || 'active'} onChange={(e) => patchOrg({ status: e.target.value })} style={inputStyle}>
                     <option value="active">Active</option>
-                    <option value="hold">On credit hold</option>
                     <option value="suspended">Suspended</option>
-                    <option value="closed">Closed</option>
+                    <option value="disabled">Disabled</option>
                   </select>
                 </EditField>
                 <div style={{ display: 'flex', alignItems: 'end' }}>
                   <button
                     onClick={() => {
-                      if (window.confirm(`Delete customer ${active.name}? This cannot be undone.`)) {
-                        db.remove('organizations', active.id);
-                        setActiveId(orgs.find((o) => o.id !== active.id)?.id);
-                      }
+                      if (window.confirm(`Disable customer ${active.name}? Existing sessions will be revoked.`)) patchOrg({ status: 'disabled' });
                     }}
                     style={{ background: 'transparent', color: D.terra, border: `1px solid ${D.terra}`, padding: '8px 14px', borderRadius: 4, fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', width: '100%' }}
                   >
-                    Delete customer
+                    Disable customer
                   </button>
                 </div>
               </div>
@@ -176,18 +176,25 @@ export function AdminCustomers() {
 
 // PRD-26 §5/§12 Phase 1 — per-customer contract pricing editor.
 function ContractPricingPanel({ org, isMobile }) {
-  const rows = db.useTable('customer_contract_prices', { where: { org_id: org.id }, orderBy: 'product_sku' });
+  const allRows = db.useTable('customer_contract_prices', { where: { org_id: org.id }, orderBy: 'product_sku' });
+  const rows = allRows.filter((row) => !row.status || row.status === 'active');
   const [sku, setSku] = useState('');
   const [price, setPrice] = useState('');
   const [minQty, setMinQty] = useState('1');
+  const [notice, setNotice] = useState('');
 
   const preview = sku && price ? resolveCustomerPrice({ org, sku: sku.trim().toUpperCase(), qty: Number(minQty) || 1, basePrice: db.get('products', sku.trim().toUpperCase())?.price ?? Number(price) }) : null;
 
-  function add() {
+  async function add() {
     const s = sku.trim().toUpperCase();
     if (!s || !price) return;
-    contractPricing.setContract({ org_id: org.id, product_sku: s, unit_price: Number(price), min_qty: Number(minQty) || 1, created_by: 'usr_admin' });
-    setSku(''); setPrice(''); setMinQty('1');
+    setNotice('Saving contract price…');
+    try {
+      await updateContractPrice(org.id, s, 'set', { unit_price: Number(price), min_qty: Number(minQty) || 1 });
+      setSku(''); setPrice(''); setMinQty('1'); setNotice('Contract price saved');
+    } catch (error) {
+      setNotice(error.minimum_price ? `Not saved: 30% margin floor requires at least ${fmt.money(error.minimum_price)}` : `Not saved: ${error.message}`);
+    }
   }
 
   return (
@@ -213,7 +220,7 @@ function ContractPricingPanel({ org, isMobile }) {
                   <td style={{ padding: '10px 12px', fontFamily: D.mono, fontWeight: 600 }}>{fmt.money(r.unit_price)}</td>
                   <td style={{ padding: '10px 12px', color: D.ink3 }}>{prod ? fmt.money(prod.price) : '—'}</td>
                   <td style={{ padding: '10px 12px' }}>
-                    <button onClick={() => contractPricing.removeContract(r.id)} style={{ background: 'transparent', color: D.terra, border: 'none', cursor: 'pointer', fontSize: 12 }}>remove</button>
+                    <button onClick={() => updateContractPrice(org.id, r.product_sku, 'suspend', { min_qty: r.min_qty || 1 }).catch((error) => setNotice(`Not removed: ${error.message}`))} style={{ background: 'transparent', color: D.terra, border: 'none', cursor: 'pointer', fontSize: 12 }}>remove</button>
                   </td>
                 </tr>
               );
@@ -221,6 +228,7 @@ function ContractPricingPanel({ org, isMobile }) {
           </tbody>
         </table>
       </div>
+      {notice && <div style={{ marginTop: 8, fontSize: 12, color: notice.startsWith('Not') ? D.terra : D.ink3 }}>{notice}</div>}
       <div style={{ marginTop: 12, display: 'flex', flexWrap: 'wrap', gap: 8, alignItems: 'end' }}>
         <label style={{ flex: '1 1 160px' }}>
           <div style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, color: D.ink3, marginBottom: 4 }}>SKU</div>
@@ -246,18 +254,29 @@ function PaymentMethodsPanel({ org }) {
   const rows = db.useTable('account_payment_methods', { where: { org_id: org.id } });
   const active = approvedMethodsFor(org);
   const configured = rows.length > 0;
+  const [notice, setNotice] = useState('');
+  async function mutate(method, action, limit = null) {
+    setNotice('Saving payment policy…');
+    try {
+      await updateAccountPaymentMethod(org.id, method, action, limit);
+      setNotice('Payment policy saved');
+    } catch (error) {
+      setNotice(`Not saved: ${error.message}`);
+    }
+  }
   return (
     <>
       <div style={{ marginTop: 28, fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>PRE-APPROVED PAYMENT METHODS</div>
       <div style={{ fontSize: 12, color: D.ink2, marginTop: 4 }}>
         Only these rails appear at checkout — anything else is server-rejected. {configured ? '' : 'No explicit list yet (showing derived defaults from terms).'}
       </div>
+      {notice && <div style={{ fontSize: 12, color: notice.startsWith('Not saved') ? D.terra : D.ink3, marginTop: 4 }}>{notice}</div>}
       <div style={{ marginTop: 10, display: 'flex', flexWrap: 'wrap', gap: 8 }}>
         {PAYMENT_METHODS.map((m) => {
           const row = rows.find((r) => r.method === m);
           const on = row ? row.status === 'active' : active.some((a) => a.method === m && configured);
           return (
-            <button key={m} onClick={() => (on && row ? paymentMethods.suspend(row.id) : paymentMethods.enable({ org_id: org.id, method: m, credit_limit: TERMS_METHODS.has(m) ? (org.credit_limit || null) : null, approved_by: 'usr_admin' }))}
+            <button key={m} onClick={() => mutate(m, on && row ? 'suspend' : 'enable', TERMS_METHODS.has(m) ? (org.credit_limit || 0) : null)}
               style={{ padding: '8px 14px', borderRadius: 4, border: `1.5px solid ${on ? D.plum : D.line}`, background: on ? 'rgba(29,92,77,.06)' : D.paper, color: on ? D.plum : D.ink2, cursor: 'pointer', fontSize: 12, fontFamily: D.sans }}>
               {on ? '✓ ' : ''}{METHOD_LABEL[m]}
               {on && TERMS_METHODS.has(m) && row?.credit_limit != null ? ` · ${fmt.money(row.credit_limit, { cents: false })}` : ''}
@@ -268,7 +287,7 @@ function PaymentMethodsPanel({ org }) {
       {rows.filter((r) => TERMS_METHODS.has(r.method) && r.status === 'active').map((r) => (
         <label key={r.id} style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 10, fontSize: 12, color: D.ink2 }}>
           {METHOD_LABEL[r.method]} credit limit
-          <input type="number" defaultValue={r.credit_limit || 0} onBlur={(e) => paymentMethods.setCreditLimit(r.id, Number(e.target.value) || 0)} style={inputStyle} />
+          <input type="number" defaultValue={r.credit_limit || 0} onBlur={(e) => mutate(r.method, 'set_limit', Number(e.target.value) || 0)} style={inputStyle} />
         </label>
       ))}
     </>
@@ -279,15 +298,27 @@ function PaymentMethodsPanel({ org }) {
 function NotificationsPanel({ org }) {
   const rows = db.useTable('account_notification_recipients', { where: { org_id: org.id } });
   const [email, setEmail] = useState('');
-  function add() {
+  const [notice, setNotice] = useState('');
+  async function mutate(targetEmail, action, events) {
+    setNotice('Saving recipients…');
+    try {
+      await updateNotificationRecipient(org.id, targetEmail, action, events);
+      setNotice('Recipients saved');
+      return true;
+    } catch (error) {
+      setNotice(`Not saved: ${error.message}`);
+      return false;
+    }
+  }
+  async function add() {
     if (!email.includes('@')) return;
-    notificationRecipients.add({ org_id: org.id, email });
-    setEmail('');
+    if (await mutate(email, 'upsert', NOTIFY_EVENTS)) setEmail('');
   }
   return (
     <>
       <div style={{ marginTop: 28, fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>NOTIFICATION RECIPIENTS (CC)</div>
       <div style={{ fontSize: 12, color: D.ink2, marginTop: 4 }}>Order/ship/deliver/invoice/backorder emails fan out to every subscribed recipient.</div>
+      {notice && <div style={{ fontSize: 12, color: notice.startsWith('Not saved') ? D.terra : D.ink3, marginTop: 4 }}>{notice}</div>}
       <div style={{ marginTop: 10, display: 'grid', gap: 8 }}>
         {rows.length === 0 && <div style={{ fontSize: 12, color: D.ink3 }}>No recipients — the buyer on the order gets the default.</div>}
         {rows.map((r) => (
@@ -297,12 +328,12 @@ function NotificationsPanel({ org }) {
               {NOTIFY_EVENTS.map((ev) => {
                 const on = (r.events || NOTIFY_EVENTS).includes(ev);
                 return (
-                  <button key={ev} onClick={() => notificationRecipients.setEvents(r.id, on ? (r.events || NOTIFY_EVENTS).filter((x) => x !== ev) : [...(r.events || NOTIFY_EVENTS), ev])}
+                  <button key={ev} onClick={() => mutate(r.email, 'upsert', on ? (r.events || NOTIFY_EVENTS).filter((x) => x !== ev) : [...(r.events || NOTIFY_EVENTS), ev])}
                     style={{ padding: '4px 8px', borderRadius: 6, border: `1px solid ${on ? D.plum : D.line}`, background: on ? 'rgba(29,92,77,.06)' : 'transparent', color: on ? D.plum : D.ink3, cursor: 'pointer', fontSize: 10, fontFamily: D.mono }}>{ev}</button>
                 );
               })}
             </div>
-            <button onClick={() => notificationRecipients.remove(r.id)} style={{ background: 'transparent', color: D.terra, border: 'none', cursor: 'pointer', fontSize: 12 }}>remove</button>
+            <button onClick={() => mutate(r.email, 'remove', r.events)} style={{ background: 'transparent', color: D.terra, border: 'none', cursor: 'pointer', fontSize: 12 }}>remove</button>
           </div>
         ))}
       </div>

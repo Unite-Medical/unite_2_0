@@ -7,11 +7,13 @@ import { useViewport } from '../../lib/viewport.js';
 import { auth } from '../../lib/auth.js';
 import { receiving } from '../../lib/wms/receiving.js';
 import { wmsCan } from '../../lib/wms/access.js';
+import { isNotApplicable, trackingPolicyForSku } from '../../lib/productTracking.js';
 
 const INPUT = { padding: '12px 14px', borderRadius: 10, border: `1px solid ${D.line}`, fontFamily: D.sans, fontSize: 15, color: D.ink, background: D.card, width: '100%', boxSizing: 'border-box' };
 const LABEL = { fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3, marginBottom: 6, display: 'block' };
 
 const STATE_COLOR = { exact: '#3b8760', short: D.terra || '#b8553a', over: '#b8a04a', unexpected: '#9a2b2b' };
+const newReceiptKey = () => globalThis.crypto?.randomUUID?.() || `receipt_${Date.now()}_${Math.random().toString(36).slice(2)}`;
 
 /** Receiving workstation — scan a carton UPC/GTIN, it resolves to a product and
  *  posts the receipt to the ledger. Live PO reconciliation (ordered vs received). */
@@ -29,8 +31,12 @@ export function AdminReceiving() {
   const [scanText, setScanText] = useState('');
   const [scanQty, setScanQty] = useState('1');
   const [pending, setPending] = useState(null); // resolved-but-unconfirmed scan
+  const [manualLot, setManualLot] = useState('');
+  const [manualExpiration, setManualExpiration] = useState('');
+  const [notApplicableReason, setNotApplicableReason] = useState('');
   const [warehouse, setWarehouse] = useState('wh_atl');
   const [queue, setQueue] = useState([]); // staged, resolved receipts
+  const [receiptKey, setReceiptKey] = useState(newReceiptKey);
   const [msg, setMsg] = useState(null);
   const [busy, setBusy] = useState(false);
   const scanRef = useRef(null);
@@ -46,6 +52,10 @@ export function AdminReceiving() {
 
   /** A scan landed (Enter from the wedge, or the Resolve button). */
   function handleScan() {
+    if (!po) {
+      setMsg({ kind: 'err', text: 'Select a valid open purchase order before scanning.' });
+      return;
+    }
     const raw = scanText.trim();
     if (!raw) return;
     const r = receiving.resolveScan(raw);
@@ -55,30 +65,44 @@ export function AdminReceiving() {
       return;
     }
     if (po && r.sku && !po.line_items?.some((l) => l.sku === r.sku)) {
-      setMsg({ kind: 'err', text: `${r.sku}${r.product ? ` (${r.product.name})` : ''} is not on PO ${po.id}. Switch to blind receipt to take it in.` });
+      setMsg({ kind: 'err', text: `${r.sku}${r.product ? ` (${r.product.name})` : ''} is not on PO ${po.id}. Stop receiving and route this carton to the dock-exception queue.` });
       setPending(null);
       return;
     }
     setPending(r);
+    setManualLot(r.lot_number || '');
+    setManualExpiration(r.expiration_date || '');
+    setNotApplicableReason('');
     setMsg(r.matched
       ? { kind: 'ok', text: `Matched ${r.sku} · ${r.product?.name || ''}${r.lot_number ? ` · lot ${r.lot_number}` : ''}${r.expiration_date ? ` · exp ${r.expiration_date}` : ''} — set qty and add.` }
-      : { kind: 'warn', text: `Unknown code — will receive as raw SKU "${r.sku}" (blind).` });
+      : { kind: 'warn', text: `Unknown code resolved as SKU "${r.sku}". It can continue only if that SKU exists on ${po.id}.` });
   }
 
   function addToQueue() {
     if (!pending) { handleScan(); return; }
     const qty = Number(scanQty);
     if (!(qty > 0)) { setMsg({ kind: 'err', text: 'Enter a positive quantity.' }); return; }
+    const tracking = trackingPolicyForSku(pending.sku);
+    if (!manualLot.trim()) { setMsg({ kind: 'err', text: `Enter the lot number or explicitly attest N/A for ${pending.sku}.` }); return; }
+    if (!manualExpiration.trim()) { setMsg({ kind: 'err', text: `Enter the expiration date or explicitly attest N/A for ${pending.sku}.` }); return; }
+    if (tracking.lot === 'required' && isNotApplicable(manualLot)) { setMsg({ kind: 'err', text: `${pending.sku} requires an actual lot number; N/A is not allowed.` }); return; }
+    if (tracking.expiration === 'required' && isNotApplicable(manualExpiration)) { setMsg({ kind: 'err', text: `${pending.sku} requires an actual expiration date; N/A is not allowed.` }); return; }
+    const hasNa = isNotApplicable(manualLot) || isNotApplicable(manualExpiration);
+    if (hasNa && !notApplicableReason.trim()) { setMsg({ kind: 'err', text: 'Select why lot or expiration is not applicable.' }); return; }
     setQueue((q) => [...q, {
       sku: pending.sku,
       name: pending.product?.name || pending.sku,
       qty,
-      lot_number: pending.lot_number || '',
-      expiration_date: pending.expiration_date || '',
-      capture_method: pending.capture_method,
+      lot_number: manualLot.trim(),
+      expiration_date: manualExpiration.trim(),
+      capture_method: hasNa ? 'manual_attestation' : pending.capture_method,
+      not_applicable_reason: hasNa ? notApplicableReason.trim() : null,
       resolution: pending,
     }]);
     setPending(null);
+    setManualLot('');
+    setManualExpiration('');
+    setNotApplicableReason('');
     setScanText('');
     setScanQty('1');
     setMsg(null);
@@ -89,15 +113,20 @@ export function AdminReceiving() {
 
   async function post() {
     if (queue.length === 0) return;
+    if (!poId) { setMsg({ kind: 'err', text: 'A purchase order is required.' }); return; }
     if (!canReceive) { setMsg({ kind: 'err', text: 'Your role cannot post receipts.' }); return; }
     setBusy(true);
     try {
-      const res = await receiving.receiveScans(queue, { po_id: poId || null, warehouse_id: warehouse, received_by: session?.email || 'workstation' });
+      const res = await receiving.receiveScans(queue, {
+        po_id: poId || null,
+        warehouse_id: warehouse,
+        received_by: session?.email || 'workstation',
+        idempotency_key: receiptKey,
+      });
       if (!res.ok) { setMsg({ kind: 'err', text: `Receive failed: ${res.reason}` }); return; }
-      setMsg({ kind: 'ok', text: res.mode === 'po'
-        ? `Received ${res.received} unit(s) against ${poId}. PO is now ${res.po_status}. ${res.events} scan(s) logged.`
-        : `Blind receipt complete — ${res.received} unit(s) into ${warehouse}. ${res.events} scan(s) logged.` });
+      setMsg({ kind: 'ok', text: `Received ${res.received} unit(s) against ${poId}. PO is now ${res.po_status}. ${res.events} scan(s) logged.` });
       setQueue([]);
+      setReceiptKey(newReceiptKey());
     } catch (e) {
       setMsg({ kind: 'err', text: e?.message || 'Receive failed.' });
     } finally {
@@ -118,8 +147,8 @@ export function AdminReceiving() {
           <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 200px', gap: 12 }}>
             <div>
               <label style={LABEL}>OPEN PURCHASE ORDER</label>
-              <select value={poId} onChange={(e) => { setPoId(e.target.value); setPending(null); }} style={INPUT}>
-                <option value="">— Blind receipt (no PO) —</option>
+              <select value={poId} onChange={(e) => { setPoId(e.target.value); setPending(null); setQueue([]); setReceiptKey(newReceiptKey()); }} style={INPUT}>
+                <option value="">Select an open purchase order…</option>
                 {openPos.map((p) => <option key={p.id} value={p.id}>{p.id} · {p.vendor_name} ({p.status})</option>)}
               </select>
             </div>
@@ -145,21 +174,47 @@ export function AdminReceiving() {
                 value={scanText}
                 onChange={(e) => { setScanText(e.target.value); setPending(null); }}
                 onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleScan(); } }}
-                placeholder="Scan or type a UPC / barcode…"
+                placeholder={po ? 'Scan or type a UPC / barcode…' : 'Select a purchase order first'}
+                disabled={!po}
                 style={INPUT}
               />
             </div>
             <div>
               <label style={LABEL}>QTY</label>
-              <input type="number" inputMode="numeric" value={scanQty} onChange={(e) => setScanQty(e.target.value)} placeholder="0" style={INPUT} />
+              <input type="number" inputMode="numeric" value={scanQty} onChange={(e) => setScanQty(e.target.value)} placeholder="0" disabled={!po} style={INPUT} />
             </div>
-            <button onClick={addToQueue} style={{ background: D.ink, color: D.paper, border: 'none', padding: '12px 16px', borderRadius: 4, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>
+            <button onClick={addToQueue} disabled={!po} style={{ background: po ? D.ink : D.ink3, color: D.paper, border: 'none', padding: '12px 16px', borderRadius: 4, cursor: po ? 'pointer' : 'not-allowed', fontSize: 14, fontWeight: 600 }}>
               {pending ? 'Add to receipt' : 'Resolve'}
             </button>
           </div>
           {pending && (
-            <div style={{ marginTop: 12, fontSize: 13, color: D.ink2, fontFamily: D.mono }}>
-              → {pending.capture_method.toUpperCase()} · {pending.sku}{pending.gtin ? ` · GTIN ${pending.gtin}` : ''}
+            <div style={{ marginTop: 12 }}>
+              <div style={{ fontSize: 13, color: D.ink2, fontFamily: D.mono }}>
+                → {pending.capture_method.toUpperCase()} · {pending.sku}{pending.gtin ? ` · GTIN ${pending.gtin}` : ''}
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 10, marginTop: 10 }}>
+                <div>
+                  <label style={LABEL}>LOT NUMBER · ACTUAL OR N/A</label>
+                  <input value={manualLot} onChange={(e) => setManualLot(e.target.value)} placeholder="Scan/type lot number" style={INPUT} />
+                  {trackingPolicyForSku(pending.sku).lot !== 'required' && <button type="button" onClick={() => setManualLot('N/A')} style={{ marginTop: 5, border: 'none', background: 'transparent', color: D.plum, cursor: 'pointer', fontSize: 11 }}>Attest lot N/A</button>}
+                </div>
+                <div>
+                  <label style={LABEL}>EXPIRATION · ACTUAL OR N/A</label>
+                  <input value={manualExpiration} onChange={(e) => setManualExpiration(e.target.value)} placeholder="YYYY-MM-DD or N/A" style={INPUT} />
+                  {trackingPolicyForSku(pending.sku).expiration !== 'required' && <button type="button" onClick={() => setManualExpiration('N/A')} style={{ marginTop: 5, border: 'none', background: 'transparent', color: D.plum, cursor: 'pointer', fontSize: 11 }}>Attest expiration N/A</button>}
+                </div>
+              </div>
+              {(isNotApplicable(manualLot) || isNotApplicable(manualExpiration)) && (
+                <label style={{ display: 'block', marginTop: 10 }}>
+                  <span style={LABEL}>N/A ATTESTATION REASON</span>
+                  <select value={notApplicableReason} onChange={(e) => setNotApplicableReason(e.target.value)} style={INPUT}>
+                    <option value="">Select reason…</option>
+                    <option value="manufacturer_does_not_assign">Manufacturer does not assign this value</option>
+                    <option value="packaging_confirms_not_applicable">Packaging confirms not applicable</option>
+                    <option value="scanner_encoded_not_applicable">Scanner encoded not applicable</option>
+                  </select>
+                </label>
+              )}
             </div>
           )}
           {msg && <div style={{ marginTop: 12, padding: 10, borderRadius: 8, fontSize: 13, background: msgBg[msg.kind], color: msgFg[msg.kind] }}>{msg.text}</div>}

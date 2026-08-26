@@ -17,13 +17,59 @@
  * schema remains the contract for the dedicated API tier later
  * (scripts/migrate.mjs applies it when that cutover starts).
  *
- * Auth: requires DB_SYNC_TOKEN; the SPA sends it as x-sync-token
- * (VITE_DB_SYNC_TOKEN). Without both env vars this endpoint answers
- * 503 and the app keeps running on localStorage alone.
+ * Auth: signed privileged sessions may use raw sync. Automated server jobs
+ * may instead send the server-only DB_SYNC_TOKEN as x-sync-token.
  */
 
 import { neon } from '@neondatabase/serverless';
 import { readRawBody, sendJson, safeEqual, logEvent } from '../_lib/http.js';
+import { authorizeLiveRequest } from '../_lib/auth.js';
+import { canUseRawSync } from '../_lib/rowStore.js';
+import { minimumSellPrice } from '../../src/lib/commercialPolicy.js';
+
+export const RAW_SYNC_SERVER_OWNED_TABLES = new Set([
+  'profiles', 'organizations', 'organization_users', 'account_payment_methods',
+  'customer_contract_prices', 'account_prices', 'pricing', 'pricing_rules', 'volume_breaks',
+  'tier_contracts', 'payment_methods', 'addresses', 'rep_order_grants', 'account_notification_recipients',
+  'quotes', 'quote_revisions', 'quote_acceptances', 'quote_acceptance_evidence', 'quote_signer_challenges',
+  'orders', 'order_items', 'order_batches', 'invoices', 'payments', 'payment_requests', 'shipments',
+  'returns', 'rmas', 'purchase_orders', 'po_receipts', 'lots', 'inventory', 'inventory_lots',
+  'stock_movements', 'reservations', 'scan_events', 'lot_tracking', 'receipt_locks',
+  'consignment_movements', 'settlement_candidates', 'consignment_settlement_links',
+  'distributor_pickups', 'distributor_pickup_events', 'distributor_notifications',
+  'distributor_products', 'settlement_agreements', 'vendor_bills', 'vendor_bill_variances',
+  'ap_intake', 'settlement_payments', 'ar_payments', 'accounting_reconciliation',
+  'customerio_outbox', 'customerio_events', 'gmail_outbox', 'notification_outbox',
+  'audit_log', 'tasks', 'auth_login_limits', 'registration_locks', 'system_health', 'webhook_events',
+]);
+export const RAW_SYNC_ADMIN_ALLOWED_TABLES = new Set([
+  'categories', 'products', 'leads', 'contacts', 'activities',
+  'blog_posts', 'cms_pages', 'banners', 'doc_requests', 'vendors',
+  'ai_usage', 'surplus_submissions', 'surplus_lines', 'vendor_evidence',
+  'product_compliance', 'compliance_events', 'daily_digests', 'trade_records',
+  'shortage_requests', 'reps', 'calendar_events', 'documents', 'exchange_rates',
+  'cross_references', 'quote_misses', 'sourcing_requests', 'vendor_offers',
+  'recall_notice_drafts', 'gs1_prefixes', 'udi_records', 'labeler_acknowledgments',
+]);
+
+export function rawSyncMutationAllowed(mutation, { serviceAccess = false } = {}) {
+  if (serviceAccess) return true;
+  const table = mutation?.table;
+  if (!table || RAW_SYNC_SERVER_OWNED_TABLES.has(table) || !RAW_SYNC_ADMIN_ALLOWED_TABLES.has(table)) return false;
+  if (table === 'products' && mutation?.op === 'delete') return false;
+  return true;
+}
+
+export function validateAdminProductMutation(existing = {}, row = {}, op = 'upsert') {
+  if (op === 'delete') return { ok: false, reason: 'dedicated_mutation_endpoint_required' };
+  const effective = { ...existing, ...(row || {}) };
+  const cost = Number(effective.landed_cost ?? effective.cogs ?? effective.unit_cost ?? effective.cost);
+  const price = Number(effective.price);
+  if (!effective.quote_only && (!(cost > 0) || !(price > 0))) return { ok: false, reason: 'product_cost_and_price_required' };
+  const floor = cost > 0 ? minimumSellPrice(cost) : 0;
+  if (price > 0 && cost > 0 && price + 1e-9 < floor) return { ok: false, reason: 'margin_floor_violation', minimum_price: floor };
+  return { ok: true, product: effective };
+}
 
 let schemaReady = false;
 
@@ -48,7 +94,7 @@ async function ensureSchema(sql) {
   schemaReady = true;
 }
 
-function authorized(req) {
+function serviceAuthorized(req) {
   const token = process.env.DB_SYNC_TOKEN;
   if (!token) return false;
   const given = req.headers['x-sync-token'];
@@ -57,10 +103,21 @@ function authorized(req) {
 
 export default async function handler(req, res) {
   const sql = client();
-  if (!sql || !process.env.DB_SYNC_TOKEN) {
-    return sendJson(res, 503, { error: 'not_configured', hint: 'Set DATABASE_URL + DB_SYNC_TOKEN (and VITE_DB_SYNC_TOKEN for the app) to enable durable persistence.' });
+  if (!sql) {
+    return sendJson(res, 503, { error: 'not_configured', hint: 'Set DATABASE_URL to enable durable persistence.' });
   }
-  if (!authorized(req)) return sendJson(res, 401, { error: 'bad_sync_token' });
+  const serviceAccess = serviceAuthorized(req);
+  let session = null;
+  if (!serviceAccess) {
+    try {
+      const live = await authorizeLiveRequest(req, sql, { roles: ['admin'] });
+      if (!live.ok) return sendJson(res, live.reason === 'authentication_required' ? 401 : 403, { error: live.reason });
+      session = live.session;
+    } catch {
+      return sendJson(res, 503, { error: 'authorization_unavailable' });
+    }
+  }
+  if (!serviceAccess && !canUseRawSync(session)) return sendJson(res, 403, { error: 'raw_sync_forbidden' });
 
   try {
     await ensureSchema(sql);
@@ -87,11 +144,20 @@ export default async function handler(req, res) {
         return sendJson(res, 400, { error: 'no_mutations' });
       }
       if (mutations.length > 500) return sendJson(res, 413, { error: 'batch_too_large', max: 500 });
+      if (!serviceAccess) {
+        const protectedTables = [...new Set(mutations.filter((mutation) => !rawSyncMutationAllowed(mutation)).map((mutation) => mutation?.table || 'unknown'))];
+        if (protectedTables.length) return sendJson(res, 403, { error: 'dedicated_mutation_endpoint_required', tables: protectedTables });
+      }
 
       let applied = 0;
       for (const m of mutations) {
         const { table, op, id, row } = m || {};
         if (!table || !id) continue;
+        if (!serviceAccess && table === 'products' && op !== 'delete') {
+          const existingRows = await sql`SELECT data FROM um_rows WHERE tbl='products' AND id=${String(id)} AND deleted=false LIMIT 1`;
+          const validation = validateAdminProductMutation(existingRows[0]?.data || {}, row, op);
+          if (!validation.ok) return sendJson(res, 400, { error: validation.reason, id: String(id), minimum_price: validation.minimum_price });
+        }
         if (op === 'delete') {
           await sql`
             INSERT INTO um_rows (tbl, id, data, deleted, updated_at)

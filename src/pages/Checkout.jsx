@@ -1,15 +1,16 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { D } from '../tokens.js';
 import { Nav } from '../components/layout/Nav.jsx';
 import { useCart, cartStore } from '../store/cart.js';
 import { auth } from '../lib/auth.js';
 import { db } from '../lib/db.js';
-import { placeOrder } from '../lib/orders.js';
-import { approvedMethodsFor, METHOD_LABEL, TERMS_METHODS } from '../lib/paymentMethods.js';
+import { placeCustomerOrder } from '../lib/orders.js';
+import { METHOD_LABEL, TERMS_METHODS } from '../lib/paymentMethods.js';
 import { fmt } from '../lib/format.js';
 import { useViewport } from '../lib/viewport.js';
 import { useSEO } from '../lib/seo.js';
+import { commerceAccessFor } from '../lib/accessPolicy.js';
 
 function Section({ title, children }) {
   return (
@@ -35,27 +36,35 @@ export function Checkout() {
   useSEO({ title: 'Checkout', canonical: '/checkout', noindex: true });
   const items = cart.items;
   const subtotal = cart.subtotal;
-  const orgId = session?.org_id || 'org_atlsurgical';
-  const addresses = useMemo(() => db.list('addresses', { where: { org_id: orgId } }), [orgId]);
-  const orgRow = useMemo(() => db.get('organizations', orgId), [orgId]);
+  const orgId = session?.org_id || '__anonymous__';
+  const addresses = db.useTable('addresses', { where: { org_id: orgId } });
+  const paymentRows = db.useTable('account_payment_methods', { where: { org_id: orgId } });
+  const orgRow = db.useRow('organizations', orgId);
+  const commerce = commerceAccessFor(session, orgRow);
 
   // PRD-26 §6: render only the payment rails Unite pre-approved for this
   // account. Selecting an off-list method is impossible in the UI and
   // rejected server-side in placeOrder (defense in depth).
-  const paymentOptions = useMemo(() => {
-    return approvedMethodsFor(orgRow).map((m) => ({
+  const paymentOptions = paymentRows.filter((method) => method.status === 'active').map((m) => ({
       id: m.method,
       label: METHOD_LABEL[m.method] || m.method,
       sub: TERMS_METHODS.has(m.method) && m.credit_limit != null ? `limit ${fmt.money(m.credit_limit, { cents: false })}` : (m.method === 'card' ? 'paid up front' : 'approved'),
     }));
-  }, [orgRow]);
 
-  const [activeAddrId, setActiveAddrId] = useState(addresses.find((a) => a.is_default)?.id || addresses[0]?.id);
+  const [selectedAddrId, setActiveAddrId] = useState(null);
   const [shipMethod, setShipMethod] = useState('fedex_ground');
-  const [paymentMethod, setPaymentMethod] = useState(paymentOptions[0]?.id || 'card');
+  const [selectedPaymentMethod, setPaymentMethod] = useState('');
   const [poNumber, setPoNumber] = useState('');
+  const [idempotencyKey] = useState(() => globalThis.crypto?.randomUUID?.() || `order_${Date.now()}_${Math.random().toString(36).slice(2)}`);
   const [placing, setPlacing] = useState(false);
   const [error, setError] = useState(null);
+
+  const activeAddrId = addresses.some((address) => address.id === selectedAddrId)
+    ? selectedAddrId
+    : addresses.find((address) => address.is_default)?.id || addresses[0]?.id || null;
+  const paymentMethod = paymentOptions.some((option) => option.id === selectedPaymentMethod)
+    ? selectedPaymentMethod
+    : paymentOptions[0]?.id || '';
 
   const ship = SHIPPING_OPTIONS.find((s) => s.id === shipMethod);
   const freight = subtotal > 500 ? 0 : ship.cost || 42;
@@ -64,22 +73,19 @@ export function Checkout() {
   const stepActive = items.length === 0 ? 1 : 4;
 
   async function handlePlace() {
-    if (items.length === 0) return;
+    if (items.length === 0 || !commerce.can_order) return;
+    if (!poNumber.trim()) { setError('Customer PO number is required.'); return; }
+    if (!activeAddrId) { setError('Select a shipping address.'); return; }
+    if (!paymentMethod) { setError('No approved payment method is available.'); return; }
     setError(null); setPlacing(true);
     try {
-      const result = await placeOrder({
-        customer: {
-          user_id: session?.user_id || 'usr_demo',
-          org_id: orgId,
-          org_name: orgRow?.name || 'Atlanta Surgical Center',
-          segment: orgRow?.segment || 'asc',
-        },
-        address: addresses.find((a) => a.id === activeAddrId),
-        items: items.map((it) => ({ sku: it.sku, name: it.name, qty: it.qty, unit_price: it.unit_price })),
-        payment_terms: paymentMethod,
+      const result = await placeCustomerOrder({
+        idempotency_key: idempotencyKey,
+        ship_to_address_id: activeAddrId,
+        lines: items.map((it) => ({ sku: it.sku, name: it.name, qty: it.qty, unit_price: it.unit_price })),
         payment_method: paymentMethod,
         order_source: 'catalog',
-        po_number: poNumber || null,
+        po_number: poNumber.trim(),
         ship_method: shipMethod,
       });
       cartStore.clear();
@@ -90,6 +96,23 @@ export function Checkout() {
     } finally {
       setPlacing(false);
     }
+  }
+
+  if (!commerce.can_order) {
+    return (
+      <div style={{ background: D.paper, fontFamily: D.sans, color: D.ink, minHeight: '100vh' }}>
+        <Nav />
+        <main id="main" style={{ maxWidth: 680, margin: '0 auto', padding: '96px 24px', textAlign: 'center' }}>
+          <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.2, color: D.plum }}>CHECKOUT LOCKED</div>
+          <h1 style={{ fontFamily: D.display, fontSize: 48, fontWeight: 400, margin: '12px 0' }}>Approved account required.</h1>
+          <p style={{ color: D.ink2 }}>Sign in with an approved company account to view prices and place an order. You can still build a Quick Quote without one.</p>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: 10, marginTop: 22 }}>
+            <button onClick={() => navigate('/login')} style={{ background: D.plum, color: D.paper, border: 'none', padding: '12px 20px', borderRadius: 4, cursor: 'pointer', fontWeight: 600 }}>Sign in</button>
+            <button onClick={() => navigate('/portal/quote')} style={{ background: 'transparent', color: D.ink, border: `1px solid ${D.ink}`, padding: '12px 20px', borderRadius: 4, cursor: 'pointer', fontWeight: 600 }}>Build Quick Quote</button>
+          </div>
+        </main>
+      </div>
+    );
   }
 
   if (items.length === 0) {
@@ -166,7 +189,7 @@ export function Checkout() {
                 ))}
               </div>
               <div style={{ marginTop: 16, padding: 14, borderRadius: 10, background: D.paperAlt, fontSize: 13, color: D.ink2 }}>
-                PO # (optional) — <input value={poNumber} onChange={(e) => setPoNumber(e.target.value)} placeholder="Enter customer PO" style={{ border: 'none', background: 'transparent', outline: 'none', fontFamily: D.sans, fontSize: 13, color: D.ink, minWidth: 200 }} />
+                Customer PO # (required) — <input required value={poNumber} onChange={(e) => setPoNumber(e.target.value)} placeholder="Enter customer PO" style={{ border: 'none', background: 'transparent', outline: 'none', fontFamily: D.sans, fontSize: 13, color: D.ink, minWidth: 200 }} />
               </div>
             </Section>
 

@@ -23,6 +23,8 @@ import { fmt } from '../lib/format.js';
 import { useViewport } from '../lib/viewport.js';
 import { useSEO } from '../lib/seo.js';
 import { PRODUCT_IMG } from '../lib/imageMap.js';
+import { auth } from '../lib/auth.js';
+import { commerceAccessFor } from '../lib/accessPolicy.js';
 
 // Compliance filters — wired to the real product flags (PRD-28 §5.1).
 const COMPLIANCE_FILTERS = [
@@ -57,6 +59,14 @@ export function Catalog() {
   const padX = isMobile ? 20 : 40;
   const PRODUCTS = db.useTable('products');
   const inventory = db.useTable('inventory');
+  const accountPrices = db.useTable('account_prices');
+  const session = auth.use();
+  const organization = db.useRow('organizations', session?.org_id || '__anonymous__');
+  const commerce = commerceAccessFor(session, organization);
+  const priceBySku = useMemo(() => new Map(
+    accountPrices.filter((row) => row.ok !== false && Number(row.quantity || 1) === 1)
+      .map((row) => [row.sku, row]),
+  ), [accountPrices]);
   const cats = useMemo(() => ['All', ...M6_CATEGORIES.filter((c) => PRODUCTS.some((p) => categorize(p) === c))], [PRODUCTS]);
   // Storefront gates on available-to-promise (on_hand − reserved), not raw
   // on_hand, so held stock can't be double-sold (PRD-25 Phase 1).
@@ -204,6 +214,7 @@ export function Catalog() {
             // OOS items stay visible with a sourcing path (never hidden).
             const state = stock > 0 ? SUPPLY_STATES.in_stock : SUPPLY_STATES.source;
             const stocked = state.id === 'in_stock';
+            const accountPrice = priceBySku.get(p.sku);
             return (
               <article key={p.sku} className="um-card" style={{ background: D.card, borderRadius: 14, overflow: 'hidden', border: `1px solid ${D.line}`, display: 'flex', flexDirection: 'column' }}>
                 <Link to={`/products/${p.sku}`} style={{ display: 'block' }}>
@@ -218,12 +229,24 @@ export function Catalog() {
                   <div style={{ fontSize: 12, color: D.ink2, marginTop: 4 }}>{categorize(p)}{!isMobile && ` · HCPCS ${p.hcpcs}`}</div>
                   <div style={{ display: 'flex', alignItems: 'end', justifyContent: 'space-between', marginTop: 14 }}>
                     <div>
-                      <div style={{ fontFamily: D.display, fontSize: isMobile ? 20 : 24, color: D.plum, letterSpacing: -0.4 }}>{p.price == null ? 'Quote' : fmt.money(p.price)}</div>
+                      <div style={{ fontFamily: D.display, fontSize: isMobile ? 20 : 24, color: D.plum, letterSpacing: -0.4 }}>
+                        {p.quote_only ? 'Quote on request' : commerce.can_view_prices
+                          ? (accountPrice?.unit_price != null ? fmt.money(accountPrice.unit_price) : 'Pricing unavailable')
+                          : 'Sign in for pricing'}
+                      </div>
                       <div style={{ fontFamily: D.mono, fontSize: 10, color: D.ink3 }}>{p.pack_size} · MOQ {p.moq}</div>
                     </div>
-                    {stocked ? (
+                    {stocked && commerce.can_use_cart && accountPrice?.unit_price > 0 ? (
                       <button aria-label={`Add ${p.name} to cart`} onClick={() => cartStore.add(p.sku)} style={{ background: D.ink, color: D.paper, border: 'none', width: 40, height: 40, borderRadius: 8, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                         <Icon.plus />
+                      </button>
+                    ) : stocked ? (
+                      <button
+                        aria-label={`Add ${p.name} to Quick Quote`}
+                        onClick={() => navigate(`/portal/quote?sku=${encodeURIComponent(p.sku)}`)}
+                        style={{ background: D.plum, color: D.paper, border: 'none', padding: '9px 12px', borderRadius: 4, cursor: 'pointer', fontSize: 11.5, fontWeight: 600, fontFamily: D.sans, flexShrink: 0 }}
+                      >
+                        Quick Quote →
                       </button>
                     ) : (
                       <button

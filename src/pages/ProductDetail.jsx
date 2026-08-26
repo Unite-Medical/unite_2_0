@@ -17,12 +17,13 @@ import {
   productHighlights,
   productCompliance,
   productDocuments,
-  productReviews,
+
   relatedProducts,
-  productStockByWarehouse,
 } from '../lib/productCopy.js';
 import { useSEO, productSchema, breadcrumbSchema } from '../lib/seo.js';
 import { findSubstitutes } from '../lib/matching.js';
+import { auth } from '../lib/auth.js';
+import { commerceAccessFor } from '../lib/accessPolicy.js';
 
 function tierForQty(qty) {
   if (qty >= 250) return '250+';
@@ -31,13 +32,6 @@ function tierForQty(qty) {
   return '1-9';
 }
 
-const DELIVERY_BY_ZONE = [
-  { zone: 'Southeast (ATL hub)', eta: '1–2 days' },
-  { zone: 'West Coast (RNO hub)', eta: '2–3 days' },
-  { zone: 'South Central (DAL hub)', eta: '1–2 days' },
-  { zone: 'Northeast / Midwest', eta: '3–4 days' },
-];
-
 export function ProductDetail() {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -45,15 +39,27 @@ export function ProductDetail() {
   const padX = isMobile ? 20 : 40;
   const product = db.useRow('products', id);
   const inv = db.useTable('inventory', { where: { sku: id } });
+  const session = auth.use();
+  const organization = db.useRow('organizations', session?.org_id || '__anonymous__');
+  const commerce = commerceAccessFor(session, organization);
   // Available-to-promise (on_hand − reserved) gates buy actions (PRD-25 Phase 1).
   // `inv` is the reactive trigger; the helper reads the same projection.
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const stock = useMemo(() => availability.availableToPromise(id), [id, inv]);
-  const tiers = useMemo(() => db.list('pricing', { where: { sku: id }, orderBy: 'min_qty' }), [id]);
+  const accountPrices = db.useTable('account_prices');
+  const basePriceBySku = useMemo(() => new Map(
+    accountPrices.filter((row) => row.ok !== false && Number(row.quantity || 1) === 1)
+      .map((row) => [row.sku, row]),
+  ), [accountPrices]);
   const variants = useMemo(() => (product?.variants || []), [product?.variants]);
   const hasMultiVariants = variants.length > 1;
   const [variantIdx, setVariantIdx] = useState(0);
   const selectedVariant = hasMultiVariants ? variants[variantIdx] : null;
+  const priceSku = selectedVariant?.sku || product?.sku || id;
+  const tiers = useMemo(() => accountPrices
+    .filter((row) => row.ok !== false && row.sku === priceSku)
+    .sort((a, b) => Number(a.quantity || 1) - Number(b.quantity || 1))
+    .map((row) => ({ ...row, min_qty: Number(row.quantity || 1) })), [accountPrices, priceSku]);
   const [qty, setQty] = useState(1);
   const [lightboxIdx, setLightboxIdx] = useState(-1);
   const tierLabel = tierForQty(qty);
@@ -93,12 +99,12 @@ export function ProductDetail() {
 
   useSEO(product ? {
     title: product.name,
-    description: `${product.name} — ${product.category}, ${product.pack_size}.${product.hcpcs && product.hcpcs !== '—' ? ` HCPCS ${product.hcpcs}.` : ''} ${stock.toLocaleString()} units in stock, Same-day shipping on orders before 2pm EST.`,
+    description: `${product.name} — ${product.category}, ${product.pack_size}.${product.hcpcs && product.hcpcs !== '—' ? ` HCPCS ${product.hcpcs}.` : ''} Company pricing is available after account approval.`,
     canonical: `/products/${product.sku}`,
     type: 'product',
     ogImage: PRODUCT_IMG[product.sku],
     jsonLd: [
-      productSchema(product, { stock, image: PRODUCT_IMG[product.sku] }),
+      productSchema(product, { stock, image: PRODUCT_IMG[product.sku], includePricing: false }),
       breadcrumbSchema([
         { name: 'Catalog', path: '/catalog' },
         { name: product.category, path: `/catalog?cat=${encodeURIComponent(product.category)}` },
@@ -109,10 +115,9 @@ export function ProductDetail() {
   const highlights = useMemo(() => (product ? productHighlights(product) : []), [product]);
   const compliance = useMemo(() => (product ? productCompliance(product) : []), [product]);
   const documents = useMemo(() => (product ? productDocuments(product) : []), [product]);
-  const reviews = useMemo(() => (product ? productReviews(product) : []), [product]);
+
   const related = useMemo(() => (product ? relatedProducts(product, 4) : []), [product]);
   const substitutes = useMemo(() => (product ? findSubstitutes(product, 3) : []), [product]);
-  const stockByWh = useMemo(() => (product ? productStockByWarehouse(product.sku) : []), [product]);
 
   if (!product) {
     return (
@@ -126,12 +131,13 @@ export function ProductDetail() {
     );
   }
 
-  const variantPrice = selectedVariant?.price ?? product.price;
-  const price = hasMultiVariants ? variantPrice : (activeTier?.unit_price ?? product.price);
-  const savingsPct = product.price && price < product.price ? Math.round(((product.price - price) / product.price) * 100) : 0;
+  const price = activeTier?.unit_price ?? null;
+  const listPrice = tiers[0]?.list_price ?? null;
+  const savingsPct = listPrice && price < listPrice ? Math.round(((listPrice - price) / listPrice) * 100) : 0;
   // Quote-only products (no public price, e.g. RegeniCool™ Pro) route to the
   // quote flow instead of the cart.
-  const quoteOnly = product.quote_only || price == null;
+  const quoteOnly = Boolean(product.quote_only);
+  const priceAvailable = price != null;
 
   return (
     <div style={{ background: D.paper, fontFamily: D.sans, color: D.ink, minHeight: '100vh' }}>
@@ -174,19 +180,18 @@ export function ProductDetail() {
               {product.sku} {product.hcpcs && product.hcpcs !== '—' ? `· HCPCS ${product.hcpcs}` : ''} {product.pdac_approved ? '· PDAC APPROVED' : ''}
             </div>
             <h1 style={{ fontFamily: D.display, fontSize: 'clamp(30px, 5.4vw, 48px)', fontWeight: 400, letterSpacing: -1, lineHeight: 1.08, margin: '14px 0 0' }}>{product.name}</h1>
-            {!quoteOnly && (
-              <div style={{ display: 'flex', gap: 4, marginTop: 14, alignItems: 'center', color: D.plum, flexWrap: 'wrap' }}>
-                {[0, 1, 2, 3, 4].map((i) => <Icon.star key={i} />)}
-                <div style={{ fontSize: 13, color: D.ink2, marginLeft: 10 }}>4.8 · {reviews.length * 47} reviews · used by 38 ASCs</div>
-              </div>
-            )}
+
 
             <div style={{ marginTop: 28, padding: 24, background: D.card, borderRadius: 14, border: `1px solid ${D.line}` }}>
               <div style={{ display: 'flex', alignItems: 'end', gap: 14, flexWrap: 'wrap' }}>
                 <div style={{ fontFamily: D.display, fontSize: quoteOnly ? (isMobile ? 30 : 38) : (isMobile ? 42 : 56), color: D.plum, letterSpacing: -1, lineHeight: 1 }}>
-                  {quoteOnly ? 'Quote on request' : fmt.money(price)}
+                  {!commerce.can_view_prices
+                    ? 'Sign in for pricing'
+                    : quoteOnly
+                      ? 'Quote on request'
+                      : priceAvailable ? fmt.money(price) : 'Pricing unavailable'}
                 </div>
-                {!quoteOnly && (
+                {!quoteOnly && commerce.can_view_prices && (
                   <div style={{ color: D.ink3, fontSize: 13, paddingBottom: 8 }}>
                     per unit · volume tier {tierLabel}
                     {savingsPct > 0 && <span style={{ color: '#3b8760', marginLeft: 8, fontWeight: 600 }}>save {savingsPct}%</span>}
@@ -197,6 +202,14 @@ export function ProductDetail() {
                 {quoteOnly ? (
                   <div style={{ fontSize: 13.5, color: D.ink2, lineHeight: 1.55 }}>
                     Priced per order — tell us your volume and setting and we come back with a firm quote.
+                  </div>
+                ) : !commerce.can_view_prices ? (
+                  <div style={{ fontSize: 13.5, color: D.ink2, lineHeight: 1.55 }}>
+                    Product details remain public. Sign in with an approved company account for pricing, or add this item to Quick Quote.
+                  </div>
+                ) : !priceAvailable ? (
+                  <div style={{ fontSize: 13.5, color: D.ink2, lineHeight: 1.55 }}>
+                    Account pricing has not loaded. Refresh or contact your assigned rep before ordering.
                   </div>
                 ) : hasMultiVariants ? (
                   <>
@@ -226,7 +239,11 @@ export function ProductDetail() {
                           >
                             <div style={{ fontSize: 13, fontWeight: 600, lineHeight: 1.2 }}>{v.title}</div>
                             <div style={{ fontSize: 12, opacity: 0.85, marginTop: 4 }}>
-                              {fmt.money(v.price)} {!v.available && '· out of stock'}
+                              {commerce.can_view_prices
+                                ? (accountPrices.find((row) => row.sku === v.sku && Number(row.quantity || 1) === 1)?.unit_price != null
+                                  ? fmt.money(accountPrices.find((row) => row.sku === v.sku && Number(row.quantity || 1) === 1).unit_price)
+                                  : 'Unavailable')
+                                : 'Pricing after sign in'} {!v.available && '· out of stock'}
                             </div>
                           </button>
                         );
@@ -243,7 +260,7 @@ export function ProductDetail() {
                         return (
                           <button key={t.id} onClick={() => setQty(t.min_qty)} style={{ flex: 1, padding: '12px 8px', borderRadius: 10, background: isActive ? D.plum : D.paper, color: isActive ? D.paper : D.ink, border: `1px solid ${isActive ? D.plum : D.line}`, cursor: 'pointer', fontFamily: D.sans }}>
                             <div style={{ fontSize: 12, opacity: .7 }}>{range}</div>
-                            <div style={{ fontSize: 15, fontWeight: 600, marginTop: 2 }}>{fmt.money(t.unit_price)}</div>
+                            <div style={{ fontSize: 15, fontWeight: 600, marginTop: 2 }}>{commerce.can_view_prices ? fmt.money(t.unit_price) : 'Private'}</div>
                           </button>
                         );
                       })}
@@ -254,7 +271,7 @@ export function ProductDetail() {
               <div style={{ display: 'flex', gap: 10, marginTop: 22, alignItems: 'center', flexWrap: 'wrap' }}>
                 {quoteOnly ? (
                   <button
-                    onClick={() => navigate(`/quote?sku=${encodeURIComponent(product.sku)}&path=source`)}
+                    onClick={() => navigate(`/portal/quote?sku=${encodeURIComponent(product.sku)}&path=source`)}
                     style={{ flex: '1 1 160px', background: D.plum, color: D.paper, border: 'none', padding: '14px', borderRadius: 4, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}
                   >
                     Request a quote →
@@ -268,26 +285,29 @@ export function ProductDetail() {
                     </div>
                     <button
                       onClick={() => {
-                        cartStore.add(
-                          product.sku,
-                          qty,
-                          selectedVariant
-                            ? { sku: selectedVariant.sku, title: selectedVariant.title, price: selectedVariant.price }
-                            : undefined,
-                        );
-                        navigate('/cart');
+                        if (commerce.can_use_cart && priceAvailable) {
+                          const added = cartStore.add(
+                            product.sku,
+                            qty,
+                            selectedVariant
+                              ? { sku: selectedVariant.sku, title: selectedVariant.title }
+                              : undefined,
+                          );
+                          if (added.ok) navigate('/cart');
+                        } else {
+                          navigate(`/portal/quote?sku=${encodeURIComponent(product.sku)}&qty=${qty}`);
+                        }
                       }}
-                      style={{ flex: '1 1 160px', background: D.ink, color: D.paper, border: 'none', padding: '14px', borderRadius: 4, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}
+                      disabled={commerce.can_use_cart && !priceAvailable}
+                      style={{ flex: '1 1 160px', background: commerce.can_use_cart ? D.ink : D.plum, color: D.paper, border: 'none', padding: '14px', borderRadius: 4, cursor: commerce.can_use_cart && !priceAvailable ? 'not-allowed' : 'pointer', opacity: commerce.can_use_cart && !priceAvailable ? 0.55 : 1, fontSize: 14, fontWeight: 600 }}
                     >
-                      Add to cart
+                      {commerce.can_use_cart ? (priceAvailable ? 'Add to cart' : 'Pricing unavailable') : 'Add to Quick Quote'}
                     </button>
-                    <button onClick={() => navigate('/quote')} style={{ background: 'transparent', color: D.ink, border: `1.5px solid ${D.ink}`, padding: '13px 18px', borderRadius: 4, cursor: 'pointer', fontSize: 14, flex: isMobile ? '1 1 160px' : '0 0 auto' }}>Request quote</button>
+                    <button onClick={() => navigate(`/portal/quote?sku=${encodeURIComponent(product.sku)}&qty=${qty}`)} style={{ background: 'transparent', color: D.ink, border: `1.5px solid ${D.ink}`, padding: '13px 18px', borderRadius: 4, cursor: 'pointer', fontSize: 14, flex: isMobile ? '1 1 160px' : '0 0 auto' }}>Quick Quote</button>
                   </>
                 )}
               </div>
-              <div style={{ marginTop: 14, fontSize: 12, color: D.ink3, fontFamily: D.mono, letterSpacing: 0.6 }}>
-                NET 30 · ACH · WIRE · CARD · PO ACCEPTED
-              </div>
+              {commerce.can_order && <div style={{ marginTop: 14, fontSize: 12, color: D.ink3, fontFamily: D.mono, letterSpacing: 0.6 }}>APPROVED ACCOUNT PAYMENT OPTIONS APPEAR AT CHECKOUT</div>}
             </div>
 
             <div style={{ marginTop: 16, display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3,1fr)', gap: 8 }}>
@@ -296,9 +316,9 @@ export function ProductDetail() {
                 ['PDAC approved', 'coding verified for billing'],
                 ['FDA listed', 'Class 2 · Unite Medical, LLC'],
               ] : [
-                ['In stock', `${stock.toLocaleString()} units across 3 DCs`],
-                ['Ships today', 'if ordered by 3 PM ET'],
-                ['Free freight', 'orders over $500'],
+                ['Availability', stock > 0 ? 'Available' : 'Confirm with your rep'],
+                ['Shipping', 'Confirmed during checkout'],
+                ['Freight', 'Confirmed after sign-in'],
               ]).map(([a, b]) => (
                 <div key={a} style={{ border: `1px solid ${D.line}`, padding: 14, borderRadius: 10, background: D.paper }}>
                   <div style={{ fontSize: 13, fontWeight: 600, color: D.ink }}>{a}</div>
@@ -361,41 +381,25 @@ export function ProductDetail() {
           </div>
         </section>
 
-        {/* STOCK + DELIVERY */}
+        {/* AVAILABILITY + DELIVERY */}
         <section style={{ background: D.paperAlt, borderTop: `1px solid ${D.line}`, borderBottom: `1px solid ${D.line}`, padding: `${isMobile ? 48 : 72}px ${padX}px` }}>
-          <div style={{ maxWidth: 1360, margin: '0 auto', display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.4fr 1fr', gap: isMobile ? 32 : 56 }}>
+          <div style={{ maxWidth: 1360, margin: '0 auto', display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: isMobile ? 32 : 56 }}>
             <div>
-              <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 10 }}>STOCK BY WAREHOUSE</div>
-              <h2 style={{ fontFamily: D.display, fontSize: 'clamp(28px, 4.4vw, 40px)', fontWeight: 400, letterSpacing: -0.8, lineHeight: 1.1, margin: 0 }}>Live across {stockByWh.length} DCs.</h2>
-              <div style={{ marginTop: 22, display: 'grid', gridTemplateColumns: isMobile ? '1fr' : `repeat(${stockByWh.length}, 1fr)`, gap: 12 }}>
-                {stockByWh.map((w) => {
-                  const low = w.on_hand <= w.reorder_at;
-                  return (
-                    <div key={w.warehouse_id} style={{ background: D.card, border: `1px solid ${D.line}`, borderRadius: 12, padding: 20 }}>
-                      <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.plum }}>{w.code}</div>
-                      <div style={{ fontFamily: D.display, fontSize: 28, letterSpacing: -0.5, color: D.ink, marginTop: 8 }}>{w.on_hand.toLocaleString()}</div>
-                      <div style={{ fontSize: 12, color: D.ink2, marginTop: 4 }}>{w.name?.split(' · ')[0]}</div>
-                      <div style={{ marginTop: 10, fontSize: 11, color: low ? D.terra : '#3b8760', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-                        <Icon.dot /> {low ? 'Below reorder' : 'In stock'}
-                      </div>
-                    </div>
-                  );
-                })}
+              <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 10 }}>AVAILABILITY</div>
+              <h2 style={{ fontFamily: D.display, fontSize: 'clamp(28px, 4.4vw, 40px)', fontWeight: 400, letterSpacing: -0.8, lineHeight: 1.1, margin: 0 }}>{stock > 0 ? 'Available to source.' : 'Confirm with your rep.'}</h2>
+              <div style={{ marginTop: 22, background: D.card, border: `1px solid ${D.line}`, borderRadius: 12, padding: 20 }}>
+                <div style={{ fontSize: 14, color: D.ink2, lineHeight: 1.65 }}>
+                  Exact stock counts, reservations, and allocation details remain private. Availability is confirmed against the order quantity after sign-in.
+                </div>
               </div>
             </div>
             <div>
-              <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 10 }}>DELIVERY ESTIMATE</div>
-              <h2 style={{ fontFamily: D.display, fontSize: 'clamp(28px, 4.4vw, 40px)', fontWeight: 400, letterSpacing: -0.8, lineHeight: 1.1, margin: 0 }}>To your zone.</h2>
-              <div style={{ marginTop: 22, background: D.card, border: `1px solid ${D.line}`, borderRadius: 12, overflow: 'hidden' }}>
-                {DELIVERY_BY_ZONE.map((z, i) => (
-                  <div key={z.zone} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 18px', borderTop: i === 0 ? 'none' : `1px solid ${D.line}` }}>
-                    <span style={{ fontSize: 14 }}>{z.zone}</span>
-                    <span style={{ fontFamily: D.mono, fontSize: 12, letterSpacing: 0.8, color: D.plum }}>{z.eta}</span>
-                  </div>
-                ))}
-              </div>
-              <div style={{ marginTop: 14, fontSize: 12, color: D.ink2, lineHeight: 1.6 }}>
-                Estimates assume order placed by 3 PM ET on a business day. Same-day available for Atlanta metro on stocked items.
+              <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 10 }}>FULFILLMENT ORIGIN</div>
+              <h2 style={{ fontFamily: D.display, fontSize: 'clamp(28px, 4.4vw, 40px)', fontWeight: 400, letterSpacing: -0.8, lineHeight: 1.1, margin: 0 }}>Lithia Springs, Georgia.</h2>
+              <div style={{ marginTop: 22, background: D.card, border: `1px solid ${D.line}`, borderRadius: 12, padding: 20 }}>
+                <div style={{ fontSize: 14, color: D.ink2, lineHeight: 1.65 }}>
+                  Delivery timing and freight are calculated for the approved account, destination, carrier service, and actual shipment at checkout.
+                </div>
               </div>
             </div>
           </div>
@@ -477,9 +481,9 @@ export function ProductDetail() {
                       <Link to={`/products/${encodeURIComponent(p.sku)}`} style={{ fontSize: 14, fontWeight: 600, color: D.ink, display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                         {p.name}
                       </Link>
-                      <div style={{ fontFamily: D.mono, fontSize: 10.5, color: D.ink3, marginTop: 2 }}>{p.sku} · {fmt.money(p.price)}</div>
+                      <div style={{ fontFamily: D.mono, fontSize: 10.5, color: D.ink3, marginTop: 2 }}>{p.sku} · {commerce.can_view_prices ? (basePriceBySku.get(p.sku)?.unit_price != null ? fmt.money(basePriceBySku.get(p.sku).unit_price) : 'pricing unavailable') : 'pricing after sign in'}</div>
                     </div>
-                    <button aria-label={`Add ${p.name}`} onClick={() => cartStore.add(p.sku)} style={{ background: D.ink, color: D.paper, border: 'none', width: 36, height: 36, borderRadius: 18, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <button aria-label={commerce.can_use_cart ? `Add ${p.name}` : `Add ${p.name} to Quick Quote`} onClick={() => commerce.can_use_cart ? cartStore.add(p.sku) : navigate(`/portal/quote?sku=${encodeURIComponent(p.sku)}`)} style={{ background: commerce.can_use_cart ? D.ink : D.plum, color: D.paper, border: 'none', width: 36, height: 36, borderRadius: 18, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                       <Icon.plus />
                     </button>
                   </div>
@@ -489,34 +493,6 @@ export function ProductDetail() {
           </section>
         )}
 
-        {/* REVIEWS */}
-        <section style={{ background: D.paperAlt, borderTop: `1px solid ${D.line}`, borderBottom: `1px solid ${D.line}`, padding: `${isMobile ? 48 : 72}px ${padX}px` }}>
-          <div style={{ maxWidth: 1360, margin: '0 auto' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: isMobile ? 'flex-start' : 'end', marginBottom: 22, flexDirection: isMobile ? 'column' : 'row', gap: 12 }}>
-              <div>
-                <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 10 }}>CUSTOMERS, IN THEIR OWN WORDS</div>
-                <h2 style={{ fontFamily: D.display, fontSize: 'clamp(28px, 4.4vw, 40px)', fontWeight: 400, letterSpacing: -0.8, lineHeight: 1.1, margin: 0 }}>4.8 / 5 average · {reviews.length * 47} reviews.</h2>
-              </div>
-              <Link to="/portfolio" style={{ background: 'transparent', color: D.ink, border: `1.5px solid ${D.ink}`, padding: '10px 18px', borderRadius: 4, fontSize: 13 }}>Read case studies →</Link>
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : isTablet ? '1fr 1fr' : 'repeat(3, 1fr)', gap: 14 }}>
-              {reviews.map((r) => (
-                <figure key={r.name} style={{ background: D.card, border: `1px solid ${D.line}`, borderRadius: 14, padding: 24, margin: 0, display: 'flex', flexDirection: 'column' }}>
-                  <div style={{ display: 'flex', gap: 4, color: D.plum, marginBottom: 12 }}>
-                    {Array.from({ length: r.rating }).map((_, i) => <Icon.star key={i} />)}
-                  </div>
-                  <blockquote style={{ fontFamily: D.display, fontSize: 18, letterSpacing: -0.2, color: D.ink, margin: 0, flex: 1, lineHeight: 1.35, fontStyle: 'italic' }}>
-                    &ldquo;{r.body}&rdquo;
-                  </blockquote>
-                  <figcaption style={{ marginTop: 18, paddingTop: 16, borderTop: `1px solid ${D.line}` }}>
-                    <div style={{ fontSize: 14, fontWeight: 600, color: D.ink }}>{r.name}</div>
-                    <div style={{ fontSize: 12, color: D.ink2, marginTop: 2 }}>{r.role}</div>
-                  </figcaption>
-                </figure>
-              ))}
-            </div>
-          </div>
-        </section>
 
         {/* RELATED PRODUCTS */}
         {related.length > 0 && (
@@ -539,8 +515,8 @@ export function ProductDetail() {
                       <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 0.8, color: D.ink3 }}>{p.sku}</div>
                       <Link to={`/products/${p.sku}`} style={{ fontFamily: D.display, fontSize: isMobile ? 15 : 18, color: D.ink, marginTop: 8, lineHeight: 1.25, minHeight: isMobile ? 38 : 46 }}>{p.name}</Link>
                       <div style={{ display: 'flex', alignItems: 'end', justifyContent: 'space-between', marginTop: 14 }}>
-                        <div style={{ fontFamily: D.display, fontSize: isMobile ? 18 : 22, color: D.plum, letterSpacing: -0.3 }}>{fmt.money(p.price)}</div>
-                        <button aria-label={`Add ${p.name}`} onClick={() => cartStore.add(p.sku)} style={{ background: D.ink, color: D.paper, border: 'none', width: 36, height: 36, borderRadius: 18, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                        <div style={{ fontFamily: D.display, fontSize: isMobile ? 18 : 22, color: D.plum, letterSpacing: -0.3 }}>{commerce.can_view_prices ? (basePriceBySku.get(p.sku)?.unit_price != null ? fmt.money(basePriceBySku.get(p.sku).unit_price) : 'Unavailable') : 'Sign in'}</div>
+                        <button aria-label={commerce.can_use_cart ? `Add ${p.name}` : `Add ${p.name} to Quick Quote`} onClick={() => commerce.can_use_cart ? cartStore.add(p.sku) : navigate(`/portal/quote?sku=${encodeURIComponent(p.sku)}`)} style={{ background: commerce.can_use_cart ? D.ink : D.plum, color: D.paper, border: 'none', width: 36, height: 36, borderRadius: 18, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                           <Icon.plus />
                         </button>
                       </div>

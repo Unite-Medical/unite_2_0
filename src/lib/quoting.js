@@ -27,8 +27,10 @@ import { db } from './db.js';
 import { openfda, hts, flexport, claude } from './services.js';
 import { delay, uid } from './format.js';
 import { loadMarginPolicy, marginForTier, applyMargin } from './marginPolicy.js';
+import { MINIMUM_GROSS_MARGIN, minimumSellPrice } from './commercialPolicy.js';
 import { isValidGtin } from './external/gs1.js';
 import { ai } from './ai/client.js';
+import { createQuoteAcceptanceToken } from './quoteTokens.js';
 import { section301Lookup } from './external/section301.js';
 import { portCodeFor } from './external/flexport.js';
 import { computeShipmentMetrics } from './vendorSheet.js';
@@ -72,8 +74,9 @@ export const TARGET_MARGIN = 0.60; // legacy default (tier C) — kept for calle
 
 // Per-unit warehouse receiving handling (PRD-16 §8 Phase 4). Admin-tunable.
 export const WAREHOUSE_RECEIVING_PER_UNIT = 0.25;
-// Minimum margin floor — no line may sell below landed × (1 + this).
-export const MARGIN_FLOOR = 0.10;
+// Minimum gross-margin floor. Damon may override it explicitly, but no normal
+// pricing path may produce a quote below this value.
+export const MARGIN_FLOOR = MINIMUM_GROSS_MARGIN;
 // How total freight decomposes into landed-cost components.
 const FREIGHT_SPLIT = { ocean: 0.78, brokerage: 0.14, drayage: 0.08 };
 
@@ -131,7 +134,7 @@ function freightComponents(option, totalUnits) {
 function priceLine(components, margin) {
   const landed = +Object.values(components).reduce((a, v) => a + (Number(v) || 0), 0).toFixed(4);
   let sell = applyMargin(landed, margin);
-  const floor = +(landed * (1 + MARGIN_FLOOR)).toFixed(2);
+  const floor = minimumSellPrice(landed);
   const floored = sell < floor;
   if (floored) sell = floor;
   return { landed: +landed.toFixed(2), sell, floored };
@@ -139,8 +142,8 @@ function priceLine(components, margin) {
 
 export async function runQuotingEngine({
   vendor,
-  customer_name = 'Atlanta Surgical Center',
-  contact_name = 'Mariah Patel',
+  customer_name = 'Customer organization',
+  contact_name = 'Primary contact',
   customer_tier = null,
   org_id = null,
   freight_preference = 'cheapest',
@@ -158,7 +161,7 @@ export async function runQuotingEngine({
   //     org record wins over both.
   const resolved = resolveOrgTier({ org_id, customer_name, fallback_tier: customer_tier || 'C' });
   const tier = resolved.resolved ? resolved.tier : (customer_tier || 'C');
-  const margin = marginForTier(tier, policy);
+  const margin = Math.max(MARGIN_FLOOR, marginForTier(tier, policy));
   if (resolved.resolved) {
     onProgress({ step: 'tier', label: `Customer record matched — tier ${tier} (${Math.round(margin * 100)}% margin)` });
   }
@@ -299,7 +302,8 @@ export async function runQuotingEngine({
 
   // 6) Persist
   const quoteId = `Q-26-${String(284 + db.count('quotes')).padStart(5, '0')}`;
-  const quote = db.insert('quotes', {
+  const access = await createQuoteAcceptanceToken(quoteId, 1);
+  const persistedQuote = db.insert('quotes', {
     id: quoteId,
     vendor,
     customer_name,
@@ -329,7 +333,9 @@ export async function runQuotingEngine({
     cover_letter: letter.content,
     status: 'draft',
     revision: 1,
-    acceptance_token: `${uid('qt')}-${Math.random().toString(36).slice(2, 12)}`,
+    acceptance_token_hash: access.token_hash,
+    acceptance_token_revision: access.token_revision,
+    ...((typeof window === 'undefined' || import.meta.env?.DEV) ? { acceptance_token: access.token } : {}),
     valid_until: new Date(Date.now() + (policy.quote_validity_days || 14) * 86400000).toISOString(),
     eta: etaIso,
   });
@@ -337,7 +343,7 @@ export async function runQuotingEngine({
 
   onProgress({ step: 'done', label: `Quote ${quoteId} drafted` });
 
-  return { quote, lines: priced, freight, freightOptions, dutyRates, fda };
+  return { quote: { ...persistedQuote, acceptance_token: access.token }, lines: priced, freight, freightOptions, dutyRates, fda };
 }
 
 // ---------------------------------------------------------------------------
@@ -371,7 +377,8 @@ export function repriceQuote(quoteId, { margin_pct = null, freight_mode = null, 
 
   const policy = loadMarginPolicy();
   const tierDefault = marginForTier(quote.customer_tier, policy);
-  const margin = margin_pct != null ? Math.min(0.95, Math.max(MARGIN_FLOOR, Number(margin_pct))) : (quote.margin_target ?? tierDefault);
+  const requestedMargin = margin_pct != null ? Number(margin_pct) : (quote.margin_target ?? tierDefault);
+  const margin = Math.min(0.95, Math.max(MARGIN_FLOOR, requestedMargin));
 
   // Freight switch — reallocate the per-unit freight components from the
   // stored option so landed cost stays auditable.
@@ -461,10 +468,15 @@ export async function refreshQuote(quoteId, { actor = 'rep' } = {}) {
   if (!freight) return { ok: false, reason: 'no_freight' };
 
   const policy = loadMarginPolicy();
+  const nextRevision = (quote.revision || 1) + 1;
+  const access = await createQuoteAcceptanceToken(quoteId, nextRevision);
   db.update('quotes', quoteId, {
     freight_options: freightOptions,
     status: 'sent',
-    revision: (quote.revision || 1) + 1,
+    revision: nextRevision,
+    acceptance_token_hash: access.token_hash,
+    acceptance_token_revision: nextRevision,
+    ...((typeof window === 'undefined' || import.meta.env?.DEV) ? { acceptance_token: access.token } : {}),
     refresh_requested_at: null,
     valid_until: new Date(Date.now() + (policy.quote_validity_days || 14) * 86400000).toISOString(),
   });
@@ -479,7 +491,7 @@ export async function refreshQuote(quoteId, { actor = 'rep' } = {}) {
     eta: new Date(Date.now() + freight.transit_days * 86400000).toISOString(),
   });
   db.insert('audit_log', { id: uid('aud'), kind: 'quote.refreshed', ref_id: quoteId, payload: { actor, freight_mode: freight.mode, revision: (quote.revision || 1) + 1 } });
-  return { ok: repriced.ok, quote: db.get('quotes', quoteId), items: repriced.items };
+  return { ok: repriced.ok, quote: { ...db.get('quotes', quoteId), acceptance_token: access.token }, items: repriced.items };
 }
 
 /**

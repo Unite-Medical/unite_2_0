@@ -36,7 +36,7 @@ export default async function handler(req, res) {
     return sendJson(res, 400, { error: 'invalid_json' });
   }
 
-  const evt = pushEvent({ source: 'calendly', type: event.event, payload: event, verified: true });
-  logEvent('hooks.calendly', 'accepted', { type: event.event, seq: evt.seq });
-  sendJson(res, 200, { received: true, seq: evt.seq });
+  const evt = await pushEvent({ source: 'calendly', type: event.event, payload: event, verified: true });
+  logEvent('hooks.calendly', 'accepted', { type: event.event, event_id: evt.id, duplicate: evt.duplicate });
+  sendJson(res, 200, { received: true, event_id: evt.id, duplicate: evt.duplicate });
 }

@@ -108,16 +108,17 @@ const STATIC_ORGS = [
   { id: 'org_va_dublin',  name: 'VA Medical Center · Dublin', segment: 'gov', tier: 'A', terms: 'mspv', credit_limit: 250000, total_spend: 942100, account_rep: 'Damon Reed' },
   { id: 'org_holloway',   name: 'Holloway Apothecary', segment: 'pharmacy', tier: 'B', terms: 'card', credit_limit: 12000, total_spend: 84200, account_rep: 'Aidan Park' },
   { id: 'org_cobbems',    name: 'Cobb County EMS', segment: 'ems', tier: 'B', terms: 'net30', credit_limit: 25000, total_spend: 142800, account_rep: 'Terrell Jenkins' },
-  { id: 'org_medone',     name: 'MedOne Distributors', segment: 'distributors', tier: 'A', terms: 'net60', credit_limit: 200000, total_spend: 1402900, account_rep: 'Damon Reed' },
+  { id: 'org_medone',     name: 'MedOne Distributors', segment: 'distributors', tier: 'A', terms: 'net60', credit_limit: 200000, total_spend: 1402900, account_rep: 'Damon Reed', contact_email: 'ops@medone.example' },
   { id: 'org_walgreens',  name: 'Walgreens #2184', segment: 'pharmacy', tier: 'B', terms: 'card', credit_limit: 8000, total_spend: 24800, account_rep: 'Aidan Park' },
   { id: 'org_lonestar',   name: 'Lone Star DME', segment: 'distributors', tier: 'B', terms: 'net30', credit_limit: 60000, total_spend: 312800, account_rep: 'Aidan Park' },
-];
+].map((organization) => ({ ...organization, approval_status: 'approved' }));
 
 const STATIC_PROFILES = [
-  { id: 'usr_demo',     email: 'sarah@atlanta-surgical.com', password: 'demo', name: 'Sarah Chen', role: 'customer', org_id: 'org_atlsurgical', title: 'Materials Director' },
-  { id: 'usr_kareem',   email: 'kareem@holloway.com', password: 'demo', name: 'Kareem Holloway', role: 'customer', org_id: 'org_holloway', title: 'Owner, PharmD' },
-  { id: 'usr_admin',    email: 'damon@unitemedical.net', password: 'admin', name: 'Damon Reed', role: 'admin', org_id: null, title: 'Founder & CEO' },
-  { id: 'usr_ops',      email: 'ops@unitemedical.net', password: 'admin', name: 'Miguel Vasquez', role: 'admin', org_id: null, title: 'Ops Lead' },
+  { id: 'usr_demo',     email: 'sarah@atlanta-surgical.com', password: 'demo', name: 'Sarah Chen', role: 'customer', org_id: 'org_atlsurgical', title: 'Materials Director', status: 'active', session_revision: 0 },
+  { id: 'usr_kareem',   email: 'kareem@holloway.com', password: 'demo', name: 'Kareem Holloway', role: 'customer', org_id: 'org_holloway', title: 'Owner, PharmD', status: 'active', session_revision: 0 },
+  { id: 'usr_admin',    email: 'damon@unitemedical.net', password: 'admin', name: 'Damon Reed', role: 'admin', org_id: null, title: 'Founder & CEO', status: 'active', session_revision: 0 },
+  { id: 'usr_ops',      email: 'ops@unitemedical.net', password: 'admin', name: 'Miguel Vasquez', role: 'admin', org_id: null, title: 'Ops Lead', status: 'active', session_revision: 0 },
+  { id: 'usr_medone',   email: 'ops@medone.example', password: 'demo', name: 'Morgan Lee', role: 'distributor', org_id: 'org_medone', title: 'Distribution Operations', status: 'active', session_revision: 0 },
 ];
 
 const STATIC_ADDRESSES = [
@@ -245,6 +246,14 @@ function buildSampleOrders() {
 export function seed(db) {
   STATIC_PROFILES.forEach((p) => db.profiles.push({ ...p, created_at: isoDaysAgo(180) }));
   STATIC_ORGS.forEach((o) => db.organizations.push({ ...o, created_at: isoDaysAgo(380) }));
+  STATIC_PROFILES.filter((profile) => profile.org_id).forEach((profile) => db.organization_users.push({
+    id: `orguser_${profile.org_id}_${profile.id}`,
+    org_id: profile.org_id,
+    user_id: profile.id,
+    role: 'owner',
+    status: 'active',
+    created_at: isoDaysAgo(180),
+  }));
   STATIC_ADDRESSES.forEach((a) => db.addresses.push(a));
   STATIC_WAREHOUSES.forEach((w) => db.warehouses.push(w));
   STATIC_CATEGORIES.forEach((c) => db.categories.push({ id: c.slug, ...c }));
@@ -453,13 +462,13 @@ export function seed(db) {
   const expIso = (days) => new Date(today.getTime() + days * 86400000).toISOString().slice(0, 10);
   if (dp[0]) {
     // A storefront, Unite-sellable consignment SKU (mapped to a Unite product).
-    db.distributor_products.push({ id: 'dprod_medone_1', owner_org_id: 'org_medone', distributor_sku: 'MED-STERI-9000', name: `${dp[0].name} (MedOne label)`, mapped_unite_sku: dp[0].sku, visibility: 'storefront', unite_sellable: true, created_at: nowIso2 });
+    db.distributor_products.push({ id: 'dprod_medone_1', owner_org_id: 'org_medone', distributor_sku: 'MED-STERI-9000', name: `${dp[0].name} (MedOne label)`, mapped_unite_sku: dp[0].sku, visibility: 'storefront', unite_sellable: true, settlement_unit_cost: Number(dp[0].cogs || 0), settlement_currency: 'USD', settlement_effective_from: nowIso2, settlement_effective_until: null, low_stock_threshold: 250, created_at: nowIso2 });
     db.inventory_lots.push({ id: 'ilot_medone_1a', owner_type: 'distributor', owner_org_id: 'org_medone', product_sku: dp[0].sku, distributor_sku: 'MED-STERI-9000', lot_number: 'LOT-A23', expiration_date: expIso(120), qty_on_hand: 800, qty_reserved: 0, warehouse_id: 'wh_atl', bin_location: 'C-12-3', received_via_scan_id: 'scan_seed_1', created_at: nowIso2 });
     db.inventory_lots.push({ id: 'ilot_medone_1b', owner_type: 'distributor', owner_org_id: 'org_medone', product_sku: dp[0].sku, distributor_sku: 'MED-STERI-9000', lot_number: 'LOT-A24', expiration_date: expIso(40), qty_on_hand: 240, qty_reserved: 0, warehouse_id: 'wh_atl', bin_location: 'C-12-4', received_via_scan_id: 'scan_seed_2', created_at: nowIso2 });
   }
   if (dp[1]) {
     // A warehouse-only consignment SKU (never public; orderable by MedOne).
-    db.distributor_products.push({ id: 'dprod_medone_2', owner_org_id: 'org_medone', distributor_sku: 'MED-PRIVATE-22', name: 'MedOne Private Kit 22', mapped_unite_sku: null, visibility: 'warehouse_only', unite_sellable: false, created_at: nowIso2 });
+    db.distributor_products.push({ id: 'dprod_medone_2', owner_org_id: 'org_medone', distributor_sku: 'MED-PRIVATE-22', name: 'MedOne Private Kit 22', mapped_unite_sku: null, visibility: 'warehouse_only', unite_sellable: false, settlement_unit_cost: null, settlement_currency: 'USD', settlement_effective_from: null, settlement_effective_until: null, low_stock_threshold: 40, created_at: nowIso2 });
     db.inventory_lots.push({ id: 'ilot_medone_2a', owner_type: 'distributor', owner_org_id: 'org_medone', product_sku: null, distributor_sku: 'MED-PRIVATE-22', lot_number: 'LOT-PK1', expiration_date: expIso(300), qty_on_hand: 150, qty_reserved: 0, warehouse_id: 'wh_atl', bin_location: 'D-04-1', received_via_scan_id: 'scan_seed_3', created_at: nowIso2 });
   }
   db.distributor_ship_identities.push({ id: 'dsi_medone', owner_org_id: 'org_medone', brand_name: 'MedOne Distributors', return_address: { street1: '1487 Trae Lane', city: 'Lithia Springs', state: 'GA', postalCode: '30122', country: 'US' }, is_default: true, approved_by: 'usr_admin', created_at: nowIso2 });

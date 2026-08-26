@@ -13,14 +13,16 @@ export function Login() {
   const next = searchParams.get('next');
   const { isMobile } = useViewport();
   useSEO({ title: 'Sign in', description: 'Sign in to your Unite Medical B2B account.', canonical: '/login', noindex: true });
-  const [email, setEmail] = useState('sarah@atlanta-surgical.com');
-  const [password, setPassword] = useState('demo');
+  const [email, setEmail] = useState(() => import.meta.env.DEV ? 'sarah@atlanta-surgical.com' : '');
+  const [password, setPassword] = useState(() => import.meta.env.DEV ? 'demo' : '');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
 
   function destinationFor(session) {
     if (next && next.startsWith('/')) return next;
-    return session.role === 'admin' ? '/admin' : '/dashboard';
+    if (session.role === 'admin') return '/admin';
+    if (['warehouse_manager', 'warehouse_operator'].includes(session.role)) return '/admin/inventory/receive';
+    return session.role === 'distributor' ? '/distributor' : '/dashboard';
   }
 
   async function handleSubmit(e) {
@@ -88,20 +90,25 @@ export function Login() {
             <button type="submit" disabled={submitting} style={{ marginTop: 18, width: '100%', background: D.plum, color: D.paper, border: 'none', padding: 14, borderRadius: 4, fontSize: 14, fontWeight: 600, cursor: submitting ? 'wait' : 'pointer', opacity: submitting ? 0.7 : 1 }}>
               {submitting ? 'Signing in…' : 'Sign in'}
             </button>
-            <button
-              type="button"
-              onClick={handleDemoAdmin}
-              disabled={submitting}
-              style={{ marginTop: 10, width: '100%', background: D.ink, color: D.paper, border: 'none', padding: 13, borderRadius: 4, fontSize: 13, fontWeight: 600, cursor: submitting ? 'wait' : 'pointer', opacity: submitting ? 0.7 : 1, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
-            >
-              Open admin console <span aria-hidden="true">→</span>
-            </button>
-            <div style={{ marginTop: 14, padding: 12, background: D.paperAlt, border: `1px dashed ${D.line}`, borderRadius: 10, fontSize: 12, color: D.ink2, lineHeight: 1.6 }}>
-              <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.plum }}>DEMO ACCOUNTS</div>
-              <div>Customer · sarah@atlanta-surgical.com / <code>demo</code></div>
-              <div>Pharmacy · kareem@holloway.com / <code>demo</code></div>
-              <div>Admin · damon@unitemedical.net / <code>admin</code></div>
-            </div>
+            {import.meta.env.DEV && (
+              <button
+                type="button"
+                onClick={handleDemoAdmin}
+                disabled={submitting}
+                style={{ marginTop: 10, width: '100%', background: D.ink, color: D.paper, border: 'none', padding: 13, borderRadius: 4, fontSize: 13, fontWeight: 600, cursor: submitting ? 'wait' : 'pointer', opacity: submitting ? 0.7 : 1, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
+              >
+                Open admin console <span aria-hidden="true">→</span>
+              </button>
+            )}
+            {import.meta.env.DEV && (
+              <div style={{ marginTop: 14, padding: 12, background: D.paperAlt, border: `1px dashed ${D.line}`, borderRadius: 10, fontSize: 12, color: D.ink2, lineHeight: 1.6 }}>
+                <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.plum }}>DEMO ACCOUNTS</div>
+                <div>Customer · sarah@atlanta-surgical.com / <code>demo</code></div>
+                <div>Pharmacy · kareem@holloway.com / <code>demo</code></div>
+                <div>Distributor · ops@medone.example / <code>demo</code></div>
+                <div>Admin · damon@unitemedical.net / <code>admin</code></div>
+              </div>
+            )}
             <div style={{ marginTop: 20, fontSize: 13, color: D.ink2, textAlign: 'center' }}>
               New to Unite? <Link to="/register" style={{ color: D.plum, textDecoration: 'underline' }}>Request an account</Link>
             </div>

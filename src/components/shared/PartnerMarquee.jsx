@@ -63,8 +63,14 @@ function PartnerLogo({ slug, name, tall, variant, height }) {
       style={{
         height: h,
         width: 'auto',
+        maxWidth: 168,
+        objectFit: 'contain',
         display: 'block',
         flexShrink: 0,
+        // Paper variant normalizes every mark to one uniform bone tone so
+        // mixed-fill source SVGs (black, currentColor, brand colors) all
+        // read as one consistent quiet strip on dark grounds.
+        filter: variant === 'paper' ? 'brightness(0) invert(0.93)' : undefined,
         opacity: 0.78, // softens the wordmarks so they sit behind the design rather than competing
       }}
       onError={(e) => {

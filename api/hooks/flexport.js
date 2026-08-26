@@ -41,7 +41,7 @@ export default async function handler(req, res) {
     return sendJson(res, 400, { error: 'invalid_json' });
   }
 
-  const evt = pushEvent({ source: 'flexport', type: event.type, payload: event, verified: true });
-  logEvent('hooks.flexport', 'accepted', { type: event.type, seq: evt.seq });
-  sendJson(res, 200, { received: true, seq: evt.seq });
+  const evt = await pushEvent({ source: 'flexport', type: event.type, payload: event, verified: true });
+  logEvent('hooks.flexport', 'accepted', { type: event.type, event_id: evt.id, duplicate: evt.duplicate });
+  sendJson(res, 200, { received: true, event_id: evt.id, duplicate: evt.duplicate });
 }

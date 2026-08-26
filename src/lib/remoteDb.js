@@ -21,7 +21,7 @@
  */
 
 import { db } from './db.js';
-import { API_BASE, env, warn } from './external/_http.js';
+import { API_BASE, warn } from './external/_http.js';
 
 const SYNC_URL = `${API_BASE}/db/sync`;
 const PUSH_DEBOUNCE_MS = 750;
@@ -39,12 +39,15 @@ const stateRef = {
   lastError: null,
 };
 
-function syncToken() {
-  return env('DB_SYNC_TOKEN');
-}
-
 function headers() {
-  return { 'Content-Type': 'application/json', 'x-sync-token': syncToken() };
+  return { 'Content-Type': 'application/json' };
+}
+function authorizationLost(status) {
+  if (![401, 403].includes(status)) return false;
+  stateRef.lastError = `authorization lost: HTTP ${status}`;
+  stopRemoteDb({ purge: true });
+  if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent('um:authorization-lost', { detail: { status } }));
+  return true;
 }
 
 async function serverHasPostgres() {
@@ -62,8 +65,11 @@ async function pull({ full = false } = {}) {
   const url = !full && stateRef.latest
     ? `${SYNC_URL}?since=${encodeURIComponent(stateRef.latest)}`
     : SYNC_URL;
-  const res = await fetch(url, { headers: headers() });
-  if (!res.ok) throw new Error(`pull failed: HTTP ${res.status}`);
+  const res = await fetch(url, { headers: headers(), credentials: 'include' });
+  if (!res.ok) {
+    authorizationLost(res.status);
+    throw new Error(`pull failed: HTTP ${res.status}`);
+  }
   const json = await res.json();
   if (json.latest) stateRef.latest = json.latest;
   if (json.row_count > 0) db.applyRemoteSnapshot(json.tables);
@@ -78,9 +84,13 @@ async function flushQueue() {
     const res = await fetch(SYNC_URL, {
       method: 'POST',
       headers: headers(),
+      credentials: 'include',
       body: JSON.stringify({ mutations: batch }),
     });
-    if (!res.ok) throw new Error(`push failed: HTTP ${res.status}`);
+    if (!res.ok) {
+      authorizationLost(res.status);
+      throw new Error(`push failed: HTTP ${res.status}`);
+    }
     for (const k of keys) stateRef.queue.delete(k);
     stateRef.lastError = null;
     if (stateRef.queue.size > 0) schedulePush(); // drain remainder
@@ -105,24 +115,19 @@ function onLocalMutation({ table, op, id, row }) {
  * Boot the bridge. Call once from app startup; safe to call when the
  * backend is absent (it just stays dormant). Returns a status object.
  */
-export async function startRemoteDb() {
+export async function startRemoteDb({ session = null } = {}) {
   if (stateRef.enabled) return remoteDbStatus();
   if (typeof window === 'undefined') return remoteDbStatus();
-  if (!syncToken()) return remoteDbStatus(); // VITE_DB_SYNC_TOKEN not set — local-only mode
+  if (session?.role !== 'admin') return remoteDbStatus();
 
   const ready = await serverHasPostgres();
   if (!ready) return remoteDbStatus();
 
   stateRef.enabled = true;
+  db.clear();
   try {
-    const pulled = await pull({ full: true });
+    await pull({ full: true });
     stateRef.hydrated = true;
-    // First contact with an empty server store: push the entire local
-    // DB up so Postgres becomes the durable copy of the demo state.
-    if (pulled === 0) {
-      for (const m of db.allRows()) stateRef.queue.set(`${m.table}:${m.id}`, m);
-      schedulePush();
-    }
   } catch (err) {
     stateRef.lastError = err.message;
     warn('remoteDb', `hydration failed: ${err.message}`);
@@ -136,11 +141,17 @@ export async function startRemoteDb() {
   return remoteDbStatus();
 }
 
-export function stopRemoteDb() {
+export function stopRemoteDb({ purge = false } = {}) {
   stateRef.unsubscribe?.();
   clearTimeout(stateRef.pushTimer);
   clearInterval(stateRef.pullTimer);
   stateRef.enabled = false;
+  stateRef.hydrated = false;
+  if (purge) {
+    stateRef.queue.clear();
+    stateRef.latest = null;
+    db.clearPublic();
+  }
 }
 
 export function remoteDbStatus() {

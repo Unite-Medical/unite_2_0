@@ -1,5 +1,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 // https://vite.dev/config/
 //
@@ -11,8 +13,19 @@ import react from '@vitejs/plugin-react';
 // point it at a local `vercel dev` on :3000.
 const DEV_API_TARGET = process.env.VITE_DEV_API_TARGET || 'https://unite-2-0.vercel.app';
 
-export default defineConfig({
+const ROOT = path.dirname(fileURLToPath(import.meta.url));
+
+export default defineConfig(({ command }) => ({
   plugins: [react()],
+  resolve: {
+    alias: command === 'build'
+      ? [
+        { find: './seed.js', replacement: path.resolve(ROOT, 'src/lib/publicSeed.js') },
+        { find: /(?:\.\.\/|\.\/)data\/realCatalog\.js$/, replacement: path.resolve(ROOT, 'src/data/publicCatalog.js') },
+        { find: /\.\/realCatalog\.js$/, replacement: path.resolve(ROOT, 'src/data/publicCatalog.js') },
+      ]
+      : [],
+  },
   server: {
     proxy: {
       '/api': {
@@ -37,4 +50,4 @@ export default defineConfig({
       },
     },
   },
-});
+}));
