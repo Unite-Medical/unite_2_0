@@ -6,7 +6,7 @@ import { REAL_PRODUCTS, REAL_CATEGORIES, REAL_COLLECTIONS } from '../data/realCa
 import damonCatalogDecisions from '../data/damonCatalogDecisions.generated.json';
 import { applyDamonDecisionsToCatalog } from './catalogLaunchPolicy.js';
 
-const LAUNCH_PRODUCTS = applyDamonDecisionsToCatalog(REAL_PRODUCTS, damonCatalogDecisions.products);
+const LAUNCH_PRODUCTS = applyDamonDecisionsToCatalog(REAL_PRODUCTS, damonCatalogDecisions.products, { allowUnmanaged: true });
 
 const isoDaysAgo = (d) => new Date(Date.now() - d * 86400000).toISOString();
 

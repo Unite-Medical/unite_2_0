@@ -32,10 +32,11 @@ export function summarizeDamonCatalogDecisions(rows, expected = 175) {
   return { total: rows.length, counts };
 }
 
-export function applyDamonDecisionsToCatalog(products, rules) {
+export function applyDamonDecisionsToCatalog(products, rules, { allowUnmanaged = false } = {}) {
   const byHandle = new Map((rules || []).map((rule) => [rule.handle, rule]));
   return (products || []).map((product) => {
     const rule = byHandle.get(product.handle);
+    if (!rule && allowUnmanaged) return product;
     if (!rule) throw new Error(`missing Damon decision for ${product.handle}`);
     return applyDamonCatalogDecision(product, rule);
   });

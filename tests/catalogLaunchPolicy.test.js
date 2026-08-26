@@ -25,3 +25,8 @@ test('Damon catalog projection requires every product to have a decision', () =>
   const rules = [{ handle: 'one', decision: 'Launch', visibility: 'Public Storefront' }];
   assert.throws(() => applyDamonDecisionsToCatalog(products, rules), /missing Damon decision.*two/);
 });
+
+test('Damon catalog projection can preserve Unite-native products outside Shopify', () => {
+  const products = [{ handle: 'regenicool-pro', source: 'unite_native', available: true }];
+  assert.deepEqual(applyDamonDecisionsToCatalog(products, [], { allowUnmanaged: true }), products);
+});
