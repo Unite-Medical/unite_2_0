@@ -1,15 +1,19 @@
 #!/usr/bin/env node
-import { writeFile } from 'node:fs/promises';
+import { readFile,writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { REAL_PRODUCTS, REAL_CATEGORIES, REAL_COLLECTIONS } from '../src/data/realCatalog.js';
+import { EXTRA_PRODUCTS } from '../src/data/extraProducts.js';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUTPUT = path.join(ROOT, 'src', 'data', 'publicCatalog.generated.js');
+const stagingSnapshot=process.argv.includes('--staging-snapshot')?JSON.parse(await readFile(path.join(ROOT,'migration-data/snapshot-prepared.json'),'utf8')):null;
+const sourceProducts=stagingSnapshot?[...stagingSnapshot.products.filter(p=>p.published||(p.quote_only&&p.launch_decision==='Launch'&&p.status==='active')),...EXTRA_PRODUCTS]:REAL_PRODUCTS;
+const publicHandles=new Set(sourceProducts.map(p=>p.handle));
 
 function cleanVariant(variant = {}) {
   return {
-    variant_id: variant.variant_id || null,
+    variant_id: variant.variant_id || variant.id || null,
     sku: variant.sku || null,
     title: variant.title || 'Default',
     available: Boolean(variant.available),
@@ -39,7 +43,7 @@ function cleanProduct(product) {
     product_type: product.product_type || null,
     m6_category: product.m6_category || null,
     quote_only: Boolean(product.quote_only),
-    fda_registered: product.fda_registered ?? true,
+    fda_registered: product.fda_registered ?? false,
     pdac_approved: Boolean(product.pdac_approved),
     taa_compliant: Boolean(product.taa_compliant),
     berry_compliant: Boolean(product.berry_compliant),
@@ -50,8 +54,8 @@ function cleanProduct(product) {
 }
 
 const payload = {
-  products: REAL_PRODUCTS.map(cleanProduct),
-  categories: REAL_CATEGORIES.map((category) => ({
+  products: sourceProducts.map(cleanProduct),
+  categories: (stagingSnapshot?[...new Set(sourceProducts.map(p=>p.category))].map(name=>({slug:name.toLowerCase().replace(/[^a-z0-9]+/g,'-'),name,count:sourceProducts.filter(p=>p.category===name).length})):REAL_CATEGORIES).map((category) => ({
     slug: category.slug,
     name: category.name,
     parent: null,
@@ -60,7 +64,7 @@ const payload = {
   collections: REAL_COLLECTIONS.map((collection) => ({
     slug: collection.slug,
     name: collection.name,
-    handles: collection.handles || [],
+    handles: (collection.handles || []).filter(handle=>publicHandles.has(handle)),
     category: collection.category || null,
   })),
 };

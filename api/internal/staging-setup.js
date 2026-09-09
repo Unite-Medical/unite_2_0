@@ -35,24 +35,32 @@ export default async function handler(req, res) {
       const database=await sql`SELECT current_database() AS name`;
       const sourceCounts=await sql`SELECT data->>'entity' AS entity,count(*)::int AS count FROM um_rows WHERE tbl='shopify_history_rows' AND deleted=false AND data->>'staging_import_run' IS NOT NULL GROUP BY data->>'entity'`;
       const importedCounts=await sql`SELECT tbl,count(*)::int AS count FROM um_rows WHERE deleted=false AND data->>'staging_import_run' IS NOT NULL GROUP BY tbl`;
-      return sendJson(res,200,{environment:'staging',origin:process.env.PUBLIC_APP_ORIGIN,database:database[0].name,counts,imported_counts:importedCounts,source_counts:sourceCounts,imports:imports.map(r=>r.data)});
+      const profiles=await sql`SELECT id,lower(trim(data->>'email')) AS email FROM um_rows WHERE tbl='profiles' AND deleted=false`;
+      const profile_email_registry=profiles.map(p=>({id:p.id,email_sha256:crypto.createHash('sha256').update(p.email||'').digest('hex')}));
+      return sendJson(res,200,{environment:'staging',origin:process.env.PUBLIC_APP_ORIGIN,database:database[0].name,counts,imported_counts:importedCounts,source_counts:sourceCounts,profile_email_registry,imports:imports.map(r=>r.data)});
     }
     if (req.method !== 'POST') return sendJson(res,405,{error:'method_not_allowed'});
     const body=JSON.parse((await readRawBody(req)).toString('utf8'));
+    if(body.action==='verify_source'){
+      const rows=validateStagingRows(body.rows,body.run_id);
+      if(rows.some(r=>r.table!=='shopify_history_rows'))return sendJson(res,400,{error:'source_rows_only'});
+      const encoded=JSON.stringify(rows);
+      const result=await sql`SELECT count(*)::int AS matched FROM um_rows u JOIN jsonb_to_recordset(${encoded}::jsonb) AS x(id text,data jsonb) ON u.id=x.id
+        WHERE u.tbl='shopify_history_rows' AND u.deleted=false AND u.data->'payload'=x.data->'payload' AND u.data->>'payload_sha256'=x.data->>'payload_sha256' AND u.data->>'staging_import_run'=${body.run_id}`;
+      return sendJson(res,200,{matched:result[0].matched,requested:rows.length});
+    }
     if(body.action==='close'){
       await sql.transaction(tx=>[
         tx`INSERT INTO um_rows(tbl,id,data) VALUES('staging_setup_locks',${lockId},'{"closed":true}'::jsonb) ON CONFLICT DO NOTHING`,
-        tx`UPDATE um_rows SET data=data||jsonb_build_object('status','disabled','session_revision',COALESCE((data->>'session_revision')::int,0)+1),updated_at=now() WHERE tbl='profiles' AND id='usr_staging_verification'`,
       ]);
-      return sendJson(res,200,{closed:true,verification_account_disabled:true});
+      return sendJson(res,200,{closed:true});
     }
-    if (['damon_activation','verification_access'].includes(body.action)) {
-      const verifying=body.action==='verification_access';
-      const email=verifying?'staging-verification@unitemedical.net':'damon@unitemedical.net';
+    if (body.action==='damon_activation') {
+      const email='damon@unitemedical.net';
       const old=await sql`SELECT data FROM um_rows WHERE tbl='profiles' AND deleted=false AND lower(data->>'email')=${email}`;
       if(old.length>1) return sendJson(res,409,{error:'duplicate_damon_profiles'});
       const prior=old[0]?.data;
-      const profile={...prior,id:prior?.id||(verifying?'usr_staging_verification':'usr_damon_staging'),org_id:prior?.org_id||'org_unite_staging_team',email,name:verifying?'Staging verification':'Damon',role:'admin',roles:['admin'],status:'pending_activation',activation_required:true,session_revision:Number(prior?.session_revision||0)+1};
+      const profile={...prior,id:prior?.id||'usr_damon_staging',org_id:prior?.org_id||'org_unite_staging_team',email,name:'Damon',role:'admin',roles:['admin'],status:'pending_activation',activation_required:true,session_revision:Number(prior?.session_revision||0)+1};
       delete profile.password;delete profile.password_hash;delete profile.password_salt;
       const issued=planActivationIssue(profile);
       const membership={id:`staging_member_${profile.id}`,user_id:profile.id,org_id:profile.org_id,role:'owner',status:'pending_activation'};
@@ -71,7 +79,7 @@ export default async function handler(req, res) {
       tx`INSERT INTO um_rows(tbl,id,data) SELECT 'staging_before_images',${body.run_id}||':'||u.tbl||':'||u.id,jsonb_build_object('table',u.tbl,'id',u.id,'before',u.data,'was_deleted',u.deleted) FROM um_rows u JOIN jsonb_to_recordset(${encoded}::jsonb) AS x(tbl text,id text,data jsonb) ON u.tbl=x.tbl AND u.id=x.id ON CONFLICT DO NOTHING`,
       tx`INSERT INTO um_rows(tbl,id,data) SELECT x.tbl,x.id,x.data FROM jsonb_to_recordset(${encoded}::jsonb) AS x(tbl text,id text,data jsonb)
       ON CONFLICT(tbl,id) DO UPDATE SET data=CASE
-        WHEN um_rows.tbl IN ('profiles','organizations','organization_users') THEN EXCLUDED.data || um_rows.data || jsonb_build_object('staging_import_run',${body.run_id})
+        WHEN um_rows.tbl IN ('profiles','organizations','organization_users') THEN EXCLUDED.data || um_rows.data || jsonb_build_object('staging_import_run',${body.run_id}::text)
         ELSE EXCLUDED.data END,deleted=false,updated_at=now() RETURNING tbl,id`,
     ]);
     return sendJson(res,200,{ok:true,applied:results[1].length});

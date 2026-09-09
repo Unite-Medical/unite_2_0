@@ -76,9 +76,9 @@ async function reserveLoginAttempt(sql, descriptor, email) {
     VALUES ('auth_login_limits',${id},${JSON.stringify(initial)}::jsonb,false,now())
     ON CONFLICT (tbl,id) DO UPDATE SET
       data=jsonb_build_object(
-        'id',${id},
-        'scope',${scope},
-        'email_hash',${initial.email_hash},
+        'id',${id}::text,
+        'scope',${scope}::text,
+        'email_hash',${initial.email_hash}::text,
         'attempts',CASE WHEN (um_rows.deleted OR COALESCE((um_rows.data->>'window_started_at')::timestamptz,to_timestamp(0))<${cutoff}::timestamptz)
           THEN 1 ELSE COALESCE((um_rows.data->>'attempts')::int,0)+1 END,
         'window_started_at',CASE WHEN (um_rows.deleted OR COALESCE((um_rows.data->>'window_started_at')::timestamptz,to_timestamp(0))<${cutoff}::timestamptz)
@@ -86,7 +86,7 @@ async function reserveLoginAttempt(sql, descriptor, email) {
         'blocked_until',CASE WHEN (CASE WHEN (um_rows.deleted OR COALESCE((um_rows.data->>'window_started_at')::timestamptz,to_timestamp(0))<${cutoff}::timestamptz)
           THEN 1 ELSE COALESCE((um_rows.data->>'attempts')::int,0)+1 END)>=${maxAttempts}
           THEN ${blockedUntil} ELSE NULL END,
-        'updated_at',${initial.updated_at}
+        'updated_at',${initial.updated_at}::text
       ),deleted=false,updated_at=now()
     RETURNING data`;
   return rows[0].data;

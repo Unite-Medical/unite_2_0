@@ -2,15 +2,850 @@
 export const PUBLIC_CATALOG = {
   "products": [
     {
+      "sku": "NGPF7000",
+      "handle": "synguard-blue-nitrile-exam-gloves-3-5-mil-100-box-1000-case-x-small",
+      "name": "SynGuard Blue Nitrile Exam Gloves, 3.5 mil, 100/box, 1000/case (X-Small)",
+      "category": "Consumable",
+      "pack_size": "1 ea",
+      "hcpcs": "—",
+      "moq": 1,
+      "img": "SynGuard Blue Nitrile Exam Gloves, 3.5 mil, 100/box, 1000/case (X-Small)",
+      "summary": "SynGuard Blue Nitrile Exam Gloves, 3.5 mil, 100/box, 1000/case (X-Small)",
+      "description": "SynGuard Blue Nitrile Exam Gloves, 3.5 mil, 100/box, 1000/case (X-Small)",
+      "images": [
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Screenshot2026-08-21at3.35.47PM.png?v=1787340998"
+      ],
+      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Screenshot2026-08-21at3.35.47PM.png?v=1787340998",
+      "variants": [
+        {
+          "variant_id": "variant_shopify_d3a8a7fd02f95d192334",
+          "sku": "NGPF7000",
+          "title": "Default Title",
+          "available": true,
+          "weight_grams": 0,
+          "options": {
+            "Title": "Default Title"
+          },
+          "image": ""
+        }
+      ],
+      "tags": [],
+      "collections": [],
+      "product_type": null,
+      "m6_category": null,
+      "quote_only": false,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
+      "berry_compliant": false,
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
+    },
+    {
+      "sku": "AM150",
+      "handle": "medava-level-1-face-mask",
+      "name": "Medava Level 1 Face Mask",
+      "category": "PPE",
+      "pack_size": "1 ea",
+      "hcpcs": "—",
+      "moq": 1,
+      "img": "Medava 3 Ply Disposable Face Mask, Adult Universal, 50 Count or c ase of 2,000.",
+      "summary": "Medava 3 Ply Disposable Face Mask, Adult Universal, 50 Count or c ase of 2,000.",
+      "description": "Medava 3 Ply Disposable Face Mask, Adult Universal, 50 Count or c ase of 2,000.",
+      "images": [
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/3D_bob_front_level_3_Front.png?v=1736344768",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/3ply-mask-single-pc.jpg?v=1736344768"
+      ],
+      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/3D_bob_front_level_3_Front.png?v=1736344768",
+      "variants": [
+        {
+          "variant_id": "variant_shopify_5e40cef06164b1152777",
+          "sku": "AM150",
+          "title": "Box of 50",
+          "available": true,
+          "weight_grams": 226.796185,
+          "options": {
+            "Pack Size": "Box of 50"
+          },
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/3D_bob_front_level_3_Front.png?v=1736344768"
+        },
+        {
+          "variant_id": "variant_shopify_d0e10894d67f625b2e50",
+          "sku": "AM3200",
+          "title": "Case of 2,000",
+          "available": true,
+          "weight_grams": 9071.853069904624,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/3D_bob_front_level_3_Front.png?v=1736344768"
+        }
+      ],
+      "tags": [
+        "Masks"
+      ],
+      "collections": [],
+      "product_type": "Medical Face Masks",
+      "m6_category": null,
+      "quote_only": false,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
+      "berry_compliant": false,
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
+    },
+    {
+      "sku": "UM-GS15-UNIT",
+      "handle": "guardian-drug-screening-cup",
+      "name": "GuardianScreen™ 15 Forensic and Workplace Urine Drug Screening Cup",
+      "category": "Diagnostics",
+      "pack_size": "1 ea",
+      "hcpcs": "—",
+      "moq": 1,
+      "img": "15-panel urine drug-screening cup for workplace, correctional, and legal-system screening workflows. For Forensic Use Only. Not available for healthcare-clinic patient testing, OTC sale, or marketplace resale.",
+      "summary": "15-panel urine drug-screening cup for workplace, correctional, and legal-system screening workflows. For Forensic Use Only. Not available for healthcare-clinic patient testing, OTC sale, or marketplace resale.",
+      "description": "15-panel urine drug-screening cup for workplace, correctional, and legal-system screening workflows. For Forensic Use Only. Not available for healthcare-clinic patient testing, OTC sale, or marketplace resale.",
+      "images": [],
+      "hero_image": null,
+      "variants": [
+        {
+          "variant_id": "variant_shopify_d5e618a7bac9ec01fa44",
+          "sku": "UM-GS15-UNIT",
+          "title": "Default Title",
+          "available": true,
+          "weight_grams": 4535.9237,
+          "options": {
+            "Title": "Default Title"
+          },
+          "image": ""
+        }
+      ],
+      "tags": [
+        "_hidden"
+      ],
+      "collections": [],
+      "product_type": "Diagnostic Tests",
+      "m6_category": null,
+      "quote_only": true,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
+      "berry_compliant": false,
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
+    },
+    {
+      "sku": "81202",
+      "handle": "3m-bair-hugger-plus-warming-gown-x-large-81202",
+      "name": "3M Bair Hugger Plus Warming Gown 81202, X-Large (Case of 20)",
+      "category": "Surgical",
+      "pack_size": "1 ea",
+      "hcpcs": "—",
+      "moq": 1,
+      "img": "Bair Hugger Plus warming gown, X-Large, with second clinical hose port; 20/case",
+      "summary": "Bair Hugger Plus warming gown, X-Large, with second clinical hose port; 20/case",
+      "description": "Bair Hugger Plus warming gown, X-Large, with second clinical hose port; 20/case",
+      "images": [],
+      "hero_image": null,
+      "variants": [
+        {
+          "variant_id": "variant_shopify_b69ae83895bc934c4d93",
+          "sku": "'81202",
+          "title": "Default Title",
+          "available": true,
+          "weight_grams": 4535.9237,
+          "options": {
+            "Title": "Default Title"
+          },
+          "image": ""
+        }
+      ],
+      "tags": [
+        "_hidden"
+      ],
+      "collections": [],
+      "product_type": "Surgical Supplies",
+      "m6_category": null,
+      "quote_only": false,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
+      "berry_compliant": false,
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
+    },
+    {
+      "sku": "81201",
+      "handle": "3m-bair-hugger-warming-gown-x-large-81201",
+      "name": "3M Bair Hugger Warming Gown 81201, X-Large (Case of 20)",
+      "category": "Surgical",
+      "pack_size": "1 ea",
+      "hcpcs": "—",
+      "moq": 1,
+      "img": "Bair Hugger warming gown, X-Large; OR gown; 20/case",
+      "summary": "Bair Hugger warming gown, X-Large; OR gown; 20/case",
+      "description": "Bair Hugger warming gown, X-Large; OR gown; 20/case",
+      "images": [],
+      "hero_image": null,
+      "variants": [
+        {
+          "variant_id": "variant_shopify_8738e7ca25e5fe6d3e7d",
+          "sku": "'81201",
+          "title": "Default Title",
+          "available": true,
+          "weight_grams": 4535.9237,
+          "options": {
+            "Title": "Default Title"
+          },
+          "image": ""
+        }
+      ],
+      "tags": [
+        "_hidden"
+      ],
+      "collections": [],
+      "product_type": "Surgical Supplies",
+      "m6_category": null,
+      "quote_only": false,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
+      "berry_compliant": false,
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
+    },
+    {
+      "sku": "81003",
+      "handle": "3m-bair-hugger-flex-warming-gown-81003",
+      "name": "3M Bair Hugger Flex Warming Gown 81003, Standard (Case of 30)",
+      "category": "Surgical",
+      "pack_size": "1 ea",
+      "hcpcs": "—",
+      "moq": 1,
+      "img": "Bair Hugger Flex warming gown, Standard; supports upper, torso or lower-body warming; 30/case",
+      "summary": "Bair Hugger Flex warming gown, Standard; supports upper, torso or lower-body warming; 30/case",
+      "description": "Bair Hugger Flex warming gown, Standard; supports upper, torso or lower-body warming; 30/case",
+      "images": [],
+      "hero_image": null,
+      "variants": [
+        {
+          "variant_id": "variant_shopify_61403d9105be031579a2",
+          "sku": "'81003",
+          "title": "Default Title",
+          "available": true,
+          "weight_grams": 4535.9237,
+          "options": {
+            "Title": "Default Title"
+          },
+          "image": ""
+        }
+      ],
+      "tags": [
+        "_hidden"
+      ],
+      "collections": [],
+      "product_type": "Surgical Supplies",
+      "m6_category": null,
+      "quote_only": false,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
+      "berry_compliant": false,
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
+    },
+    {
+      "sku": "81001",
+      "handle": "3m-bair-hugger-warming-gown-81001",
+      "name": "3M Bair Hugger Warming Gown 81001, Standard (Case of 30)",
+      "category": "Surgical",
+      "pack_size": "1 ea",
+      "hcpcs": "—",
+      "moq": 1,
+      "img": "Bair Hugger warming gown, Standard; OR gown; 30/case",
+      "summary": "Bair Hugger warming gown, Standard; OR gown; 30/case",
+      "description": "Bair Hugger warming gown, Standard; OR gown; 30/case",
+      "images": [],
+      "hero_image": null,
+      "variants": [
+        {
+          "variant_id": "variant_shopify_3176da27c19295534c31",
+          "sku": "'81001",
+          "title": "Default Title",
+          "available": true,
+          "weight_grams": 4535.9237,
+          "options": {
+            "Title": "Default Title"
+          },
+          "image": ""
+        }
+      ],
+      "tags": [
+        "_hidden"
+      ],
+      "collections": [],
+      "product_type": "Surgical Supplies",
+      "m6_category": null,
+      "quote_only": false,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
+      "berry_compliant": false,
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
+    },
+    {
+      "sku": "24250",
+      "handle": "3m-ranger-blood-and-fluid-warming-standard-flow-set-24200-case-of-10-copy-2",
+      "name": "3M Ranger Blood/Fluid Warming Standard Flow Set 24250 (Case of 10)",
+      "category": "Surgical",
+      "pack_size": "1 ea",
+      "hcpcs": "—",
+      "moq": 1,
+      "img": "Ranger blood/fluid warming standard-flow set; 10/case",
+      "summary": "Ranger blood/fluid warming standard-flow set; 10/case",
+      "description": "Ranger blood/fluid warming standard-flow set; 10/case",
+      "images": [
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/image.png?v=1786661688"
+      ],
+      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/image.png?v=1786661688",
+      "variants": [
+        {
+          "variant_id": "variant_shopify_fe801227108032b9d9df",
+          "sku": "'24250",
+          "title": "Default Title",
+          "available": true,
+          "weight_grams": 4535.9237,
+          "options": {
+            "Title": "Default Title"
+          },
+          "image": ""
+        }
+      ],
+      "tags": [
+        "_hidden"
+      ],
+      "collections": [],
+      "product_type": "Surgical Supplies",
+      "m6_category": null,
+      "quote_only": false,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
+      "berry_compliant": false,
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
+    },
+    {
+      "sku": "24200",
+      "handle": "3m-ranger-blood-fluid-warming-standard-flow-set-24200",
+      "name": "3M Ranger Blood/Fluid Warming Standard Flow Set 24200 (Case of 10)",
+      "category": "Surgical",
+      "pack_size": "1 ea",
+      "hcpcs": "—",
+      "moq": 1,
+      "img": "Ranger blood/fluid warming standard-flow set with injection port; up to 150 mL/min; 10/case",
+      "summary": "Ranger blood/fluid warming standard-flow set with injection port; up to 150 mL/min; 10/case",
+      "description": "Ranger blood/fluid warming standard-flow set with injection port; up to 150 mL/min; 10/case",
+      "images": [
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/3MRangerBloodandFluidWarmingStandardFlowSet24200II.jpg?v=1786313381"
+      ],
+      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/3MRangerBloodandFluidWarmingStandardFlowSet24200II.jpg?v=1786313381",
+      "variants": [
+        {
+          "variant_id": "variant_shopify_a8af644d6462b7ac28af",
+          "sku": "'24200",
+          "title": "Default Title",
+          "available": true,
+          "weight_grams": 4535.9237,
+          "options": {
+            "Title": "Default Title"
+          },
+          "image": ""
+        }
+      ],
+      "tags": [
+        "_hidden"
+      ],
+      "collections": [],
+      "product_type": "Surgical Supplies",
+      "m6_category": null,
+      "quote_only": false,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
+      "berry_compliant": false,
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
+    },
+    {
+      "sku": "55001",
+      "handle": "3m-bair-hugger-large-pediatric-underbody-warming-blanket-55001",
+      "name": "3M Bair Hugger Large Pediatric Underbody Warming Blanket 55501 (Case of 10)",
+      "category": "Surgical",
+      "pack_size": "1 ea",
+      "hcpcs": "—",
+      "moq": 1,
+      "img": "Large pediatric underbody forced-air warming blanket; 10/case",
+      "summary": "Large pediatric underbody forced-air warming blanket; 10/case",
+      "description": "Large pediatric underbody forced-air warming blanket; 10/case",
+      "images": [
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/3MBairHuggerPediatricUnderbodyWarmingBlanket55502.jpg?v=1786312101"
+      ],
+      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/3MBairHuggerPediatricUnderbodyWarmingBlanket55502.jpg?v=1786312101",
+      "variants": [
+        {
+          "variant_id": "variant_shopify_6cceb1d04f2b08393eb4",
+          "sku": "'55001",
+          "title": "Default Title",
+          "available": true,
+          "weight_grams": 4535.9237,
+          "options": {
+            "Title": "Default Title"
+          },
+          "image": ""
+        }
+      ],
+      "tags": [
+        "_hidden"
+      ],
+      "collections": [],
+      "product_type": "Surgical Supplies",
+      "m6_category": null,
+      "quote_only": false,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
+      "berry_compliant": false,
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
+    },
+    {
+      "sku": "55502",
+      "handle": "3m-bair-hugger-pediatric-underbody-warming-blanket-55502",
+      "name": "3M Bair Hugger Pediatric Underbody Warming Blanket 55502 (Case of 10)",
+      "category": "Surgical",
+      "pack_size": "1 ea",
+      "hcpcs": "—",
+      "moq": 1,
+      "img": "Pediatric underbody forced-air warming blanket; 10/case",
+      "summary": "Pediatric underbody forced-air warming blanket; 10/case",
+      "description": "Pediatric underbody forced-air warming blanket; 10/case",
+      "images": [
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/3MBairHuggerPediatricUnderbodyWarmingBlanket55502.jpg?v=1786312101"
+      ],
+      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/3MBairHuggerPediatricUnderbodyWarmingBlanket55502.jpg?v=1786312101",
+      "variants": [
+        {
+          "variant_id": "variant_shopify_d421ea6f70ae756c5349",
+          "sku": "'55502",
+          "title": "Default Title",
+          "available": true,
+          "weight_grams": 4535.9237,
+          "options": {
+            "Title": "Default Title"
+          },
+          "image": ""
+        }
+      ],
+      "tags": [
+        "_hidden"
+      ],
+      "collections": [],
+      "product_type": "Surgical Supplies",
+      "m6_category": null,
+      "quote_only": false,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
+      "berry_compliant": false,
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
+    },
+    {
+      "sku": "54501",
+      "handle": "3m-bair-hugger-adult-underbody-warming-blanket-54501",
+      "name": "3M Bair Hugger Adult Underbody Warming Blanket 54501 / 54500 (Case of 10)",
+      "category": "Surgical",
+      "pack_size": "1 ea",
+      "hcpcs": "—",
+      "moq": 1,
+      "img": "Full-access underbody forced-air warming blanket; adult; 5/case",
+      "summary": "Full-access underbody forced-air warming blanket; adult; 5/case",
+      "description": "Full-access underbody forced-air warming blanket; adult; 5/case",
+      "images": [
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/3MBairHuggerAdultUnderbodyWarmingBlanket54501.jpg?v=1786311822"
+      ],
+      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/3MBairHuggerAdultUnderbodyWarmingBlanket54501.jpg?v=1786311822",
+      "variants": [
+        {
+          "variant_id": "variant_shopify_a618ef8bfe1d1a6d08a8",
+          "sku": "'54501",
+          "title": "Default Title",
+          "available": true,
+          "weight_grams": 4535.9237,
+          "options": {
+            "Title": "Default Title"
+          },
+          "image": ""
+        }
+      ],
+      "tags": [
+        "_hidden"
+      ],
+      "collections": [],
+      "product_type": "Surgical Supplies",
+      "m6_category": null,
+      "quote_only": false,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
+      "berry_compliant": false,
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
+    },
+    {
+      "sku": "62200",
+      "handle": "3m-bair-hugger-multi-position-upper-body-warming-blanket-62200",
+      "name": "3M Bair Hugger Multi-Position Upper Body Warming Blanket 62200 (Case of 10)",
+      "category": "Surgical",
+      "pack_size": "1 ea",
+      "hcpcs": "—",
+      "moq": 1,
+      "img": "3M Bair Hugger Multi-Position Upper Body Warming Blanket",
+      "summary": "3M Bair Hugger Multi-Position Upper Body Warming Blanket",
+      "description": "3M Bair Hugger Multi-Position Upper Body Warming Blanket",
+      "images": [
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/3MBairHuggerMulti-PositionUpperBodyWarmingBlanket62200.jpg?v=1786311420"
+      ],
+      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/3MBairHuggerMulti-PositionUpperBodyWarmingBlanket62200.jpg?v=1786311420",
+      "variants": [
+        {
+          "variant_id": "variant_shopify_8daebf741b979856016b",
+          "sku": "'62200",
+          "title": "Default Title",
+          "available": true,
+          "weight_grams": 4535.9237,
+          "options": {
+            "Title": "Default Title"
+          },
+          "image": ""
+        }
+      ],
+      "tags": [
+        "_hidden"
+      ],
+      "collections": [],
+      "product_type": "Surgical Supplies",
+      "m6_category": null,
+      "quote_only": false,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
+      "berry_compliant": false,
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
+    },
+    {
+      "sku": "63501",
+      "handle": "3m-bair-hugger-full-access-underbody-warming-blanket-63501",
+      "name": "3M Bair Hugger Full Access Underbody Warming Blanket 63501 (Case of 5)",
+      "category": "Surgical",
+      "pack_size": "1 ea",
+      "hcpcs": "—",
+      "moq": 1,
+      "img": "Full-access underbody forced-air warming blanket; 5/case",
+      "summary": "Full-access underbody forced-air warming blanket; 5/case",
+      "description": "Full-access underbody forced-air warming blanket; 5/case",
+      "images": [
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/3MBairHuggerFullAccessUnderbodyWarmingBlanket63501.jpg?v=1786311042"
+      ],
+      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/3MBairHuggerFullAccessUnderbodyWarmingBlanket63501.jpg?v=1786311042",
+      "variants": [
+        {
+          "variant_id": "variant_shopify_95c4a6f3d6b203f92c2c",
+          "sku": "'63501",
+          "title": "Default Title",
+          "available": true,
+          "weight_grams": 2267.96185,
+          "options": {
+            "Title": "Default Title"
+          },
+          "image": ""
+        }
+      ],
+      "tags": [
+        "_hidden"
+      ],
+      "collections": [],
+      "product_type": "Surgical Supplies",
+      "m6_category": null,
+      "quote_only": false,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
+      "berry_compliant": false,
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
+    },
+    {
+      "sku": "52500",
+      "handle": "3m-bair-hugger-lower-body-warming-blanket-52500",
+      "name": "3M Bair Hugger Lower Body Warming Blanket 52500 (Case of 10)",
+      "category": "Surgical",
+      "pack_size": "1 ea",
+      "hcpcs": "—",
+      "moq": 1,
+      "img": "Lower-body forced-air warming blanket; 10/case",
+      "summary": "Lower-body forced-air warming blanket; 10/case",
+      "description": "Lower-body forced-air warming blanket; 10/case",
+      "images": [
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/3MBairHuggerLowerBodyWarmingBlanket52500.jpg?v=1786310676"
+      ],
+      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/3MBairHuggerLowerBodyWarmingBlanket52500.jpg?v=1786310676",
+      "variants": [
+        {
+          "variant_id": "variant_shopify_b27a74a7c7962b4c696b",
+          "sku": "'52500",
+          "title": "Default Title",
+          "available": true,
+          "weight_grams": 4535.9237,
+          "options": {
+            "Title": "Default Title"
+          },
+          "image": ""
+        }
+      ],
+      "tags": [
+        "_hidden"
+      ],
+      "collections": [],
+      "product_type": "Surgical Supplies",
+      "m6_category": null,
+      "quote_only": false,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
+      "berry_compliant": false,
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
+    },
+    {
+      "sku": "60-22",
+      "handle": "ray-cot-neurosurgical-patties",
+      "name": "Ray-Cot® Neurosurgical Patties – 1½\" x 3\" (200/Box)",
+      "category": "Surgical",
+      "pack_size": "1 ea",
+      "hcpcs": "—",
+      "moq": 1,
+      "img": "Neurosurgical procedures leave no margin for a sponge that tears, sheds, or drifts out of position. The Ray-Cot® pattie from American Surgical is built around a rayon blend chosen for one reason: it holds together under ",
+      "summary": "Neurosurgical procedures leave no margin for a sponge that tears, sheds, or drifts out of position. The Ray-Cot® pattie from American Surgical is built around a rayon blend chosen for one reason: it holds together under ",
+      "description": "Neurosurgical procedures leave no margin for a sponge that tears, sheds, or drifts out of position. The Ray-Cot® pattie from American Surgical is built around a rayon blend chosen for one reason: it holds together under load while staying soft enough to sit directly against neural tissue. Wet the pattie and it becomes highly conformable, molding to the contour of the surgical site rather than buckling at the edges. That behavior matters when the pattie is doing double duty as both an absorbent and a retractor — it stays where the surgeon places it and comes away cleanly. Every pattie carries a radiopaque element down its full length, so it shows on intraoperative and post-op imaging. An attached locator string gives the scrub team a visible handle for counts and removal. Edges are die-cut rather than torn, which keeps loose fibers out of the field. Product Details Rayon construction balancing absorbency, strength, and softness Full-length radiopaque element for X-ray detectability Attached locator string for counting and retrieval Die-cut edges to limit fiber shedding Conforms to tissue when saturated; resists edge curl Sterile, single-use Specifications Manufacturer: American Surgical Company Manufacturer SKU: 60-22 Size: 1½\" x 3\" (38 mm x 76 mm) Packaging: 200 patties per box, individually pouched sterile with counting card Typical use: cranial, spine, skull base, ENT/otology",
+      "images": [
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Ray-CotSurgicalPatties.jpg?v=1786025043"
+      ],
+      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Ray-CotSurgicalPatties.jpg?v=1786025043",
+      "variants": [
+        {
+          "variant_id": "variant_shopify_f0355af8536d53be42d4",
+          "sku": "60-22",
+          "title": "1-1/2\" x 3\"",
+          "available": true,
+          "weight_grams": 453.59237,
+          "options": {
+            "Size": "1-1/2\" x 3\""
+          },
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Ray-CotSurgicalPatties.jpg?v=1786025043"
+        }
+      ],
+      "tags": [
+        "_hidden"
+      ],
+      "collections": [],
+      "product_type": "Surgical Supplies",
+      "m6_category": null,
+      "quote_only": false,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
+      "berry_compliant": false,
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
+    },
+    {
+      "sku": "UMRA9-E02802",
+      "handle": "genabio-covid-19-rapid-self-test-kit-2-pack",
+      "name": "Genabio COVID-19 Rapid Self-Test Kit (2 Pack)",
+      "category": "Diagnostics",
+      "pack_size": "1 ea",
+      "hcpcs": "—",
+      "moq": 1,
+      "img": "The Genabio COVID-19 At-Home Test (2-Pack) is a simple and reliable way to test for COVID-19 in the comfort of your home. Cleared by the FDA under a 510(k), this rapid antigen test delivers results in just 15 minutes usi",
+      "summary": "The Genabio COVID-19 At-Home Test (2-Pack) is a simple and reliable way to test for COVID-19 in the comfort of your home. Cleared by the FDA under a 510(k), this rapid antigen test delivers results in just 15 minutes usi",
+      "description": "The Genabio COVID-19 At-Home Test (2-Pack) is a simple and reliable way to test for COVID-19 in the comfort of your home. Cleared by the FDA under a 510(k), this rapid antigen test delivers results in just 15 minutes using a non-invasive anterior nasal swab. Each pack contains two individually packaged test kits, ideal for personal use, families, or workplaces looking for quick and accurate results without needing a lab. Whether you're preparing for travel, screening before events, or simply need peace of mind, the Genabio 2-Pack offers a convenient, reliable solution. FDA 510(k)-Cleared | At-Home Nasal Swab | Fast 15-Minute Results Key Features Results in just 15 minutes FDA 510(k)-cleared for accuracy and safety Easy-to-use at-home nasal swab test Non-invasive sample collection Includes 2 individually boxed test kits FSA/HSA eligible Suitable for ages 2 and up Convenient for travel, events, or home use What’s In The Box (2) COVID-19 Test Cards (2) Pre-Filled Tubes (2) Anterior Nasal Swabs (2) Instructions for Use",
+      "images": [
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Genabio_COVID-19_Rapid_Self-Test_Kit_2_Pack_Front.jpg?v=1783713459",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Genabio_COVID-19_Rapid_Self-Test_Kit_2_Pack_Back.jpg?v=1783713459",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenabioProductTestII.jpg?v=1730398301",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenabioProductTest.jpg?v=1730398301",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenabioProductTimer.jpg?v=1730398301",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Genabio_COVID-19_Rapid_Self-Test_Kit_2_Pack_Included.jpg?v=1783713459",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Genabio_COVID-19_Rapid_Self-Test_Kit_2_Pack_Instructions.jpg?v=1783713459"
+      ],
+      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Genabio_COVID-19_Rapid_Self-Test_Kit_2_Pack_Front.jpg?v=1783713459",
+      "variants": [
+        {
+          "variant_id": "variant_shopify_af28f1b981caf8c91444",
+          "sku": "UMRA9-E02802",
+          "title": "Pack (2 Tests)",
+          "available": true,
+          "weight_grams": 56.69904625,
+          "options": {
+            "Pack Size": "Pack (2 Tests)"
+          },
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Genabio_COVID-19_Rapid_Self-Test_Kit_2_Pack_Front.jpg?v=1783713459"
+        },
+        {
+          "variant_id": "variant_shopify_e0f9c13ec2689a02daf0",
+          "sku": "UMRA9-E02802-C",
+          "title": "Case (288 Tests)",
+          "available": true,
+          "weight_grams": 8164.668329904625,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Genabio_COVID-19_Rapid_Self-Test_Kit_2_Pack_Front.jpg?v=1783713459"
+        }
+      ],
+      "tags": [
+        "Covid Tests",
+        "Diagnostic Test",
+        "OTC",
+        "Planogram"
+      ],
+      "collections": [],
+      "product_type": "Diagnostic Tests",
+      "m6_category": null,
+      "quote_only": false,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
+      "berry_compliant": false,
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
+    },
+    {
+      "sku": "35501110",
+      "handle": "neuro-sponge-x-ray-detectable",
+      "name": "Neuro Sponges - 200pc",
+      "category": "Surgical",
+      "pack_size": "1 ea",
+      "hcpcs": "—",
+      "moq": 1,
+      "img": "Neuro Sponges are soft, highly absorbent surgical patties used in neurosurgery, spine, and skull-based procedures for fluid absorption, dissection, and the protection of delicate brain and nerve tissue. Often referred to",
+      "summary": "Neuro Sponges are soft, highly absorbent surgical patties used in neurosurgery, spine, and skull-based procedures for fluid absorption, dissection, and the protection of delicate brain and nerve tissue. Often referred to",
+      "description": "Neuro Sponges are soft, highly absorbent surgical patties used in neurosurgery, spine, and skull-based procedures for fluid absorption, dissection, and the protection of delicate brain and nerve tissue. Often referred to as cottonoids, neuro patties, or neurosurgical sponges, they conform to the surgical site to maintain a clear field while gently shielding critical structures from instruments and suction. Order in boxes of 200pcs.",
+      "images": [
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/1026100_neurosurgical-patties.jpg?v=1780495754"
+      ],
+      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/1026100_neurosurgical-patties.jpg?v=1780495754",
+      "variants": [
+        {
+          "variant_id": "variant_shopify_729b221d5f4a2b330a90",
+          "sku": "'35501110",
+          "title": "1/2\" x 1/2\"",
+          "available": true,
+          "weight_grams": 907.18474,
+          "options": {
+            "Size": "1/2\" x 1/2\""
+          },
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/1026100_neurosurgical-patties.jpg?v=1780495754"
+        },
+        {
+          "variant_id": "variant_shopify_2a0a7e40b248156fc981",
+          "sku": "'35501310",
+          "title": "1/2\" x 1\"",
+          "available": true,
+          "weight_grams": 907.18474,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/1026100_neurosurgical-patties.jpg?v=1780495754"
+        },
+        {
+          "variant_id": "variant_shopify_37f8b58bc5439fffeae4",
+          "sku": "'35501410",
+          "title": "1/2\" x 1-1/2\"",
+          "available": true,
+          "weight_grams": 907.18474,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/1026100_neurosurgical-patties.jpg?v=1780495754"
+        },
+        {
+          "variant_id": "variant_shopify_bfe89d5cae14cb6d29aa",
+          "sku": "'35501610",
+          "title": "1/2\" x 3\"",
+          "available": true,
+          "weight_grams": 907.18474,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/1026100_neurosurgical-patties.jpg?v=1780495754"
+        },
+        {
+          "variant_id": "variant_shopify_32b79017322a6d57f1e1",
+          "sku": "'35503610",
+          "title": "1\" x 3\"",
+          "available": true,
+          "weight_grams": 907.18474,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/1026100_neurosurgical-patties.jpg?v=1780495754"
+        },
+        {
+          "variant_id": "variant_shopify_142b745f10705d9ab450",
+          "sku": "'35504410",
+          "title": "1-1/2\" x 1-1/2\"",
+          "available": true,
+          "weight_grams": 907.18474,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/1026100_neurosurgical-patties.jpg?v=1780495754"
+        }
+      ],
+      "tags": [
+        "_hidden"
+      ],
+      "collections": [],
+      "product_type": "Surgical Supplies",
+      "m6_category": null,
+      "quote_only": false,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
+      "berry_compliant": false,
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
+    },
+    {
       "sku": "WFLUAB-POC-25",
       "handle": "welllife-influenza-rapid-antigen-test-professional-25",
       "name": "WELLlife™ Influenza A&B Rapid Antigen Test — Professional Use (25 Tests)",
       "category": "Diagnostics",
-      "pack_size": "Box (25 Tests)",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "WELLlife™ Influenza A&B Rapid Antigen Test — Professional U…",
-      "summary": "The WELLlife™ Influenza A&B Rapid Antigen Test (WFLUAB-POC-25) is an FDA 510(k)-cleared, CLIA Waived lateral flow immunoassay designed for professional point-of-care use. It simultaneously detects and differentiates…",
+      "img": "The WELLlife™ Influenza A&B Rapid Antigen Test (WFLUAB-POC-25) is an FDA 510(k)-cleared, CLIA Waived lateral flow immunoassay designed for professional point-of-care use. It simultaneously detects and differentiates Infl",
+      "summary": "The WELLlife™ Influenza A&B Rapid Antigen Test (WFLUAB-POC-25) is an FDA 510(k)-cleared, CLIA Waived lateral flow immunoassay designed for professional point-of-care use. It simultaneously detects and differentiates Infl",
       "description": "The WELLlife™ Influenza A&B Rapid Antigen Test (WFLUAB-POC-25) is an FDA 510(k)-cleared, CLIA Waived lateral flow immunoassay designed for professional point-of-care use. It simultaneously detects and differentiates Influenza A and Influenza B antigens from a single anterior nasal swab, delivering results in 10 minutes to support same-visit diagnosis and treatment decisions. Clinically validated across 44 influenza strains — including H1N1, H3N2, H5N1, H7N3, B/Victoria, and B/Yamagata lineages — it achieves 92.4% Flu A sensitivity, 91.4% Flu B sensitivity, and 100% specificity for both targets. It is the first and only influenza test cleared by the FDA for both OTC and professional use. Each kit includes 25 test cassettes, buffer tubes, nasal swabs, a tube holder, and full instructions. Storage from 36°F–86°F eliminates complex cold-chain requirements, and a 13-month shelf life supports flexible inventory management.",
       "images": [
         "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/WELLlife_InfluenzaA_BRapidAntigenTest.jpg?v=1774725825"
@@ -18,25 +853,23 @@ export const PUBLIC_CATALOG = {
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/WELLlife_InfluenzaA_BRapidAntigenTest.jpg?v=1774725825",
       "variants": [
         {
-          "variant_id": "56329376497830",
+          "variant_id": "variant_shopify_d74787575643631aefe7",
           "sku": "WFLUAB-POC-25",
           "title": "Box (25 Tests)",
           "available": true,
-          "weight_grams": 1134,
+          "weight_grams": 1133.980925,
           "options": {
             "Pack Size": "Box (25 Tests)"
           },
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/WELLlife_InfluenzaA_BRapidAntigenTest.jpg?v=1774725825"
         },
         {
-          "variant_id": "56329389179046",
+          "variant_id": "variant_shopify_6e4de8bfcbb29559c45d",
           "sku": "WFLUAB-POC-25-C",
           "title": "Case (450 Tests)",
-          "available": false,
-          "weight_grams": 20412,
-          "options": {
-            "Pack Size": "Case (450 Tests)"
-          },
+          "available": true,
+          "weight_grams": 20411.670824761564,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/WELLlife_InfluenzaA_BRapidAntigenTest.jpg?v=1774725825"
         }
       ],
@@ -44,233 +877,599 @@ export const PUBLIC_CATALOG = {
         "Diagnostic Test",
         "POC"
       ],
-      "collections": [
-        "Diagnostic Tests"
-      ],
+      "collections": [],
       "product_type": "Diagnostic Tests",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
+      "fda_registered": false,
       "pdac_approved": false,
       "taa_compliant": false,
       "berry_compliant": false,
       "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
     },
     {
-      "sku": "APN-3001-C",
+      "sku": "APN 3001",
       "handle": "avina-pure-4-mil-blue-nitrile-examination-gloves",
       "name": "Avina Pure 4 Mil Blue Nitrile Examination Gloves",
       "category": "PPE",
-      "pack_size": "Small - Case of 1000 Gloves",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "Avina Pure 4 Mil Blue Nitrile Examination Gloves",
-      "summary": "The Avina Pure 4 Mil Blue Nitrile Examination Gloves deliver reliable protection and comfort for medical, clinical, and professional use. Made from premium nitrile, these single-use, powder-free gloves are latex-free…",
+      "img": "The Avina Pure 4 Mil Blue Nitrile Examination Gloves deliver reliable protection and comfort for medical, clinical, and professional use. Made from premium nitrile, these single-use, powder-free gloves are latex-free and",
+      "summary": "The Avina Pure 4 Mil Blue Nitrile Examination Gloves deliver reliable protection and comfort for medical, clinical, and professional use. Made from premium nitrile, these single-use, powder-free gloves are latex-free and",
       "description": "The Avina Pure 4 Mil Blue Nitrile Examination Gloves deliver reliable protection and comfort for medical, clinical, and professional use. Made from premium nitrile, these single-use, powder-free gloves are latex-free and odor-free — ideal for users with latex sensitivities. Fingertip texturing ensures a consistent, secure grip, while the beaded cuff makes donning easy and prevents roll-down during use. Tested for chemotherapy drug permeation (ASTM D6978) and Fentanyl exposure, these gloves meet the demands of high-acuity environments. Compliant with FDA Food Contact Safety Requirements (21 CFR 177), they are also suitable for food handling applications. Medical Exam Grade with an AQL of <1.5. Features & Benefits 4 Mil nitrile construction — durable protection with a comfortable, form-fitting feel Powder-free, latex-free, and odor-free — safe for sensitive users and clean environments Fingertip textured exterior — reliable grip in wet or dry conditions Beaded cuff — easy donning and prevents roll-down Chlorinated interior — smooth, comfortable fit over extended wear Ambidextrous design — fits either hand for operational efficiency Medical Exam Grade, AQL <1.5 — meets rigorous quality acceptance standards Chemotherapy drug permeation tested (ASTM D6978) and Fentanyl tested Viral penetration tested (ASTM F1671) Compliant with FDA Food Contact Safety Requirements (21 CFR 177) 5-year shelf life from date of manufacture Color: Blue | Made in Vietnam Product Spec Sheet",
       "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/AvinaPure4MilBlueNitrileExaminationGlovesCase.jpg?v=1774265515"
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/AvinaPure4MilBlueNitrileExaminationGlovesCase.jpg?v=1774265515",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/AvinaPure4MilBlueNitrileExaminationGlovesBox_Case.jpg?v=1774265483",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/AvinaPure4MilBlueNitrileExaminationGlovesBox.jpg?v=1774265483"
       ],
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/AvinaPure4MilBlueNitrileExaminationGlovesCase.jpg?v=1774265515",
       "variants": [
         {
-          "variant_id": "56317531160742",
+          "variant_id": "variant_shopify_9c73302c4d71fb9b732b",
+          "sku": "APN 3001",
+          "title": "Small / Box of 100",
+          "available": true,
+          "weight_grams": 453.59237,
+          "options": {
+            "Size": "Small",
+            "Pack Size": "Box of 100"
+          },
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/AvinaPure4MilBlueNitrileExaminationGlovesBox.jpg?v=1774265483"
+        },
+        {
+          "variant_id": "variant_shopify_26d3c1798e2b75c9bb29",
           "sku": "APN 3001-C",
-          "title": "Small - Case of 1000 Gloves",
-          "available": false,
-          "weight_grams": 4536,
-          "options": {
-            "Size": "Small - Case of 1000 Gloves"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/AvinaPure4MilBlueNitrileExaminationGlovesCase.jpg?v=1774265515"
+          "title": "Small / Case of 1000",
+          "available": true,
+          "weight_grams": 4535.9232,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/AvinaPure4MilBlueNitrileExaminationGlovesBox.jpg?v=1774265483"
         },
         {
-          "variant_id": "56317528965286",
+          "variant_id": "variant_shopify_877e50f7065a2f59e80e",
+          "sku": "APN 3002",
+          "title": "Medium / Box of 100",
+          "available": true,
+          "weight_grams": 453.59237,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/AvinaPure4MilBlueNitrileExaminationGlovesBox.jpg?v=1774265483"
+        },
+        {
+          "variant_id": "variant_shopify_1ce2c3e2e3a819d0a532",
           "sku": "APN 3002-C",
-          "title": "Medium - Case of 1000 Gloves",
+          "title": "Medium / Case of 1000",
           "available": true,
-          "weight_grams": 4536,
-          "options": {
-            "Size": "Medium - Case of 1000 Gloves"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/AvinaPure4MilBlueNitrileExaminationGlovesCase.jpg?v=1774265515"
+          "weight_grams": 4535.926534952312,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/AvinaPure4MilBlueNitrileExaminationGlovesBox.jpg?v=1774265483"
         },
         {
-          "variant_id": "56317531193510",
+          "variant_id": "variant_shopify_1b4bd1c3f7eba5483594",
+          "sku": "APN 3003",
+          "title": "Large / Box of 100",
+          "available": true,
+          "weight_grams": 453.59237,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/AvinaPure4MilBlueNitrileExaminationGlovesBox.jpg?v=1774265483"
+        },
+        {
+          "variant_id": "variant_shopify_653e714552e6eedb39c7",
           "sku": "APN 3003-C",
-          "title": "Large - Case of 1000 Gloves",
+          "title": "Large / Case of 1000",
           "available": true,
-          "weight_grams": 4536,
-          "options": {
-            "Size": "Large - Case of 1000 Gloves"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/AvinaPure4MilBlueNitrileExaminationGlovesCase.jpg?v=1774265515"
+          "weight_grams": 4535.926534952312,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/AvinaPure4MilBlueNitrileExaminationGlovesBox.jpg?v=1774265483"
         },
         {
-          "variant_id": "56317531226278",
-          "sku": "APN 3004-C",
-          "title": "X-Large - Case of 1000 Gloves",
+          "variant_id": "variant_shopify_e86f2cac086ea7a3d652",
+          "sku": "APN 3004",
+          "title": "XL / Box of 100",
           "available": true,
-          "weight_grams": 4536,
-          "options": {
-            "Size": "X-Large - Case of 1000 Gloves"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/AvinaPure4MilBlueNitrileExaminationGlovesCase.jpg?v=1774265515"
+          "weight_grams": 453.59237,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/AvinaPure4MilBlueNitrileExaminationGlovesBox.jpg?v=1774265483"
+        },
+        {
+          "variant_id": "variant_shopify_7ca490929e24e7644c33",
+          "sku": "APN 3004-C",
+          "title": "XL / Case of 1000",
+          "available": true,
+          "weight_grams": 4535.926534952312,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/AvinaPure4MilBlueNitrileExaminationGlovesBox.jpg?v=1774265483"
         }
       ],
       "tags": [
         "Gloves"
       ],
-      "collections": [
-        "Medical Gloves"
-      ],
+      "collections": [],
       "product_type": "Medical Gloves",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
+      "fda_registered": false,
       "pdac_approved": false,
       "taa_compliant": false,
       "berry_compliant": false,
-      "mspv_listed": true,
-      "latex_free": true,
-      "country_of_origin": "VN"
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
     },
     {
       "sku": "RA2-E02401",
       "handle": "genacheck-covid-flu-ab-rapid-self-test",
-      "name": "GenaCheck® COVID -19/Flu A&B Rapid Self-Test - 1 Test",
+      "name": "GenaCheck® 3-in-1 COVID -19/Flu A&B Rapid Self-Test (1 Pack)",
       "category": "Diagnostics",
-      "pack_size": "1 Test/Box",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "GenaCheck® COVID -19/Flu A&B Rapid Self-Test - 1 Test",
-      "summary": "GenaCheck® COVID-19 / Flu A&B Rapid Self-Test is a convenient at-home diagnostic test designed to detect COVID-19, Influenza A, and Influenza B from a single nasal swab sample. Results are available in about 15…",
+      "img": "GenaCheck® COVID-19 / Flu A&B Rapid Self-Test is a convenient at-home diagnostic test designed to detect COVID-19, Influenza A, and Influenza B from a single nasal swab sample. Results are available in about 15 minutes, ",
+      "summary": "GenaCheck® COVID-19 / Flu A&B Rapid Self-Test is a convenient at-home diagnostic test designed to detect COVID-19, Influenza A, and Influenza B from a single nasal swab sample. Results are available in about 15 minutes, ",
       "description": "GenaCheck® COVID-19 / Flu A&B Rapid Self-Test is a convenient at-home diagnostic test designed to detect COVID-19, Influenza A, and Influenza B from a single nasal swab sample. Results are available in about 15 minutes, making it a fast and reliable option for identifying respiratory infections. This over-the-counter test is easy to use and designed for self-testing or adult-assisted testing for younger users. The compact single-test kit contains everything needed to perform the test and quickly interpret results at home, school, or work Key Features • 3-in-1 combo test detects COVID-19, Flu A, and Flu B from a single sample • Fast results in about 15 minutes • Simple nasal swab collection for comfortable testing • Over-the-counter self-test for home use • Two result windows for easy interpretation • Individually packaged single test kit • 24-month shelf life • HSA/FSA eligible Specifications • Test Type: Rapid antigen test • Sample Type: Anterior nasal swab • Time to Results: Approximately 15 minutes • Storage: 36°–86°F (2°–30°C) • Shelf Life: 24 months Packaging • 1 Test per Box • 12 Boxes per Inner Pack • 144 Tests per Master Case",
       "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenaCheck_COVID-19FluA_BRapidSelf-TestII.png?v=1772723937"
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Genabio_Genacheck_3-1_Box.png?v=1781103534",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Genabio_Genacheck_3-1_RDB-2.png?v=1781103013",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Genabio_Genacheck_3-1_RDB-1.png?v=1781103013"
       ],
-      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenaCheck_COVID-19FluA_BRapidSelf-TestII.png?v=1772723937",
+      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Genabio_Genacheck_3-1_Box.png?v=1781103534",
       "variants": [
         {
-          "variant_id": "56235001479334",
+          "variant_id": "variant_shopify_2f376b9c037b479bf879",
           "sku": "RA2-E02401",
-          "title": "1 Test/Box",
-          "available": false,
-          "weight_grams": 28,
-          "options": {
-            "Pack Size": "1 Test/Box"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenaCheck_COVID-19FluA_BRapidSelf-TestII.png?v=1772723937"
-        },
-        {
-          "variant_id": "56235044962470",
-          "sku": "RA2-E02401-12",
-          "title": "12 Tests/Carton",
-          "available": false,
-          "weight_grams": 340,
-          "options": {
-            "Pack Size": "12 Tests/Carton"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenaCheck_COVID-19FluA_BRapidSelf-TestII.png?v=1772723937"
-        },
-        {
-          "variant_id": "56235001512102",
-          "sku": "RA2-E02401-144",
-          "title": "144 Tests/Case",
-          "available": false,
-          "weight_grams": 4082,
-          "options": {
-            "Pack Size": "144 Tests/Case"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenaCheck_COVID-19FluA_BRapidSelf-TestII.png?v=1772723937"
-        }
-      ],
-      "tags": [
-        "Diagnostic Test",
-        "OTC"
-      ],
-      "collections": [
-        "Diagnostic Tests"
-      ],
-      "product_type": "Diagnostic Tests",
-      "m6_category": null,
-      "quote_only": false,
-      "fda_registered": true,
-      "pdac_approved": false,
-      "taa_compliant": false,
-      "berry_compliant": false,
-      "mspv_listed": false,
-      "latex_free": false,
-      "country_of_origin": "CN"
-    },
-    {
-      "sku": "L03A-R1445",
-      "handle": "flowflex-rsv-flu-covid-home-test",
-      "name": "Flowflex Plus 4-in-1 RSV + Flu A/B + COVID Home Test (1 Pack)",
-      "category": "Diagnostics",
-      "pack_size": "1 Box: 1 Test",
-      "hcpcs": "—",
-      "moq": 1,
-      "img": "Flowflex Plus 4-in-1 RSV + Flu A/B + COVID Home Test (1 Pac…",
-      "summary": "The Flowflex Plus RSV + Flu A/B + COVID Home Test is a rapid antigen self-test designed to detect and differentiate four common respiratory viruses—RSV, Influenza A, Influenza B, and COVID-19—from a single anterior…",
-      "description": "The Flowflex Plus RSV + Flu A/B + COVID Home Test is a rapid antigen self-test designed to detect and differentiate four common respiratory viruses—RSV, Influenza A, Influenza B, and COVID-19—from a single anterior nasal swab. Built for fast, reliable results and easy home use, this test is ideal for households, caregivers, workplaces, and repeat testing programs. Key Features 4-in-1 respiratory virus detection: RSV, Flu A, Flu B, and COVID-19 Results in approximately 15 minutes OTC / non-prescription home use Single anterior nasal swab per test Designed for easy self-collection and interpretation Extended 24-month shelf life Compact packaging for easy storage and travel Product Specifications Test Type: Rapid Antigen Home Test Detection Targets: RSV, Influenza A, Influenza B, SARS-CoV-2 Specimen Type: Anterior nasal swab Results Time: ~15 minutes Shelf Life: 24 months Storage Conditions: 36–86°F (2–30°C) Use Authorization: OTC / Home Use What’s Included Test cassette Sterile nasal swab Extraction tube Instructions for Use (IFU)",
-      "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/FlowflexPlusRSV_FluAB_COVIDHomeTest_4-in-1RapidAntigenTest_1test.png?v=1770576907"
-      ],
-      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/FlowflexPlusRSV_FluAB_COVIDHomeTest_4-in-1RapidAntigenTest_1test.png?v=1770576907",
-      "variants": [
-        {
-          "variant_id": "56180608925862",
-          "sku": "L03A-R1445",
           "title": "1 Box: 1 Test",
-          "available": false,
-          "weight_grams": 28,
+          "available": true,
+          "weight_grams": 28.349523125,
           "options": {
             "Pack Size": "1 Box: 1 Test"
           },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/FlowflexPlusRSV_FluAB_COVIDHomeTest_4-in-1RapidAntigenTest_1test.png?v=1770576907"
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Genabio_Genacheck_3-1_Box.png?v=1781103534"
         },
         {
-          "variant_id": "56180608958630",
-          "sku": "L03A-R1445-C",
-          "title": "1 Case: 48 Tests",
-          "available": false,
-          "weight_grams": 8505,
-          "options": {
-            "Pack Size": "1 Case: 48 Tests"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/FlowflexPlusRSV_FluAB_COVIDHomeTest_4-in-1RapidAntigenTest_1test.png?v=1770576907"
+          "variant_id": "variant_shopify_e7241fd5e414e4bf9b9c",
+          "sku": "RA2-E02401-12",
+          "title": "1 RDB: 12 Tests",
+          "available": true,
+          "weight_grams": 340.1942775,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Genabio_Genacheck_3-1_RDB-2.png?v=1781103013"
+        },
+        {
+          "variant_id": "variant_shopify_17bd17243b7e2905f3b2",
+          "sku": "RA2-E02401-144",
+          "title": "1 Case: 144 Tests",
+          "available": true,
+          "weight_grams": 4082.3341649523127,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Genabio_Genacheck_3-1_RDB-2.png?v=1781103013"
         }
       ],
       "tags": [
         "Diagnostic Test",
         "OTC"
       ],
-      "collections": [
-        "Diagnostic Tests"
-      ],
+      "collections": [],
       "product_type": "Diagnostic Tests",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
+      "fda_registered": false,
       "pdac_approved": false,
       "taa_compliant": false,
       "berry_compliant": false,
       "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
+    },
+    {
+      "sku": "Binax-COV/FLU",
+      "handle": "binaxnow-covid-flu-ab-combo-self-test",
+      "name": "BinaxNOW™ COVID-19 & Flu A/B Combo Self Test - 10 Tests/Box",
+      "category": "Diagnostics",
+      "pack_size": "1 ea",
+      "hcpcs": "—",
+      "moq": 1,
+      "img": "The BinaxNOW COVID-19 & Flu A/B Combo Self Test provides rapid antigen detection of SARS-CoV-2 and Influenza A/B using nasal swab samples. Multi-test packaging supports screening programs and repeat testing..",
+      "summary": "The BinaxNOW COVID-19 & Flu A/B Combo Self Test provides rapid antigen detection of SARS-CoV-2 and Influenza A/B using nasal swab samples. Multi-test packaging supports screening programs and repeat testing..",
+      "description": "The BinaxNOW COVID-19 & Flu A/B Combo Self Test provides rapid antigen detection of SARS-CoV-2 and Influenza A/B using nasal swab samples. Multi-test packaging supports screening programs and repeat testing..",
+      "images": [
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/BinaxNOW_COVID-19_Flu_A_B_Combo.png?v=1772231608"
+      ],
+      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/BinaxNOW_COVID-19_Flu_A_B_Combo.png?v=1772231608",
+      "variants": [
+        {
+          "variant_id": "variant_shopify_7ff92eebe32a66c45f22",
+          "sku": "Binax-COV/FLU",
+          "title": "Box (10 Tests)",
+          "available": true,
+          "weight_grams": 566.9904625,
+          "options": {
+            "Pack Size": "Box (10 Tests)"
+          },
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/BinaxNOW_COVID-19_Flu_A_B_Combo.png?v=1772231608"
+        }
+      ],
+      "tags": [
+        "Covid Tests"
+      ],
+      "collections": [],
+      "product_type": "Diagnostic Tests",
+      "m6_category": null,
+      "quote_only": false,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
+      "berry_compliant": false,
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
+    },
+    {
+      "sku": "CFR-1",
+      "handle": "ihealth-4-in-1-flu-covid-rsv-test",
+      "name": "iHealth 4-in-1 Flu A/B, COVID-19 & RSV - 1 Test/Box",
+      "category": "Diagnostics",
+      "pack_size": "1 ea",
+      "hcpcs": "—",
+      "moq": 1,
+      "img": "The iHealth 4-in-1 Rapid Test detects Flu A, Flu B, COVID-19, and RSV from a single nasal swab sample. This multiplex OTC test supports broader respiratory screening in one step.",
+      "summary": "The iHealth 4-in-1 Rapid Test detects Flu A, Flu B, COVID-19, and RSV from a single nasal swab sample. This multiplex OTC test supports broader respiratory screening in one step.",
+      "description": "The iHealth 4-in-1 Rapid Test detects Flu A, Flu B, COVID-19, and RSV from a single nasal swab sample. This multiplex OTC test supports broader respiratory screening in one step.",
+      "images": [
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/iHealth4-in-1FluA_B_COVID-19_RSV.png?v=1772231265"
+      ],
+      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/iHealth4-in-1FluA_B_COVID-19_RSV.png?v=1772231265",
+      "variants": [
+        {
+          "variant_id": "variant_shopify_06e9936bea2a7801ce39",
+          "sku": "CFR-1",
+          "title": "Box (2 Tests)",
+          "available": true,
+          "weight_grams": 56.69904625,
+          "options": {
+            "Pack Size": "Box (2 Tests)"
+          },
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/iHealth4-in-1FluA_B_COVID-19_RSV.png?v=1772231265"
+        },
+        {
+          "variant_id": "variant_shopify_3a712c2373fb1faed1e2",
+          "sku": "CFR-1-C",
+          "title": "Case (48 Tests)",
+          "available": true,
+          "weight_grams": 1360.77711,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/iHealth4-in-1FluA_B_COVID-19_RSV.png?v=1772231265"
+        }
+      ],
+      "tags": [
+        "Covid Tests"
+      ],
+      "collections": [],
+      "product_type": "Diagnostic Tests",
+      "m6_category": null,
+      "quote_only": false,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
+      "berry_compliant": false,
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
+    },
+    {
+      "sku": "WCOVFLU-OTC",
+      "handle": "welllife-covid-flu-ab-home-test",
+      "name": "WELLlife™ COVID-19 & Influenza A/B Home Test - 2 Tests/Box",
+      "category": "Diagnostics",
+      "pack_size": "1 ea",
+      "hcpcs": "—",
+      "moq": 1,
+      "img": "The WELLlife COVID-19 & Influenza A/B Home Test detects SARS-CoV-2 and Flu A/B from nasal swab samples in a convenient home testing format.",
+      "summary": "The WELLlife COVID-19 & Influenza A/B Home Test detects SARS-CoV-2 and Flu A/B from nasal swab samples in a convenient home testing format.",
+      "description": "The WELLlife COVID-19 & Influenza A/B Home Test detects SARS-CoV-2 and Flu A/B from nasal swab samples in a convenient home testing format.",
+      "images": [
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/WELLlife_FluA_BHomeTest.png?v=1772230925"
+      ],
+      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/WELLlife_FluA_BHomeTest.png?v=1772230925",
+      "variants": [
+        {
+          "variant_id": "variant_shopify_b6200b216bc7e2707627",
+          "sku": "WCOVFLU-OTC",
+          "title": "Box (2 Tests)",
+          "available": true,
+          "weight_grams": 56.69904625,
+          "options": {
+            "Pack Size": "Box (2 Tests)"
+          },
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/WELLlife_FluA_BHomeTest.png?v=1772230925"
+        },
+        {
+          "variant_id": "variant_shopify_d8d87f7bdeddc4c9b21b",
+          "sku": "WCOVFLU-OTC-C",
+          "title": "Case (288 Tests)",
+          "available": true,
+          "weight_grams": 8504.862607404624,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/WELLlife_FluA_BHomeTest.png?v=1772230925"
+        }
+      ],
+      "tags": [
+        "Covid Tests"
+      ],
+      "collections": [],
+      "product_type": "Diagnostic Tests",
+      "m6_category": null,
+      "quote_only": false,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
+      "berry_compliant": false,
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
+    },
+    {
+      "sku": "WFLUAB-OTC-2",
+      "handle": "welllife-flu-ab-home-test",
+      "name": "WELLlife™ Flu A&B Home Test - 2 Tests/Box",
+      "category": "Diagnostics",
+      "pack_size": "1 ea",
+      "hcpcs": "—",
+      "moq": 1,
+      "img": "The WELLlife Flu A&B Home Test is a rapid antigen test for detection of Influenza A and B using nasal swab samples. The kit includes two tests per box for convenient repeat testing.",
+      "summary": "The WELLlife Flu A&B Home Test is a rapid antigen test for detection of Influenza A and B using nasal swab samples. The kit includes two tests per box for convenient repeat testing.",
+      "description": "The WELLlife Flu A&B Home Test is a rapid antigen test for detection of Influenza A and B using nasal swab samples. The kit includes two tests per box for convenient repeat testing.",
+      "images": [
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/WELLlife_COVID-19_InfluenzaA_B.png?v=1772230597"
+      ],
+      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/WELLlife_COVID-19_InfluenzaA_B.png?v=1772230597",
+      "variants": [
+        {
+          "variant_id": "variant_shopify_7a4bf6aa9e5ca9624484",
+          "sku": "WFLUAB-OTC-2",
+          "title": "Box (2 Tests)",
+          "available": true,
+          "weight_grams": 56.69904625,
+          "options": {
+            "Pack Size": "Box (2 Tests)"
+          },
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/WELLlife_COVID-19_InfluenzaA_B.png?v=1772230597"
+        },
+        {
+          "variant_id": "variant_shopify_f8e9190ac813c26c8f78",
+          "sku": "WFLUAB-OTC-2-C",
+          "title": "Case (216 Tests)",
+          "available": true,
+          "weight_grams": 8504.862607404624,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/WELLlife_COVID-19_InfluenzaA_B.png?v=1772230597"
+        }
+      ],
+      "tags": [
+        "Covid Tests"
+      ],
+      "collections": [],
+      "product_type": "Diagnostic Tests",
+      "m6_category": null,
+      "quote_only": false,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
+      "berry_compliant": false,
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
+    },
+    {
+      "sku": "OSOM-Flu-SARS-CoV-2",
+      "handle": "osom-flu-covid-combo-home-test",
+      "name": "OSOM Flu & SARS-CoV-2 Combo Home Test - 1 Test/Box",
+      "category": "Diagnostics",
+      "pack_size": "1 ea",
+      "hcpcs": "—",
+      "moq": 1,
+      "img": "The OSOM Flu & SARS-CoV-2 Combo Home Test provides rapid detection of Influenza A/B and COVID-19 using a single nasal swab sample. Designed for home testing convenience and quick screening.",
+      "summary": "The OSOM Flu & SARS-CoV-2 Combo Home Test provides rapid detection of Influenza A/B and COVID-19 using a single nasal swab sample. Designed for home testing convenience and quick screening.",
+      "description": "The OSOM Flu & SARS-CoV-2 Combo Home Test provides rapid detection of Influenza A/B and COVID-19 using a single nasal swab sample. Designed for home testing convenience and quick screening.",
+      "images": [
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/OSOMFlu_SARS-CoV-2ComboHomeTest.png?v=1772230363"
+      ],
+      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/OSOMFlu_SARS-CoV-2ComboHomeTest.png?v=1772230363",
+      "variants": [
+        {
+          "variant_id": "variant_shopify_b929cee1eb6b4eeb025f",
+          "sku": "OSOM-Flu-SARS-CoV-2",
+          "title": "Box (1 Test)",
+          "available": true,
+          "weight_grams": 56.69904625,
+          "options": {
+            "Pack Size": "Box (1 Test)"
+          },
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/OSOMFlu_SARS-CoV-2ComboHomeTest.png?v=1772230363"
+        },
+        {
+          "variant_id": "variant_shopify_19e557468e9275e518fc",
+          "sku": "OSOM-Flu-SARS-CoV-2-C",
+          "title": "Case (300 Tests)",
+          "available": true,
+          "weight_grams": 8504.862607404624,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/OSOMFlu_SARS-CoV-2ComboHomeTest.png?v=1772230363"
+        }
+      ],
+      "tags": [
+        "Covid Tests"
+      ],
+      "collections": [],
+      "product_type": "Diagnostic Tests",
+      "m6_category": null,
+      "quote_only": false,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
+      "berry_compliant": false,
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
+    },
+    {
+      "sku": "RCUM-00171",
+      "handle": "caresuperb-covid-flu-ab-combo-test",
+      "name": "CareSuperb COVID-19 & Flu A/B Combo Test - 1 Test/Box",
+      "category": "Diagnostics",
+      "pack_size": "1 ea",
+      "hcpcs": "—",
+      "moq": 1,
+      "img": "The CareSuperb COVID-19 & Flu A/B Combo Test is a rapid antigen test designed for qualitative detection of SARS-CoV-2 and Influenza A & B from nasal swab specimens.",
+      "summary": "The CareSuperb COVID-19 & Flu A/B Combo Test is a rapid antigen test designed for qualitative detection of SARS-CoV-2 and Influenza A & B from nasal swab specimens.",
+      "description": "The CareSuperb COVID-19 & Flu A/B Combo Test is a rapid antigen test designed for qualitative detection of SARS-CoV-2 and Influenza A & B from nasal swab specimens.",
+      "images": [
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/CareSuperbCOVID-19_FluA_BComboTest.png?v=1772229703"
+      ],
+      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/CareSuperbCOVID-19_FluA_BComboTest.png?v=1772229703",
+      "variants": [
+        {
+          "variant_id": "variant_shopify_5838ea48502fdd468bc2",
+          "sku": "RCUM-00171",
+          "title": "Box (1 Test)",
+          "available": true,
+          "weight_grams": 56.69904625,
+          "options": {
+            "Pack Size": "Box (1 Test)"
+          },
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/CareSuperbCOVID-19_FluA_BComboTest.png?v=1772229703"
+        },
+        {
+          "variant_id": "variant_shopify_a43991f7fe2e113f4971",
+          "sku": "RCUM-00171-C",
+          "title": "Case (328 Tests)",
+          "available": true,
+          "weight_grams": 8504.862607404624,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/CareSuperbCOVID-19_FluA_BComboTest.png?v=1772229703"
+        }
+      ],
+      "tags": [
+        "Covid Tests"
+      ],
+      "collections": [],
+      "product_type": "Diagnostic Tests",
+      "m6_category": null,
+      "quote_only": false,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
+      "berry_compliant": false,
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
+    },
+    {
+      "sku": "ACT21002-1-OTC",
+      "handle": "cordx-tyfast-flu-covid-test",
+      "name": "CorDx Tyfast Flu A/B & COVID-19 Multiplex Rapid Test — OTC Single Test",
+      "category": "Diagnostics",
+      "pack_size": "1 ea",
+      "hcpcs": "—",
+      "moq": 1,
+      "img": "The CorDx Tyfast Multiplex Rapid Test detects COVID-19 and Influenza A/B in a single test using nasal swab samples. Designed for OTC use, this multiplex format allows efficient respiratory screening in one workflow.",
+      "summary": "The CorDx Tyfast Multiplex Rapid Test detects COVID-19 and Influenza A/B in a single test using nasal swab samples. Designed for OTC use, this multiplex format allows efficient respiratory screening in one workflow.",
+      "description": "The CorDx Tyfast Multiplex Rapid Test detects COVID-19 and Influenza A/B in a single test using nasal swab samples. Designed for OTC use, this multiplex format allows efficient respiratory screening in one workflow.",
+      "images": [
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/CorDxTyfastFluA_B_COVID-19MultiplexRapidTest.png?v=1772217221"
+      ],
+      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/CorDxTyfastFluA_B_COVID-19MultiplexRapidTest.png?v=1772217221",
+      "variants": [
+        {
+          "variant_id": "variant_shopify_8a67c0920c44975df792",
+          "sku": "ACT21002-1-OTC",
+          "title": "Pack (2 Tests)",
+          "available": true,
+          "weight_grams": 56.69904625,
+          "options": {
+            "Pack Size": "Pack (2 Tests)"
+          },
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/CorDxTyfastFluA_B_COVID-19MultiplexRapidTest.png?v=1772217221"
+        },
+        {
+          "variant_id": "variant_shopify_6bc0f713f6f6afb6df7e",
+          "sku": "ACT21002-1-OTC-C",
+          "title": "Case (300 Tests)",
+          "available": true,
+          "weight_grams": 8504.862607404624,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/CorDxTyfastFluA_B_COVID-19MultiplexRapidTest.png?v=1772217221"
+        }
+      ],
+      "tags": [
+        "Covid Tests"
+      ],
+      "collections": [],
+      "product_type": "Diagnostic Tests",
+      "m6_category": null,
+      "quote_only": false,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
+      "berry_compliant": false,
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
+    },
+    {
+      "sku": "CKW-L",
+      "handle": "quick-product-setup-copy",
+      "name": "TJS Cryo Knee Wrap",
+      "category": "Consumable",
+      "pack_size": "1 ea",
+      "hcpcs": "—",
+      "moq": 1,
+      "img": "The Cryo Knee Wrap provides targeted cold therapy and compression for patients recovering from knee arthroplasty or managing acute knee injuries. The integrated ice pack system maintains therapeutic cold temperatures of ",
+      "summary": "The Cryo Knee Wrap provides targeted cold therapy and compression for patients recovering from knee arthroplasty or managing acute knee injuries. The integrated ice pack system maintains therapeutic cold temperatures of ",
+      "description": "The Cryo Knee Wrap provides targeted cold therapy and compression for patients recovering from knee arthroplasty or managing acute knee injuries. The integrated ice pack system maintains therapeutic cold temperatures of 32-50°F for 20-30 minutes per application, delivering consistent pain and swelling management during the post-operative healing phase. Ideal for post-surgical care following ACL reconstruction, meniscus repair, or total knee arthroplasty, as well as acute ligament sprains and soft tissue injuries. The adjustable hook-and-loop closure system accommodates varied patient anatomy and post-operative swelling changes while maintaining secure compression throughout each treatment session. The integrated ice packs are permanently sealed within the wrap, eliminating the need for separate ice bag preparation. Designed for single-patient use with multiple applications throughout the rehabilitation period, the straightforward design enables patients to independently manage their cold therapy regimen with minimal instruction. Key features Provides cold therapy and compression for post-operative and acute injury protocols Ideal for TKA, ACL reconstruction, meniscus repair, and ligament sprain recovery Maintains therapeutic temperature range (32-50°F) for 20-30 minutes per application Integrated ice packs eliminate need for separate ice bags or messy preparation Adjustable hook-and-loop closure system ensures secure fit for most patients",
+      "images": [
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/CryoKnee_815865e2-3ff5-4095-bb75-4aa1e41a9ad9.webp?v=1772139262"
+      ],
+      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/CryoKnee_815865e2-3ff5-4095-bb75-4aa1e41a9ad9.webp?v=1772139262",
+      "variants": [
+        {
+          "variant_id": "variant_shopify_d0c63fd2ad878ee69a21",
+          "sku": "CKW-L",
+          "title": "Default Title",
+          "available": true,
+          "weight_grams": 0,
+          "options": {
+            "Title": "Default Title"
+          },
+          "image": ""
+        }
+      ],
+      "tags": [
+        "_hidden"
+      ],
+      "collections": [],
+      "product_type": null,
+      "m6_category": null,
+      "quote_only": false,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
+      "berry_compliant": false,
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
     },
     {
       "sku": "L03A-R0645",
       "handle": "flowflex-covid-19-flu-home-test",
       "name": "Flowflex Plus 3-in-1 COVID-19 and Flu A/B Rapid Home Test (1 Pack)",
       "category": "Diagnostics",
-      "pack_size": "1 Box: 1 Test",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "Flowflex Plus 3-in-1 COVID-19 and Flu A/B Rapid Home Test (…",
-      "summary": "The Flowflex Plus COVID-19 and Flu A/B Home Test is a rapid antigen self-test designed to detect and differentiate COVID-19, Influenza A, and Influenza B from a single anterior nasal swab. Key Features 3-in-1…",
+      "img": "The Flowflex Plus COVID-19 and Flu A/B Home Test is a rapid antigen self-test designed to detect and differentiate COVID-19, Influenza A, and Influenza B from a single anterior nasal swab. Key Features 3-in-1 respiratory",
+      "summary": "The Flowflex Plus COVID-19 and Flu A/B Home Test is a rapid antigen self-test designed to detect and differentiate COVID-19, Influenza A, and Influenza B from a single anterior nasal swab. Key Features 3-in-1 respiratory",
       "description": "The Flowflex Plus COVID-19 and Flu A/B Home Test is a rapid antigen self-test designed to detect and differentiate COVID-19, Influenza A, and Influenza B from a single anterior nasal swab. Key Features 3-in-1 respiratory virus detection: Flu A, Flu B, and COVID-19 Results in approximately 15 minutes OTC / non-prescription home use Single anterior nasal swab per test Designed for easy self-collection and interpretation Extended 24-month shelf life Compact packaging for easy storage and travel Product Specifications Test Type: Rapid Antigen Home Test Detection Targets: Influenza A, Influenza B, SARS-CoV-2 Specimen Type: Anterior nasal swab Results Time: ~15 minutes Shelf Life: 24 months Storage Conditions: 36–86°F (2–30°C) Use Authorization: OTC / Home Use What’s Included Test cassette Sterile nasal swab Extraction tube Instructions for Use (IFU)",
       "images": [
         "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/FlowflexPlusFluAB_COVIDHomeTest_3-in-1_1Test.png?v=1770577976"
@@ -278,25 +1477,23 @@ export const PUBLIC_CATALOG = {
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/FlowflexPlusFluAB_COVIDHomeTest_3-in-1_1Test.png?v=1770577976",
       "variants": [
         {
-          "variant_id": "56174566899878",
+          "variant_id": "variant_shopify_0c9648e0bbc03e172e99",
           "sku": "L03A-R0645",
           "title": "1 Box: 1 Test",
-          "available": false,
-          "weight_grams": 28,
+          "available": true,
+          "weight_grams": 28.349523125,
           "options": {
             "Pack Size": "1 Box: 1 Test"
           },
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/FlowflexPlusFluAB_COVIDHomeTest_3-in-1_1Test.png?v=1770577976"
         },
         {
-          "variant_id": "56174566932646",
+          "variant_id": "variant_shopify_799175021725c5349d9d",
           "sku": "L03A-R0645-C",
           "title": "1 Case: 300 Tests",
-          "available": false,
-          "weight_grams": 8505,
-          "options": {
-            "Pack Size": "1 Case: 300 Tests"
-          },
+          "available": true,
+          "weight_grams": 8504.862607404624,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/FlowflexPlusFluAB_COVIDHomeTest_3-in-1_1Test.png?v=1770577976"
         }
       ],
@@ -304,156 +1501,94 @@ export const PUBLIC_CATALOG = {
         "Diagnostic Test",
         "OTC"
       ],
-      "collections": [
-        "Diagnostic Tests"
-      ],
+      "collections": [],
       "product_type": "Diagnostic Tests",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
+      "fda_registered": false,
       "pdac_approved": false,
       "taa_compliant": false,
       "berry_compliant": false,
       "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
     },
     {
-      "sku": "RA9-E02402",
-      "handle": "genabio-genacheck-covid-19-flu-2-pack",
-      "name": "Genabio GenaCheck® 3-in-1 COVID-19 / Flu A&B Rapid Self-Test (2 Pack)",
+      "sku": "L03A-R1445",
+      "handle": "flowflex-rsv-flu-covid-home-test",
+      "name": "Flowflex Plus 4-in-1 RSV + Flu A/B + COVID Home Test (1 Pack)",
       "category": "Diagnostics",
-      "pack_size": "1 Box: 2 Tests",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "Genabio GenaCheck® 3-in-1 COVID-19 / Flu A&B Rapid Self-Tes…",
-      "summary": "The Genabio GenaCheck® COVID-19 / Flu A&B Rapid Self-Test is an over-the-counter (OTC) rapid antigen test designed for the qualitative detection of SARS-CoV-2, Influenza A, and Influenza B from a single anterior nasal…",
-      "description": "The Genabio GenaCheck® COVID-19 / Flu A&B Rapid Self-Test is an over-the-counter (OTC) rapid antigen test designed for the qualitative detection of SARS-CoV-2, Influenza A, and Influenza B from a single anterior nasal swab. This 2-test configuration is ideal for employer testing programs, retail distribution, clinics, and institutional preparedness where multiple tests per end user are required. Key Features 3-in-1 Detection: COVID-19, Flu A, and Flu B Rapid Results: Read results in approximately 15 minutes OTC / Non-Prescription Single Nasal Swab per Test HSA / FSA Eligible 24-Month Shelf Life Suitable for workplace, retail, and healthcare distribution Product Specifications Brand: Genabio (GenaCheck®) Test Type: Rapid Antigen Self-Test Detection Targets: SARS-CoV-2, Influenza A, Influenza B Tests per Box: 2 Manufacturer SKU: RA9-E02402 Shelf Life: 24 months Storage Conditions: 36–86°F (2–30°C) Use Authorization: OTC / Home Use Eligible Use: Individuals 14+ or adults testing children 2+ What’s Included Test cassettes (2) Sterile nasal swabs (2) Prefilled extraction tubes (2) Dropper tips Instructions for Use (IFU)",
+      "img": "The Flowflex Plus RSV + Flu A/B + COVID Home Test is a rapid antigen self-test designed to detect and differentiate four common respiratory viruses—RSV, Influenza A, Influenza B, and COVID-19—from a single anterior nasal",
+      "summary": "The Flowflex Plus RSV + Flu A/B + COVID Home Test is a rapid antigen self-test designed to detect and differentiate four common respiratory viruses—RSV, Influenza A, Influenza B, and COVID-19—from a single anterior nasal",
+      "description": "The Flowflex Plus RSV + Flu A/B + COVID Home Test is a rapid antigen self-test designed to detect and differentiate four common respiratory viruses—RSV, Influenza A, Influenza B, and COVID-19—from a single anterior nasal swab. Built for fast, reliable results and easy home use, this test is ideal for households, caregivers, workplaces, and repeat testing programs. Key Features 4-in-1 respiratory virus detection: RSV, Flu A, Flu B, and COVID-19 Results in approximately 15 minutes OTC / non-prescription home use Single anterior nasal swab per test Designed for easy self-collection and interpretation Extended 24-month shelf life Compact packaging for easy storage and travel Product Specifications Test Type: Rapid Antigen Home Test Detection Targets: RSV, Influenza A, Influenza B, SARS-CoV-2 Specimen Type: Anterior nasal swab Results Time: ~15 minutes Shelf Life: 24 months Storage Conditions: 36–86°F (2–30°C) Use Authorization: OTC / Home Use What’s Included Test cassette Sterile nasal swab Extraction tube Instructions for Use (IFU)",
       "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Genabio_GenaCheck_COVID-19_Flu_2_Pack.png?v=1770575732"
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/FlowflexPlusRSV_FluAB_COVIDHomeTest_4-in-1RapidAntigenTest_1test.png?v=1770576907"
       ],
-      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Genabio_GenaCheck_COVID-19_Flu_2_Pack.png?v=1770575732",
+      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/FlowflexPlusRSV_FluAB_COVIDHomeTest_4-in-1RapidAntigenTest_1test.png?v=1770576907",
       "variants": [
         {
-          "variant_id": "56180629340326",
-          "sku": "RA9-E02402",
-          "title": "1 Box: 2 Tests",
+          "variant_id": "variant_shopify_52168f828b862ffb574b",
+          "sku": "L03A-R1445",
+          "title": "1 Box: 1 Test",
           "available": true,
-          "weight_grams": 28,
+          "weight_grams": 28.349523125,
           "options": {
-            "Pack Size": "1 Box: 2 Tests"
+            "Pack Size": "1 Box: 1 Test"
           },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Genabio_GenaCheck_COVID-19_Flu_2_Pack.png?v=1770575732"
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/FlowflexPlusRSV_FluAB_COVIDHomeTest_4-in-1RapidAntigenTest_1test.png?v=1770576907"
         },
         {
-          "variant_id": "56180629373094",
-          "sku": "RA9-E02403",
-          "title": "1 Case: 288 Tests",
-          "available": false,
-          "weight_grams": 4082,
-          "options": {
-            "Pack Size": "1 Case: 288 Tests"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Genabio_GenaCheck_COVID-19_Flu_2_Pack.png?v=1770575732"
+          "variant_id": "variant_shopify_52df606fc28086452c86",
+          "sku": "L03A-R1445-C",
+          "title": "1 Case: 48 Tests",
+          "available": true,
+          "weight_grams": 8504.862607404624,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/FlowflexPlusRSV_FluAB_COVIDHomeTest_4-in-1RapidAntigenTest_1test.png?v=1770576907"
         }
       ],
       "tags": [
         "Diagnostic Test",
         "OTC"
       ],
-      "collections": [
-        "Diagnostic Tests"
-      ],
+      "collections": [],
       "product_type": "Diagnostic Tests",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
+      "fda_registered": false,
       "pdac_approved": false,
       "taa_compliant": false,
       "berry_compliant": false,
       "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
-    },
-    {
-      "sku": "RA9-E02404",
-      "handle": "genabio-genacheck-covid-flu-4-test-pack",
-      "name": "Genabio GenaCheck® COVID-19 / Flu A&B Rapid Self-Test (4 Pack)",
-      "category": "Diagnostics",
-      "pack_size": "1 Box: 4 Tests",
-      "hcpcs": "—",
-      "moq": 1,
-      "img": "Genabio GenaCheck® COVID-19 / Flu A&B Rapid Self-Test (4 Pa…",
-      "summary": "The Genabio GenaCheck® 4-Test Pack provides a multi-test solution for organizations requiring higher test availability per unit, including healthcare facilities, distributors, employers, and retail partners. Designed…",
-      "description": "The Genabio GenaCheck® 4-Test Pack provides a multi-test solution for organizations requiring higher test availability per unit, including healthcare facilities, distributors, employers, and retail partners. Designed for ease of use and rapid results, this test enables simultaneous screening for COVID-19, Influenza A, and Influenza B from a single nasal swab. Key Features 3-in-1 Respiratory Virus Detection Fast Results in ~15 Minutes OTC / Non-Prescription One Swab per Test HSA / FSA Eligible Extended 24-Month Shelf Life Ideal for bulk purchasing and repeat testing programs Product Specifications Brand: Genabio (GenaCheck®) Test Type: Rapid Antigen Self-Test Detection Targets: SARS-CoV-2, Influenza A, Influenza B Tests per Box: 4 Manufacturer SKU: RA9-E02404 Shelf Life: 24 months Storage Conditions: 36–86°F (2–30°C) Use Authorization: OTC / Home Use Eligible Use: Individuals 14+ or adults testing children 2+ What’s Included Test cassettes (4) Sterile nasal swabs (4) Prefilled extraction tubes (4) Dropper tips Instructions for Use (IFU)",
-      "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenabioGenaCheck_COVID-19Flu_4Pack.png?v=1770574415"
-      ],
-      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenabioGenaCheck_COVID-19Flu_4Pack.png?v=1770574415",
-      "variants": [
-        {
-          "variant_id": "56180649427110",
-          "sku": "RA9-E02404",
-          "title": "1 Box: 4 Tests",
-          "available": true,
-          "weight_grams": 57,
-          "options": {
-            "Pack Size": "1 Box: 4 Tests"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenabioGenaCheck_COVID-19Flu_4Pack.png?v=1770574415"
-        },
-        {
-          "variant_id": "56180649459878",
-          "sku": "RA9-E02404-C",
-          "title": "1 Case: 216 Tests",
-          "available": true,
-          "weight_grams": 3062,
-          "options": {
-            "Pack Size": "1 Case: 216 Tests"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenabioGenaCheck_COVID-19Flu_4Pack.png?v=1770574415"
-        }
-      ],
-      "tags": [
-        "Diagnostic Test",
-        "OTC"
-      ],
-      "collections": [
-        "Diagnostic Tests"
-      ],
-      "product_type": "Diagnostic Tests",
-      "m6_category": null,
-      "quote_only": false,
-      "fda_registered": true,
-      "pdac_approved": false,
-      "taa_compliant": false,
-      "berry_compliant": false,
-      "mspv_listed": false,
-      "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
     },
     {
       "sku": "7678383",
       "handle": "reinforced-surgical-gown-aami-level-3-sterile",
       "name": "Regard Reinforced Surgical Gown – AAMI Level 3, Sterile (2XL)",
       "category": "Surgical",
-      "pack_size": "Default Title",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "Regard Reinforced Surgical Gown – AAMI Level 3, Sterile (2X…",
-      "summary": "These reinforced surgical gowns provide dependable fluid protection for moderate-to-high risk procedures. Designed with a poly-coated reinforced front panel and set-in sleeves, they offer secure coverage, comfort, and…",
+      "img": "These reinforced surgical gowns provide dependable fluid protection for moderate-to-high risk procedures. Designed with a poly-coated reinforced front panel and set-in sleeves, they offer secure coverage, comfort, and co",
+      "summary": "These reinforced surgical gowns provide dependable fluid protection for moderate-to-high risk procedures. Designed with a poly-coated reinforced front panel and set-in sleeves, they offer secure coverage, comfort, and co",
       "description": "These reinforced surgical gowns provide dependable fluid protection for moderate-to-high risk procedures. Designed with a poly-coated reinforced front panel and set-in sleeves, they offer secure coverage, comfort, and consistent performance in clinical environments. Each gown is individually pouched, sterile, and ready for use. Key Features Size: 2XL Protection Level: AAMI Level 3 Fluid Resistance: Tested to AATCC 42 & AATCC 127 Material: SMMS body with reinforced poly-coated laminate front Sleeve Style: Set-in sleeves with ultrasonic sealing Cuffs: Knit cuff Back Coverage: Full coverage Closure: Hook & loop neck with back and side ties Sterility: Sterile, EtO processed Latex: Not made with natural rubber latex Disposable: Single-use Color: Blue Packaging: 1 gown per pouch, packed by case",
       "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/ReinforcedSurgicalGownI.png?v=1770117925"
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/ReinforcedSurgicalGownI.png?v=1770117925",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/ReinforcedSurgicalGownII.png?v=1770117925"
       ],
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/ReinforcedSurgicalGownI.png?v=1770117925",
       "variants": [
         {
-          "variant_id": "56162948546726",
-          "sku": "7678383",
+          "variant_id": "variant_shopify_42fdd5ad877facb700a4",
+          "sku": "'7678383",
           "title": "Default Title",
           "available": true,
-          "weight_grams": 454,
+          "weight_grams": 453.59237,
           "options": {
             "Title": "Default Title"
           },
@@ -467,61 +1602,220 @@ export const PUBLIC_CATALOG = {
       "product_type": "Surgical Supplies",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
+      "fda_registered": false,
       "pdac_approved": false,
       "taa_compliant": false,
       "berry_compliant": false,
-      "mspv_listed": true,
+      "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
+    },
+    {
+      "sku": "RA9-E02404",
+      "handle": "genabio-genacheck-covid-flu-4-test-pack",
+      "name": "GenaCheck® 3-in-1 COVID -19/Flu A&B Rapid Self-Test  (4 Pack)",
+      "category": "Diagnostics",
+      "pack_size": "1 ea",
+      "hcpcs": "—",
+      "moq": 1,
+      "img": "The Genabio GenaCheck® 4-Test Pack provides a multi-test solution for organizations requiring higher test availability per unit, including healthcare facilities, distributors, employers, and retail partners. Designed for",
+      "summary": "The Genabio GenaCheck® 4-Test Pack provides a multi-test solution for organizations requiring higher test availability per unit, including healthcare facilities, distributors, employers, and retail partners. Designed for",
+      "description": "The Genabio GenaCheck® 4-Test Pack provides a multi-test solution for organizations requiring higher test availability per unit, including healthcare facilities, distributors, employers, and retail partners. Designed for ease of use and rapid results, this test enables simultaneous screening for COVID-19, Influenza A, and Influenza B from a single nasal swab. Key Features 3-in-1 Respiratory Virus Detection Fast Results in ~15 Minutes OTC / Non-Prescription One Swab per Test HSA / FSA Eligible Extended 24-Month Shelf Life Ideal for bulk purchasing and repeat testing programs Product Specifications Brand: Genabio (GenaCheck®) Test Type: Rapid Antigen Self-Test Detection Targets: SARS-CoV-2, Influenza A, Influenza B Tests per Box: 4 Manufacturer SKU: RA9-E02404 Shelf Life: 24 months Storage Conditions: 36–86°F (2–30°C) Use Authorization: OTC / Home Use Eligible Use: Individuals 14+ or adults testing children 2+ What’s Included Test cassettes (4) Sterile nasal swabs (4) Prefilled extraction tubes (4) Dropper tips Instructions for Use (IFU)",
+      "images": [
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenabioGenaCheck_COVID-19Flu_4Pack.png?v=1770574415",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenabioGenaCheck_COVID-19Flu_4Pack_II.png?v=1770574415",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenabioGenaCheck_COVID-19Flu_4Pack_III.png?v=1770574415"
+      ],
+      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenabioGenaCheck_COVID-19Flu_4Pack.png?v=1770574415",
+      "variants": [
+        {
+          "variant_id": "variant_shopify_27680f0ad64cc2afc976",
+          "sku": "RA9-E02404",
+          "title": "1 Box: 4 Tests",
+          "available": true,
+          "weight_grams": 56.69904625,
+          "options": {
+            "Pack Size": "1 Box: 4 Tests"
+          },
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenabioGenaCheck_COVID-19Flu_4Pack.png?v=1770574415"
+        },
+        {
+          "variant_id": "variant_shopify_47a515218af96bcaaaa1",
+          "sku": "RA9-E02404-C",
+          "title": "1 Case: 216 Tests",
+          "available": true,
+          "weight_grams": 3061.7513324523125,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenabioGenaCheck_COVID-19Flu_4Pack.png?v=1770574415"
+        }
+      ],
+      "tags": [
+        "Diagnostic Test",
+        "OTC"
+      ],
+      "collections": [],
+      "product_type": "Diagnostic Tests",
+      "m6_category": null,
+      "quote_only": false,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
+      "berry_compliant": false,
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
+    },
+    {
+      "sku": "RA9-E02402",
+      "handle": "genabio-genacheck-covid-19-flu-2-pack",
+      "name": "GenaCheck® 3-in-1 COVID -19/Flu A&B Rapid Self-Test  (2 Pack)",
+      "category": "Diagnostics",
+      "pack_size": "1 ea",
+      "hcpcs": "—",
+      "moq": 1,
+      "img": "The Genabio GenaCheck® COVID-19 / Flu A&B Rapid Self-Test is an over-the-counter (OTC) rapid antigen test designed for the qualitative detection of SARS-CoV-2, Influenza A, and Influenza B from a single anterior nasal sw",
+      "summary": "The Genabio GenaCheck® COVID-19 / Flu A&B Rapid Self-Test is an over-the-counter (OTC) rapid antigen test designed for the qualitative detection of SARS-CoV-2, Influenza A, and Influenza B from a single anterior nasal sw",
+      "description": "The Genabio GenaCheck® COVID-19 / Flu A&B Rapid Self-Test is an over-the-counter (OTC) rapid antigen test designed for the qualitative detection of SARS-CoV-2, Influenza A, and Influenza B from a single anterior nasal swab. This 2-test configuration is ideal for employer testing programs, retail distribution, clinics, and institutional preparedness where multiple tests per end user are required. Key Features 3-in-1 Detection: COVID-19, Flu A, and Flu B Rapid Results: Read results in approximately 15 minutes OTC / Non-Prescription Single Nasal Swab per Test HSA / FSA Eligible 24-Month Shelf Life Suitable for workplace, retail, and healthcare distribution Product Specifications Brand: Genabio (GenaCheck®) Test Type: Rapid Antigen Self-Test Detection Targets: SARS-CoV-2, Influenza A, Influenza B Tests per Box: 2 Manufacturer SKU: RA9-E02402 Shelf Life: 24 months Storage Conditions: 36–86°F (2–30°C) Use Authorization: OTC / Home Use Eligible Use: Individuals 14+ or adults testing children 2+ What’s Included Test cassettes (2) Sterile nasal swabs (2) Prefilled extraction tubes (2) Dropper tips Instructions for Use (IFU)",
+      "images": [
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Genabio_GenaCheck_COVID-19_Flu_2_Pack.png?v=1770575732",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenabioGenaCheck_COVID-19Flu_2Pack_II.png?v=1770575732",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenabioGenaCheck_COVID-19Flu_2Pack_III.png?v=1770575732"
+      ],
+      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Genabio_GenaCheck_COVID-19_Flu_2_Pack.png?v=1770575732",
+      "variants": [
+        {
+          "variant_id": "variant_shopify_959467265a3067ca652e",
+          "sku": "RA9-E02402",
+          "title": "1 Box: 2 Tests",
+          "available": true,
+          "weight_grams": 28.349523125,
+          "options": {
+            "Pack Size": "1 Box: 2 Tests"
+          },
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Genabio_GenaCheck_COVID-19_Flu_2_Pack.png?v=1770575732"
+        },
+        {
+          "variant_id": "variant_shopify_7ed27ab9f9b2dd760550",
+          "sku": "RA9-E02403",
+          "title": "1 Case: 288 Tests",
+          "available": true,
+          "weight_grams": 4082.3341649523127,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Genabio_GenaCheck_COVID-19_Flu_2_Pack.png?v=1770575732"
+        }
+      ],
+      "tags": [
+        "Diagnostic Test",
+        "OTC"
+      ],
+      "collections": [],
+      "product_type": "Diagnostic Tests",
+      "m6_category": null,
+      "quote_only": false,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
+      "berry_compliant": false,
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
+    },
+    {
+      "sku": "WCOVFLU-POC-25",
+      "handle": "welllife-covid-19-influenza-test-point-of-care",
+      "name": "WELLlife™ COVID-19 / Influenza A&B Antigen Test (Point of Care)",
+      "category": "Diagnostics",
+      "pack_size": "1 ea",
+      "hcpcs": "—",
+      "moq": 1,
+      "img": "The WELLlife™ COVID-19 / Influenza A&B Antigen Test is a rapid, high-performance diagnostic tool designed to help healthcare professionals quickly differentiate between SARS-CoV-2, Influenza A, and Influenza B from a sin",
+      "summary": "The WELLlife™ COVID-19 / Influenza A&B Antigen Test is a rapid, high-performance diagnostic tool designed to help healthcare professionals quickly differentiate between SARS-CoV-2, Influenza A, and Influenza B from a sin",
+      "description": "The WELLlife™ COVID-19 / Influenza A&B Antigen Test is a rapid, high-performance diagnostic tool designed to help healthcare professionals quickly differentiate between SARS-CoV-2, Influenza A, and Influenza B from a single anterior nasal swab. This easy-to-use lateral flow immunoassay delivers clear, dependable results in just 10 minutes, supporting fast clinical decision-making and timely patient care. Built for accuracy and reliability, the test features separate detection lines for COVID-19, Flu A, and Flu B, along with a built-in control line that ensures proper test function. With an **extended detection window—up to four days from symptom onset—**and wide room-temperature storage (36°F–86°F / 2°C–30°C), the WELLlife™ test offers both flexibility and operational convenience in clinical settings. Professional Use | 510(k) Cleared Key Features & Benefits Rapid 10-Minute Results Enables diagnosis and treatment decisions during the same patient visit. Triple-Target Detection Differentiates SARS-CoV-2, Influenza A, and Influenza B using a single nasal swab. High Accuracy & Quality Assurance 510(k) cleared for professional use and supported by internal control lines plus optional external control kits for quality monitoring. Extended Detection Window Optimized for patients tested within four (4) days of symptom onset , improving clinical utility. Wide Storage Range Stable between 36°F–86°F (2°C–30°C) , enabling easy storage without special refrigeration. Simple, Streamlined Workflow Uses anterior nasal swab collection with straightforward sample processing and visual result interpretation. For professional in vitro diagnostic use to qualitatively detect and differentiate: SARS-CoV-2 nucleocapsid antigen Influenza A nucleoprotein antigen Influenza B nucleoprotein antigen The test is intended for patients aged 14+ self-testing, or ages 2+ when the sample is collected by an adult in a professional setting.",
+      "images": [
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Screenshot2025-12-01143246.png?v=1764617578"
+      ],
+      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Screenshot2025-12-01143246.png?v=1764617578",
+      "variants": [
+        {
+          "variant_id": "variant_shopify_e9e446b8fe550d27d0f4",
+          "sku": "WCOVFLU-POC-25",
+          "title": "Default Title",
+          "available": true,
+          "weight_grams": 501.7865593125,
+          "options": {
+            "Title": "Default Title"
+          },
+          "image": ""
+        }
+      ],
+      "tags": [
+        "Covid Tests",
+        "Diagnostic Test",
+        "POC"
+      ],
+      "collections": [],
+      "product_type": "Diagnostic Tests",
+      "m6_category": null,
+      "quote_only": false,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
+      "berry_compliant": false,
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
     },
     {
       "sku": "VA1S50S",
       "handle": "vero-ankle-brace",
       "name": "The Vero Ankle® Brace",
       "category": "Orthotics",
-      "pack_size": "Small",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "The Vero Ankle® Brace",
-      "summary": "Comfortable, low profile, flexible, and easy to put on, the Vero Ankle ® brace is simply the best ankle brace for those who move. Whether you're recovering from an ankle sprain, require extra support for your…",
+      "img": "Comfortable, low profile, flexible, and easy to put on, the Vero Ankle ® brace is simply the best ankle brace for those who move. Whether you're recovering from an ankle sprain, require extra support for your day-to-day,",
+      "summary": "Comfortable, low profile, flexible, and easy to put on, the Vero Ankle ® brace is simply the best ankle brace for those who move. Whether you're recovering from an ankle sprain, require extra support for your day-to-day,",
       "description": "Comfortable, low profile, flexible, and easy to put on, the Vero Ankle ® brace is simply the best ankle brace for those who move. Whether you're recovering from an ankle sprain, require extra support for your day-to-day, or want to boost your performance the Vero Ankle® brace delivers. Made with flexible BioMemory™ material that returns to its original shape, the Vero Ankle® brace uses every movement and every step to give you an extra boost. The brace can be worn on either foot, making it the most optimal ankle brace for injury recovery and prevention.",
       "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Vero_Ankle_Product_Photo_-_1.jpg?v=1762274719"
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Vero_Ankle_Product_Photo_-_1.jpg?v=1762274719",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Vero_Ankle_Product_Photo_-_2.jpg?v=1762274719",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Vero_Ankle_Product_Photo_-_3.jpg?v=1762274719",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/VeroAnkleProductPhoto-Running.png?v=1762274720",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/VeroAnkleProductPhoto-Soccer.png?v=1762274720",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/VeroAnkleProductPhoto-Lacrosse.png?v=1762274720",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Man_wearing_Vero_Ankle_Brace_on_a_walk_in_the_park.png?v=1762274721",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Man_wearing_Vero_Ankle_Brace_sitting_on_a_bench_in_jeans..png?v=1762274720",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Securing_the_Vero_Ankle_Brace_upper_straps..png?v=1762274720"
       ],
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Vero_Ankle_Product_Photo_-_1.jpg?v=1762274719",
       "variants": [
         {
-          "variant_id": "46806103130278",
+          "variant_id": "variant_shopify_df253eb7f85702ca8633",
           "sku": "VA1S50S",
           "title": "Small",
           "available": true,
-          "weight_grams": 184,
+          "weight_grams": 184.2719003125,
           "options": {
             "Size": "Small"
           },
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Vero_Ankle_Product_Photo_-_2.jpg?v=1762274719"
         },
         {
-          "variant_id": "46806103163046",
+          "variant_id": "variant_shopify_3514daedf4e4cdc01098",
           "sku": "VA1M50S",
           "title": "Medium",
           "available": true,
-          "weight_grams": 184,
-          "options": {
-            "Size": "Medium"
-          },
+          "weight_grams": 184.2719003125,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Vero_Ankle_Product_Photo_-_2.jpg?v=1762274719"
         },
         {
-          "variant_id": "46806103195814",
+          "variant_id": "variant_shopify_4f15be68eb5d7e3c855a",
           "sku": "VA1L50S",
           "title": "Large",
           "available": true,
-          "weight_grams": 184,
-          "options": {
-            "Size": "Large"
-          },
+          "weight_grams": 184.2719003125,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Vero_Ankle_Product_Photo_-_2.jpg?v=1762274719"
         }
       ],
@@ -539,83 +1833,39 @@ export const PUBLIC_CATALOG = {
       "product_type": "Supports & Braces",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
-      "pdac_approved": true,
-      "taa_compliant": true,
-      "berry_compliant": false,
-      "mspv_listed": false,
-      "latex_free": false,
-      "country_of_origin": "CN"
-    },
-    {
-      "sku": "WCOVFLU-POC-25",
-      "handle": "welllife-covid-19-influenza-test-point-of-care",
-      "name": "WELLlife™ COVID-19 / Influenza A&B Antigen Test (Point of Care)",
-      "category": "Diagnostics",
-      "pack_size": "Default Title",
-      "hcpcs": "—",
-      "moq": 1,
-      "img": "WELLlife™ COVID-19 / Influenza A&B Antigen Test (Point of C…",
-      "summary": "The WELLlife™ COVID-19 / Influenza A&B Antigen Test is a rapid, high-performance diagnostic tool designed to help healthcare professionals quickly differentiate between SARS-CoV-2, Influenza A, and Influenza B from a…",
-      "description": "The WELLlife™ COVID-19 / Influenza A&B Antigen Test is a rapid, high-performance diagnostic tool designed to help healthcare professionals quickly differentiate between SARS-CoV-2, Influenza A, and Influenza B from a single anterior nasal swab. This easy-to-use lateral flow immunoassay delivers clear, dependable results in just 10 minutes, supporting fast clinical decision-making and timely patient care. Built for accuracy and reliability, the test features separate detection lines for COVID-19, Flu A, and Flu B, along with a built-in control line that ensures proper test function. With an **extended detection window—up to four days from symptom onset—**and wide room-temperature storage (36°F–86°F / 2°C–30°C), the WELLlife™ test offers both flexibility and operational convenience in clinical settings. Professional Use | 510(k) Cleared Key Features & Benefits Rapid 10-Minute Results Enables diagnosis and treatment decisions during the same patient visit. Triple-Target Detection Differentiates SARS-CoV-2, Influenza A, and Influenza B using a single nasal swab. High Accuracy & Quality Assurance 510(k) cleared for professional use and supported by internal control lines plus optional external control kits for quality monitoring. Extended Detection Window Optimized for patients tested within four (4) days of symptom onset , improving clinical utility. Wide Storage Range Stable between 36°F–86°F (2°C–30°C) , enabling easy storage without special refrigeration. Simple, Streamlined Workflow Uses anterior nasal swab collection with straightforward sample processing and visual result interpretation. For professional in vitro diagnostic use to qualitatively detect and differentiate: SARS-CoV-2 nucleocapsid antigen Influenza A nucleoprotein antigen Influenza B nucleoprotein antigen The test is intended for patients aged 14+ self-testing, or ages 2+ when the sample is collected by an adult in a professional setting.",
-      "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Screenshot2025-12-01143246.png?v=1764617578"
-      ],
-      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Screenshot2025-12-01143246.png?v=1764617578",
-      "variants": [
-        {
-          "variant_id": "55977960734886",
-          "sku": "WCOVFLU-POC-25",
-          "title": "Default Title",
-          "available": true,
-          "weight_grams": 502,
-          "options": {
-            "Title": "Default Title"
-          },
-          "image": ""
-        }
-      ],
-      "tags": [
-        "Covid Tests",
-        "Diagnostic Test",
-        "POC"
-      ],
-      "collections": [
-        "Diagnostic Tests"
-      ],
-      "product_type": "Diagnostic Tests",
-      "m6_category": null,
-      "quote_only": false,
-      "fda_registered": true,
+      "fda_registered": false,
       "pdac_approved": false,
       "taa_compliant": false,
       "berry_compliant": false,
       "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
     },
     {
       "sku": "BF-KB",
       "handle": "bonefoam-knee-buddy",
       "name": "BoneFoam Knee Buddy",
       "category": "Surgical",
-      "pack_size": "Default Title",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "BoneFoam Knee Buddy",
-      "summary": "The BoneFoam Knee Buddy is a surgeon-designed support pillow that helps patients rest and recover after knee surgery, replacement, or injury. By gently elevating the leg and promoting full extension, it encourages…",
+      "img": "The BoneFoam Knee Buddy is a surgeon-designed support pillow that helps patients rest and recover after knee surgery, replacement, or injury. By gently elevating the leg and promoting full extension, it encourages proper",
+      "summary": "The BoneFoam Knee Buddy is a surgeon-designed support pillow that helps patients rest and recover after knee surgery, replacement, or injury. By gently elevating the leg and promoting full extension, it encourages proper",
       "description": "The BoneFoam Knee Buddy is a surgeon-designed support pillow that helps patients rest and recover after knee surgery, replacement, or injury. By gently elevating the leg and promoting full extension, it encourages proper alignment, reduces swelling, and makes the recovery process more comfortable. Features & Benefits Promotes Proper Extension – Supports the knee in a safe, extended position to encourage full range of motion during recovery. Reduces Swelling – Elevates the leg to improve circulation and help minimize post-surgical swelling. Surgeon-Designed – Created in collaboration with orthopedic specialists for effective rehab and positioning. Comfortable & Easy to Use – Lightweight design with supportive foam makes it simple for patients to use at home or in the clinic.",
       "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Knee_Buddy_I.jpg?v=1759333859"
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Knee_Buddy_I.jpg?v=1759333859",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/KneeBuddyII.jpg?v=1759333859",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/KneeBuddyIII.jpg?v=1759333859",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/KneeBuddyIV.jpg?v=1759333859"
       ],
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Knee_Buddy_I.jpg?v=1759333859",
       "variants": [
         {
-          "variant_id": "46714388775078",
+          "variant_id": "variant_shopify_01b3487cc0fe9fabca32",
           "sku": "BF-KB",
           "title": "Default Title",
-          "available": false,
-          "weight_grams": 1361,
+          "available": true,
+          "weight_grams": 1360.77711,
           "options": {
             "Title": "Default Title"
           },
@@ -623,42 +1873,43 @@ export const PUBLIC_CATALOG = {
         }
       ],
       "tags": [],
-      "collections": [
-        "BoneFoam"
-      ],
+      "collections": [],
       "product_type": "Surgical Supplies",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
+      "fda_registered": false,
       "pdac_approved": false,
       "taa_compliant": false,
       "berry_compliant": false,
-      "mspv_listed": true,
+      "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
     },
     {
       "sku": "BF-ZDK",
       "handle": "bonefoam-zero-degree-knee",
       "name": "BoneFoam Zero Degree Knee",
       "category": "Surgical",
-      "pack_size": "Default Title",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "BoneFoam Zero Degree Knee",
-      "summary": "The BoneFoam Zero Degree Knee™ post-operative device was designed by a surgeon to promote and enable optimal knee extension following total knee replacement, arthroscopic knee surgery or ACL surgery. It is designed to…",
+      "img": "The BoneFoam Zero Degree Knee™ post-operative device was designed by a surgeon to promote and enable optimal knee extension following total knee replacement, arthroscopic knee surgery or ACL surgery. It is designed to he",
+      "summary": "The BoneFoam Zero Degree Knee™ post-operative device was designed by a surgeon to promote and enable optimal knee extension following total knee replacement, arthroscopic knee surgery or ACL surgery. It is designed to he",
       "description": "The BoneFoam Zero Degree Knee™ post-operative device was designed by a surgeon to promote and enable optimal knee extension following total knee replacement, arthroscopic knee surgery or ACL surgery. It is designed to help achieve full knee extension post-surgery. Features & Benefits Optimize Your Recovery: The BoneFoam Zero Degree Knee promotes healthy recovery after knee replacement, fractures or ligament reconstruction by elevating the knee slightly with adequate space behind the leg Designed with Physicians: The Zero Degree Knee was designed in collaboration with orthopedic surgeons to maximizes early knee extension after surgery and keep the toes pointed toward to ceiling to prevent external rotation of the hip. Simple by Design: Lightweight, versatile and easy to use, the Zero Degree Knee can be utilized anywhere in your home for flexion and/or extension exercises Quality Foam: The Zero Degree Knee is made from durable, medical-grade foam which optimizes positioning exercises, aiding in restoring full extension of the knee Expert Positioning: BoneFoam is the leader in patient positioning to ensure proper leg, knee, ankle, toes and foot positioning to aid in a patient's successful recovery and rehabilitation",
       "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/ZeroDegreeKneeI.jpg?v=1759332670"
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/ZeroDegreeKneeI.jpg?v=1759332670",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/ZeroDegreeKneeII.jpg?v=1759332670",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/ZeroDegreeKneeIII.jpg?v=1759332670",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/ZeroDegreeKneeIV.jpg?v=1759332670"
       ],
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/ZeroDegreeKneeI.jpg?v=1759332670",
       "variants": [
         {
-          "variant_id": "46714267500710",
+          "variant_id": "variant_shopify_c52bce859230736dafba",
           "sku": "BF-ZDK",
           "title": "Default Title",
-          "available": false,
-          "weight_grams": 1361,
+          "available": true,
+          "weight_grams": 1360.77711,
           "options": {
             "Title": "Default Title"
           },
@@ -666,1094 +1917,1016 @@ export const PUBLIC_CATALOG = {
         }
       ],
       "tags": [],
-      "collections": [
-        "BoneFoam"
-      ],
+      "collections": [],
       "product_type": "Surgical Supplies",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
+      "fda_registered": false,
       "pdac_approved": false,
       "taa_compliant": false,
       "berry_compliant": false,
-      "mspv_listed": true,
+      "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
     },
     {
       "sku": "11060527362",
       "handle": "megapre-dairy-free-prebiotic",
       "name": "MegaPre™ Precision Dairy Free Prebiotic (180ct)",
       "category": "Supplements",
-      "pack_size": "Bottle - 180 Capsules",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "MegaPre™ Precision Dairy Free Prebiotic (180ct)",
-      "summary": "MegaPre™ Dairy-Free is a precision prebiotic supplement that fuels the growth of beneficial gut bacteria without dairy ingredients. It delivers clinically tested oligosaccharides that support microbial diversity…",
+      "img": "MegaPre™ Dairy-Free is a precision prebiotic supplement that fuels the growth of beneficial gut bacteria without dairy ingredients. It delivers clinically tested oligosaccharides that support microbial diversity, digesti",
+      "summary": "MegaPre™ Dairy-Free is a precision prebiotic supplement that fuels the growth of beneficial gut bacteria without dairy ingredients. It delivers clinically tested oligosaccharides that support microbial diversity, digesti",
       "description": "MegaPre™ Dairy-Free is a precision prebiotic supplement that fuels the growth of beneficial gut bacteria without dairy ingredients. It delivers clinically tested oligosaccharides that support microbial diversity, digestive balance, and gut barrier function—now in a fully dairy-free formula for those with sensitivities or dietary preferences. Benefits include: Promotes beneficial bacteria growth and microbial diversity Supports healthy digestion and gut barrier function 100% dairy-free formula for sensitive individuals Vegan, non-GMO, and gluten-free Shelf-stable powder with flexible dosing MegaPre™ Dairy-Free makes it simple to support gut health with a targeted prebiotic formula, free from dairy. Suggested Use: Ages 4+: Start with 3 capsules daily for one week, then increase to 6 capsules daily as tolerated, or as directed by a healthcare professional.",
       "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GastrointestinalHealth_MegaPre-DF-Capsules_Mockup.png?v=1755864291"
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GastrointestinalHealth_MegaPre-DF-Capsules_Mockup.png?v=1755864291",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GastrointestinalHealth_MegaSporeBiotic-MegaPre_FrontRow_02_1x1_991df66d-b154-46b4-bae5-b132fa4bc149.jpg?v=1755864291"
       ],
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GastrointestinalHealth_MegaPre-DF-Capsules_Mockup.png?v=1755864291",
       "variants": [
         {
-          "variant_id": "46603347624102",
-          "sku": "11060527362",
+          "variant_id": "variant_shopify_d904e219bd0da5e76f3c",
+          "sku": "'11060527362",
           "title": "Bottle - 180 Capsules",
           "available": true,
-          "weight_grams": 57,
+          "weight_grams": 56.69904625,
           "options": {
             "Pack Size": "Bottle - 180 Capsules"
           },
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GastrointestinalHealth_MegaPre-DF-Capsules_Mockup.png?v=1755864291"
         },
         {
-          "variant_id": "46603347656870",
+          "variant_id": "variant_shopify_a1fc5b642de3e539b9a0",
           "sku": "11023528963C",
           "title": "Case of 12 – 180 Capsules Each",
           "available": true,
-          "weight_grams": 680,
-          "options": {
-            "Pack Size": "Case of 12 – 180 Capsules Each"
-          },
+          "weight_grams": 680.388555,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GastrointestinalHealth_MegaPre-DF-Capsules_Mockup.png?v=1755864291"
         }
       ],
       "tags": [
         "supplement"
       ],
-      "collections": [
-        "Supplements"
-      ],
+      "collections": [],
       "product_type": "Supplements",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
+      "fda_registered": false,
       "pdac_approved": false,
       "taa_compliant": false,
       "berry_compliant": false,
       "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
     },
     {
       "sku": "6935299",
       "handle": "restorflora-probiotic-21ct",
       "name": "RestorFlora™ Daily Probiotic (21ct)",
       "category": "Supplements",
-      "pack_size": "Bottle - 21 Capsules",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "RestorFlora™ Daily Probiotic (21ct)",
-      "summary": "RestorFlora™ 21ct is a travel-friendly size of our dual-action probiotic, combining spore-based bacteria and probiotic yeast for digestive support. Ideal for short-term use, it helps maintain gut balance during…",
+      "img": "RestorFlora™ 21ct is a travel-friendly size of our dual-action probiotic, combining spore-based bacteria and probiotic yeast for digestive support. Ideal for short-term use, it helps maintain gut balance during antibioti",
+      "summary": "RestorFlora™ 21ct is a travel-friendly size of our dual-action probiotic, combining spore-based bacteria and probiotic yeast for digestive support. Ideal for short-term use, it helps maintain gut balance during antibioti",
       "description": "RestorFlora™ 21ct is a travel-friendly size of our dual-action probiotic, combining spore-based bacteria and probiotic yeast for digestive support. Ideal for short-term use, it helps maintain gut balance during antibiotics, travel, or times when extra digestive support is needed. Benefits include: Short supply designed for travel or on-the-go use Supports digestion and microbial balance Helps maintain gut health during or after antibiotics Shelf-stable, non-GMO, and dairy-free RestorFlora™ 21ct offers a compact, convenient way to support gut health anytime, anywhere. Suggested Use: Adults: Take 1–2 capsules daily with or without food, or as directed by a healthcare professional.",
       "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GastrointestinalHealth_RestorFlora-21ct_Mockup.png?v=1755715961"
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GastrointestinalHealth_RestorFlora-21ct_Mockup.png?v=1755715961",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/gastrointestinalhealth_restorflora-21ct_bottle_supplement.png?v=1755715961",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/gastrointestinalhealth_restorflora-21ct_SFP_a90d0bd8-9e0d-403d-8a4a-2b81fb456fde.png?v=1755715917"
       ],
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GastrointestinalHealth_RestorFlora-21ct_Mockup.png?v=1755715961",
       "variants": [
         {
-          "variant_id": "46599011467430",
-          "sku": "6935299",
+          "variant_id": "variant_shopify_3507d271d72743ccf489",
+          "sku": "'6935299",
           "title": "Bottle - 21 Capsules",
           "available": true,
-          "weight_grams": 57,
+          "weight_grams": 56.69904625,
           "options": {
             "Pack Size": "Bottle - 21 Capsules"
           },
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GastrointestinalHealth_RestorFlora-21ct_Mockup.png?v=1755715961"
         },
         {
-          "variant_id": "46599011500198",
+          "variant_id": "variant_shopify_8b228371671e65bcec66",
           "sku": "6935299C",
           "title": "Case of 12 – 21 Capsules Each",
-          "available": false,
-          "weight_grams": 680,
-          "options": {
-            "Pack Size": "Case of 12 – 21 Capsules Each"
-          },
+          "available": true,
+          "weight_grams": 680.388555,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GastrointestinalHealth_RestorFlora-21ct_Mockup.png?v=1755715961"
         }
       ],
       "tags": [
         "supplement"
       ],
-      "collections": [
-        "Supplements"
-      ],
+      "collections": [],
       "product_type": "Supplements",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
+      "fda_registered": false,
       "pdac_approved": false,
       "taa_compliant": false,
       "berry_compliant": false,
       "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
     },
     {
       "sku": "6935258",
       "handle": "digestmate-enzyme-probiotic-blend",
       "name": "DigestMate™ Enzyme & Probiotic Blend (120ct)",
       "category": "Supplements",
-      "pack_size": "Bottle - 120 Capsules",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "DigestMate™ Enzyme & Probiotic Blend (120ct)",
-      "summary": "DigestMate™ is a 2-in-1 formula that combines a broad-spectrum digestive enzyme blend with probiotics for comprehensive digestive support. Featuring 14 enzymes to break down proteins, fats, carbs, and fiber, plus…",
+      "img": "DigestMate™ is a 2-in-1 formula that combines a broad-spectrum digestive enzyme blend with probiotics for comprehensive digestive support. Featuring 14 enzymes to break down proteins, fats, carbs, and fiber, plus spore-b",
+      "summary": "DigestMate™ is a 2-in-1 formula that combines a broad-spectrum digestive enzyme blend with probiotics for comprehensive digestive support. Featuring 14 enzymes to break down proteins, fats, carbs, and fiber, plus spore-b",
       "description": "DigestMate™ is a 2-in-1 formula that combines a broad-spectrum digestive enzyme blend with probiotics for comprehensive digestive support. Featuring 14 enzymes to break down proteins, fats, carbs, and fiber, plus spore-based probiotics and probiotic yeast, DigestMate™ helps promote microbial diversity and digestive comfort. Benefits include: Supports efficient digestion of fats, proteins, carbs, and fiber Promotes microbial diversity with probiotics and probiotic yeast Helps maintain digestive comfort and balance Supports nutrient absorption and gut barrier function Dairy-free, non-GMO, shelf-stable DigestMate™ is designed for anyone seeking daily support for healthy digestion and gut balance. Suggested Use: Adults: Take 2 capsules with meals, or as directed by a healthcare professional.",
       "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/DigestiveSupport_DigestMate_Mockup_Front.png?v=1755712783"
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/DigestiveSupport_DigestMate_Mockup_Front.png?v=1755712783",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/DigestiveSupport_DigestMate_Mockup_SFP.png?v=1755712783",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/DigestiveSupport_DigestMate_Mockup_SuggestedUse.png?v=1755712783",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/DigestiveSupport_DigestMate_FrontRow_02_1x1_75d14a47-e93b-40ad-845f-f3a528256dee.jpg?v=1755712783"
       ],
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/DigestiveSupport_DigestMate_Mockup_Front.png?v=1755712783",
       "variants": [
         {
-          "variant_id": "46598889406630",
-          "sku": "6935258",
+          "variant_id": "variant_shopify_86e3e1b0a73de972edd3",
+          "sku": "'6935258",
           "title": "Bottle - 120 Capsules",
-          "available": false,
-          "weight_grams": 57,
+          "available": true,
+          "weight_grams": 56.69904625,
           "options": {
             "Pack Size": "Bottle - 120 Capsules"
           },
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/DigestiveSupport_DigestMate_Mockup_Front.png?v=1755712783"
         },
         {
-          "variant_id": "46598889439398",
+          "variant_id": "variant_shopify_83708dd7a5103a81d6a0",
           "sku": "6935258C",
           "title": "Case of 12 – 120 Capsules Each",
-          "available": false,
-          "weight_grams": 680,
-          "options": {
-            "Pack Size": "Case of 12 – 120 Capsules Each"
-          },
+          "available": true,
+          "weight_grams": 680.388555,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/DigestiveSupport_DigestMate_Mockup_Front.png?v=1755712783"
         }
       ],
       "tags": [
         "supplement"
       ],
-      "collections": [
-        "Supplements"
-      ],
+      "collections": [],
       "product_type": "Supplements",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
+      "fda_registered": false,
       "pdac_approved": false,
       "taa_compliant": false,
       "berry_compliant": false,
       "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
     },
     {
       "sku": "6935305",
       "handle": "vaginal-balance-probiotic-women",
       "name": "Vaginal Balance Probiotic (60ct)",
       "category": "Supplements",
-      "pack_size": "Bottle - 120 Capsules",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "Vaginal Balance Probiotic (60ct)",
-      "summary": "Vaginal Balance is a daily probiotic designed to support women’s health at every stage of life. It combines clinically studied ASTARTE™ and LA-5® probiotic strains with cranberry powder to promote balanced vaginal…",
+      "img": "Vaginal Balance is a daily probiotic designed to support women’s health at every stage of life. It combines clinically studied ASTARTE™ and LA-5® probiotic strains with cranberry powder to promote balanced vaginal microf",
+      "summary": "Vaginal Balance is a daily probiotic designed to support women’s health at every stage of life. It combines clinically studied ASTARTE™ and LA-5® probiotic strains with cranberry powder to promote balanced vaginal microf",
       "description": "Vaginal Balance is a daily probiotic designed to support women’s health at every stage of life. It combines clinically studied ASTARTE™ and LA-5® probiotic strains with cranberry powder to promote balanced vaginal microflora, urinary tract health, and overall immune and digestive support. Benefits include: Supports a balanced vaginal microbiome Helps maintain pH and discourage yeast overgrowth Provides urinary tract health support with cranberry powder Promotes immune and digestive health Non-GMO, vegan, allergen-free, and shelf-stable Vaginal Balance offers a simple, 2-capsule daily routine for comprehensive feminine health support. Suggested Use: Women: Take 2 capsules daily with or without food, or as directed by a healthcare professional.",
       "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/WomensHealth_VaginalBalance_Mockup.png?v=1755711484"
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/WomensHealth_VaginalBalance_Mockup.png?v=1755711484",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/WomensHealth_VaginalBalance_Mockup-SFP.png?v=1755711484",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/WomensHealth_VaginalBalance_Mockup-SuggestedUse.png?v=1755711484",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/WomensHealth_VaginalBalance_Lifestyle_FrontRow_01.jpg?v=1755711412"
       ],
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/WomensHealth_VaginalBalance_Mockup.png?v=1755711484",
       "variants": [
         {
-          "variant_id": "46598805258406",
-          "sku": "6935305",
+          "variant_id": "variant_shopify_1ffabd229e03beed3142",
+          "sku": "'6935305",
           "title": "Bottle - 120 Capsules",
           "available": true,
-          "weight_grams": 57,
+          "weight_grams": 56.69904625,
           "options": {
             "Pack Size": "Bottle - 120 Capsules"
           },
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/WomensHealth_VaginalBalance_Mockup.png?v=1755711484"
         },
         {
-          "variant_id": "46598805291174",
+          "variant_id": "variant_shopify_5e609b50f0415eefaa41",
           "sku": "6935305C",
           "title": "Case of 12 – 120 Capsules Each",
           "available": true,
-          "weight_grams": 680,
-          "options": {
-            "Pack Size": "Case of 12 – 120 Capsules Each"
-          },
+          "weight_grams": 680.388555,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/WomensHealth_VaginalBalance_Mockup.png?v=1755711484"
         }
       ],
       "tags": [
         "supplement"
       ],
-      "collections": [
-        "Supplements"
-      ],
+      "collections": [],
       "product_type": "Supplements",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
+      "fda_registered": false,
       "pdac_approved": false,
       "taa_compliant": false,
       "berry_compliant": false,
       "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
     },
     {
       "sku": "18010475496",
       "handle": "mega-lgg2000-gut-immune-support",
       "name": "MegaIgG2000™ Gut & Immune Support (120ct)",
       "category": "Supplements",
-      "pack_size": "Bottle - 120 Capsules",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "MegaIgG2000™ Gut & Immune Support (120ct)",
-      "summary": "Mega IgG2000™ is a dairy-free immunoglobulin supplement that helps bind unwanted microbes and toxins in the gut while supporting a healthy intestinal environment. Made with ImmunoLin®, a concentrated source of…",
+      "img": "Mega IgG2000™ is a dairy-free immunoglobulin supplement that helps bind unwanted microbes and toxins in the gut while supporting a healthy intestinal environment. Made with ImmunoLin®, a concentrated source of serum-deri",
+      "summary": "Mega IgG2000™ is a dairy-free immunoglobulin supplement that helps bind unwanted microbes and toxins in the gut while supporting a healthy intestinal environment. Made with ImmunoLin®, a concentrated source of serum-deri",
       "description": "Mega IgG2000™ is a dairy-free immunoglobulin supplement that helps bind unwanted microbes and toxins in the gut while supporting a healthy intestinal environment. Made with ImmunoLin®, a concentrated source of serum-derived immunoglobulins, it provides targeted support for digestive balance, gut barrier integrity, and immune health. Benefits include: Helps bind and neutralize unwanted microbes and toxins Supports healthy digestion and gut barrier function Promotes balanced immune health Dairy-free, casein-free, and lactose-free Available in convenient capsule or powder formats Mega IgG2000™ offers a simple, daily way to support digestive and immune health without the concerns found in dairy-based immunoglobulin products. Suggested Use: Ages 4+: Take 4 capsules daily with or between meals, or as directed by a healthcare professional. Children under 4: consult with a healthcare provider.",
       "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/ImmuneSupport_MegaIgG_Capsules_Mockup.png?v=1755858873"
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/ImmuneSupport_MegaIgG_Capsules_Mockup.png?v=1755858873",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Immunesupport_Megaigg2000_Productphotos_1x1_1469c733-4f8d-4903-808c-67d74946b116.jpg?v=1755858873",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/ImmuneSupoort_MegaIgG2000_Powder-Capsules_FrontRow_03_1x1_4280ae5b-8b5d-4d15-a419-1b901d85af60.jpg?v=1755858873",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Immunesupport_Megaigg2000_Productphoto3_1x1_204f2044-c324-48b8-b5ab-520f58969070.jpg?v=1755858873"
       ],
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/ImmuneSupport_MegaIgG_Capsules_Mockup.png?v=1755858873",
       "variants": [
         {
-          "variant_id": "46598757941414",
-          "sku": "18010475496",
+          "variant_id": "variant_shopify_86783ff38f0e46f766b4",
+          "sku": "'18010475496",
           "title": "Bottle - 120 Capsules",
           "available": true,
-          "weight_grams": 57,
+          "weight_grams": 56.69904625,
           "options": {
             "Pack Size": "Bottle - 120 Capsules"
           },
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Immunesupport_Megaigg2000_Productphotos_1x1_1469c733-4f8d-4903-808c-67d74946b116.jpg?v=1755858873"
         },
         {
-          "variant_id": "46598757974182",
+          "variant_id": "variant_shopify_baa2d6ac93708a267978",
           "sku": "18010475496C",
           "title": "Case of 12 – 120 Capsules Each",
           "available": true,
-          "weight_grams": 680,
-          "options": {
-            "Pack Size": "Case of 12 – 120 Capsules Each"
-          },
+          "weight_grams": 680.388555,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Immunesupport_Megaigg2000_Productphotos_1x1_1469c733-4f8d-4903-808c-67d74946b116.jpg?v=1755858873"
         }
       ],
       "tags": [
         "supplement"
       ],
-      "collections": [
-        "Supplements"
-      ],
+      "collections": [],
       "product_type": "Supplements",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
+      "fda_registered": false,
       "pdac_approved": false,
       "taa_compliant": false,
       "berry_compliant": false,
       "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
     },
     {
       "sku": "18065476592",
       "handle": "megamarine-omega-3-fish-oil",
       "name": "MegaMarine™ Gut & Immune Support (60ct)",
       "category": "Supplements",
-      "pack_size": "Bottle - 60 Capsules",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "MegaMarine™ Gut & Immune Support (60ct)",
-      "summary": "MegaMarine™ is a full-spectrum fish oil formulated to support the gut microbiome, immune system, and overall wellness. Unlike standard fish oils, MegaMarine™ is made with a higher EPA-to-DHA ratio plus the “forgotten…",
+      "img": "MegaMarine™ is a full-spectrum fish oil formulated to support the gut microbiome, immune system, and overall wellness. Unlike standard fish oils, MegaMarine™ is made with a higher EPA-to-DHA ratio plus the “forgotten fat",
+      "summary": "MegaMarine™ is a full-spectrum fish oil formulated to support the gut microbiome, immune system, and overall wellness. Unlike standard fish oils, MegaMarine™ is made with a higher EPA-to-DHA ratio plus the “forgotten fat",
       "description": "MegaMarine™ is a full-spectrum fish oil formulated to support the gut microbiome, immune system, and overall wellness. Unlike standard fish oils, MegaMarine™ is made with a higher EPA-to-DHA ratio plus the “forgotten fatty acid” DPA for better balance and absorption. It also contains specialized pro-resolving mediators (SPMs), naturally occurring compounds that help support gut and immune health. Benefits include: Supports gut microbiome balance and gut barrier function Helps maintain healthy immune and digestive function Provides EPA, DHA, and DPA in triglyceride form for better absorption Includes specialized pro-resolving mediators (SPMs) Sustainably sourced and Friends of the Sea-certified MegaMarine™ is a clean, shelf-stable fish oil that goes beyond standard omega-3s by focusing on gut and immune support, while also benefiting brain and overall health. Suggested Use: Ages 8+: Take 2 softgels daily with food, or as directed by a healthcare professional.",
       "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/gastrointestinalhealth_megamarine_bottle_mockup.png?v=1755709267"
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/gastrointestinalhealth_megamarine_bottle_mockup.png?v=1755709267",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/gastrointestinalhealth_megamarine_mockup_suggesteduse.png?v=1755709267",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/gastrointestinalhealth_megamarine_mockup_supplement.png?v=1755709268",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GastrointestinalHealth_MegaMarine_ProductPhoto1_1x1_b3eda8fb-626e-40eb-896d-3582708b0904.jpg?v=1755709267",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GastrointestinalHealth_MegaMarine_SFP.png?v=1755709268"
       ],
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/gastrointestinalhealth_megamarine_bottle_mockup.png?v=1755709267",
       "variants": [
         {
-          "variant_id": "46598638010534",
-          "sku": "18065476592",
+          "variant_id": "variant_shopify_3421f37894737386365b",
+          "sku": "'18065476592",
           "title": "Bottle - 60 Capsules",
           "available": true,
-          "weight_grams": 57,
+          "weight_grams": 56.69904625,
           "options": {
             "Pack Size": "Bottle - 60 Capsules"
           },
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/gastrointestinalhealth_megamarine_bottle_mockup.png?v=1755709267"
         },
         {
-          "variant_id": "46598638043302",
+          "variant_id": "variant_shopify_013181858bd312e0e360",
           "sku": "18065476592C",
           "title": "Case of 12 – 60 Capsules Each",
           "available": true,
-          "weight_grams": 680,
-          "options": {
-            "Pack Size": "Case of 12 – 60 Capsules Each"
-          },
+          "weight_grams": 680.388555,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/gastrointestinalhealth_megamarine_bottle_mockup.png?v=1755709267"
         }
       ],
       "tags": [
         "supplement"
       ],
-      "collections": [
-        "Supplements"
-      ],
+      "collections": [],
       "product_type": "Supplements",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
+      "fda_registered": false,
       "pdac_approved": false,
       "taa_compliant": false,
       "berry_compliant": false,
       "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
     },
     {
       "sku": "11023528963",
       "handle": "megapre-precision-gut-prebiotic",
       "name": "MegaPre™ Precision Prebiotic (180ct)",
       "category": "Supplements",
-      "pack_size": "Bottle - 180 Capsules",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "MegaPre™ Precision Prebiotic (180ct)",
-      "summary": "MegaPre™ is a precision prebiotic supplement designed to feed beneficial gut bacteria and support a healthy microbiome. This targeted formula uses oligosaccharides and organic kiwifruit powder to selectively nourish…",
+      "img": "MegaPre™ is a precision prebiotic supplement designed to feed beneficial gut bacteria and support a healthy microbiome. This targeted formula uses oligosaccharides and organic kiwifruit powder to selectively nourish keys",
+      "summary": "MegaPre™ is a precision prebiotic supplement designed to feed beneficial gut bacteria and support a healthy microbiome. This targeted formula uses oligosaccharides and organic kiwifruit powder to selectively nourish keys",
       "description": "MegaPre™ is a precision prebiotic supplement designed to feed beneficial gut bacteria and support a healthy microbiome. This targeted formula uses oligosaccharides and organic kiwifruit powder to selectively nourish keystone species that play a key role in gut balance, immune health, and barrier function. Benefits include: Supports gut microbial diversity Selectively feeds beneficial gut bacteria Helps maintain intestinal barrier function Supports immune health Complements probiotic use, including MegaSporeBiotic™ MegaPre™ DF provides a simple, daily way to reinforce microbial balance and overall gut health. Suggested Use: Ages 4+: Start with 3 capsules daily for one week, then increase to 6 capsules daily as tolerated, or as directed by a healthcare professional.",
       "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Gastrointestinal_MegaPre_Capsules_Bottle_Front.png?v=1755708027"
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Gastrointestinal_MegaPre_Capsules_Bottle_Front.png?v=1755708027",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GastrointestinalHealth_MegaPre-Capsules_Mockup-NewSFP.png?v=1755708027",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GastrointestinalHealth_MegaPre-DF-Capsules_Mockup-SuggestedUse.png?v=1755708027",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GastrointestinalHealth_MegaSporeBiotic-MegaPre_FrontRow_02_1x1_991df66d-b154-46b4-bae5-b132fa4bc149.jpg?v=1755864291"
       ],
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Gastrointestinal_MegaPre_Capsules_Bottle_Front.png?v=1755708027",
       "variants": [
         {
-          "variant_id": "46598585745574",
-          "sku": "11023528963",
+          "variant_id": "variant_shopify_770bdb74fc4568dfd60e",
+          "sku": "'11023528963",
           "title": "Bottle - 180 Capsules",
           "available": true,
-          "weight_grams": 57,
+          "weight_grams": 56.69904625,
           "options": {
             "Pack Size": "Bottle - 180 Capsules"
           },
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Gastrointestinal_MegaPre_Capsules_Bottle_Front.png?v=1755708027"
         },
         {
-          "variant_id": "46598585778342",
+          "variant_id": "variant_shopify_2fcea4a91a2f06f7d6b4",
           "sku": "11023528963C",
           "title": "Case of 12 – 180 Capsules Each",
           "available": true,
-          "weight_grams": 680,
-          "options": {
-            "Pack Size": "Case of 12 – 180 Capsules Each"
-          },
+          "weight_grams": 680.388555,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Gastrointestinal_MegaPre_Capsules_Bottle_Front.png?v=1755708027"
         }
       ],
       "tags": [
         "supplement"
       ],
-      "collections": [
-        "Supplements"
-      ],
+      "collections": [],
       "product_type": "Supplements",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
+      "fda_registered": false,
       "pdac_approved": false,
       "taa_compliant": false,
       "berry_compliant": false,
       "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
     },
     {
       "sku": "6935286",
       "handle": "sereneskin-gut-skin-support",
       "name": "SereneSkin™ Probiotic Skin Support (60ct)",
       "category": "Supplements",
-      "pack_size": "Bottle - 60 Capsules",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "SereneSkin™ Probiotic Skin Support (60ct)",
-      "summary": "SereneSkin™ is a daily probiotic supplement designed to support clear, healthy-looking skin by targeting the gut-skin axis. This unique blend of spore-based Bacillus strains, citrus bioflavonoids, carotenoids, and…",
+      "img": "SereneSkin™ is a daily probiotic supplement designed to support clear, healthy-looking skin by targeting the gut-skin axis. This unique blend of spore-based Bacillus strains, citrus bioflavonoids, carotenoids, and vitami",
+      "summary": "SereneSkin™ is a daily probiotic supplement designed to support clear, healthy-looking skin by targeting the gut-skin axis. This unique blend of spore-based Bacillus strains, citrus bioflavonoids, carotenoids, and vitami",
       "description": "SereneSkin™ is a daily probiotic supplement designed to support clear, healthy-looking skin by targeting the gut-skin axis. This unique blend of spore-based Bacillus strains, citrus bioflavonoids, carotenoids, and vitamin K2 helps maintain microbial balance for both gut and skin health. Benefits include: Supports clear skin and complexion Helps address occasional non-cystic acne Maintains skin hydration and balance Supports gut-skin axis communication Promotes microbial diversity for skin and gut health SereneSkin™ offers a simple, once-a-day approach to supporting beauty from within through probiotic-powered skin support. Suggested Use: Adults: Take 2 capsules daily with a meal, or as directed by a healthcare professional.",
       "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/SereneSkinMockup.png?v=1755706731"
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/SereneSkinMockup.png?v=1755706731",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/SereneSkinMockup-SFP.png?v=1755706731",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/SereneSkinMockup-SuggestedUse.png?v=1755706731",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/SkinSupport_SereneSkin_FrontRow_05_1x1_f79c668e-9336-47aa-a000-8cbf202fadc7.jpg?v=1755706707"
       ],
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/SereneSkinMockup.png?v=1755706731",
       "variants": [
         {
-          "variant_id": "46598521258150",
-          "sku": "6935286",
+          "variant_id": "variant_shopify_d8852ec7152be1dbb3bc",
+          "sku": "'6935286",
           "title": "Bottle - 60 Capsules",
           "available": true,
-          "weight_grams": 57,
+          "weight_grams": 56.69904625,
           "options": {
             "Pack Size": "Bottle - 60 Capsules"
           },
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/SereneSkinMockup.png?v=1755706731"
         },
         {
-          "variant_id": "46598521290918",
+          "variant_id": "variant_shopify_89e54d365dd07cdcb80b",
           "sku": "6935286C",
           "title": "Case of 12 – 60 Capsules Each",
           "available": true,
-          "weight_grams": 680,
-          "options": {
-            "Pack Size": "Case of 12 – 60 Capsules Each"
-          },
+          "weight_grams": 680.388555,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/SereneSkinMockup.png?v=1755706731"
         }
       ],
       "tags": [
         "supplement"
       ],
-      "collections": [
-        "Supplements"
-      ],
+      "collections": [],
       "product_type": "Supplements",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
+      "fda_registered": false,
       "pdac_approved": false,
       "taa_compliant": false,
       "berry_compliant": false,
       "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
     },
     {
       "sku": "18024527461",
       "handle": "megamucosa-intestinal-support",
       "name": "MegaMucosa™ Intestinal Support (180ct)",
       "category": "Supplements",
-      "pack_size": "Bottle - 180 Capsules",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "MegaMucosa™ Intestinal Support (180ct)",
-      "summary": "MegaMucosa™ is a comprehensive intestinal mucosal support formula designed to help rebuild and maintain a healthy mucosal barrier. It combines dairy-free immunoglobulins, four key amino acids (L-proline, L-serine…",
+      "img": "MegaMucosa™ is a comprehensive intestinal mucosal support formula designed to help rebuild and maintain a healthy mucosal barrier. It combines dairy-free immunoglobulins, four key amino acids (L-proline, L-serine, L-cyst",
+      "summary": "MegaMucosa™ is a comprehensive intestinal mucosal support formula designed to help rebuild and maintain a healthy mucosal barrier. It combines dairy-free immunoglobulins, four key amino acids (L-proline, L-serine, L-cyst",
       "description": "MegaMucosa™ is a comprehensive intestinal mucosal support formula designed to help rebuild and maintain a healthy mucosal barrier. It combines dairy-free immunoglobulins, four key amino acids (L-proline, L-serine, L-cysteine, and L-threonine), and citrus bioflavonoids (MicrobiomeX®) to promote gut barrier integrity and immune function. Benefits include: Supports rebuilding of the intestinal mucosal barrier Promotes healthy intestinal barrier function Encourages gut microbial diversity and balance Supports short-chain fatty acid (SCFA) production Contains dairy-free immunoglobulins clinically studied in intestinal health Includes citrus bioflavonoids to support microbial diversity and immune health MegaMucosa™ provides foundational gut lining support, helping maintain digestive and immune function at the mucosal level. Suggested Use: Ages 4+: Start with 3 capsules daily with or without a meal for one week, then increase to 6 capsules daily as tolerated, or as directed by a healthcare professional. Children under 4: consult a healthcare provider.",
       "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GastrointestinalHealth_MegaMucosa-Capsules_Mockup.png?v=1755705544"
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GastrointestinalHealth_MegaMucosa-Capsules_Mockup.png?v=1755705544",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GastrointestinalHealth_MegaMucosa_Capsules_ProductPhoto1_1x1_1ec1629b-a6be-4719-a974-7dff42aeb7b2.jpg?v=1755705544",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GastrointestinalHealth_MegaMucosa_Capsules_ProductPhoto2_1x1_5f342abe-84b4-475b-801a-489636434bcb.jpg?v=1755705544",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/gastrointestinalhealth_megamucosacapsule_SFP.png?v=1755705529"
       ],
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GastrointestinalHealth_MegaMucosa-Capsules_Mockup.png?v=1755705544",
       "variants": [
         {
-          "variant_id": "46598421840038",
-          "sku": "18024527461",
+          "variant_id": "variant_shopify_c4ee547b1dbe85d2c715",
+          "sku": "'18024527461",
           "title": "Bottle - 180 Capsules",
           "available": true,
-          "weight_grams": 57,
+          "weight_grams": 56.69904625,
           "options": {
             "Pack Size": "Bottle - 180 Capsules"
           },
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GastrointestinalHealth_MegaMucosa-Capsules_Mockup.png?v=1755705544"
         },
         {
-          "variant_id": "46598421872806",
+          "variant_id": "variant_shopify_a96a6b96acfdc0a1401d",
           "sku": "18024527461C",
           "title": "Case of 12 – 180 Capsules Each",
           "available": true,
-          "weight_grams": 57,
-          "options": {
-            "Pack Size": "Case of 12 – 180 Capsules Each"
-          },
+          "weight_grams": 56.69904625,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GastrointestinalHealth_MegaMucosa-Capsules_Mockup.png?v=1755705544"
         }
       ],
       "tags": [
         "supplement"
       ],
-      "collections": [
-        "Supplements"
-      ],
+      "collections": [],
       "product_type": "Supplements",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
+      "fda_registered": false,
       "pdac_approved": false,
       "taa_compliant": false,
       "berry_compliant": false,
       "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
     },
     {
       "sku": "6935296",
       "handle": "megaguard-digestive-support",
       "name": "MegaGuard™ Digestive Support (60ct)",
       "category": "Supplements",
-      "pack_size": "Bottle - 60 Capsules",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "MegaGuard™ Digestive Support (60ct)",
-      "summary": "MegaGuard™ is a digestive support formula that combines three clinically studied botanicals—licorice polyphenols, artichoke extract, and ginger—to help manage occasional digestive discomforts. This unique blend…",
+      "img": "MegaGuard™ is a digestive support formula that combines three clinically studied botanicals—licorice polyphenols, artichoke extract, and ginger—to help manage occasional digestive discomforts. This unique blend provides ",
+      "summary": "MegaGuard™ is a digestive support formula that combines three clinically studied botanicals—licorice polyphenols, artichoke extract, and ginger—to help manage occasional digestive discomforts. This unique blend provides ",
       "description": "MegaGuard™ is a digestive support formula that combines three clinically studied botanicals—licorice polyphenols, artichoke extract, and ginger—to help manage occasional digestive discomforts. This unique blend provides comprehensive support for stomach, intestinal, and gut motility function. Benefits include: Helps relieve occasional gas, bloating, and abdominal discomfort Supports healthy digestion and bowel transit time Promotes gastric emptying and balanced gut motility Maintains healthy stomach acid levels Supports gastric mucosa and microbial balance With protective support from licorice, cleansing support from artichoke, and soothing support from ginger, MegaGuard™ delivers a triple-action approach for everyday digestive balance. Suggested Use: Ages 8+: Take 1 capsule, 2 times daily before meals, or as directed by a healthcare professional. Children under 8: consult a healthcare provider.",
       "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/DigestiveSupport_MegaGuard_Mockup.png?v=1755693996"
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/DigestiveSupport_MegaGuard_Mockup.png?v=1755693996",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/DigestiveSupport_MegaGuard_FrontRow_01_1x1_7dc36090-3071-4f21-84e2-f515ca70887a.jpg?v=1755693996",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/DigestiveSupport_MegaGuard_FrontRow_02_1x1_08e352d0-2789-4322-9874-43f8d4edaaba.jpg?v=1755693996",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/DigestiveSupport_MegaGuard_SFP.png?v=1755693986"
       ],
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/DigestiveSupport_MegaGuard_Mockup.png?v=1755693996",
       "variants": [
         {
-          "variant_id": "46597667979430",
-          "sku": "6935296",
+          "variant_id": "variant_shopify_151d925ee0340522fa17",
+          "sku": "'6935296",
           "title": "Bottle - 60 Capsules",
           "available": true,
-          "weight_grams": 57,
+          "weight_grams": 56.69904625,
           "options": {
             "Pack Size": "Bottle - 60 Capsules"
           },
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/DigestiveSupport_MegaGuard_Mockup.png?v=1755693996"
         },
         {
-          "variant_id": "46597668012198",
+          "variant_id": "variant_shopify_e926eea658922b45a91a",
           "sku": "6935296C",
           "title": "Case of 12 – 60 Capsules Each",
           "available": true,
-          "weight_grams": 680,
-          "options": {
-            "Pack Size": "Case of 12 – 60 Capsules Each"
-          },
+          "weight_grams": 680.388555,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/DigestiveSupport_MegaGuard_Mockup.png?v=1755693996"
         }
       ],
       "tags": [
         "supplement"
       ],
-      "collections": [
-        "Supplements"
-      ],
+      "collections": [],
       "product_type": "Supplements",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
+      "fda_registered": false,
       "pdac_approved": false,
       "taa_compliant": false,
       "berry_compliant": false,
       "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
     },
     {
       "sku": "6935209",
       "handle": "zenbiome-cope-probiotic",
       "name": "ZenBiome™ Cope  Probiotic (60ct)",
       "category": "Supplements",
-      "pack_size": "Bottle - 60 Capsules",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "ZenBiome™ Cope Probiotic (60ct)",
-      "summary": "ZenBiome™ Cope is a psychobiotic supplement designed to help the body better manage occasional stress. Powered by Bifidobacterium longum 1714™, vitamin B6, vitamin B12, and saffron extract, this unique formula targets…",
+      "img": "ZenBiome™ Cope is a psychobiotic supplement designed to help the body better manage occasional stress. Powered by Bifidobacterium longum 1714™, vitamin B6, vitamin B12, and saffron extract, this unique formula targets th",
+      "summary": "ZenBiome™ Cope is a psychobiotic supplement designed to help the body better manage occasional stress. Powered by Bifidobacterium longum 1714™, vitamin B6, vitamin B12, and saffron extract, this unique formula targets th",
       "description": "ZenBiome™ Cope is a psychobiotic supplement designed to help the body better manage occasional stress. Powered by Bifidobacterium longum 1714™, vitamin B6, vitamin B12, and saffron extract, this unique formula targets the gut-brain axis to support mood, energy, and cognitive balance. Benefits include: Helps reduce perceived stress and occasional tension Supports healthy mood and memory function Promotes energy, vitality, and reduced mental fatigue Supports cortisol regulation during stress response Clinically studied 1714™ strain for gut-brain balance ZenBiome™ Cope provides a novel approach to stress support by combining psychobiotic science with key nutrients and botanicals for comprehensive cognitive and mood support. Suggested Use: Ages 8+: Take 1 capsule, 2 times daily with or without food, or as directed by a healthcare professional.",
       "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/CognitiveHealth_Zenbiome_COPE_Mockup_f8012157-e69e-4398-9686-78c97ba3b801.png?v=1755626949"
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/CognitiveHealth_Zenbiome_COPE_Mockup_f8012157-e69e-4398-9686-78c97ba3b801.png?v=1755626949",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/CognitiveHealth_ZenbiomeCope_ZenbiomeSleep_EnzymaticMouthFreshners_FrontRow_01_1x1_b052ec87-1ae9-4f13-a5bd-a5ee6d803018.jpg?v=1755626949",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/CognitiveHealth_Zenbiome_COPE_Mockup-SFP_1f1f6631-f060-4768-bc0e-73ee9b1bed0e.png?v=1755626949",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/CognitiveHealth_Zenbiome_COPE_Mockup-SuggestedUse.png?v=1755626949",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/CognitiveSupport_ZenBiomeCope_SFP_9d923777-0ddc-470f-bc40-c2822647ca2a.png?v=1755626949"
       ],
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/CognitiveHealth_Zenbiome_COPE_Mockup_f8012157-e69e-4398-9686-78c97ba3b801.png?v=1755626949",
       "variants": [
         {
-          "variant_id": "46593806696614",
-          "sku": "6935209",
+          "variant_id": "variant_shopify_1d52fec850d699a3aab0",
+          "sku": "'6935209",
           "title": "Bottle - 60 Capsules",
           "available": true,
-          "weight_grams": 57,
+          "weight_grams": 56.69904625,
           "options": {
             "Pack Size": "Bottle - 60 Capsules"
           },
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/CognitiveHealth_Zenbiome_COPE_Mockup_f8012157-e69e-4398-9686-78c97ba3b801.png?v=1755626949"
         },
         {
-          "variant_id": "46593806729382",
+          "variant_id": "variant_shopify_d7b401d52701d88b022d",
           "sku": "6935209C",
           "title": "Case of 12 – 60 Capsules Each",
           "available": true,
-          "weight_grams": 680,
-          "options": {
-            "Pack Size": "Case of 12 – 60 Capsules Each"
-          },
+          "weight_grams": 680.388555,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/CognitiveHealth_Zenbiome_COPE_Mockup_f8012157-e69e-4398-9686-78c97ba3b801.png?v=1755626949"
         }
       ],
       "tags": [
         "supplement"
       ],
-      "collections": [
-        "Supplements"
-      ],
+      "collections": [],
       "product_type": "Supplements",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
+      "fda_registered": false,
       "pdac_approved": false,
       "taa_compliant": false,
       "berry_compliant": false,
       "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
     },
     {
       "sku": "6935208",
       "handle": "zenbiome-sleep-probiotic",
       "name": "ZenBiome™ Sleep  Probiotic (30ct)",
       "category": "Supplements",
-      "pack_size": "Bottle - 30 Capsules",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "ZenBiome™ Sleep Probiotic (30ct)",
-      "summary": "ZenBiome™ Sleep is a psychobiotic supplement formulated with Bifidobacterium longum 1714™, L-theanine, and lemon balm extract to support the gut-brain axis and promote restful sleep. This innovative evening probiotic…",
+      "img": "ZenBiome™ Sleep is a psychobiotic supplement formulated with Bifidobacterium longum 1714™, L-theanine, and lemon balm extract to support the gut-brain axis and promote restful sleep. This innovative evening probiotic tar",
+      "summary": "ZenBiome™ Sleep is a psychobiotic supplement formulated with Bifidobacterium longum 1714™, L-theanine, and lemon balm extract to support the gut-brain axis and promote restful sleep. This innovative evening probiotic tar",
       "description": "ZenBiome™ Sleep is a psychobiotic supplement formulated with Bifidobacterium longum 1714™, L-theanine, and lemon balm extract to support the gut-brain axis and promote restful sleep. This innovative evening probiotic targets occasional sleeplessness by supporting relaxation, reducing tension, and maintaining healthy sleep cycles. Benefits include: Helps overcome occasional sleeplessness Supports relaxation and tension reduction Promotes alpha brain wave activity for calmness Maintains energy and vitality upon waking Targets the gut-brain axis with clinically studied 1714™ strain ZenBiome™ Sleep combines psychobiotic science with calming botanicals to support restorative rest and overall well-being. Suggested Use: Ages 8+: Take 1 capsule in the evening with or without food, or as directed by a healthcare professional.",
       "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/CognitiveHealth_Zenbiome_SLEEP_Mockup_30330895-66f4-4585-853a-651f72c6ac9b.png?v=1755713775"
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/CognitiveHealth_Zenbiome_SLEEP_Mockup_30330895-66f4-4585-853a-651f72c6ac9b.png?v=1755713775",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/CognitiveHealth_Zenbiome_SLEEP_Mockup-SFP_de6a3f94-e31e-4664-b944-080cebd36415.png?v=1755713775",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/CognitiveHealth_ZenbiomeCope_ZenbiomeSleep_EnzymaticMouthFreshners_FrontRow_01_1x1_6953de28-7d76-40b0-92da-ccbd8c8ef34a.jpg?v=1755713775",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/CognitiveHealth_ZenBiome_Sleep_SFP_0a9d21b1-aec9-4f16-809e-0a0f2f55ef23.png?v=1755713775"
       ],
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/CognitiveHealth_Zenbiome_SLEEP_Mockup_30330895-66f4-4585-853a-651f72c6ac9b.png?v=1755713775",
       "variants": [
         {
-          "variant_id": "46593776877734",
-          "sku": "6935208",
+          "variant_id": "variant_shopify_160b4062b4f73be3af00",
+          "sku": "'6935208",
           "title": "Bottle - 30 Capsules",
           "available": true,
-          "weight_grams": 57,
+          "weight_grams": 56.69904625,
           "options": {
             "Pack Size": "Bottle - 30 Capsules"
           },
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/CognitiveHealth_Zenbiome_SLEEP_Mockup_30330895-66f4-4585-853a-651f72c6ac9b.png?v=1755713775"
         },
         {
-          "variant_id": "46593776910502",
+          "variant_id": "variant_shopify_ad15687769946f76526d",
           "sku": "6935208C",
           "title": "Case of 12 – 30 Capsules Each",
           "available": true,
-          "weight_grams": 680,
-          "options": {
-            "Pack Size": "Case of 12 – 30 Capsules Each"
-          },
+          "weight_grams": 680.388555,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/CognitiveHealth_Zenbiome_SLEEP_Mockup_30330895-66f4-4585-853a-651f72c6ac9b.png?v=1755713775"
         }
       ],
       "tags": [
         "supplement"
       ],
-      "collections": [
-        "Supplements"
-      ],
+      "collections": [],
       "product_type": "Supplements",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
+      "fda_registered": false,
       "pdac_approved": false,
       "taa_compliant": false,
       "berry_compliant": false,
       "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
     },
     {
       "sku": "6935256",
       "handle": "megasporebiotic-gummies-adults",
       "name": "MegaSporeBiotic™ Gummies for Adults (60ct)",
       "category": "Supplements",
-      "pack_size": "Bottle - 60 Capsules",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "MegaSporeBiotic™ Gummies for Adults (60ct)",
-      "summary": "MegaSporeBiotic™ Gummies for Adults offer a convenient, great-tasting way to support gut and immune health. Each serving provides four spore-forming Bacillus strains—B. indicus HU36™, B. clausii SC109, B. subtilis…",
+      "img": "MegaSporeBiotic™ Gummies for Adults offer a convenient, great-tasting way to support gut and immune health. Each serving provides four spore-forming Bacillus strains—B. indicus HU36™, B. clausii SC109, B. subtilis HU58™,",
+      "summary": "MegaSporeBiotic™ Gummies for Adults offer a convenient, great-tasting way to support gut and immune health. Each serving provides four spore-forming Bacillus strains—B. indicus HU36™, B. clausii SC109, B. subtilis HU58™,",
       "description": "MegaSporeBiotic™ Gummies for Adults offer a convenient, great-tasting way to support gut and immune health. Each serving provides four spore-forming Bacillus strains—B. indicus HU36™, B. clausii SC109, B. subtilis HU58™, and B. coagulans SC208—clinically studied to survive digestion and support microbial diversity. Benefits include: Supports gut microbial diversity and balance Promotes healthy gut barrier and immune function Natural mixed berry flavor (blueberry, strawberry, blackberry) Non-GMO, soy-free, dairy-free, no artificial flavors or colors Shelf-stable, no refrigeration required Suggested Use: Adults (18+): Chew 2 gummies daily with food or as directed by a healthcare professional.",
       "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GastrointestinalHealth_MegaSpore_Gummie_Adult-Mockup.png?v=1755624519"
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GastrointestinalHealth_MegaSpore_Gummie_Adult-Mockup.png?v=1755624519",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GastrointestinalHealth_MegaSporeForKids_Mockup-30ct_SuggestedUse.png?v=1755624518"
       ],
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GastrointestinalHealth_MegaSpore_Gummie_Adult-Mockup.png?v=1755624519",
       "variants": [
         {
-          "variant_id": "46593737228454",
-          "sku": "6935256",
+          "variant_id": "variant_shopify_2afbcac8d1835dabb566",
+          "sku": "'6935256",
           "title": "Bottle - 60 Capsules",
           "available": true,
-          "weight_grams": 57,
+          "weight_grams": 56.69904625,
           "options": {
             "Pack Size": "Bottle - 60 Capsules"
           },
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GastrointestinalHealth_MegaSpore_Gummie_Adult-Mockup.png?v=1755624519"
         },
         {
-          "variant_id": "46593737261222",
+          "variant_id": "variant_shopify_fbbe4999288db2c16e06",
           "sku": "6935256C",
           "title": "Case of 12 – 60 Capsules Each",
           "available": true,
-          "weight_grams": 680,
-          "options": {
-            "Pack Size": "Case of 12 – 60 Capsules Each"
-          },
+          "weight_grams": 680.388555,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GastrointestinalHealth_MegaSpore_Gummie_Adult-Mockup.png?v=1755624519"
         }
       ],
       "tags": [
         "supplement"
       ],
-      "collections": [
-        "Supplements"
-      ],
+      "collections": [],
       "product_type": "Supplements",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
+      "fda_registered": false,
       "pdac_approved": false,
       "taa_compliant": false,
       "berry_compliant": false,
       "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
     },
     {
       "sku": "6935309",
       "handle": "megasporebiotic-gummies-kids",
       "name": "MegaSporeBiotic™ Gummies for Kids (30ct)",
       "category": "Supplements",
-      "pack_size": "Bottle - 30 Capsules",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "MegaSporeBiotic™ Gummies for Kids (30ct)",
-      "summary": "MegaSporeBiotic™ Gummies for Kids deliver daily gut and immune support in a tasty, easy-to-digest chewable. Each gummy contains four research-backed spore-forming Bacillus strains designed to survive digestion and…",
+      "img": "MegaSporeBiotic™ Gummies for Kids deliver daily gut and immune support in a tasty, easy-to-digest chewable. Each gummy contains four research-backed spore-forming Bacillus strains designed to survive digestion and promot",
+      "summary": "MegaSporeBiotic™ Gummies for Kids deliver daily gut and immune support in a tasty, easy-to-digest chewable. Each gummy contains four research-backed spore-forming Bacillus strains designed to survive digestion and promot",
       "description": "MegaSporeBiotic™ Gummies for Kids deliver daily gut and immune support in a tasty, easy-to-digest chewable. Each gummy contains four research-backed spore-forming Bacillus strains designed to survive digestion and promote microbial balance. Benefits include: Supports gut microbial diversity in children Helps maintain beneficial gut bacteria Promotes healthy immune and gut barrier function Natural mixed berry flavor (blueberry, strawberry, blackberry) Non-GMO, soy-free, dairy-free, no artificial flavors or colors Shelf-stable, no refrigeration required Suggested Use: Ages 4+: Chew 1 gummy daily with food or as directed by a healthcare professional.",
       "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Mega_sporebiotic_Kids.png?v=1755866060"
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Mega_sporebiotic_Kids.png?v=1755866060",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GastrointestinalHealth_MegaSporeBioticGummies_FrontRow_04_1x1_f8329faf-6215-4643-902a-2d61a81ba0a9.jpg?v=1755866060",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GastrointestinalHealth_MegaSporeBiotic_Gummies_ProductPhoto3_1x1_4595a15c-a35b-4aa0-9fc1-c03ad95e4467.jpg?v=1755866060",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GastrointestinalHealth_MegaSporeBiotic60_SFP.png?v=1755866060"
       ],
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Mega_sporebiotic_Kids.png?v=1755866060",
       "variants": [
         {
-          "variant_id": "46593721401510",
-          "sku": "6935309",
+          "variant_id": "variant_shopify_5b8be02c72551d217d20",
+          "sku": "'6935309",
           "title": "Bottle - 30 Capsules",
           "available": true,
-          "weight_grams": 57,
+          "weight_grams": 56.69904625,
           "options": {
             "Pack Size": "Bottle - 30 Capsules"
           },
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Mega_sporebiotic_Kids.png?v=1755866060"
         },
         {
-          "variant_id": "46593721434278",
+          "variant_id": "variant_shopify_80f70ac716940a152b81",
           "sku": "6935309C",
           "title": "Case of 12 – 30 Capsules Each",
-          "available": false,
-          "weight_grams": 680,
-          "options": {
-            "Pack Size": "Case of 12 – 30 Capsules Each"
-          },
+          "available": true,
+          "weight_grams": 680.388555,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Mega_sporebiotic_Kids.png?v=1755866060"
         }
       ],
       "tags": [
         "supplement"
       ],
-      "collections": [
-        "Supplements"
-      ],
+      "collections": [],
       "product_type": "Supplements",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
+      "fda_registered": false,
       "pdac_approved": false,
       "taa_compliant": false,
       "berry_compliant": false,
       "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
     },
     {
       "sku": "6935297",
       "handle": "megaquin-k2-d3-vitamin-supplement",
       "name": "MegaQuinK2+D3™ Bone & Heart Support (60ct)",
       "category": "Supplements",
-      "pack_size": "Bottle - 60 Capsules",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "MegaQuinK2+D3™ Bone & Heart Support (60ct)",
-      "summary": "MegaQuin™K2+D3 is a high-potency supplement combining bioactive vitamin D3 (cholecalciferol) with natural vitamin K2 (MK-7). This synergistic formula supports calcium absorption, utilization, and distribution—key…",
+      "img": "MegaQuin™K2+D3 is a high-potency supplement combining bioactive vitamin D3 (cholecalciferol) with natural vitamin K2 (MK-7). This synergistic formula supports calcium absorption, utilization, and distribution—key process",
+      "summary": "MegaQuin™K2+D3 is a high-potency supplement combining bioactive vitamin D3 (cholecalciferol) with natural vitamin K2 (MK-7). This synergistic formula supports calcium absorption, utilization, and distribution—key process",
       "description": "MegaQuin™K2+D3 is a high-potency supplement combining bioactive vitamin D3 (cholecalciferol) with natural vitamin K2 (MK-7). This synergistic formula supports calcium absorption, utilization, and distribution—key processes for maintaining strong bones, healthy cardiovascular function, and overall metabolic balance. Benefits include: Supports bone strength and mineralization Promotes cardiovascular health and calcium balance Synergistic vitamin D3 and K2 formula for optimal absorption Supports nerve, mitochondrial, and immune function Natural K2 (MK-7) derived from chickpea fermentation Soy-free, dairy-free, gluten-free, vegan, and non-GMO Sourcing matters: MegaQuin™K2+D3 uses only natural K2, providing 100% trans isomer (all K2-7) for maximum bioavailability, unlike synthetic forms that may contain inactive isomers. Suggested Use: Adults (18+): Take 1 capsule daily with food or as directed by a healthcare professional.",
       "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MetabolicHealth_MegaQuinK2_D3_Mockup.png?v=1755622071"
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MetabolicHealth_MegaQuinK2_D3_Mockup.png?v=1755622071",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MetabolicHealth_MegaQuinK2_D3_Mockup_SFP.png?v=1755622071",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MetabolicHealth_MegaQuinK2_D3_Mockup_Suggested_Use.png?v=1755622071",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MetabolicHealth_MegaQuinD3_MegaQuinone_FrontRow_02.jpg?v=1755622071",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/metabolichealth_MegaQuinK2_D3_SFP.png?v=1755622046"
       ],
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MetabolicHealth_MegaQuinK2_D3_Mockup.png?v=1755622071",
       "variants": [
         {
-          "variant_id": "46593684471974",
-          "sku": "6935297",
+          "variant_id": "variant_shopify_277264ee597969039db2",
+          "sku": "'6935297",
           "title": "Bottle - 60 Capsules",
           "available": true,
-          "weight_grams": 57,
+          "weight_grams": 56.69904625,
           "options": {
             "Pack Size": "Bottle - 60 Capsules"
           },
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MetabolicHealth_MegaQuinK2_D3_Mockup.png?v=1755622071"
         },
         {
-          "variant_id": "46593684504742",
+          "variant_id": "variant_shopify_26de9a8ea9c782bb6a53",
           "sku": "6935297C",
           "title": "Case of 12 – 60 Capsules Each",
           "available": true,
-          "weight_grams": 680,
-          "options": {
-            "Pack Size": "Case of 12 – 60 Capsules Each"
-          },
+          "weight_grams": 680.388555,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MetabolicHealth_MegaQuinK2_D3_Mockup.png?v=1755622071"
         }
       ],
       "tags": [
         "supplement"
       ],
-      "collections": [
-        "Supplements"
-      ],
+      "collections": [],
       "product_type": "Supplements",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
+      "fda_registered": false,
       "pdac_approved": false,
       "taa_compliant": false,
       "berry_compliant": false,
       "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
     },
     {
       "sku": "6935298",
       "handle": "restorflora-60-count",
       "name": "RestorFlora™ Daily Probiotic (60ct)",
       "category": "Supplements",
-      "pack_size": "Bottle - 60 Capsules",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "RestorFlora™ Daily Probiotic (60ct)",
-      "summary": "RestorFlora™ is a unique probiotic that combines spore-forming bacteria with a probiotic yeast for broad digestive support. This dual-action blend helps promote microbial diversity, maintain healthy gut balance, and…",
+      "img": "RestorFlora™ is a unique probiotic that combines spore-forming bacteria with a probiotic yeast for broad digestive support. This dual-action blend helps promote microbial diversity, maintain healthy gut balance, and supp",
+      "summary": "RestorFlora™ is a unique probiotic that combines spore-forming bacteria with a probiotic yeast for broad digestive support. This dual-action blend helps promote microbial diversity, maintain healthy gut balance, and supp",
       "description": "RestorFlora™ is a unique probiotic that combines spore-forming bacteria with a probiotic yeast for broad digestive support. This dual-action blend helps promote microbial diversity, maintain healthy gut balance, and support the body during or after antibiotics. Benefits include: Helps restore gut balance after gut-disrupting practices Supports immune and intestinal health Promotes healthy digestive transit and motility Provides support against occasional bloating, gas, cramping, diarrhea, and constipation Shelf-stable formula—no refrigeration required RestorFlora™ is designed to maintain stability and effectiveness through the digestive process, supporting gut health when it’s needed most. Suggested Use: Week 1: 1 capsule, 2 times daily with food Week 2+: 1 capsule daily with food Ages 5+. For children under 5, consult with a healthcare professional.",
       "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GastrointestinalHealth60_RestorFlora_Mockup.png?v=1755620429"
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GastrointestinalHealth60_RestorFlora_Mockup.png?v=1755620429",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/RestorFlora60ctMockup-SFP.png?v=1755620429",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/RestorFlora60ctMockup-SuggestedUsed.png?v=1755620429",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/gastrointestinalhealth_restorflora-21ct_SFP.png?v=1755620429"
       ],
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GastrointestinalHealth60_RestorFlora_Mockup.png?v=1755620429",
       "variants": [
         {
-          "variant_id": "46593668546726",
-          "sku": "6935298",
+          "variant_id": "variant_shopify_ffdf144c9b437cc2aac8",
+          "sku": "'6935298",
           "title": "Bottle - 60 Capsules",
           "available": true,
-          "weight_grams": 57,
+          "weight_grams": 56.69904625,
           "options": {
             "Pack Size": "Bottle - 60 Capsules"
           },
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GastrointestinalHealth60_RestorFlora_Mockup.png?v=1755620429"
         },
         {
-          "variant_id": "46593668579494",
+          "variant_id": "variant_shopify_2626b081b799abf02041",
           "sku": "6935298C",
           "title": "Case of 12 – 60 Capsules Each",
           "available": true,
-          "weight_grams": 680,
-          "options": {
-            "Pack Size": "Case of 12 – 60 Capsules Each"
-          },
+          "weight_grams": 680.388555,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GastrointestinalHealth60_RestorFlora_Mockup.png?v=1755620429"
         }
       ],
       "tags": [
         "supplement"
       ],
-      "collections": [
-        "Supplements"
-      ],
+      "collections": [],
       "product_type": "Supplements",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
+      "fda_registered": false,
       "pdac_approved": false,
       "taa_compliant": false,
       "berry_compliant": false,
       "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
     },
     {
       "sku": "6935153",
       "handle": "megasporebiotic-60-count",
       "name": "MegaSporeBiotic™ Daily Gut Support (60ct)",
       "category": "Supplements",
-      "pack_size": "Bottle - 60 Capsules",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "MegaSporeBiotic™ Daily Gut Support (60ct)",
-      "summary": "MegaSporeBiotic™ is Microbiome Labs’ flagship spore-based probiotic, clinically shown to help recondition and support the gut microbiome. Unlike traditional probiotics, this innovative formula uses a unique blend of…",
+      "img": "MegaSporeBiotic™ is Microbiome Labs’ flagship spore-based probiotic, clinically shown to help recondition and support the gut microbiome. Unlike traditional probiotics, this innovative formula uses a unique blend of five",
+      "summary": "MegaSporeBiotic™ is Microbiome Labs’ flagship spore-based probiotic, clinically shown to help recondition and support the gut microbiome. Unlike traditional probiotics, this innovative formula uses a unique blend of five",
       "description": "MegaSporeBiotic™ is Microbiome Labs’ flagship spore-based probiotic, clinically shown to help recondition and support the gut microbiome. Unlike traditional probiotics, this innovative formula uses a unique blend of five Bacillus spore-forming strains that survive the digestive process, reach the gut alive, and support microbial diversity. Benefits include: Supports gut microbial diversity and rebalancing Promotes a healthy gut barrier and immune function Helps maintain levels of beneficial gut bacteria Encourages production of short-chain fatty acids (SCFAs), including butyrate Researched in multiple published clinical studies Shelf-stable formula—no refrigeration required Each serving delivers 4 billion CFU of spore-based probiotics designed for stability, potency, and efficacy from start to finish. Suggested Use: Week 1: 1 capsule every other day Week 2: 1 capsule daily Week 3+: 2 capsules daily Ages 5+. For children under 5, consult with a healthcare professional.",
       "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GastrointestinalHealth_MegaSporeBiotic_Mockup.png?v=1755618612"
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GastrointestinalHealth_MegaSporeBiotic_Mockup.png?v=1755618612",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GastrointestinalHealth_MegaSporeBiotic_FrontRow_07_1x1_dc3748a6-3ed0-4496-8687-8d18df2e5f3a.jpg?v=1755618612",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GastrointestinalHealth_MegaSporeBiotic-MegaPre_FrontRow_02_1x1_f81de2b0-ea15-4d42-baa9-d8af7fda0b0d.jpg?v=1755618612",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GastrointestinalHealth_MegaSporeBiotic60_SFP-2.png?v=1755618597"
       ],
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GastrointestinalHealth_MegaSporeBiotic_Mockup.png?v=1755618612",
       "variants": [
         {
-          "variant_id": "46593637187750",
-          "sku": "6935153",
+          "variant_id": "variant_shopify_28138b3982f5498e9f3a",
+          "sku": "'6935153",
           "title": "Bottle - 60 Capsules",
           "available": true,
-          "weight_grams": 57,
+          "weight_grams": 56.69904625,
           "options": {
             "Pack Size": "Bottle - 60 Capsules"
           },
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GastrointestinalHealth_MegaSporeBiotic_Mockup.png?v=1755618612"
         },
         {
-          "variant_id": "46593637220518",
+          "variant_id": "variant_shopify_ab2394e2849d7b06fcff",
           "sku": "6935153C",
           "title": "Case of 12 – 60 Capsules Each",
-          "available": false,
-          "weight_grams": 680,
-          "options": {
-            "Pack Size": "Case of 12 – 60 Capsules Each"
-          },
+          "available": true,
+          "weight_grams": 680.388555,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GastrointestinalHealth_MegaSporeBiotic_Mockup.png?v=1755618612"
         }
       ],
       "tags": [
         "supplement"
       ],
-      "collections": [
-        "Supplements"
-      ],
+      "collections": [],
       "product_type": "Supplements",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
+      "fda_registered": false,
       "pdac_approved": false,
       "taa_compliant": false,
       "berry_compliant": false,
       "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
     },
     {
-      "sku": "21IN-0303000002-B",
-      "handle": "3-ml-luer-lock-syringe-without-needle",
-      "name": "3 ml Luer Lock Syringe without Needle",
-      "category": "Surgical",
-      "pack_size": "Box of 100",
+      "sku": "PD00525",
+      "handle": "postday-one-step-emergency-contraceptive",
+      "name": "PostDay One-Step Levonorgestrel Tablet - Emergency Contraceptive",
+      "category": "Consumable",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "3 ml Luer Lock Syringe without Needle",
-      "summary": "The 3 mL Luer Lock Syringe is a versatile choice for clinical injections and fluid draws. This bulk case contains 24 boxes of 100 syringes (2,400 total), all sterile and individually wrapped. Designed for accuracy and…",
-      "description": "The 3 mL Luer Lock Syringe is a versatile choice for clinical injections and fluid draws. This bulk case contains 24 boxes of 100 syringes (2,400 total), all sterile and individually wrapped. Designed for accuracy and compatibility with Luer Lock needles, these syringes support reliable use across a range of healthcare settings. Product Features & Benefits Smooth and controlled plunger motion, aided by medical-grade silicone for user comfort Double-seal stopper design to reduce the risk of medication leakage Secure plunger backstop to prevent accidental plunger removal Clear barrel with bold, easy-to-read graduation marks for accurate dosing Non-toxic and non-pyrogenic to support patient safety Sterilized with ethylene oxide (EO) to ensure sterility prior to use Individually sealed in medical-grade blister packaging to maintain a sterile environment Product Materials & Composition Barrel made from medical-grade polypropylene (PP) for strength and reliability Plunger made of medical-grade polyethylene (PE) for 3 ml, 5 ml, 10 ml, and 20 ml syringes Plunger made of medical-grade polypropylene (PP) for 1 ml and 60 ml syringes Medical-grade rubber gasket (not made with natural rubber latex) Free from PVC, latex, DEHP, and BPA, reducing the risk of allergic reactions or contamination",
+      "img": "PostDay One-Step® – Morning After Pill & Emergency Contraceptive Levonorgestrel Tablet, 1.5 mg. Fast, effective pregnancy prevention — without a prescription. PostDay One-Step® is an emergency contraceptive designed to h",
+      "summary": "PostDay One-Step® – Morning After Pill & Emergency Contraceptive Levonorgestrel Tablet, 1.5 mg. Fast, effective pregnancy prevention — without a prescription. PostDay One-Step® is an emergency contraceptive designed to h",
+      "description": "PostDay One-Step® – Morning After Pill & Emergency Contraceptive Levonorgestrel Tablet, 1.5 mg. Fast, effective pregnancy prevention — without a prescription. PostDay One-Step® is an emergency contraceptive designed to help reduce the chance of pregnancy after unprotected sex or birth control failure. When taken as soon as possible within 72 hours (3 days), it works by temporarily delaying ovulation so fertilization cannot occur. PostDay One-Step® is not the abortion pill. It will not affect an existing pregnancy and will not affect your ability to get pregnant in the future. Why Choose PostDay One-Step®? Proven Pregnancy Prevention – About 7 out of 8 women who would have gotten pregnant will not become pregnant when taken as directed. Single-Dose Simplicity – One tablet, one dose, 1 count per package. No Prescription Needed – Available over-the-counter, no ID required or age restriction. Not the Abortion Pill – Will not terminate an existing pregnancy. Future Fertility Friendly – No long-term impact on your ability to conceive. When to Use This Emergency Contraceptive PostDay One-Step® is your backup plan for: Unprotected sex (no birth control used) Birth control failure (condom broke, slipped, or leaked) Missed birth control pills or late contraceptive dose How It Works Contains 1.5 mg of levonorgestrel, a hormone also used in many daily birth control pills, at a higher single dose. Temporarily delays the release of an egg from the ovary to help prevent fertilization and pregnancy. Possible Side Effects Some users may experience: Changes in menstrual cycle (early, late, lighter, or heavier period) Nausea Lower abdominal (stomach) pain Tiredness, dizziness, or headache Breast tenderness If you vomit within 2 hours of taking the tablet, contact a healthcare provider to find out if you should repeat the dose. If your period is more than a week late, take a pregnancy test and follow up with your healthcare provider. Severe abdominal pain should receive immediate medical attention, as it may signal an ectopic pregnancy. Not for use as regular birth control. Does not protect against HIV or other STDs.",
       "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/3mlluerlocksyringe.png?v=1745264380"
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/72HoursImagePD81225.jpg?v=1755181661",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/PHOTO-2025-08-06-21-44-45.jpg?v=1755181671",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Front_of_Box_Image_PD_8_12_25.jpg?v=1755181675"
       ],
-      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/3mlluerlocksyringe.png?v=1745264380",
+      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/72HoursImagePD81225.jpg?v=1755181661",
       "variants": [
         {
-          "variant_id": "46389896413350",
-          "sku": "21IN-0303000002-B",
-          "title": "Box of 100",
+          "variant_id": "variant_shopify_3b31be050378793f36d0",
+          "sku": "PD00525",
+          "title": "1 Box: 1 Tablet",
           "available": true,
-          "weight_grams": 454,
+          "weight_grams": 11.33980925,
           "options": {
-            "Pack Size": "Box of 100"
+            "Pack Size": "1 Box: 1 Tablet"
           },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/3mlluerlocksyringe.png?v=1745264380"
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Front_of_Box_Image_PD_8_12_25.jpg?v=1755181675"
         },
         {
-          "variant_id": "46389896446118",
-          "sku": "21IN-0303000002-C",
-          "title": "Case of 2400",
+          "variant_id": "variant_shopify_afd945cdb06bd8171992",
+          "sku": "PD00525-C",
+          "title": "1 Case: 24 Tablets",
           "available": true,
-          "weight_grams": 5443,
-          "options": {
-            "Pack Size": "Case of 2400"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/3mlluerlocksyringe.png?v=1745264380"
+          "weight_grams": 272.155422,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Front_of_Box_Image_PD_8_12_25.jpg?v=1755181675"
         }
       ],
       "tags": [
-        "Syringe"
+        "Diagnostic Test",
+        "OTC"
       ],
-      "collections": [
-        "Medical Syringes"
-      ],
-      "product_type": "Surgical Supplies",
+      "collections": [],
+      "product_type": null,
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
+      "fda_registered": false,
       "pdac_approved": false,
       "taa_compliant": false,
       "berry_compliant": false,
-      "mspv_listed": true,
+      "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
-    },
-    {
-      "sku": "21IN-0103000012-B",
-      "handle": "1-ml-luer-lock-syringe-without-needle",
-      "name": "1 ml Luer Lock Syringe without Needle",
-      "category": "Surgical",
-      "pack_size": "Box of 100",
-      "hcpcs": "—",
-      "moq": 1,
-      "img": "1 ml Luer Lock Syringe without Needle",
-      "summary": "The 1 mL Luer Lock Syringe without Needle is ideal for precise, low-volume dosing in medical, lab, and clinical environments. Each syringe is sterile, single-use, and designed for smooth plunger action and secure…",
-      "description": "The 1 mL Luer Lock Syringe without Needle is ideal for precise, low-volume dosing in medical, lab, and clinical environments. Each syringe is sterile, single-use, and designed for smooth plunger action and secure needle attachment. This bulk case contains 32 boxes of 100 syringes (3,200 total) all individually wrapped. Product Features & Benefits Smooth and controlled plunger motion, aided by medical-grade silicone for user comfort Double-seal stopper design to reduce the risk of medication leakage Secure plunger backstop to prevent accidental plunger removal Clear barrel with bold, easy-to-read graduation marks for accurate dosing Non-toxic and non-pyrogenic to support patient safety Sterilized with ethylene oxide (EO) to ensure sterility prior to use Individually sealed in medical-grade blister packaging to maintain a sterile environment Product Materials & Composition Barrel made from medical-grade polypropylene (PP) for strength and reliability Medical-grade rubber gasket (not made with natural rubber latex) Free from PVC, latex, DEHP, and BPA, reducing the risk of allergic reactions or contamination",
-      "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/1mlLuerLockSyringe.png?v=1745008543"
-      ],
-      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/1mlLuerLockSyringe.png?v=1745008543",
-      "variants": [
-        {
-          "variant_id": "46389918630054",
-          "sku": "21IN-0103000012-B",
-          "title": "Box of 100",
-          "available": true,
-          "weight_grams": 340,
-          "options": {
-            "Pack Size": "Box of 100"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/1mlLuerLockSyringe.png?v=1745008543"
-        },
-        {
-          "variant_id": "46389918662822",
-          "sku": "21IN-0103000012-C",
-          "title": "Case of 3200",
-          "available": true,
-          "weight_grams": 10886,
-          "options": {
-            "Pack Size": "Case of 3200"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/1mlLuerLockSyringe.png?v=1745008543"
-        }
-      ],
-      "tags": [
-        "Syringe"
-      ],
-      "collections": [
-        "Medical Syringes"
-      ],
-      "product_type": "Surgical Supplies",
-      "m6_category": null,
-      "quote_only": false,
-      "fda_registered": true,
-      "pdac_approved": false,
-      "taa_compliant": false,
-      "berry_compliant": false,
-      "mspv_listed": true,
-      "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
     },
     {
       "sku": "21IN-5023000001-B",
       "handle": "50-60-ml-luer-lock-syringe-without-needle",
       "name": "50/60 mL Luer Lock Syringe without Needle",
       "category": "Surgical",
-      "pack_size": "Box of 60",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "50/60 mL Luer Lock Syringe without Needle",
-      "summary": "The 50/60 mL Luer Lock Syringe is ideal for irrigation, suction, and high-volume fluid transfer. Each syringe is designed for maximum precision with a secure Luer Lock fit. This bulk case contains 4 boxes of 60…",
+      "img": "The 50/60 mL Luer Lock Syringe is ideal for irrigation, suction, and high-volume fluid transfer. Each syringe is designed for maximum precision with a secure Luer Lock fit. This bulk case contains 4 boxes of 60 syringes ",
+      "summary": "The 50/60 mL Luer Lock Syringe is ideal for irrigation, suction, and high-volume fluid transfer. Each syringe is designed for maximum precision with a secure Luer Lock fit. This bulk case contains 4 boxes of 60 syringes ",
       "description": "The 50/60 mL Luer Lock Syringe is ideal for irrigation, suction, and high-volume fluid transfer. Each syringe is designed for maximum precision with a secure Luer Lock fit. This bulk case contains 4 boxes of 60 syringes (240 total) all individually wrapped. Features & Benefits Smooth and controlled plunger motion, aided by medical-grade silicone for user comfort Double-seal stopper design to reduce the risk of medication leakage Secure plunger backstop to prevent accidental plunger removal Clear barrel with bold, easy-to-read graduation marks for accurate dosing Non-toxic and non-pyrogenic to support patient safety Sterilized with ethylene oxide (EO) to ensure sterility prior to use Individually sealed in medical-grade blister packaging to maintain a sterile environment Syringe Materials & Composition Barrel made from medical-grade polypropylene (PP) for strength and reliability Plunger made of medical-grade polyethylene (PE) for 3 ml, 5 ml, 10 ml, and 20 ml syringes Plunger made of medical-grade polypropylene (PP) for 1 ml and 60 ml syringes Medical-grade rubber gasket (not made with natural rubber latex) Free from PVC, latex, DEHP, and BPA, reducing the risk of allergic reactions or contamination",
       "images": [
         "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/50_60mlluerlocksyringe.png?v=1745336584"
@@ -1761,55 +2934,51 @@ export const PUBLIC_CATALOG = {
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/50_60mlluerlocksyringe.png?v=1745336584",
       "variants": [
         {
-          "variant_id": "46389836742822",
+          "variant_id": "variant_shopify_07897c9cb683bdff24ac",
           "sku": "21IN-5023000001-B",
           "title": "Box of 60",
           "available": true,
-          "weight_grams": 2268,
+          "weight_grams": 2267.96185,
           "options": {
             "Pack Size": "Box of 60"
           },
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/50_60mlluerlocksyringe.png?v=1745336584"
         },
         {
-          "variant_id": "46389836775590",
+          "variant_id": "variant_shopify_0a7d15c7dea6494c353b",
           "sku": "21IN-5023000001-C",
           "title": "Case of 240",
           "available": true,
-          "weight_grams": 9072,
-          "options": {
-            "Pack Size": "Case of 240"
-          },
+          "weight_grams": 9071.853069904624,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/50_60mlluerlocksyringe.png?v=1745336584"
         }
       ],
       "tags": [
         "Syringe"
       ],
-      "collections": [
-        "Medical Syringes"
-      ],
+      "collections": [],
       "product_type": "Surgical Supplies",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
+      "fda_registered": false,
       "pdac_approved": false,
       "taa_compliant": false,
       "berry_compliant": false,
-      "mspv_listed": true,
+      "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
     },
     {
       "sku": "21IN-2003000002-B",
       "handle": "20-ml-luer-lock-syringe-without-needle",
       "name": "20 ml Luer Lock Syringe without Needle",
       "category": "Surgical",
-      "pack_size": "Box of 100",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "20 ml Luer Lock Syringe without Needle",
-      "summary": "For larger volume applications, the 20 mL Luer Lock Syringe provides the accuracy and strength required in clinical settings. The high-clarity barrel and leak-proof connection offer safe handling with any Luer…",
+      "img": "For larger volume applications, the 20 mL Luer Lock Syringe provides the accuracy and strength required in clinical settings. The high-clarity barrel and leak-proof connection offer safe handling with any Luer Lock-compa",
+      "summary": "For larger volume applications, the 20 mL Luer Lock Syringe provides the accuracy and strength required in clinical settings. The high-clarity barrel and leak-proof connection offer safe handling with any Luer Lock-compa",
       "description": "For larger volume applications, the 20 mL Luer Lock Syringe provides the accuracy and strength required in clinical settings. The high-clarity barrel and leak-proof connection offer safe handling with any Luer Lock-compatible components. This bulk case contains 6 boxes of 100 syringes (600 total) all individually wrapped. Features & Benefits Smooth and controlled plunger motion, aided by medical-grade silicone for user comfort Double-seal stopper design to reduce the risk of medication leakage Secure plunger backstop to prevent accidental plunger removal Clear barrel with bold, easy-to-read graduation marks for accurate dosing Non-toxic and non-pyrogenic to support patient safety Sterilized with ethylene oxide (EO) to ensure sterility prior to use Individually sealed in medical-grade blister packaging to maintain a sterile environment Syringe Materials & Composition Barrel made from medical-grade polypropylene (PP) for strength and reliability Plunger made of medical-grade polyethylene (PE) for 3 ml, 5 ml, 10 ml, and 20 ml syringes Plunger made of medical-grade polypropylene (PP) for 1 ml and 60 ml syringes Medical-grade rubber gasket (not made with natural rubber latex) Free from PVC, latex, DEHP, and BPA, reducing the risk of allergic reactions or contamination",
       "images": [
         "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/20mlluerlocksyringe.png?v=1745336310"
@@ -1817,55 +2986,51 @@ export const PUBLIC_CATALOG = {
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/20mlluerlocksyringe.png?v=1745336310",
       "variants": [
         {
-          "variant_id": "46389849882790",
+          "variant_id": "variant_shopify_81ee1153dcdd5826490d",
           "sku": "21IN-2003000002-B",
           "title": "Box of 100",
           "available": true,
-          "weight_grams": 1786,
+          "weight_grams": 1786.019956875,
           "options": {
             "Pack Size": "Box of 100"
           },
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/20mlluerlocksyringe.png?v=1745336310"
         },
         {
-          "variant_id": "46389849915558",
+          "variant_id": "variant_shopify_c24bb4b1f85c6012fc49",
           "sku": "21IN-2003000002-C",
           "title": "Case of 600",
           "available": true,
-          "weight_grams": 10716,
-          "options": {
-            "Pack Size": "Case of 600"
-          },
+          "weight_grams": 10716.128246106937,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/20mlluerlocksyringe.png?v=1745336310"
         }
       ],
       "tags": [
         "Syringe"
       ],
-      "collections": [
-        "Medical Syringes"
-      ],
+      "collections": [],
       "product_type": "Surgical Supplies",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
+      "fda_registered": false,
       "pdac_approved": false,
       "taa_compliant": false,
       "berry_compliant": false,
-      "mspv_listed": true,
+      "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
     },
     {
       "sku": "21IN-1003000008-B",
       "handle": "10-ml-luer-lock-syringe-without-needle",
       "name": "10 ml Luer Lock Syringe without Needle",
       "category": "Surgical",
-      "pack_size": "Box of 100",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "10 ml Luer Lock Syringe without Needle",
-      "summary": "This 10 mL Luer Lock Syringe is built for controlled injections and fluid transfer. Each syringe is individually packaged and sterile. With smooth barrel movement and Luer Lock tips, they’re perfect for consistent use…",
+      "img": "This 10 mL Luer Lock Syringe is built for controlled injections and fluid transfer. Each syringe is individually packaged and sterile. With smooth barrel movement and Luer Lock tips, they’re perfect for consistent use in",
+      "summary": "This 10 mL Luer Lock Syringe is built for controlled injections and fluid transfer. Each syringe is individually packaged and sterile. With smooth barrel movement and Luer Lock tips, they’re perfect for consistent use in",
       "description": "This 10 mL Luer Lock Syringe is built for controlled injections and fluid transfer. Each syringe is individually packaged and sterile. With smooth barrel movement and Luer Lock tips, they’re perfect for consistent use in demanding healthcare environments. This bulk case contains 12 boxes of 100 syringes (1,200 total) all individually wrapped. Features & Benefits Smooth and controlled plunger motion, aided by medical-grade silicone for user comfort Double-seal stopper design to reduce the risk of medication leakage Secure plunger backstop to prevent accidental plunger removal Clear barrel with bold, easy-to-read graduation marks for accurate dosing Non-toxic and non-pyrogenic to support patient safety Sterilized with ethylene oxide (EO) to ensure sterility prior to use Individually sealed in medical-grade blister packaging to maintain a sterile environment Syringe Materials & Composition Barrel made from medical-grade polypropylene (PP) for strength and reliability Plunger made of medical-grade polyethylene (PE) for 3 ml, 5 ml, 10 ml, and 20 ml syringes Plunger made of medical-grade polypropylene (PP) for 1 ml and 60 ml syringes Medical-grade rubber gasket (not made with natural rubber latex) Free from PVC, latex, DEHP, and BPA, reducing the risk of allergic reactions or contamination",
       "images": [
         "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/10mlluerlocksyringe.png?v=1745336148"
@@ -1873,55 +3038,51 @@ export const PUBLIC_CATALOG = {
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/10mlluerlocksyringe.png?v=1745336148",
       "variants": [
         {
-          "variant_id": "46389854372006",
+          "variant_id": "variant_shopify_2ca8dfb2e1941b6daeb1",
           "sku": "21IN-1003000008-B",
           "title": "Box of 100",
           "available": true,
-          "weight_grams": 964,
+          "weight_grams": 963.88378625,
           "options": {
             "Pack Size": "Box of 100"
           },
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/10mlluerlocksyringe.png?v=1745336148"
         },
         {
-          "variant_id": "46389854404774",
+          "variant_id": "variant_shopify_f041a5c04e7509ab4ded",
           "sku": "21IN-1003000008-C",
           "title": "Case of 1200",
           "available": true,
-          "weight_grams": 11567,
-          "options": {
-            "Pack Size": "Case of 1200"
-          },
+          "weight_grams": 11566.613939856938,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/10mlluerlocksyringe.png?v=1745336148"
         }
       ],
       "tags": [
         "Syringe"
       ],
-      "collections": [
-        "Medical Syringes"
-      ],
+      "collections": [],
       "product_type": "Surgical Supplies",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
+      "fda_registered": false,
       "pdac_approved": false,
       "taa_compliant": false,
       "berry_compliant": false,
-      "mspv_listed": true,
+      "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
     },
     {
       "sku": "21IN-0503000010-B",
       "handle": "5-ml-luer-lock-syringe-without-needle",
       "name": "5 ml Luer Lock Syringe without Needle",
       "category": "Surgical",
-      "pack_size": "Box of 100",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "5 ml Luer Lock Syringe without Needle",
-      "summary": "Designed for accuracy and fluid compatibility, the 5 mL Luer Lock Syringe is a staple in clinical and lab environments. Sterile and ready for immediate use. The secure Luer Lock connection ensures safe handling and…",
+      "img": "Designed for accuracy and fluid compatibility, the 5 mL Luer Lock Syringe is a staple in clinical and lab environments. Sterile and ready for immediate use. The secure Luer Lock connection ensures safe handling and tight",
+      "summary": "Designed for accuracy and fluid compatibility, the 5 mL Luer Lock Syringe is a staple in clinical and lab environments. Sterile and ready for immediate use. The secure Luer Lock connection ensures safe handling and tight",
       "description": "Designed for accuracy and fluid compatibility, the 5 mL Luer Lock Syringe is a staple in clinical and lab environments. Sterile and ready for immediate use. The secure Luer Lock connection ensures safe handling and tight seal with compatible needles or IV tubing. This bulk case contains 16 boxes of 100 syringes (1,600 total) all individually wrapped. Features & Benefits Smooth and controlled plunger motion, aided by medical-grade silicone for user comfort Double-seal stopper design to reduce the risk of medication leakage Secure plunger backstop to prevent accidental plunger removal Clear barrel with bold, easy-to-read graduation marks for accurate dosing Non-toxic and non-pyrogenic to support patient safety Sterilized with ethylene oxide (EO) to ensure sterility prior to use Individually sealed in medical-grade blister packaging to maintain a sterile environment Syringe Materials & Composition Barrel made from medical-grade polypropylene (PP) for strength and reliability Plunger made of medical-grade polyethylene (PE) for 3 ml, 5 ml, 10 ml, and 20 ml syringes Plunger made of medical-grade polypropylene (PP) for 1 ml and 60 ml syringes Medical-grade rubber gasket (not made with natural rubber latex) Free from PVC, latex, DEHP, and BPA, reducing the risk of allergic reactions or contamination",
       "images": [
         "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/5mlluerlocksyringe.png?v=1745335832"
@@ -1929,81 +3090,180 @@ export const PUBLIC_CATALOG = {
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/5mlluerlocksyringe.png?v=1745335832",
       "variants": [
         {
-          "variant_id": "46389865447590",
+          "variant_id": "variant_shopify_90a9947211faf77345fd",
           "sku": "21IN-0503000010-B",
           "title": "Box of 100",
           "available": true,
-          "weight_grams": 624,
+          "weight_grams": 623.68950875,
           "options": {
             "Pack Size": "Box of 100"
           },
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/5mlluerlocksyringe.png?v=1745335832"
         },
         {
-          "variant_id": "46389865480358",
+          "variant_id": "variant_shopify_bf507dfec6f1f4e6bdf4",
           "sku": "21IN-0503000010-C",
           "title": "Case of 1600",
           "available": true,
-          "weight_grams": 9979,
-          "options": {
-            "Pack Size": "Case of 1600"
-          },
+          "weight_grams": 9979.037809904625,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/5mlluerlocksyringe.png?v=1745335832"
         }
       ],
       "tags": [
         "Syringe"
       ],
-      "collections": [
-        "Medical Syringes"
-      ],
+      "collections": [],
       "product_type": "Surgical Supplies",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
+      "fda_registered": false,
       "pdac_approved": false,
       "taa_compliant": false,
       "berry_compliant": false,
-      "mspv_listed": true,
+      "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
+    },
+    {
+      "sku": "21IN-0303000002-B",
+      "handle": "3-ml-luer-lock-syringe-without-needle",
+      "name": "3 ml Luer Lock Syringe without Needle",
+      "category": "Surgical",
+      "pack_size": "1 ea",
+      "hcpcs": "—",
+      "moq": 1,
+      "img": "The 3 mL Luer Lock Syringe is a versatile choice for clinical injections and fluid draws. This bulk case contains 24 boxes of 100 syringes (2,400 total), all sterile and individually wrapped. Designed for accuracy and co",
+      "summary": "The 3 mL Luer Lock Syringe is a versatile choice for clinical injections and fluid draws. This bulk case contains 24 boxes of 100 syringes (2,400 total), all sterile and individually wrapped. Designed for accuracy and co",
+      "description": "The 3 mL Luer Lock Syringe is a versatile choice for clinical injections and fluid draws. This bulk case contains 24 boxes of 100 syringes (2,400 total), all sterile and individually wrapped. Designed for accuracy and compatibility with Luer Lock needles, these syringes support reliable use across a range of healthcare settings. Product Features & Benefits Smooth and controlled plunger motion, aided by medical-grade silicone for user comfort Double-seal stopper design to reduce the risk of medication leakage Secure plunger backstop to prevent accidental plunger removal Clear barrel with bold, easy-to-read graduation marks for accurate dosing Non-toxic and non-pyrogenic to support patient safety Sterilized with ethylene oxide (EO) to ensure sterility prior to use Individually sealed in medical-grade blister packaging to maintain a sterile environment Product Materials & Composition Barrel made from medical-grade polypropylene (PP) for strength and reliability Plunger made of medical-grade polyethylene (PE) for 3 ml, 5 ml, 10 ml, and 20 ml syringes Plunger made of medical-grade polypropylene (PP) for 1 ml and 60 ml syringes Medical-grade rubber gasket (not made with natural rubber latex) Free from PVC, latex, DEHP, and BPA, reducing the risk of allergic reactions or contamination",
+      "images": [
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/3mlluerlocksyringe.png?v=1745264380"
+      ],
+      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/3mlluerlocksyringe.png?v=1745264380",
+      "variants": [
+        {
+          "variant_id": "variant_shopify_eaa2dd36b0d8846c0878",
+          "sku": "21IN-0303000002-B",
+          "title": "Box of 100",
+          "available": true,
+          "weight_grams": 453.59237,
+          "options": {
+            "Pack Size": "Box of 100"
+          },
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/3mlluerlocksyringe.png?v=1745264380"
+        },
+        {
+          "variant_id": "variant_shopify_b9bcbc50d199563363eb",
+          "sku": "21IN-0303000002-C",
+          "title": "Case of 2400",
+          "available": true,
+          "weight_grams": 5443.111274952313,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/3mlluerlocksyringe.png?v=1745264380"
+        }
+      ],
+      "tags": [
+        "Syringe"
+      ],
+      "collections": [],
+      "product_type": "Surgical Supplies",
+      "m6_category": null,
+      "quote_only": false,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
+      "berry_compliant": false,
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
+    },
+    {
+      "sku": "21IN-0103000012-B",
+      "handle": "1-ml-luer-lock-syringe-without-needle",
+      "name": "1 ml Luer Lock Syringe without Needle",
+      "category": "Surgical",
+      "pack_size": "1 ea",
+      "hcpcs": "—",
+      "moq": 1,
+      "img": "The 1 mL Luer Lock Syringe without Needle is ideal for precise, low-volume dosing in medical, lab, and clinical environments. Each syringe is sterile, single-use, and designed for smooth plunger action and secure needle ",
+      "summary": "The 1 mL Luer Lock Syringe without Needle is ideal for precise, low-volume dosing in medical, lab, and clinical environments. Each syringe is sterile, single-use, and designed for smooth plunger action and secure needle ",
+      "description": "The 1 mL Luer Lock Syringe without Needle is ideal for precise, low-volume dosing in medical, lab, and clinical environments. Each syringe is sterile, single-use, and designed for smooth plunger action and secure needle attachment. This bulk case contains 32 boxes of 100 syringes (3,200 total) all individually wrapped. Product Features & Benefits Smooth and controlled plunger motion, aided by medical-grade silicone for user comfort Double-seal stopper design to reduce the risk of medication leakage Secure plunger backstop to prevent accidental plunger removal Clear barrel with bold, easy-to-read graduation marks for accurate dosing Non-toxic and non-pyrogenic to support patient safety Sterilized with ethylene oxide (EO) to ensure sterility prior to use Individually sealed in medical-grade blister packaging to maintain a sterile environment Product Materials & Composition Barrel made from medical-grade polypropylene (PP) for strength and reliability Medical-grade rubber gasket (not made with natural rubber latex) Free from PVC, latex, DEHP, and BPA, reducing the risk of allergic reactions or contamination",
+      "images": [
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/1mlLuerLockSyringe.png?v=1745008543"
+      ],
+      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/1mlLuerLockSyringe.png?v=1745008543",
+      "variants": [
+        {
+          "variant_id": "variant_shopify_95edca5f71bd1c84f8b7",
+          "sku": "21IN-0103000012-B",
+          "title": "Box of 100",
+          "available": true,
+          "weight_grams": 340.1942775,
+          "options": {
+            "Pack Size": "Box of 100"
+          },
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/1mlLuerLockSyringe.png?v=1745008543"
+        },
+        {
+          "variant_id": "variant_shopify_09e730445d3979283d3f",
+          "sku": "21IN-0103000012-C",
+          "title": "Case of 3200",
+          "available": true,
+          "weight_grams": 10886.225384856938,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/1mlLuerLockSyringe.png?v=1745008543"
+        }
+      ],
+      "tags": [
+        "Syringe"
+      ],
+      "collections": [],
+      "product_type": "Surgical Supplies",
+      "m6_category": null,
+      "quote_only": false,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
+      "berry_compliant": false,
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
     },
     {
       "sku": "RA9-E01802B",
       "handle": "genacheck-self-test-for-uti",
       "name": "GenaCheck® Rapid Self-Test Kit for UTI",
       "category": "Diagnostics",
-      "pack_size": "1 Box of 2 Tests",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "GenaCheck® Rapid Self-Test Kit for UTI",
-      "summary": "The GenaCheck™ Rapid Self-Test Kit for Urinary Tract Infection (UTI) is a fast and reliable at-home solution for detecting urinary tract infections. Designed to provide clear and accurate results within minutes, this…",
+      "img": "The GenaCheck™ Rapid Self-Test Kit for Urinary Tract Infection (UTI) is a fast and reliable at-home solution for detecting urinary tract infections. Designed to provide clear and accurate results within minutes, this tes",
+      "summary": "The GenaCheck™ Rapid Self-Test Kit for Urinary Tract Infection (UTI) is a fast and reliable at-home solution for detecting urinary tract infections. Designed to provide clear and accurate results within minutes, this tes",
       "description": "The GenaCheck™ Rapid Self-Test Kit for Urinary Tract Infection (UTI) is a fast and reliable at-home solution for detecting urinary tract infections. Designed to provide clear and accurate results within minutes, this test screens for indicators of infection such as leukocytes (white blood cells) and nitrites in the urine. Perfect for individuals seeking a convenient and private way to monitor urinary health. Key Features UTI Detection: Screens for leukocytes and nitrites, which are common indicators of urinary tract infections. Rapid Results: Provides reliable and accurate results in just minutes. Easy-to-Use: Simple testing process with clear instructions—no medical expertise required. High Sensitivity: Delivers dependable detection of infection indicators for trustworthy results. Compact and Portable: Lightweight and discreet packaging for convenient storage and use. Single-Use Kit: Includes all components needed for one-time testing. Clear Instructions: Step-by-step guide ensures proper sample collection and accurate result interpretation. Benefits Convenient At-Home Testing: Detect potential urinary tract infections from the comfort of your own home. Early Detection: Helps identify infection indicators early, enabling prompt follow-up with a healthcare provider. Time-Saving: Avoids the need for doctor visits or laboratory processing—results are available in minutes. Affordable and Reliable: Provides a cost-effective alternative to clinical testing with dependable accuracy. Peace of Mind: Offers clarity for individuals experiencing symptoms such as pain, discomfort, or frequent urination. Discreet and Private: Designed for confidential use in a user-friendly format. Proactive Health Management: Empowers users to monitor and maintain urinary health on their terms.",
       "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenaCheckRapidSelf-TestKitforUrinaryTractInfectionbox3DBoxImage_1.jpg?v=1735515220"
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenaCheckRapidSelf-TestKitforUrinaryTractInfectionbox3DBoxImage_1.jpg?v=1735515220",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenacheckRapidSelf-TestforUrinaryTractInfectionTestCassette.jpg?v=1735515220"
       ],
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenaCheckRapidSelf-TestKitforUrinaryTractInfectionbox3DBoxImage_1.jpg?v=1735515220",
       "variants": [
         {
-          "variant_id": "46039353983142",
+          "variant_id": "variant_shopify_0d99f24ca02b167cdd1d",
           "sku": "RA9-E01802B",
           "title": "1 Box of 2 Tests",
-          "available": false,
-          "weight_grams": 28,
+          "available": true,
+          "weight_grams": 28.349523125,
           "options": {
             "Pack Size": "1 Box of 2 Tests"
           },
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenaCheckRapidSelf-TestKitforUrinaryTractInfectionbox3DBoxImage_1.jpg?v=1735515220"
         },
         {
-          "variant_id": "46039354015910",
+          "variant_id": "variant_shopify_f16c0d6057c6581a4a42",
           "sku": "RA9-E01802",
           "title": "1 Case of 204 Tests",
-          "available": false,
-          "weight_grams": 2892,
-          "options": {
-            "Pack Size": "1 Case of 204 Tests"
-          },
+          "available": true,
+          "weight_grams": 2891.6541937023126,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenaCheckRapidSelf-TestKitforUrinaryTractInfectionbox3DBoxImage_1.jpg?v=1735515220"
         }
       ],
@@ -2012,56 +3272,54 @@ export const PUBLIC_CATALOG = {
         "OTC",
         "Planogram"
       ],
-      "collections": [
-        "Diagnostic Tests"
-      ],
+      "collections": [],
       "product_type": "Diagnostic Tests",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
+      "fda_registered": false,
       "pdac_approved": false,
       "taa_compliant": false,
       "berry_compliant": false,
       "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
     },
     {
       "sku": "RA9-E01701B",
       "handle": "genacheck-self-test-for-fob",
       "name": "GenaCheck™ Rapid Self-Test Kit for FOB",
       "category": "Diagnostics",
-      "pack_size": "1 Box of 1 Test",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "GenaCheck™ Rapid Self-Test Kit for FOB",
-      "summary": "The GenaCheck™ Rapid Self-Test Kit for FOB (Fecal Occult Blood) is a fast, reliable, and easy-to-use at-home screening test for detecting hidden blood in stool. Hidden blood in the stool may be an early indicator of…",
+      "img": "The GenaCheck™ Rapid Self-Test Kit for FOB (Fecal Occult Blood) is a fast, reliable, and easy-to-use at-home screening test for detecting hidden blood in stool. Hidden blood in the stool may be an early indicator of gast",
+      "summary": "The GenaCheck™ Rapid Self-Test Kit for FOB (Fecal Occult Blood) is a fast, reliable, and easy-to-use at-home screening test for detecting hidden blood in stool. Hidden blood in the stool may be an early indicator of gast",
       "description": "The GenaCheck™ Rapid Self-Test Kit for FOB (Fecal Occult Blood) is a fast, reliable, and easy-to-use at-home screening test for detecting hidden blood in stool. Hidden blood in the stool may be an early indicator of gastrointestinal conditions, such as colorectal cancer or gastrointestinal bleeding. Key Features Rapid Results: Provides clear and accurate results in minutes for quick health monitoring. Simple At-Home Testing: User-friendly, one-step process with no need for lab visits or additional equipment. High Sensitivity: Offers reliable results with precise detection of FOB. Compact and Portable: Lightweight packaging for easy storage and discreet use at home. Single-Use Kit: Designed for one-time testing, with all necessary components included. Clear Instructions: Includes a step-by-step instruction guide for proper sample collection and accurate result interpretation. Benefits Early Detection: Helps identify hidden blood in stool, which may indicate gastrointestinal conditions such as colorectal cancer or ulcers. Convenient At-Home Use: Allows for private testing without the need for clinical visits. Peace of Mind: Provides reassurance with fast and reliable results, enabling early follow-up with a healthcare provider if necessary. Time-Saving: Eliminates the wait for laboratory processing—results are available in minutes. Cost-Effective: Affordable alternative to professional FOB testing services. Proactive Health Management: Empowers individuals to take control of their gastrointestinal health through regular screening.",
       "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenaCheckRapidSelf-TestKitforFOB3DBoxImage_2.jpg?v=1735514738"
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenaCheckRapidSelf-TestKitforFOB3DBoxImage_2.jpg?v=1735514738",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenaCheckRapidSelf-TestKitforFOB3DBoxImage_1.jpg?v=1735514738",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenacheckRapidSelf-TestKitforFOBTestCassette_2.jpg?v=1735514738"
       ],
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenaCheckRapidSelf-TestKitforFOB3DBoxImage_2.jpg?v=1735514738",
       "variants": [
         {
-          "variant_id": "46039301619878",
+          "variant_id": "variant_shopify_06ef853de0b6b9255bf3",
           "sku": "RA9-E01701B",
           "title": "1 Box of 1 Test",
-          "available": false,
-          "weight_grams": 57,
+          "available": true,
+          "weight_grams": 56.69904625,
           "options": {
             "Pack Size": "1 Box of 1 Test"
           },
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenaCheckRapidSelf-TestKitforFOB3DBoxImage_2.jpg?v=1735514738"
         },
         {
-          "variant_id": "46039347921062",
+          "variant_id": "variant_shopify_c43be216e6878a337c26",
           "sku": "RA9-E01701",
           "title": "1 Case of 102 Tests",
-          "available": false,
-          "weight_grams": 5783,
-          "options": {
-            "Pack Size": "1 Case of 102 Tests"
-          },
+          "available": true,
+          "weight_grams": 5783.305552452312,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenaCheckRapidSelf-TestKitforFOB3DBoxImage_2.jpg?v=1735514738"
         }
       ],
@@ -2070,42 +3328,42 @@ export const PUBLIC_CATALOG = {
         "OTC",
         "Planogram"
       ],
-      "collections": [
-        "Diagnostic Tests"
-      ],
+      "collections": [],
       "product_type": "Diagnostic Tests",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
+      "fda_registered": false,
       "pdac_approved": false,
       "taa_compliant": false,
       "berry_compliant": false,
       "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
     },
     {
       "sku": "RA9-E02501B",
       "handle": "genacheck-fentanyl-home-test",
       "name": "GenaCheck™ Fentanyl Urine Home-Use Test",
       "category": "Diagnostics",
-      "pack_size": "1 Box of 1 Test",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "GenaCheck™ Fentanyl Urine Home-Use Test",
-      "summary": "The GenaCheck™ Fentanyl Urine Home-Use Test Cassette is a fast and reliable at-home solution for detecting the presence of fentanyl in human urine. Designed for personal use, this test delivers clear and accurate…",
+      "img": "The GenaCheck™ Fentanyl Urine Home-Use Test Cassette is a fast and reliable at-home solution for detecting the presence of fentanyl in human urine. Designed for personal use, this test delivers clear and accurate results",
+      "summary": "The GenaCheck™ Fentanyl Urine Home-Use Test Cassette is a fast and reliable at-home solution for detecting the presence of fentanyl in human urine. Designed for personal use, this test delivers clear and accurate results",
       "description": "The GenaCheck™ Fentanyl Urine Home-Use Test Cassette is a fast and reliable at-home solution for detecting the presence of fentanyl in human urine. Designed for personal use, this test delivers clear and accurate results within minutes, helping individuals monitor and screen for fentanyl exposure or misuse discreetly and conveniently. Key Features Fentanyl Detection: Specifically designed to detect fentanyl in human urine samples. Rapid Results: Provides accurate and reliable results in just minutes. Easy-to-Use: Simple, one-step testing process with no additional tools required. High Accuracy: Delivers dependable results with high sensitivity to fentanyl metabolites. Compact and Portable: Lightweight design for easy storage and discreet use at home. Single-Use Test: Designed for one-time testing with all components included. Clear Instructions: Includes step-by-step guidance for proper use and result interpretation. Benefits At-Home Convenience: Perform private testing in the comfort of your own home. Fast and Reliable: Get clear results quickly, eliminating the need for lab visits or long wait times. Discreet Testing: Designed for confidential use with easy disposal after testing. Proactive Screening: Helps individuals detect potential fentanyl exposure early for informed decision-making. Affordable Solution: Cost-effective alternative to professional drug screening services. Peace of Mind: Provides clarity and reassurance for individuals concerned about fentanyl exposure or use. Versatile Use: Ideal for personal screening, family use, or workplace monitoring.",
       "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenaCheck_FentanylUrineHome-UseTestBoxImage.jpg?v=1735512556"
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenaCheck_FentanylUrineHome-UseTestBoxImage.jpg?v=1735512556",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenaCheck_FentanylUrineTestCassette-25TboxImage.jpg?v=1735512556",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenacheckFentanylTestII.jpg?v=1735512553"
       ],
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenaCheck_FentanylUrineHome-UseTestBoxImage.jpg?v=1735512556",
       "variants": [
         {
-          "variant_id": "46039257776294",
+          "variant_id": "variant_shopify_1e1522a6b3599afa2d6c",
           "sku": "RA9-E02501B",
           "title": "1 Box of 1 Test",
-          "available": false,
-          "weight_grams": 57,
+          "available": true,
+          "weight_grams": 56.69904625,
           "options": {
             "Pack Size": "1 Box of 1 Test"
           },
@@ -2117,56 +3375,53 @@ export const PUBLIC_CATALOG = {
         "OTC",
         "Planogram"
       ],
-      "collections": [
-        "Diagnostic Tests"
-      ],
+      "collections": [],
       "product_type": "Diagnostic Tests",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
+      "fda_registered": false,
       "pdac_approved": false,
       "taa_compliant": false,
       "berry_compliant": false,
       "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
     },
     {
       "sku": "RA9-E02303B",
       "handle": "genacheck-vaginal-health-ph-screening",
       "name": "GenaCheck™ Vaginal Health pH Screening",
       "category": "Diagnostics",
-      "pack_size": "1 Box of 3 Tests",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "GenaCheck™ Vaginal Health pH Screening",
-      "summary": "The GenaCheck™ Vaginal Health pH Screening Test is an easy-to-use, reliable solution for assessing vaginal pH levels at home. Designed to help women quickly identify potential vaginal health imbalances, this test…",
+      "img": "The GenaCheck™ Vaginal Health pH Screening Test is an easy-to-use, reliable solution for assessing vaginal pH levels at home. Designed to help women quickly identify potential vaginal health imbalances, this test provide",
+      "summary": "The GenaCheck™ Vaginal Health pH Screening Test is an easy-to-use, reliable solution for assessing vaginal pH levels at home. Designed to help women quickly identify potential vaginal health imbalances, this test provide",
       "description": "The GenaCheck™ Vaginal Health pH Screening Test is an easy-to-use, reliable solution for assessing vaginal pH levels at home. Designed to help women quickly identify potential vaginal health imbalances, this test provides fast, accurate results, empowering users to make informed decisions about their health. Whether you’re monitoring symptoms or ensuring overall vaginal wellness, the GenaCheck™ pH Screening Test offers a simple and private solution for maintaining your peace of mind. Key Features pH Screening for Vaginal Health: Detects abnormal vaginal pH levels to help identify potential health imbalances. Rapid Results: Provides clear and accurate results in just minutes. Easy-to-Use: Simple testing process designed for home use—no medical expertise required. High Accuracy: Delivers reliable pH readings with precision. Single-Use Test: Designed for one-time use with all components included. Compact and Portable: Discreet, lightweight packaging for easy storage and on-the-go use. Clear Instructions: Step-by-step guide ensures accurate and hassle-free testing. Benefits Empowers Self-Care: Allows women to monitor their vaginal health from the comfort of home. Early Detection: Helps identify imbalances in pH levels early, aiding in timely follow-up or treatment. Convenient and Private: Eliminates the need for doctor visits or lab testing for routine monitoring. Peace of Mind: Provides reassurance and clarity for women experiencing symptoms like unusual discharge, odor, or discomfort. Affordable Solution: Cost-effective alternative to professional screenings. User-Friendly: Designed for easy use, ensuring reliable results even for first-time users. Ideal for Health Monitoring: Useful for detecting issues such as bacterial vaginosis (BV) or other pH-related concerns",
       "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenaCheckVaginalHealthpHScreeningTest3DBoxImage_1.jpg?v=1735511984"
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenaCheckVaginalHealthpHScreeningTest3DBoxImage_1.jpg?v=1735511984",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenacheckVaginalHealthpHScreeningTestCassette.jpg?v=1735511984"
       ],
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenaCheckVaginalHealthpHScreeningTest3DBoxImage_1.jpg?v=1735511984",
       "variants": [
         {
-          "variant_id": "46039241588902",
+          "variant_id": "variant_shopify_fa9d190e05e9838fc245",
           "sku": "RA9-E02303B",
           "title": "1 Box of 3 Tests",
-          "available": false,
-          "weight_grams": 85,
+          "available": true,
+          "weight_grams": 85.048569375,
           "options": {
             "Pack Size": "1 Box of 3 Tests"
           },
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenaCheckVaginalHealthpHScreeningTest3DBoxImage_1.jpg?v=1735511984"
         },
         {
-          "variant_id": "46039241621670",
+          "variant_id": "variant_shopify_d46ed1d08a1f2e3513d9",
           "sku": "RA9-E02303",
           "title": "1 Case of 306 Tests",
-          "available": false,
-          "weight_grams": 8675,
-          "options": {
-            "Pack Size": "1 Case of 306 Tests"
-          },
+          "available": true,
+          "weight_grams": 8674.959746154625,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenaCheckVaginalHealthpHScreeningTest3DBoxImage_1.jpg?v=1735511984"
         }
       ],
@@ -2175,56 +3430,56 @@ export const PUBLIC_CATALOG = {
         "OTC",
         "Planogram"
       ],
-      "collections": [
-        "Diagnostic Tests"
-      ],
+      "collections": [],
       "product_type": "Diagnostic Tests",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
+      "fda_registered": false,
       "pdac_approved": false,
       "taa_compliant": false,
       "berry_compliant": false,
       "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
     },
     {
       "sku": "RA9-E01902B",
       "handle": "genacheck-self-test-for-twelve-drugs",
       "name": "GenaCheck™ Rapid Self-Test Kit for 12 Drugs",
       "category": "Diagnostics",
-      "pack_size": "1 Box of 2 Tests",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "GenaCheck™ Rapid Self-Test Kit for 12 Drugs",
-      "summary": "The GenaCheck™ Rapid Self-Test Kit provides a fast and reliable solution for at-home drug screening. Designed for the qualitative detection of twelve commonly abused drugs in human urine, this test delivers quick…",
+      "img": "The GenaCheck™ Rapid Self-Test Kit provides a fast and reliable solution for at-home drug screening. Designed for the qualitative detection of twelve commonly abused drugs in human urine, this test delivers quick results",
+      "summary": "The GenaCheck™ Rapid Self-Test Kit provides a fast and reliable solution for at-home drug screening. Designed for the qualitative detection of twelve commonly abused drugs in human urine, this test delivers quick results",
       "description": "The GenaCheck™ Rapid Self-Test Kit provides a fast and reliable solution for at-home drug screening. Designed for the qualitative detection of twelve commonly abused drugs in human urine, this test delivers quick results within minutes. Ideal for personal use, it is simple to operate with a one-step process, offering clarity and peace of mind for individuals. Drugs Detected Amphetamines (AMP) Methamphetamines (MET) Cannabis/Marijuana (THC) Cocaine (COC) Opiates (OPI) Benzodiazepines (BZO) Barbiturates (BAR) Methadone (MTD) Tricyclic Antidepressants (TCA) Phencyclidine (PCP) Ecstasy (MDMA) Buprenorphine (BUP)Features: Key Features Comprehensive Drug Screening: Detects 12 commonly abused drugs in human urine. Rapid Results: Delivers accurate and easy-to-read results within minutes. Simple One-Step Process: User-friendly design makes testing straightforward and hassle-free. Reliable and Accurate: High sensitivity ensures dependable detection of drug metabolites. Complete Kit: Includes all necessary components for immediate testing (test devices, collection tools, and instructions). Discreet and Portable: Compact design for private, at-home testing and easy storage. Clear Instructions: Step-by-step guide for accurate use and result interpretation. Benefits Convenient At-Home Testing: Perform private drug screening without the need for professional supervision. Time-Saving: Receive quick results within minutes, eliminating long wait times for lab processing. Peace of Mind: Accurately monitor drug use or ensure compliance for personal, family, or workplace needs. Cost-Effective: Offers an affordable alternative to professional drug testing services. Versatile Application: Suitable for personal use, workplace screening, or family monitoring. Discreet and Confidential: Provides a private and reliable way to screen for drug use at home. Easy to Use: No special tools or expertise required, making the test accessible for all users.",
       "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenaCheckRapidSelf-TestKitforTwelve_12_-DrugVectorImage.jpg?v=1735511158"
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenaCheckRapidSelf-TestKitforTwelve_12_-DrugVectorImage.jpg?v=1735511158",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenaCheckRapidSelf-TestKitforTwelve_12_Drugs3DBoxImage_1_2.jpg?v=1735511168",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenaCheckRapidSelf-TestKitforTwelve_12_Drugs3DBoxImage_1.jpg?v=1735511168",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenaCheckRapidSelf-TestKitforTwelve_12_-DrugVectorImage_3.jpg?v=1735511168",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenaCheckRapidSelf-TestKitforTwelve_12_-DrugVectorImage_2.jpg?v=1735511168"
       ],
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenaCheckRapidSelf-TestKitforTwelve_12_-DrugVectorImage.jpg?v=1735511158",
       "variants": [
         {
-          "variant_id": "46039228743846",
+          "variant_id": "variant_shopify_c310e75c4478ba8ef19a",
           "sku": "RA9-E01902B",
           "title": "1 Box of 2 Tests",
-          "available": false,
-          "weight_grams": 57,
+          "available": true,
+          "weight_grams": 56.69904625,
           "options": {
             "Pack Size": "1 Box of 2 Tests"
           },
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenaCheckRapidSelf-TestKitforTwelve_12_-DrugVectorImage.jpg?v=1735511158"
         },
         {
-          "variant_id": "46039228776614",
+          "variant_id": "variant_shopify_a4150980cccda2fba97f",
           "sku": "RA9-E01902",
           "title": "1 Case of 204 Tests",
-          "available": false,
-          "weight_grams": 5783,
-          "options": {
-            "Pack Size": "1 Case of 204 Tests"
-          },
+          "available": true,
+          "weight_grams": 5783.305552452312,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenaCheckRapidSelf-TestKitforTwelve_12_-DrugVectorImage.jpg?v=1735511158"
         }
       ],
@@ -2233,56 +3488,55 @@ export const PUBLIC_CATALOG = {
         "OTC",
         "Planogram"
       ],
-      "collections": [
-        "Diagnostic Tests"
-      ],
+      "collections": [],
       "product_type": "Diagnostic Tests",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
+      "fda_registered": false,
       "pdac_approved": false,
       "taa_compliant": false,
       "berry_compliant": false,
       "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
     },
     {
       "sku": "RA9-E02105B",
       "handle": "genacheck-rapid-test-five-5-drugs",
       "name": "GenaCheck™ Rapid Self-Test Kit for 5 Drugs",
       "category": "Diagnostics",
-      "pack_size": "1 Box of 5 Tests",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "GenaCheck™ Rapid Self-Test Kit for 5 Drugs",
-      "summary": "The GenaCheck™ Rapid Self-Test Kit provides a fast, accurate, and convenient solution for at-home drug screening. Designed to detect five commonly abused drugs in human urine, this test offers reliable results in…",
+      "img": "The GenaCheck™ Rapid Self-Test Kit provides a fast, accurate, and convenient solution for at-home drug screening. Designed to detect five commonly abused drugs in human urine, this test offers reliable results in minutes",
+      "summary": "The GenaCheck™ Rapid Self-Test Kit provides a fast, accurate, and convenient solution for at-home drug screening. Designed to detect five commonly abused drugs in human urine, this test offers reliable results in minutes",
       "description": "The GenaCheck™ Rapid Self-Test Kit provides a fast, accurate, and convenient solution for at-home drug screening. Designed to detect five commonly abused drugs in human urine, this test offers reliable results in minutes, making it ideal for personal and discreet testing. Drugs Detected Amphetamines (AMP) Cannabis/Marijuana (THC) Opioids (OPI) Cocaine (COC) Benzodiazepines (BZO) Key Features Comprehensive Testing: Screens for the presence of five commonly abused drugs: Amphetamines (AMP), Cannabis (THC), Opioids (OPI), Cocaine (COC), and Benzodiazepines (BZO). Rapid Results: Provides quick and reliable results in minutes, making it convenient for at-home use. Simple One-Step Process: Easy-to-use design eliminates the need for additional tools or procedures. Accurate Detection: Detects drug metabolites in human urine with high sensitivity and reliability. Compact and Portable: Lightweight packaging for easy storage and transport. Clear Instructions: Includes a user-friendly instruction guide for hassle-free operation. Benefits Convenient at-Home Screening: Allows individuals to test privately without the need for professional supervision or laboratory visits. Quick Decision-Making: Rapid results help users make informed decisions faster. Affordable and Reliable: Provides a cost-effective solution for drug screening with dependable performance. Discrete Usage: Designed for personal use with minimal handling of test materials. Versatile Application: Ideal for a variety of scenarios, including workplace, personal, or family testing needs. Instructions For Use More Product Information",
       "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenaCheckRapidSelf-TestKitforFive_5_Drugs_3DBoxImage2.jpg?v=1735501935"
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenaCheckRapidSelf-TestKitforFive_5_Drugs_3DBoxImage2.jpg?v=1735501935",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenaCheckRapidSelf-TestKitforFive_5_Drugs-VectorImageII.jpg?v=1735501935",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenacheckRapidSelf-TestKitforFive_5_DrugsTestCassette.jpg?v=1735501935",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenaCheckRapidSelf-TestKitforFive_5_Drugs-VectorImage.jpg?v=1735501935"
       ],
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenaCheckRapidSelf-TestKitforFive_5_Drugs_3DBoxImage2.jpg?v=1735501935",
       "variants": [
         {
-          "variant_id": "46038999924902",
+          "variant_id": "variant_shopify_ca5d068bd3867945cbcf",
           "sku": "RA9-E02105B",
           "title": "1 Box of 5 Tests",
-          "available": false,
-          "weight_grams": 113,
+          "available": true,
+          "weight_grams": 113.3980925,
           "options": {
             "Pack Size": "1 Box of 5 Tests"
           },
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenaCheckRapidSelf-TestKitforFive_5_Drugs_3DBoxImage2.jpg?v=1735501935"
         },
         {
-          "variant_id": "46038999957670",
+          "variant_id": "variant_shopify_e8be680d8915ac1bda59",
           "sku": "RA9-E02105",
           "title": "1 Case of 270 Tests",
-          "available": false,
-          "weight_grams": 6124,
-          "options": {
-            "Pack Size": "1 Case of 270 Tests"
-          },
+          "available": true,
+          "weight_grams": 6123.502664904625,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenaCheckRapidSelf-TestKitforFive_5_Drugs_3DBoxImage2.jpg?v=1735501935"
         }
       ],
@@ -2291,56 +3545,55 @@ export const PUBLIC_CATALOG = {
         "OTC",
         "Planogram"
       ],
-      "collections": [
-        "Diagnostic Tests"
-      ],
+      "collections": [],
       "product_type": "Diagnostic Tests",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
+      "fda_registered": false,
       "pdac_approved": false,
       "taa_compliant": false,
       "berry_compliant": false,
       "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
     },
     {
       "sku": "RA9-E02005B",
       "handle": "genacheck-self-test-cannabis",
       "name": "GenaCheck™ Rapid Self-Test Kit for Cannabis",
       "category": "Diagnostics",
-      "pack_size": "1 Box of 5 Tests",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "GenaCheck™ Rapid Self-Test Kit for Cannabis",
-      "summary": "The GenaCheck™ Rapid Self-Test Kit for Cannabis is a quick, reliable, and easy-to-use solution for at-home cannabis screening. Designed for the qualitative detection of THC (tetrahydrocannabinol) metabolites in human…",
+      "img": "The GenaCheck™ Rapid Self-Test Kit for Cannabis is a quick, reliable, and easy-to-use solution for at-home cannabis screening. Designed for the qualitative detection of THC (tetrahydrocannabinol) metabolites in human uri",
+      "summary": "The GenaCheck™ Rapid Self-Test Kit for Cannabis is a quick, reliable, and easy-to-use solution for at-home cannabis screening. Designed for the qualitative detection of THC (tetrahydrocannabinol) metabolites in human uri",
       "description": "The GenaCheck™ Rapid Self-Test Kit for Cannabis is a quick, reliable, and easy-to-use solution for at-home cannabis screening. Designed for the qualitative detection of THC (tetrahydrocannabinol) metabolites in human urine, this test provides clear and accurate results within minutes. Perfect for individuals seeking privacy and convenience, the GenaCheck™ test delivers the answers you need without the hassle of laboratory visits. Key Features Single-Drug Screening: Detects cannabis (THC) metabolites in human urine. Rapid Results: Provides accurate, easy-to-read results in just minutes. One-Step Testing: Simple and user-friendly design ensures quick operation with no additional tools needed. High Accuracy: Reliable detection with high sensitivity for dependable performance. Compact and Portable: Lightweight and discreet packaging for easy storage and use. Clear Instructions: Includes a step-by-step guide for proper use and result interpretation. Complete Kit: All components needed for testing are included, making it ready to use out of the box. Benefits Convenient At-Home Testing: Perform private cannabis screening in the comfort of your own home. Fast and Reliable Results: No waiting for lab processing—get answers in minutes. Discreet and Confidential: Test for THC metabolites with complete privacy and peace of mind. Affordable Solution: Cost-effective alternative to professional drug testing services. Easy to Use: Designed for individuals with no technical expertise; clear instructions ensure accurate testing. Versatile Application: Ideal for personal use, workplace compliance, or monitoring needs. Trusted Accuracy: Delivers reliable results you can depend on for decision-making. Instructions For Use More Product Information",
       "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenaCheckRapidSelf-TestKitforCannabis_3DBoxImage1.jpg?v=1735239517"
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenaCheckRapidSelf-TestKitforCannabis_3DBoxImage1.jpg?v=1735239517",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenaCheckRapidSelf-TestKitforCannabisII.jpg?v=1735239517",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenacheckRapidSelf-TestKitforCannabisTestingCassette.jpg?v=1735239517",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenaCheckRapidSelf-TestKitforCannabis-VectorImage.jpg?v=1735239517"
       ],
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenaCheckRapidSelf-TestKitforCannabis_3DBoxImage1.jpg?v=1735239517",
       "variants": [
         {
-          "variant_id": "46033304813734",
+          "variant_id": "variant_shopify_6789852f912e43d31237",
           "sku": "RA9-E02005B",
           "title": "1 Box of 5 Tests",
-          "available": false,
-          "weight_grams": 113,
+          "available": true,
+          "weight_grams": 113.3980925,
           "options": {
             "Pack Size": "1 Box of 5 Tests"
           },
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenaCheckRapidSelf-TestKitforCannabis_3DBoxImage1.jpg?v=1735239517"
         },
         {
-          "variant_id": "46033304846502",
+          "variant_id": "variant_shopify_ab1a94171f0dd890054f",
           "sku": "RA9-E02005",
           "title": "1 Case of 270 Tests",
-          "available": false,
-          "weight_grams": 6124,
-          "options": {
-            "Pack Size": "1 Case of 270 Tests"
-          },
+          "available": true,
+          "weight_grams": 6123.502664904625,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenaCheckRapidSelf-TestKitforCannabis_3DBoxImage1.jpg?v=1735239517"
         }
       ],
@@ -2349,56 +3602,53 @@ export const PUBLIC_CATALOG = {
         "OTC",
         "Planogram"
       ],
-      "collections": [
-        "Diagnostic Tests"
-      ],
+      "collections": [],
       "product_type": "Diagnostic Tests",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
+      "fda_registered": false,
       "pdac_approved": false,
       "taa_compliant": false,
       "berry_compliant": false,
       "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
     },
     {
       "sku": "LFA0462-25N",
       "handle": "speedy-swab-rapid-covid-19-flu-antigen-test",
       "name": "SpeedySwab­™  Rapid COVID-19 + Flu A&B Antigen Test | 25 Tests (POC)",
       "category": "Diagnostics",
-      "pack_size": "Box (25 Tests)",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "SpeedySwab­™ Rapid COVID-19 + Flu A&B Antigen Test | 25 Tes…",
-      "summary": "The Speedy Swab™ Rapid COVID-19 + Flu A&B Antigen Test is a lateral flow immunochromatographic assay designed for the simultaneous and qualitative detection and differentiation of SARS-CoV-2, influenza A, and influenza…",
+      "img": "The Speedy Swab™ Rapid COVID-19 + Flu A&B Antigen Test is a lateral flow immunochromatographic assay designed for the simultaneous and qualitative detection and differentiation of SARS-CoV-2, influenza A, and influenza B",
+      "summary": "The Speedy Swab™ Rapid COVID-19 + Flu A&B Antigen Test is a lateral flow immunochromatographic assay designed for the simultaneous and qualitative detection and differentiation of SARS-CoV-2, influenza A, and influenza B",
       "description": "The Speedy Swab™ Rapid COVID-19 + Flu A&B Antigen Test is a lateral flow immunochromatographic assay designed for the simultaneous and qualitative detection and differentiation of SARS-CoV-2, influenza A, and influenza B antigens. Utilizing anterior nasal swab specimens, this test provides rapid results for individuals exhibiting symptoms of respiratory infection within the first five days of onset. Authorized for use in CLIA-certified laboratories and Point-of-Care settings, the test combines accuracy and convenience, supporting efficient clinical decisions. Its integrated quality controls and comprehensive instructions ensure reliability and ease of use in diverse healthcare environments. Key Features Multiplex Detection: Simultaneously detects and differentiates antigens from SARS-CoV-2, influenza A, and influenza B viruses. Intended Use: Designed for use with anterior nasal swab specimens from individuals with symptoms of respiratory infections within the first 5 days of symptom onset. Ease of Use: Suitable for Point of Care (POC) testing in settings operating under a CLIA Certificate of Waiver, Compliance, or Accreditation. Rapid Results: Employs a lateral flow immunochromatographic assay for quick and qualitative detection. Built-In Quality Control: Internal control line (\"C\") on the test device ensures the reliability of results. Includes external quality controls as part of the kit. Complementary Instructions: Comes with detailed “Instructions for Use” and “Quick Reference Instructions.” FDA Authorization: Authorized under the EUA for emergency testing needs during public health emergencies. Clinical Relevance: Results support differential diagnosis for respiratory infections, particularly during flu season coinciding with COVID-19 outbreaks. Ancillary Materials: Additional materials for sample collection, processing, and testing are provided or specific for authorized use. Training Requirements: Requires operators to be trained in test performance and result interpretation. Instructions For Use Patient Fact Sheet Healthcare Provider Fact Sheet Product Spec Sheet",
       "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/1.png?v=1732124281"
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/1.png?v=1732124281",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/2.png?v=1732124286"
       ],
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/1.png?v=1732124281",
       "variants": [
         {
-          "variant_id": "45955465838758",
+          "variant_id": "variant_shopify_ea134e22c11299993a30",
           "sku": "LFA0462-25N",
           "title": "Box (25 Tests)",
           "available": true,
-          "weight_grams": 369,
+          "weight_grams": 368.543800625,
           "options": {
             "Pack Size": "Box (25 Tests)"
           },
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/1.png?v=1732124281"
         },
         {
-          "variant_id": "45955465871526",
+          "variant_id": "variant_shopify_8f3c3ad3112c0fd22c9c",
           "sku": "LFA0462-25N40",
           "title": "Case (1000 Tests)",
-          "available": false,
-          "weight_grams": 14742,
-          "options": {
-            "Pack Size": "Case (1000 Tests)"
-          },
+          "available": true,
+          "weight_grams": 14741.76336480925,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/1.png?v=1732124281"
         }
       ],
@@ -2407,30 +3657,28 @@ export const PUBLIC_CATALOG = {
         "Diagnostic Test",
         "POC"
       ],
-      "collections": [
-        "Diagnostic Tests"
-      ],
+      "collections": [],
       "product_type": "Diagnostic Tests",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
+      "fda_registered": false,
       "pdac_approved": false,
       "taa_compliant": false,
       "berry_compliant": false,
       "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
     },
     {
       "sku": "PWB6061-XS-T",
       "handle": "tall-walking-boot-pneumatic",
       "name": "Tall Walking Boot Pneumatic",
       "category": "Orthotics",
-      "pack_size": "XSmall / Single Boot",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "Tall Walking Boot Pneumatic",
-      "summary": "The Unite Medical® pneumatic tall walking boot is a sized orthosis for the foot and ankle. When correctly utilized, the uprights and footplate effectively safeguard the ankle joint and foot. The considerable insole…",
+      "img": "The Unite Medical® pneumatic tall walking boot is a sized orthosis for the foot and ankle. When correctly utilized, the uprights and footplate effectively safeguard the ankle joint and foot. The considerable insole paddi",
+      "summary": "The Unite Medical® pneumatic tall walking boot is a sized orthosis for the foot and ankle. When correctly utilized, the uprights and footplate effectively safeguard the ankle joint and foot. The considerable insole paddi",
       "description": "The Unite Medical® pneumatic tall walking boot is a sized orthosis for the foot and ankle. When correctly utilized, the uprights and footplate effectively safeguard the ankle joint and foot. The considerable insole padding guarantees superior comfort, allowing for a natural gait. Additionally, the pneumatic compression system not only ensures a snug fit but also minimizes edema for enhanced comfort. Key Features Inflatable bladder incorporated into the liner for increased immobilization of the lower leg, ankle, and foot Lightweight, low rocker profile design for greater patient comfort Cushioned heel for greater energy absorption Fits either right of left foot Rocker bottom design for natural gait pattern Medicare-approved under L4360 and L4361, ensuring easy billing for healthcare providers. Download the PDAC Approval Letter for more details. More Product Information",
       "images": [
         "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/TallWalkingBootHighTopAirWalkerBoot.png?v=1730758322"
@@ -2438,11 +3686,11 @@ export const PUBLIC_CATALOG = {
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/TallWalkingBootHighTopAirWalkerBoot.png?v=1730758322",
       "variants": [
         {
-          "variant_id": "45928840495270",
+          "variant_id": "variant_shopify_afad93b9f7c089bc7e76",
           "sku": "PWB6061-XS-T",
           "title": "XSmall / Single Boot",
           "available": true,
-          "weight_grams": 255,
+          "weight_grams": 255.145708125,
           "options": {
             "Size": "XSmall",
             "Pack Size": "Single Boot"
@@ -2450,111 +3698,84 @@ export const PUBLIC_CATALOG = {
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/TallWalkingBootHighTopAirWalkerBoot.png?v=1730758322"
         },
         {
-          "variant_id": "45928840528038",
+          "variant_id": "variant_shopify_f60cd2377aa22a893b69",
           "sku": "PWB6061-XS-TC",
           "title": "XSmall / Case of 6 Boots",
           "available": true,
-          "weight_grams": 1531,
-          "options": {
-            "Size": "XSmall",
-            "Pack Size": "Case of 6 Boots"
-          },
+          "weight_grams": 1530.87424875,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/TallWalkingBootHighTopAirWalkerBoot.png?v=1730758322"
         },
         {
-          "variant_id": "45928840560806",
+          "variant_id": "variant_shopify_4474484d506e5b5fc10f",
           "sku": "PWB6061-S-T",
           "title": "Small / Single Boot",
           "available": true,
-          "weight_grams": 255,
-          "options": {
-            "Size": "Small",
-            "Pack Size": "Single Boot"
-          },
+          "weight_grams": 255.145708125,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/TallWalkingBootHighTopAirWalkerBoot.png?v=1730758322"
         },
         {
-          "variant_id": "45928840593574",
+          "variant_id": "variant_shopify_7eb3dd2a4692402fd4de",
           "sku": "PWB6061-S-TC",
           "title": "Small / Case of 6 Boots",
           "available": true,
-          "weight_grams": 1531,
-          "options": {
-            "Size": "Small",
-            "Pack Size": "Case of 6 Boots"
-          },
+          "weight_grams": 1530.87424875,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/TallWalkingBootHighTopAirWalkerBoot.png?v=1730758322"
         },
         {
-          "variant_id": "45928840626342",
+          "variant_id": "variant_shopify_0427382d54bf877cff3d",
           "sku": "PWB6061-M-T",
           "title": "Medium / Single Boot",
           "available": true,
-          "weight_grams": 255,
-          "options": {
-            "Size": "Medium",
-            "Pack Size": "Single Boot"
-          },
+          "weight_grams": 255.145708125,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/TallWalkingBootHighTopAirWalkerBoot.png?v=1730758322"
         },
         {
-          "variant_id": "45928840659110",
+          "variant_id": "variant_shopify_07f90e21ca07c4c33082",
           "sku": "PWB6061-M-TC",
           "title": "Medium / Case of 6 Boots",
           "available": true,
-          "weight_grams": 1531,
-          "options": {
-            "Size": "Medium",
-            "Pack Size": "Case of 6 Boots"
-          },
+          "weight_grams": 1530.87424875,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/TallWalkingBootHighTopAirWalkerBoot.png?v=1730758322"
         },
         {
-          "variant_id": "45928840691878",
+          "variant_id": "variant_shopify_4ad8c43e5fa3c069d726",
           "sku": "PWB6061-L-T",
           "title": "Large / Single Boot",
           "available": true,
-          "weight_grams": 255,
-          "options": {
-            "Size": "Large",
-            "Pack Size": "Single Boot"
-          },
+          "weight_grams": 255.145708125,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/TallWalkingBootHighTopAirWalkerBoot.png?v=1730758322"
         },
         {
-          "variant_id": "45928840724646",
+          "variant_id": "variant_shopify_9b1ba56019446cdafd9c",
           "sku": "PWB6061-L-TC",
           "title": "Large / Case of 6 Boots",
           "available": true,
-          "weight_grams": 1531,
-          "options": {
-            "Size": "Large",
-            "Pack Size": "Case of 6 Boots"
-          },
+          "weight_grams": 1530.87424875,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/TallWalkingBootHighTopAirWalkerBoot.png?v=1730758322"
         },
         {
-          "variant_id": "45928840757414",
+          "variant_id": "variant_shopify_a5d16dcc6c40a5d30342",
           "sku": "PWB6061-XL-T",
           "title": "XL / Single Boot",
           "available": true,
-          "weight_grams": 255,
-          "options": {
-            "Size": "XL",
-            "Pack Size": "Single Boot"
-          },
+          "weight_grams": 255.145708125,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/TallWalkingBootHighTopAirWalkerBoot.png?v=1730758322"
         },
         {
-          "variant_id": "45928840790182",
+          "variant_id": "variant_shopify_fec8e38bd59b65c98e24",
           "sku": "PWB6061-XL-TC",
           "title": "XL / Case of 6 Boots",
           "available": true,
-          "weight_grams": 1531,
-          "options": {
-            "Size": "XL",
-            "Pack Size": "Case of 6 Boots"
-          },
+          "weight_grams": 1530.87424875,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/TallWalkingBootHighTopAirWalkerBoot.png?v=1730758322"
         }
       ],
@@ -2562,31 +3783,28 @@ export const PUBLIC_CATALOG = {
         "ankle foot orthosis",
         "orthosis"
       ],
-      "collections": [
-        "Foot & Ankle Braces",
-        "Orthopedic Bracing"
-      ],
+      "collections": [],
       "product_type": "Orthopedic Devices",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
-      "pdac_approved": true,
-      "taa_compliant": true,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
       "berry_compliant": false,
       "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
     },
     {
       "sku": "PWB6061-XS-S",
       "handle": "short-walking-boot-pneumatic",
       "name": "Short Walking Boot Pneumatic",
       "category": "Orthotics",
-      "pack_size": "XSmall / Single Boot",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "Short Walking Boot Pneumatic",
-      "summary": "The Unite Medical® pneumatic short walking boot is a sized orthosis for the foot and ankle. When correctly utilized, the uprights and footplate effectively safeguard the ankle joint and foot. The considerable insole…",
+      "img": "The Unite Medical® pneumatic short walking boot is a sized orthosis for the foot and ankle. When correctly utilized, the uprights and footplate effectively safeguard the ankle joint and foot. The considerable insole padd",
+      "summary": "The Unite Medical® pneumatic short walking boot is a sized orthosis for the foot and ankle. When correctly utilized, the uprights and footplate effectively safeguard the ankle joint and foot. The considerable insole padd",
       "description": "The Unite Medical® pneumatic short walking boot is a sized orthosis for the foot and ankle. When correctly utilized, the uprights and footplate effectively safeguard the ankle joint and foot. The considerable insole padding guarantees superior comfort, allowing for a natural gait. Additionally, the pneumatic compression system not only ensures a snug fit but also minimizes edema for enhanced comfort. Key Features Inflatable bladder incorporated into the liner for increased immobilization of the lower leg, ankle, and foot Lightweight, low rocker profile design for greater patient comfort Cushioned heel for greater energy absorption Fits either right of left foot Rocker bottom design for natural gait pattern Medicare-approved under L4360 and L4361, ensuring easy billing for healthcare providers. Download the PDAC Approval Letter for more details. More Product Information",
       "images": [
         "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Short_Walking_Boot.png?v=1730751783"
@@ -2594,11 +3812,11 @@ export const PUBLIC_CATALOG = {
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Short_Walking_Boot.png?v=1730751783",
       "variants": [
         {
-          "variant_id": "45928408776870",
+          "variant_id": "variant_shopify_5f77af10ef127aa65840",
           "sku": "PWB6061-XS-S",
           "title": "XSmall / Single Boot",
-          "available": false,
-          "weight_grams": 255,
+          "available": true,
+          "weight_grams": 255.145708125,
           "options": {
             "Size": "XSmall",
             "Pack Size": "Single Boot"
@@ -2606,111 +3824,84 @@ export const PUBLIC_CATALOG = {
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Short_Walking_Boot.png?v=1730751783"
         },
         {
-          "variant_id": "45928429715622",
+          "variant_id": "variant_shopify_a8fafd9816a42ae6011c",
           "sku": "PWB6061-XS-SC",
           "title": "XSmall / Case of 10 Boots",
-          "available": false,
-          "weight_grams": 2551,
-          "options": {
-            "Size": "XSmall",
-            "Pack Size": "Case of 10 Boots"
-          },
+          "available": true,
+          "weight_grams": 2551.4599162023123,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Short_Walking_Boot.png?v=1730751783"
         },
         {
-          "variant_id": "45928408809638",
+          "variant_id": "variant_shopify_7b1f4912a73972df802a",
           "sku": "PWB6061-S-S",
           "title": "Small / Single Boot",
           "available": true,
-          "weight_grams": 255,
-          "options": {
-            "Size": "Small",
-            "Pack Size": "Single Boot"
-          },
+          "weight_grams": 255.145708125,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Short_Walking_Boot.png?v=1730751783"
         },
         {
-          "variant_id": "45928429748390",
+          "variant_id": "variant_shopify_7131f200d368c5c1660f",
           "sku": "PWB6061-S-SC",
           "title": "Small / Case of 10 Boots",
           "available": true,
-          "weight_grams": 2551,
-          "options": {
-            "Size": "Small",
-            "Pack Size": "Case of 10 Boots"
-          },
+          "weight_grams": 2551.4599162023123,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Short_Walking_Boot.png?v=1730751783"
         },
         {
-          "variant_id": "45928408842406",
+          "variant_id": "variant_shopify_ddac9c6d932fd8b53b62",
           "sku": "PWB6061-M-S",
           "title": "Medium / Single Boot",
           "available": true,
-          "weight_grams": 255,
-          "options": {
-            "Size": "Medium",
-            "Pack Size": "Single Boot"
-          },
+          "weight_grams": 255.145708125,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Short_Walking_Boot.png?v=1730751783"
         },
         {
-          "variant_id": "45928429781158",
+          "variant_id": "variant_shopify_10d9ed280e315e499c93",
           "sku": "PWB6061-M-SC",
           "title": "Medium / Case of 10 Boots",
           "available": true,
-          "weight_grams": 2551,
-          "options": {
-            "Size": "Medium",
-            "Pack Size": "Case of 10 Boots"
-          },
+          "weight_grams": 2551.4599162023123,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Short_Walking_Boot.png?v=1730751783"
         },
         {
-          "variant_id": "45928408875174",
+          "variant_id": "variant_shopify_8eb3c6889e599f2a8c04",
           "sku": "PWB6061-L-S",
           "title": "Large / Single Boot",
           "available": true,
-          "weight_grams": 255,
-          "options": {
-            "Size": "Large",
-            "Pack Size": "Single Boot"
-          },
+          "weight_grams": 255.145708125,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Short_Walking_Boot.png?v=1730751783"
         },
         {
-          "variant_id": "45928429813926",
+          "variant_id": "variant_shopify_d45d9023ad0fa437aefc",
           "sku": "PWB6061-L-SC",
           "title": "Large / Case of 10 Boots",
           "available": true,
-          "weight_grams": 2551,
-          "options": {
-            "Size": "Large",
-            "Pack Size": "Case of 10 Boots"
-          },
+          "weight_grams": 2551.4599162023123,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Short_Walking_Boot.png?v=1730751783"
         },
         {
-          "variant_id": "45928408907942",
+          "variant_id": "variant_shopify_5f5c79e76a3d333f2126",
           "sku": "PWB6061-XL-S",
           "title": "XL / Single Boot",
           "available": true,
-          "weight_grams": 255,
-          "options": {
-            "Size": "XL",
-            "Pack Size": "Single Boot"
-          },
+          "weight_grams": 255.145708125,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Short_Walking_Boot.png?v=1730751783"
         },
         {
-          "variant_id": "45928429846694",
+          "variant_id": "variant_shopify_510a90c59f506cff9f2c",
           "sku": "PWB6061-XL-SC",
           "title": "XL / Case of 10 Boots",
           "available": true,
-          "weight_grams": 2551,
-          "options": {
-            "Size": "XL",
-            "Pack Size": "Case of 10 Boots"
-          },
+          "weight_grams": 2551.4599162023123,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Short_Walking_Boot.png?v=1730751783"
         }
       ],
@@ -2718,57 +3909,55 @@ export const PUBLIC_CATALOG = {
         "ankle foot orthosis",
         "orthosis"
       ],
-      "collections": [
-        "Foot & Ankle Braces",
-        "Orthopedic Bracing"
-      ],
+      "collections": [],
       "product_type": "Orthopedic Devices",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
-      "pdac_approved": true,
-      "taa_compliant": true,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
       "berry_compliant": false,
       "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
     },
     {
       "sku": "1001-0340",
       "handle": "oraquick-in-home-hiv-test",
       "name": "OraQuick® In-Home HIV Test | 1 Test",
       "category": "Diagnostics",
-      "pack_size": "One Kit (1 Test)",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "OraQuick® In-Home HIV Test | 1 Test",
-      "summary": "The OraQuick In-Home HIV Test offers a simple, fast, and accurate way to test for HIV in the privacy of your own home. This FDA-approved test delivers results in just 20 minutes with an easy oral swab—no blood…",
+      "img": "The OraQuick In-Home HIV Test offers a simple, fast, and accurate way to test for HIV in the privacy of your own home. This FDA-approved test delivers results in just 20 minutes with an easy oral swab—no blood required. ",
+      "summary": "The OraQuick In-Home HIV Test offers a simple, fast, and accurate way to test for HIV in the privacy of your own home. This FDA-approved test delivers results in just 20 minutes with an easy oral swab—no blood required. ",
       "description": "The OraQuick In-Home HIV Test offers a simple, fast, and accurate way to test for HIV in the privacy of your own home. This FDA-approved test delivers results in just 20 minutes with an easy oral swab—no blood required. It is designed to detect HIV antibodies and provides a reliable option for individuals seeking confidential testing. Whether you’re testing for peace of mind or monitoring your health, the OraQuick In-Home HIV Test empowers you to take control of your health with fast, accurate results. Key Features FDA-approved for at-home HIV testing Provides results in just 20 minutes Simple oral swab, no blood required 99.9% accurate in detecting HIV antibodies Convenient, private, and easy-to-use Product Flyer Instructions For Use",
       "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/OraQuick_In-HomeHIVTestMain.jpg?v=1726849282"
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/OraQuick_In-HomeHIVTestMain.jpg?v=1726849282",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/OraQuick_In-HomeHIVTestInside.jpg?v=1726849282",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/OraQuick_In-HomeHIVTestIncluded.jpg?v=1726849281",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/OraQuick_In-HomeHIVTestLabel.jpg?v=1726849282"
       ],
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/OraQuick_In-HomeHIVTestMain.jpg?v=1726849282",
       "variants": [
         {
-          "variant_id": "45818648461478",
+          "variant_id": "variant_shopify_23fd92bc891ac07b22f8",
           "sku": "1001-0340",
           "title": "One Kit (1 Test)",
           "available": true,
-          "weight_grams": 57,
+          "weight_grams": 56.69904625,
           "options": {
             "Pack Size": "One Kit (1 Test)"
           },
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/OraQuick_In-HomeHIVTestMain.jpg?v=1726849282"
         },
         {
-          "variant_id": "46178728673446",
+          "variant_id": "variant_shopify_a5e15545a5c98ab90809",
           "sku": "1001-0340C",
           "title": "One Case (6 Tests)",
           "available": true,
-          "weight_grams": 340,
-          "options": {
-            "Pack Size": "One Case (6 Tests)"
-          },
+          "weight_grams": 340.1942775,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/OraQuick_In-HomeHIVTestMain.jpg?v=1726849282"
         }
       ],
@@ -2776,56 +3965,58 @@ export const PUBLIC_CATALOG = {
         "Diagnostic Test",
         "OTC"
       ],
-      "collections": [
-        "Diagnostic Tests"
-      ],
+      "collections": [],
       "product_type": "Diagnostic Tests",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
+      "fda_registered": false,
       "pdac_approved": false,
       "taa_compliant": false,
       "berry_compliant": false,
       "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
     },
     {
       "sku": "LFA0462-2V6-BIO",
       "handle": "speedy-swab-covid-19-flu-self-test-2-pack",
       "name": "SpeedySwab™ at-home covid-19 and flu a/b test kit - 2 tests",
       "category": "Diagnostics",
-      "pack_size": "Box (12 Tests)",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "SpeedySwab™ at-home covid-19 and flu a/b test kit - 2 tests",
-      "summary": "Know sooner with the SpeedySwab™ at-home covid-19 and flu a/b test kit, 2 tests per box. This reliable and easy-to-use nasal swab test is designed to detect and distinguish between covid-19, influenza a, and influenza…",
+      "img": "Know sooner with the SpeedySwab™ at-home covid-19 and flu a/b test kit, 2 tests per box. This reliable and easy-to-use nasal swab test is designed to detect and distinguish between covid-19, influenza a, and influenza b ",
+      "summary": "Know sooner with the SpeedySwab™ at-home covid-19 and flu a/b test kit, 2 tests per box. This reliable and easy-to-use nasal swab test is designed to detect and distinguish between covid-19, influenza a, and influenza b ",
       "description": "Know sooner with the SpeedySwab™ at-home covid-19 and flu a/b test kit, 2 tests per box. This reliable and easy-to-use nasal swab test is designed to detect and distinguish between covid-19, influenza a, and influenza b in approximately 15 minutes. With two tests included per box, the SpeedySwab™ at-home covid-19 and flu a/b test kit offers added value and convenience for families or individuals who may need to test more than once. This test is authorized for non-prescription home use in individuals 14 years and older for self-testing, and in children ages 2 years and older with adult collection. Get quick results in the privacy of your home and take the right next steps with confidence. Key Features Brand: SpeedySwab at-home covid-19 and flu a/b test kit Detects and distinguishes between covid-19, influenza a, and influenza b Provides clear results in approximately 15 minutes Easy-to-use nasal swab test designed for home use For ages 14 years and older for self-testing, or ages 2 years and older with adult collection Two tests per box for added value and convenience Instructions For Use Quick Reference Instructions Healthcare Provider Fact Sheet",
       "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/UniteMedical_Primary_Option2.jpg?v=1759255412"
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/UniteMedical_Primary_Option2.jpg?v=1759255412",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/UniteMedical_2_2934e7ca-2f85-4baf-b4c4-8ba03f01e9bb.jpg?v=1759255452",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/UniteMedical_1_3acfd1a2-978d-4ebb-9be8-7bc60ac31850.jpg?v=1759255452",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/UniteMedical_3_b2775b23-04c4-40a3-bf7c-2c025e1a2452.jpg?v=1761155241",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/UniteMedical_4_9537177f-4b54-46df-a1b6-819cd8cd4461.jpg?v=1761155254",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/UniteMedical_5_f259b329-bb75-4ae5-8371-fffd10b5f989.jpg?v=1759255423",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/UniteMedical_6_fa3ba57f-621b-42b1-be77-6caac9e51ae1.jpg?v=1759255423"
       ],
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/UniteMedical_Primary_Option2.jpg?v=1759255412",
       "variants": [
         {
-          "variant_id": "45792376324262",
+          "variant_id": "variant_shopify_4b3a3171619477ebde4a",
           "sku": "LFA0462-2V6-BIO",
           "title": "Box (12 Tests)",
           "available": true,
-          "weight_grams": 312,
+          "weight_grams": 311.844754375,
           "options": {
             "Pack Size": "Box (12 Tests)"
           },
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/UniteMedical_Primary_Option2.jpg?v=1759255412"
         },
         {
-          "variant_id": "45792376357030",
+          "variant_id": "variant_shopify_07173bdb47e8f76c8add",
           "sku": "LFA0462-2V6C45-BIO",
           "title": "Case (540 Tests)",
           "available": true,
-          "weight_grams": 14033,
-          "options": {
-            "Pack Size": "Case (540 Tests)"
-          },
+          "weight_grams": 14033.022451731937,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/UniteMedical_Primary_Option2.jpg?v=1759255412"
         }
       ],
@@ -2835,56 +4026,58 @@ export const PUBLIC_CATALOG = {
         "OTC",
         "Planogram"
       ],
-      "collections": [
-        "Diagnostic Tests"
-      ],
+      "collections": [],
       "product_type": "Diagnostic Tests",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
+      "fda_registered": false,
       "pdac_approved": false,
       "taa_compliant": false,
       "berry_compliant": false,
       "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
     },
     {
       "sku": "LFA0462-1V10-BIO",
       "handle": "speedyswab-covid-19-flu-self-test",
       "name": "SpeedySwab™ at-home covid-19 and flu a/b test kit - 1 test",
       "category": "Diagnostics",
-      "pack_size": "Box (10 Tests)",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "SpeedySwab™ at-home covid-19 and flu a/b test kit - 1 test",
-      "summary": "Get fast answers from the comfort of home with the SpeedySwab™ at-home covid-19 and flu a/b test kit, 1 test per box. This easy-to-use nasal swab test provides results in about 15 minutes, helping individuals quickly…",
+      "img": "Get fast answers from the comfort of home with the SpeedySwab™ at-home covid-19 and flu a/b test kit, 1 test per box. This easy-to-use nasal swab test provides results in about 15 minutes, helping individuals quickly ide",
+      "summary": "Get fast answers from the comfort of home with the SpeedySwab™ at-home covid-19 and flu a/b test kit, 1 test per box. This easy-to-use nasal swab test provides results in about 15 minutes, helping individuals quickly ide",
       "description": "Get fast answers from the comfort of home with the SpeedySwab™ at-home covid-19 and flu a/b test kit, 1 test per box. This easy-to-use nasal swab test provides results in about 15 minutes, helping individuals quickly identify the cause of their respiratory symptoms. The SpeedySwab™ at-home covid-19 and flu a/b test kit is assembled in the USA and features a QR code on the front of the box, giving users the option to connect with a licensed healthcare provider for a telehealth consultation after their results (consultation and treatment subject to eligibility and cost). This test is authorized for non-prescription home use in individuals 14 years and older for self-testing, and in children ages 2 years and older with adult collection. Accurate and convenient, the SpeedySwab™ test kit is designed to deliver clarity and peace of mind when you need it most. Key Features Detects and distinguishes between covid-19, influenza a, and influenza b Provides clear results in approximately 15 minutes Includes QR code on front of box for optional telehealth consultation with a licensed provider (consultation and treatment subject to eligibility and cost) Easy-to-use nasal swab test designed for home use Proudly assembled in the USA For ages 14 years and older for self-testing, or ages 2 years and older with adult collection Instructions For Use Quick Reference Instructions Healthcare Provider Fact Sheet",
       "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/UniteMedical_Main.jpg?v=1759254676"
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/UniteMedical_Main.jpg?v=1759254676",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/UniteMedical_2.jpg?v=1759254702",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/UniteMedical_1.jpg?v=1759254721",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/UniteMedical_3.jpg?v=1759254727",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/UniteMedical_4.jpg?v=1759254731",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/UniteMedical_5.jpg?v=1759254736",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/UniteMedical_6.jpg?v=1759254740"
       ],
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/UniteMedical_Main.jpg?v=1759254676",
       "variants": [
         {
-          "variant_id": "45792315932838",
+          "variant_id": "variant_shopify_0da42b57db9c782b6641",
           "sku": "LFA0462-1V10-BIO",
           "title": "Box (10 Tests)",
           "available": true,
-          "weight_grams": 383,
+          "weight_grams": 382.7185621875,
           "options": {
             "Pack Size": "Box (10 Tests)"
           },
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/UniteMedical_Main.jpg?v=1759254676"
         },
         {
-          "variant_id": "45792315900070",
+          "variant_id": "variant_shopify_31eb9eac83772c44a043",
           "sku": "LFA0462-1V10C48-BIO",
           "title": "Case (480 Tests)",
           "available": true,
-          "weight_grams": 18371,
-          "options": {
-            "Pack Size": "Case (480 Tests)"
-          },
+          "weight_grams": 18370.505159761564,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/UniteMedical_Main.jpg?v=1759254676"
         }
       ],
@@ -2894,30 +4087,137 @@ export const PUBLIC_CATALOG = {
         "OTC",
         "Planogram"
       ],
-      "collections": [
-        "Diagnostic Tests"
-      ],
+      "collections": [],
       "product_type": "Diagnostic Tests",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
+      "fda_registered": false,
       "pdac_approved": false,
       "taa_compliant": false,
       "berry_compliant": false,
       "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
     },
     {
-      "sku": "Status-33225-B25",
+      "sku": "COV-FLU-2",
+      "handle": "ihealth-rapid-covid-flu-test",
+      "name": "iHealth COVID-19/Flu A&B Rapid Test | 2 Tests",
+      "category": "Diagnostics",
+      "pack_size": "1 ea",
+      "hcpcs": "—",
+      "moq": 1,
+      "img": "The iHealth Rapid COVID & Flu Test is designed to provide fast and reliable results for both COVID-19 and flu, all from the convenience of your home. This dual-function test gives you answers in just 15 minutes using a s",
+      "summary": "The iHealth Rapid COVID & Flu Test is designed to provide fast and reliable results for both COVID-19 and flu, all from the convenience of your home. This dual-function test gives you answers in just 15 minutes using a s",
+      "description": "The iHealth Rapid COVID & Flu Test is designed to provide fast and reliable results for both COVID-19 and flu, all from the convenience of your home. This dual-function test gives you answers in just 15 minutes using a simple nasal swab. Whether you're monitoring symptoms or seeking quick reassurance, the iHealth Rapid Test delivers the accurate results you need to make informed health decisions. Ideal for personal or family use, the test is FDA-approved and offers an easy, stress-free way to check for both COVID-19 and influenza. Key Features Dual-function test for COVID-19 and flu Provides results in just 15 minutes Simple nasal swab for at-home testing FDA-approved for accuracy and reliability Ideal for quick and easy personal use Key Features & Specifications Instructions for Use Quick Reference Instructions Healthcare Provider Fact Sheet",
+      "images": [
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/iHealthCOVID-19_FluA_BRapidTest-Box.png?v=1721918139",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/iHealthCOVID-19_FluA_BRapidTest-Kit.png?v=1721918139"
+      ],
+      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/iHealthCOVID-19_FluA_BRapidTest-Box.png?v=1721918139",
+      "variants": [
+        {
+          "variant_id": "variant_shopify_e8347e0933b5085feac9",
+          "sku": "COV-FLU-2",
+          "title": "Box (2 Tests)",
+          "available": true,
+          "weight_grams": 28.349523125,
+          "options": {
+            "Pack Size": "Box (2 Tests)"
+          },
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/iHealthCOVID-19_FluA_BRapidTest-Box.png?v=1721918139"
+        },
+        {
+          "variant_id": "variant_shopify_2c2cfabec8e7ed9b8c6e",
+          "sku": "COV-FLU-2-CASE",
+          "title": "Case (96 Tests)",
+          "available": true,
+          "weight_grams": 1360.77711,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/iHealthCOVID-19_FluA_BRapidTest-Box.png?v=1721918139"
+        }
+      ],
+      "tags": [
+        "Covid Tests",
+        "Diagnostic Test",
+        "OTC"
+      ],
+      "collections": [],
+      "product_type": "Diagnostic Tests",
+      "m6_category": null,
+      "quote_only": false,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
+      "berry_compliant": false,
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
+    },
+    {
+      "sku": "ACT21002-1 OTC 1",
+      "handle": "cordx-flu-covid-test",
+      "name": "CorDx TyFast Flu A/B & COVID-19 | 1 Test",
+      "category": "Diagnostics",
+      "pack_size": "1 ea",
+      "hcpcs": "—",
+      "moq": 1,
+      "img": "The CorDx TyFast Flu A/B & COVID-19 At-Home Test offers a convenient and reliable way to test for both influenza and COVID-19 from the comfort of your home. Using a simple nasal swab, this test provides accurate results ",
+      "summary": "The CorDx TyFast Flu A/B & COVID-19 At-Home Test offers a convenient and reliable way to test for both influenza and COVID-19 from the comfort of your home. Using a simple nasal swab, this test provides accurate results ",
+      "description": "The CorDx TyFast Flu A/B & COVID-19 At-Home Test offers a convenient and reliable way to test for both influenza and COVID-19 from the comfort of your home. Using a simple nasal swab, this test provides accurate results in just 15 minutes, allowing you to quickly determine whether symptoms are related to flu or COVID-19. Designed for ease of use and fast results, the CorDx TyFast test is perfect for individuals seeking quick answers about their health. This dual-function test is ideal for personal use or for families, offering an all-in-one solution for managing flu and COVID-19 symptoms. Key Features Dual testing for flu A/B and COVID-19 Fast results in just 15 minutes Simple nasal swab for at-home testing Convenient, easy-to-use test for quick results Ideal for personal or family use Key Features & Specifications Instructions for Use Quick Reference Instructions Healthcare Provider Fact Sheet Interpreting Results",
+      "images": [
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/sleeve_generic_1.jpg?v=1720795210",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/CorDX-3in1_3D_1_test.png?v=1721044137",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/CorDX-3in1_1Test.png?v=1721044144"
+      ],
+      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/sleeve_generic_1.jpg?v=1720795210",
+      "variants": [
+        {
+          "variant_id": "variant_shopify_7025d1cd86a9a31fe067",
+          "sku": "ACT21002-1 OTC 1",
+          "title": "Box (1 Test)",
+          "available": true,
+          "weight_grams": 28.349523125,
+          "options": {
+            "Pack Size": "Box (1 Test)"
+          },
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/sleeve_generic_1.jpg?v=1720795210"
+        },
+        {
+          "variant_id": "variant_shopify_82717038e43e3f41da13",
+          "sku": "ACT21002-1 OTC 1-CASE",
+          "title": "Case (150 Tests)",
+          "available": true,
+          "weight_grams": 4252.431303702312,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/sleeve_generic_1.jpg?v=1720795210"
+        }
+      ],
+      "tags": [
+        "Covid Tests"
+      ],
+      "collections": [],
+      "product_type": "Diagnostic Tests",
+      "m6_category": null,
+      "quote_only": false,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
+      "berry_compliant": false,
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
+    },
+    {
+      "sku": "Status-33225 (B25)",
       "handle": "status-covid-19-flu-rapid-test",
       "name": "Status™ COVID-19/Flu A&B",
       "category": "Diagnostics",
-      "pack_size": "Box of 25 Tests",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "Status™ COVID-19/Flu A&B",
-      "summary": "The Status COVID-19 & Flu Rapid Test is designed to provide quick and accurate results for both COVID-19 and influenza in just 15 minutes. Using a simple nasal swab, this dual-function test makes it easy to detect both…",
+      "img": "The Status COVID-19 & Flu Rapid Test is designed to provide quick and accurate results for both COVID-19 and influenza in just 15 minutes. Using a simple nasal swab, this dual-function test makes it easy to detect both i",
+      "summary": "The Status COVID-19 & Flu Rapid Test is designed to provide quick and accurate results for both COVID-19 and influenza in just 15 minutes. Using a simple nasal swab, this dual-function test makes it easy to detect both i",
       "description": "The Status COVID-19 & Flu Rapid Test is designed to provide quick and accurate results for both COVID-19 and influenza in just 15 minutes. Using a simple nasal swab, this dual-function test makes it easy to detect both illnesses from the comfort of your home. Ideal for individuals or families seeking fast answers about flu or COVID-19 symptoms, the Status Rapid Test offers reliable testing with easy-to-follow instructions. Perfect for monitoring your health or the health of loved ones, this test provides the convenience of at-home testing with laboratory-grade accuracy. Key Features Dual-function test for COVID-19 and flu Provides results in 15 minutes Simple nasal swab for easy at-home testing Convenient and reliable testing solution Contact Us to request a quote Call us at 833-868-6483 to order",
       "images": [
         "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/StatusCovid19FluTests.png?v=1716991493"
@@ -2925,25 +4225,23 @@ export const PUBLIC_CATALOG = {
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/StatusCovid19FluTests.png?v=1716991493",
       "variants": [
         {
-          "variant_id": "45431038247078",
+          "variant_id": "variant_shopify_540358602b0ba3be142b",
           "sku": "Status-33225 (B25)",
           "title": "Box of 25 Tests",
           "available": true,
-          "weight_grams": 1814,
+          "weight_grams": 1814.36948,
           "options": {
             "Pack Size": "Box of 25 Tests"
           },
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/StatusCovid19FluTests.png?v=1716991493"
         },
         {
-          "variant_id": "45431038279846",
+          "variant_id": "variant_shopify_0e26d41768f1891ef772",
           "sku": "Status-33225 (C500)",
           "title": "Case of 500 Tests",
-          "available": false,
-          "weight_grams": 36287,
-          "options": {
-            "Pack Size": "Case of 500 Tests"
-          },
+          "available": true,
+          "weight_grams": 36287.41511457081,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/StatusCovid19FluTests.png?v=1716991493"
         }
       ],
@@ -2952,86 +4250,218 @@ export const PUBLIC_CATALOG = {
         "Diagnostic Test",
         "POC"
       ],
-      "collections": [
-        "Diagnostic Tests"
-      ],
+      "collections": [],
       "product_type": "Diagnostic Tests",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
+      "fda_registered": false,
       "pdac_approved": false,
       "taa_compliant": false,
       "berry_compliant": false,
       "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
     },
     {
-      "sku": "USAM100SC",
-      "handle": "medava-shoe-covers",
-      "name": "medava® Disposable Shoe Covers",
-      "category": "Surgical",
-      "pack_size": "Box of 100",
+      "sku": "24750",
+      "handle": "irrigation-warming-set",
+      "name": "Irrigation Warmer | Rapid Fluid Heating",
+      "category": "Consumable",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "medava® Disposable Shoe Covers",
-      "summary": "The medava® Shoe Covers provide reliable, durable protection for use in healthcare, laboratories, and industrial environments. Manufactured in the USA, these shoe covers are designed to protect against contaminants…",
-      "description": "The medava® Shoe Covers provide reliable, durable protection for use in healthcare, laboratories, and industrial environments. Manufactured in the USA, these shoe covers are designed to protect against contaminants while offering comfort for extended wear. Made from tear-resistant material, they are ideal for professionals who need dependable protection during work. Supporting medava® means choosing high-quality, American-made products that are built to last. Key Features Tear-resistant material for durable wear Provides reliable protection in healthcare, lab, and industrial settings Elastic bands ensure a secure fit Lightweight and breathable for extended wear Disposable for easy, convenient use Made in the USA for quality and safety Single layer, breathable non-woven fabric with adhesive traction strips Latex-free construction Ultrasonically welded seams Berry Compliant Shoe Covers made with 100% USA Raw Materials, Non-Sterile Shipping & Ordering Details 100 shoe covers per box 400 shoe covers per case Weight per case: 8 lbs Case dimensions: 24’’ x 12’’ x 12’’ Download Spec Sheet",
+      "img": "The Irrigation Warmer is designed to rapidly and safely heat irrigation fluids, ensuring they are at the optimal temperature for surgical procedures. Perfect for surgery centers and operating rooms, this warmer provides ",
+      "summary": "The Irrigation Warmer is designed to rapidly and safely heat irrigation fluids, ensuring they are at the optimal temperature for surgical procedures. Perfect for surgery centers and operating rooms, this warmer provides ",
+      "description": "The Irrigation Warmer is designed to rapidly and safely heat irrigation fluids, ensuring they are at the optimal temperature for surgical procedures. Perfect for surgery centers and operating rooms, this warmer provides consistent heating to maintain fluid integrity and patient safety. The easy-to-use design allows healthcare professionals to quickly set up and manage fluid warming during procedures, improving overall efficiency and reducing patient discomfort. With its durable construction and reliable performance, the Irrigation Warmer is a must-have tool for maintaining optimal conditions in the OR. Key Features Rapid heating for surgical irrigation fluids Maintains consistent fluid temperatures for patient safety Easy-to-use controls for quick setup and operation Ideal for surgery centers and operating rooms Durable and reliable design for long-term use",
       "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaShoeCoversUSAM400SC.png?v=1716563828"
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Screenshot2024-05-01155356.jpg?v=1714593294"
       ],
-      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaShoeCoversUSAM400SC.png?v=1716563828",
+      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Screenshot2024-05-01155356.jpg?v=1714593294",
       "variants": [
         {
-          "variant_id": "46241617346726",
-          "sku": "USAM100SC",
-          "title": "Box of 100",
+          "variant_id": "variant_shopify_b739c66bfe747acec9dc",
+          "sku": "'24750",
+          "title": "Default Title",
           "available": true,
-          "weight_grams": 907,
+          "weight_grams": 453.59237,
           "options": {
-            "Pack Size": "Box of 100"
+            "Title": "Default Title"
           },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaShoeCoversUSAM400SC.png?v=1716563828"
-        },
-        {
-          "variant_id": "45234451021990",
-          "sku": "USAM400SC",
-          "title": "Case of 400",
-          "available": true,
-          "weight_grams": 3629,
-          "options": {
-            "Pack Size": "Case of 400"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaShoeCoversUSAM400SC.png?v=1716563828"
+          "image": ""
         }
       ],
-      "tags": [
-        "USA"
-      ],
-      "collections": [
-        "Medava USA-Made"
-      ],
-      "product_type": "Surgical Supplies",
+      "tags": [],
+      "collections": [],
+      "product_type": null,
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
+      "fda_registered": false,
       "pdac_approved": false,
       "taa_compliant": false,
       "berry_compliant": false,
-      "mspv_listed": true,
-      "latex_free": true,
-      "country_of_origin": "US"
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
+    },
+    {
+      "sku": "USAM200C-XS",
+      "handle": "medava®-usa-nitrile-gloves-200-box",
+      "name": "medava® Nitrile Gloves",
+      "category": "PPE",
+      "pack_size": "1 ea",
+      "hcpcs": "—",
+      "moq": 1,
+      "img": "medava® Nitrile Gloves offer high-quality protection with a durable, latex-free design. Manufactured in the USA, these gloves provide superior resistance to punctures, tears, and chemicals, ensuring they meet the demands",
+      "summary": "medava® Nitrile Gloves offer high-quality protection with a durable, latex-free design. Manufactured in the USA, these gloves provide superior resistance to punctures, tears, and chemicals, ensuring they meet the demands",
+      "description": "medava® Nitrile Gloves offer high-quality protection with a durable, latex-free design. Manufactured in the USA, these gloves provide superior resistance to punctures, tears, and chemicals, ensuring they meet the demands of healthcare professionals and industrial workers. With a comfortable fit and flexible material, medava® nitrile gloves are perfect for extended use. Choose the 200-count box for long-lasting, reliable protection that supports American-made products. Key Features Made in the USA for premium quality Nitrile material offers puncture and chemical resistance Latex-free for sensitive skin protection Comfortable and flexible for extended wear Perfect for healthcare and industrial use Convenient 200-count box for bulk needs Non-Sterile, For One-Time Use Superior Barrier & Chemical Resistance, Beaded Cuff Tested For Use With Chemotherapy Drugs 200 gloves per box, 10 boxes per case Download Spec Sheet",
+      "images": [
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaUSAL_f088895b-e219-42d3-8d43-b1b13fdc24de.png?v=1716935881",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaUSAXSFront_e48408cf-01a0-48d1-9ec8-b153c1aa6745.png?v=1716935881",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaUSAS_e532e992-5af6-4a64-a7df-11aae5907c38.png?v=1716935881",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaUSAM_0d7ceecb-653d-442a-8fd6-703db8ad7169.png?v=1716935881",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaUSAXL_e4743763-8c96-43bd-aa32-6b33e1604670.png?v=1716935881",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaUSA2XL_cdfe1594-d19a-4252-81cf-1e0f1eb42a44.png?v=1716935881"
+      ],
+      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaUSAL_f088895b-e219-42d3-8d43-b1b13fdc24de.png?v=1716935881",
+      "variants": [
+        {
+          "variant_id": "variant_shopify_a86f86774ff1d26f5fdc",
+          "sku": "USAM200C-XS",
+          "title": "XSmall / Box of 200 Gloves",
+          "available": true,
+          "weight_grams": 566.9904625,
+          "options": {
+            "Size": "XSmall",
+            "Pack Size": "Box of 200 Gloves"
+          },
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaUSAXSFront_e48408cf-01a0-48d1-9ec8-b153c1aa6745.png?v=1716935881"
+        },
+        {
+          "variant_id": "variant_shopify_3b5c5d485386302400c7",
+          "sku": "USAM200C-S",
+          "title": "Small / Box of 200 Gloves",
+          "available": true,
+          "weight_grams": 566.9904625,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaUSAS_e532e992-5af6-4a64-a7df-11aae5907c38.png?v=1716935881"
+        },
+        {
+          "variant_id": "variant_shopify_55c5f932ffd1c076c4ae",
+          "sku": "USAM200C-M",
+          "title": "Medium / Box of 200 Gloves",
+          "available": true,
+          "weight_grams": 566.9904625,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaUSAM_0d7ceecb-653d-442a-8fd6-703db8ad7169.png?v=1716935881"
+        },
+        {
+          "variant_id": "variant_shopify_49863203aa809a4195c2",
+          "sku": "USAM200C-L",
+          "title": "Large / Box of 200 Gloves",
+          "available": true,
+          "weight_grams": 566.9904625,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaUSAL_f088895b-e219-42d3-8d43-b1b13fdc24de.png?v=1716935881"
+        },
+        {
+          "variant_id": "variant_shopify_829ed9259d4d9b033748",
+          "sku": "USAM200C-XL",
+          "title": "XL / Box of 200 Gloves",
+          "available": true,
+          "weight_grams": 623.68950875,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaUSAXL_e4743763-8c96-43bd-aa32-6b33e1604670.png?v=1716935881"
+        },
+        {
+          "variant_id": "variant_shopify_1c7face26091904d4c94",
+          "sku": "USAM180C-2XL",
+          "title": "2XL / Box of 200 Gloves",
+          "available": true,
+          "weight_grams": 708.738078125,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaUSA2XL_cdfe1594-d19a-4252-81cf-1e0f1eb42a44.png?v=1716935881"
+        },
+        {
+          "variant_id": "variant_shopify_ac40a8d9507bed3bbbb9",
+          "sku": "USAM2000C-XS",
+          "title": "XSmall / Case of 2000 Gloves",
+          "available": true,
+          "weight_grams": 5669.907459952313,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaUSAXSFront_e48408cf-01a0-48d1-9ec8-b153c1aa6745.png?v=1716935881"
+        },
+        {
+          "variant_id": "variant_shopify_e8cab23a27bddb426d55",
+          "sku": "USAM2000C-S",
+          "title": "Small / Case of 2000 Gloves",
+          "available": true,
+          "weight_grams": 5669.907459952313,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaUSAS_e532e992-5af6-4a64-a7df-11aae5907c38.png?v=1716935881"
+        },
+        {
+          "variant_id": "variant_shopify_eb9713410d1a1bc644b0",
+          "sku": "USAM2000C-M",
+          "title": "Medium / Case of 2000 Gloves",
+          "available": true,
+          "weight_grams": 5669.907459952313,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaUSAM_0d7ceecb-653d-442a-8fd6-703db8ad7169.png?v=1716935881"
+        },
+        {
+          "variant_id": "variant_shopify_fe704731a81e74d1f630",
+          "sku": "USAM2000C-L",
+          "title": "Large / Case of 2000 Gloves",
+          "available": true,
+          "weight_grams": 5669.907459952313,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaUSAL_f088895b-e219-42d3-8d43-b1b13fdc24de.png?v=1716935881"
+        },
+        {
+          "variant_id": "variant_shopify_4b841b6389f47d2c4bd0",
+          "sku": "USAM2000C-XL",
+          "title": "XL / Case of 2000 Gloves",
+          "available": true,
+          "weight_grams": 6236.900757404625,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaUSAXL_e4743763-8c96-43bd-aa32-6b33e1604670.png?v=1716935881"
+        },
+        {
+          "variant_id": "variant_shopify_c196cc949fc1bae4e87a",
+          "sku": "USAM1800C-2XL",
+          "title": "2XL / Case of 2000 Gloves",
+          "available": true,
+          "weight_grams": 7087.386451154625,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaUSA2XL_cdfe1594-d19a-4252-81cf-1e0f1eb42a44.png?v=1716935881"
+        }
+      ],
+      "tags": [
+        "Gloves",
+        "USA"
+      ],
+      "collections": [],
+      "product_type": "Medical Gloves",
+      "m6_category": null,
+      "quote_only": false,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
+      "berry_compliant": false,
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
     },
     {
       "sku": "USAMN95F50",
       "handle": "medava-n95-niosh-respirator-fold-style",
       "name": "medava® N95 NIOSH Respirator | Fold Style",
       "category": "PPE",
-      "pack_size": "Box of 50",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "medava® N95 NIOSH Respirator | Fold Style",
-      "summary": "The medava ® N95 NIOSH Respirator (Fold Style) offers premium protection while supporting American-made products. Manufactured in the USA by a veteran-owned company, this N95 respirator meets NIOSH standards for…",
+      "img": "The medava ® N95 NIOSH Respirator (Fold Style) offers premium protection while supporting American-made products. Manufactured in the USA by a veteran-owned company, this N95 respirator meets NIOSH standards for reliable",
+      "summary": "The medava ® N95 NIOSH Respirator (Fold Style) offers premium protection while supporting American-made products. Manufactured in the USA by a veteran-owned company, this N95 respirator meets NIOSH standards for reliable",
       "description": "The medava ® N95 NIOSH Respirator (Fold Style) offers premium protection while supporting American-made products. Manufactured in the USA by a veteran-owned company, this N95 respirator meets NIOSH standards for reliable protection against airborne particles. The fold style provides a comfortable fit and easy storage, making it ideal for healthcare professionals and personal use. Our commitment to quality ensures this N95 respirator is breathable, durable, and offers superior protection, all while supporting American manufacturing and veterans. Key Features NIOSH-approved N95 respirator for reliable protection Fold style for comfortable fit and easy storage Made in the USA by a veteran-owned company Breathable design for extended wear, Free of Natural Latex Ideal for healthcare professionals and personal use 95% filtration efficiency against airborne particles Lightweight, non-woven polypropylene material Elastic straps fit comfortably around back of the head Nose clip molds mask securely to face. Individually wrapped NIOSH Approved, Surgical Grade, FDA Certified Facility Berry Compliant Surgical Grade Respirator made with 100% USA Raw Materials, Non-Sterile Shipping & Ordering Details 50 respirators per box 200 respirators per case Weight per case: 5 lbs Case dimensions: 14’’ x 12’’ x 9’’ Download Spec Sheet",
       "images": [
         "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaMasksN95FoldStyleUSAMN95F200.png?v=1716563335"
@@ -3039,25 +4469,23 @@ export const PUBLIC_CATALOG = {
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaMasksN95FoldStyleUSAMN95F200.png?v=1716563335",
       "variants": [
         {
-          "variant_id": "46225579344038",
+          "variant_id": "variant_shopify_922346701aa93683145b",
           "sku": "USAMN95F50",
           "title": "Box of 50",
           "available": true,
-          "weight_grams": 567,
+          "weight_grams": 566.9904625,
           "options": {
             "Pack Size": "Box of 50"
           },
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaMasksN95FoldStyleUSAMN95F200.png?v=1716563335"
         },
         {
-          "variant_id": "45234497487014",
+          "variant_id": "variant_shopify_1775000cb6a36f5949a8",
           "sku": "USAMN95F200",
           "title": "Case of 200",
           "available": true,
-          "weight_grams": 2268,
-          "options": {
-            "Pack Size": "Case of 200"
-          },
+          "weight_grams": 2267.9646849523124,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaMasksN95FoldStyleUSAMN95F200.png?v=1716563335"
         }
       ],
@@ -3065,89 +4493,28 @@ export const PUBLIC_CATALOG = {
         "Masks",
         "USA"
       ],
-      "collections": [
-        "Medava USA-Made",
-        "Medical Masks"
-      ],
+      "collections": [],
       "product_type": "Medical Face Masks",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
+      "fda_registered": false,
       "pdac_approved": false,
       "taa_compliant": false,
       "berry_compliant": false,
-      "mspv_listed": true,
+      "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "US"
-    },
-    {
-      "sku": "USAM350T",
-      "handle": "medava-surgical-mask-with-ties",
-      "name": "medava® Tie-Back Surgical Mask | ASTM Level 3",
-      "category": "PPE",
-      "pack_size": "Box of 50",
-      "hcpcs": "—",
-      "moq": 1,
-      "img": "medava® Tie-Back Surgical Mask | ASTM Level 3",
-      "summary": "The medava® Tie-Back Surgical Mask (ASTM Level 3) offers secure protection with its comfortable tie-behind design. Made in the USA and Berry Compliant, this mask meets ASTM Level 3 standards for moderate fluid…",
-      "description": "The medava® Tie-Back Surgical Mask (ASTM Level 3) offers secure protection with its comfortable tie-behind design. Made in the USA and Berry Compliant, this mask meets ASTM Level 3 standards for moderate fluid resistance and filtration efficiency. Its breathable material ensures comfort during long-term use, making it perfect for healthcare professionals and general protection. Supporting medava® means choosing American-made, Berry Compliant products that offer exceptional quality and protection. Key Features ASTM Level 3, F2100-19 Standard Made in the USA and Berry Compliant Made with 100% USA Raw Materials, Non-Sterile Tie-back design for a secure, adjustable fit Soft, breathable material for extended wear Latex-free and elastic-free for sensitive wearers Disposable for easy use Lightweight, non-woven polypropylene material Nose clip molds mask securely to face Fluid resistant and disposable, single use Shipping & Ordering Details 50 masks per box 600 masks per case Weight per case: 9 lbs Case dimensions: 18.25’’ x 16.50’’ x 13.50’’ Download Spec Sheet",
-      "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaMasksTieBacksUSAM3600T.png?v=1716562938"
-      ],
-      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaMasksTieBacksUSAM3600T.png?v=1716562938",
-      "variants": [
-        {
-          "variant_id": "46241604501670",
-          "sku": "USAM350T",
-          "title": "Box of 50",
-          "available": true,
-          "weight_grams": 340,
-          "options": {
-            "Pack Size": "Box of 50"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaMasksTieBacksUSAM3600T.png?v=1716562938"
-        },
-        {
-          "variant_id": "45234472386726",
-          "sku": "USAM3600T",
-          "title": "Case of 600",
-          "available": true,
-          "weight_grams": 4082,
-          "options": {
-            "Pack Size": "Case of 600"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaMasksTieBacksUSAM3600T.png?v=1716562938"
-        }
-      ],
-      "tags": [
-        "Masks",
-        "USA"
-      ],
-      "collections": [
-        "Medava USA-Made",
-        "Medical Masks"
-      ],
-      "product_type": "Medical Face Masks",
-      "m6_category": null,
-      "quote_only": false,
-      "fda_registered": true,
-      "pdac_approved": false,
-      "taa_compliant": false,
-      "berry_compliant": false,
-      "mspv_listed": true,
-      "latex_free": true,
-      "country_of_origin": "US"
+      "country_of_origin": null
     },
     {
       "sku": "USAM150",
       "handle": "medava-3-ply-mask-astm-level-1",
       "name": "medava® 3-Ply Mask | ASTM Level 1",
       "category": "PPE",
-      "pack_size": "Box of 50",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "medava® 3-Ply Mask | ASTM Level 1",
-      "summary": "The Medava® 3-Ply Mask (ASTM Level 1) offers reliable, lightweight protection and is manufactured in the USA by a veteran-owned company. This 3-ply disposable mask meets ASTM Level 1 standards, ensuring it provides…",
+      "img": "The Medava® 3-Ply Mask (ASTM Level 1) offers reliable, lightweight protection and is manufactured in the USA by a veteran-owned company. This 3-ply disposable mask meets ASTM Level 1 standards, ensuring it provides basic",
+      "summary": "The Medava® 3-Ply Mask (ASTM Level 1) offers reliable, lightweight protection and is manufactured in the USA by a veteran-owned company. This 3-ply disposable mask meets ASTM Level 1 standards, ensuring it provides basic",
       "description": "The Medava® 3-Ply Mask (ASTM Level 1) offers reliable, lightweight protection and is manufactured in the USA by a veteran-owned company. This 3-ply disposable mask meets ASTM Level 1 standards, ensuring it provides basic protection against fluids and airborne particles. Its soft, breathable design makes it comfortable for extended wear in everyday settings. Supporting Medava means supporting American-made products and veterans, with the added assurance of ASTM Level 1 certification for reliable performance. Key Features ASTM Level 1 certified for basic fluid and particulate protection Made in the USA by a veteran-owned company 3-ply design for comfort and breathability Ideal for everyday use and general protection Soft, non-woven material for all-day comfort Latex-free and lightweight for easy wear Elastic ear loops for a secure fit Disposable for convenient use BFE (Bacterial Filtration Efficiency) >95% PFE (Particulate Filtration Efficiency) >95% Differential Pressure, mm H2O/cm2 <5.0 Flame Spread: Class 1 Shipping & Ordering Details 50 masks per box 1200 masks per case Weight per case: 11 lbs Case dimensions: 17’’ x 17’’ x 13’’ Download Spec Sheet",
       "images": [
         "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaMasksLevel1USAM11200.png?v=1716561407"
@@ -3155,25 +4522,23 @@ export const PUBLIC_CATALOG = {
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaMasksLevel1USAM11200.png?v=1716561407",
       "variants": [
         {
-          "variant_id": "46241623834790",
+          "variant_id": "variant_shopify_3ab29035c1a6e4284723",
           "sku": "USAM150",
           "title": "Box of 50",
           "available": true,
-          "weight_grams": 227,
+          "weight_grams": 226.796185,
           "options": {
             "Pack Size": "Box of 50"
           },
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaMasksLevel1USAM11200.png?v=1716561407"
         },
         {
-          "variant_id": "45234487853222",
+          "variant_id": "variant_shopify_1ccce0fb1628c8edeea6",
           "sku": "USAM11200",
           "title": "Case of 1200",
-          "available": false,
-          "weight_grams": 5443,
-          "options": {
-            "Pack Size": "Case of 1200"
-          },
+          "available": true,
+          "weight_grams": 5443.111274952313,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaMasksLevel1USAM11200.png?v=1716561407"
         }
       ],
@@ -3181,43 +4546,151 @@ export const PUBLIC_CATALOG = {
         "Masks",
         "USA"
       ],
-      "collections": [
-        "Medava USA-Made",
-        "Medical Masks"
-      ],
+      "collections": [],
       "product_type": "Medical Face Masks",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
+      "fda_registered": false,
       "pdac_approved": false,
       "taa_compliant": false,
       "berry_compliant": false,
-      "mspv_listed": true,
-      "latex_free": true,
-      "country_of_origin": "US"
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
+    },
+    {
+      "sku": "USAM350T",
+      "handle": "medava-surgical-mask-with-ties",
+      "name": "medava® Tie-Back Surgical Mask | ASTM Level 3",
+      "category": "PPE",
+      "pack_size": "1 ea",
+      "hcpcs": "—",
+      "moq": 1,
+      "img": "The medava® Tie-Back Surgical Mask (ASTM Level 3) offers secure protection with its comfortable tie-behind design. Made in the USA and Berry Compliant, this mask meets ASTM Level 3 standards for moderate fluid resistance",
+      "summary": "The medava® Tie-Back Surgical Mask (ASTM Level 3) offers secure protection with its comfortable tie-behind design. Made in the USA and Berry Compliant, this mask meets ASTM Level 3 standards for moderate fluid resistance",
+      "description": "The medava® Tie-Back Surgical Mask (ASTM Level 3) offers secure protection with its comfortable tie-behind design. Made in the USA and Berry Compliant, this mask meets ASTM Level 3 standards for moderate fluid resistance and filtration efficiency. Its breathable material ensures comfort during long-term use, making it perfect for healthcare professionals and general protection. Supporting medava® means choosing American-made, Berry Compliant products that offer exceptional quality and protection. Key Features ASTM Level 3, F2100-19 Standard Made in the USA and Berry Compliant Made with 100% USA Raw Materials, Non-Sterile Tie-back design for a secure, adjustable fit Soft, breathable material for extended wear Latex-free and elastic-free for sensitive wearers Disposable for easy use Lightweight, non-woven polypropylene material Nose clip molds mask securely to face Fluid resistant and disposable, single use Shipping & Ordering Details 50 masks per box 600 masks per case Weight per case: 9 lbs Case dimensions: 18.25’’ x 16.50’’ x 13.50’’ Download Spec Sheet",
+      "images": [
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaMasksTieBacksUSAM3600T.png?v=1716562938"
+      ],
+      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaMasksTieBacksUSAM3600T.png?v=1716562938",
+      "variants": [
+        {
+          "variant_id": "variant_shopify_ffa4db4deaa276f53a8a",
+          "sku": "USAM350T",
+          "title": "Box of 50",
+          "available": true,
+          "weight_grams": 340.1942775,
+          "options": {
+            "Pack Size": "Box of 50"
+          },
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaMasksTieBacksUSAM3600T.png?v=1716562938"
+        },
+        {
+          "variant_id": "variant_shopify_40a02aaa1cd0a5a55644",
+          "sku": "USAM3600T",
+          "title": "Case of 600",
+          "available": true,
+          "weight_grams": 4082.3341649523127,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaMasksTieBacksUSAM3600T.png?v=1716562938"
+        }
+      ],
+      "tags": [
+        "Masks",
+        "USA"
+      ],
+      "collections": [],
+      "product_type": "Medical Face Masks",
+      "m6_category": null,
+      "quote_only": false,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
+      "berry_compliant": false,
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
+    },
+    {
+      "sku": "USAM100SC",
+      "handle": "medava-shoe-covers",
+      "name": "medava® Disposable Shoe Covers",
+      "category": "Surgical",
+      "pack_size": "1 ea",
+      "hcpcs": "—",
+      "moq": 1,
+      "img": "The medava® Shoe Covers provide reliable, durable protection for use in healthcare, laboratories, and industrial environments. Manufactured in the USA, these shoe covers are designed to protect against contaminants while",
+      "summary": "The medava® Shoe Covers provide reliable, durable protection for use in healthcare, laboratories, and industrial environments. Manufactured in the USA, these shoe covers are designed to protect against contaminants while",
+      "description": "The medava® Shoe Covers provide reliable, durable protection for use in healthcare, laboratories, and industrial environments. Manufactured in the USA, these shoe covers are designed to protect against contaminants while offering comfort for extended wear. Made from tear-resistant material, they are ideal for professionals who need dependable protection during work. Supporting medava® means choosing high-quality, American-made products that are built to last. Key Features Tear-resistant material for durable wear Provides reliable protection in healthcare, lab, and industrial settings Elastic bands ensure a secure fit Lightweight and breathable for extended wear Disposable for easy, convenient use Made in the USA for quality and safety Single layer, breathable non-woven fabric with adhesive traction strips Latex-free construction Ultrasonically welded seams Berry Compliant Shoe Covers made with 100% USA Raw Materials, Non-Sterile Shipping & Ordering Details 100 shoe covers per box 400 shoe covers per case Weight per case: 8 lbs Case dimensions: 24’’ x 12’’ x 12’’ Download Spec Sheet",
+      "images": [
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaShoeCoversUSAM400SC.png?v=1716563828"
+      ],
+      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaShoeCoversUSAM400SC.png?v=1716563828",
+      "variants": [
+        {
+          "variant_id": "variant_shopify_1da384a98939f3160ea1",
+          "sku": "USAM100SC",
+          "title": "Box of 100",
+          "available": true,
+          "weight_grams": 907.18474,
+          "options": {
+            "Pack Size": "Box of 100"
+          },
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaShoeCoversUSAM400SC.png?v=1716563828"
+        },
+        {
+          "variant_id": "variant_shopify_2ffcfb8955f0e2a9ca2f",
+          "sku": "USAM400SC",
+          "title": "Case of 400",
+          "available": true,
+          "weight_grams": 3628.7417949523124,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaShoeCoversUSAM400SC.png?v=1716563828"
+        }
+      ],
+      "tags": [
+        "USA"
+      ],
+      "collections": [],
+      "product_type": "Surgical Supplies",
+      "m6_category": null,
+      "quote_only": false,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
+      "berry_compliant": false,
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
     },
     {
       "sku": "USAM100C-XS",
       "handle": "medava®-usa-nitrile-gloves-100-box",
-      "name": "medava® Nitrile Gloves | 1000/Case",
+      "name": "medava® Nitrile Gloves",
       "category": "PPE",
-      "pack_size": "XSmall / Box of 100 Gloves",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "medava® Nitrile Gloves | 1000/Case",
-      "summary": "medava® Nitrile Gloves provide high-quality, durable protection and are proudly made in the USA. These latex-free nitrile gloves offer superior resistance to punctures, tears, and chemicals, making them perfect for…",
+      "img": "medava® Nitrile Gloves provide high-quality, durable protection and are proudly made in the USA. These latex-free nitrile gloves offer superior resistance to punctures, tears, and chemicals, making them perfect for healt",
+      "summary": "medava® Nitrile Gloves provide high-quality, durable protection and are proudly made in the USA. These latex-free nitrile gloves offer superior resistance to punctures, tears, and chemicals, making them perfect for healt",
       "description": "medava® Nitrile Gloves provide high-quality, durable protection and are proudly made in the USA. These latex-free nitrile gloves offer superior resistance to punctures, tears, and chemicals, making them perfect for healthcare professionals and industrial workers alike. Designed for comfort and flexibility, medava® gloves ensure a secure fit during extended use. Choose medava® for reliable protection and support American-made products. Key Features Made in the USA for premium quality Nitrile material for puncture and chemical resistance Powder Free & Latex-free for sensitive skin Comfortable and flexible for extended wear Ideal for healthcare and industrial use Non-Sterile, Disposable Superior Barrier & Chemical Resistance Beaded Cuff Tested For Use With Chemotherapy Drugs 100 Gloves per box Download Spec Sheet",
       "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Medava_USA_L.png?v=1716935128"
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Medava_USA_L.png?v=1716935128",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Medava_USA_XS_Front.png?v=1716935127",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Medava_USA_S.png?v=1716935128",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Medava_USA_M.png?v=1716935128",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaUSAL.png?v=1716935426",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Medava_USA_XL.png?v=1716935128",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Medava_USA_2XL.png?v=1716935128"
       ],
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Medava_USA_L.png?v=1716935128",
       "variants": [
         {
-          "variant_id": "45246485921958",
+          "variant_id": "variant_shopify_0f9ef2dfdc811fec5d6e",
           "sku": "USAM100C-XS",
           "title": "XSmall / Box of 100 Gloves",
           "available": true,
-          "weight_grams": 454,
+          "weight_grams": 453.59237,
           "options": {
             "Size": "XSmall",
             "Pack Size": "Box of 100 Gloves"
@@ -3225,135 +4698,102 @@ export const PUBLIC_CATALOG = {
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Medava_USA_XS_Front.png?v=1716935127"
         },
         {
-          "variant_id": "45246485954726",
+          "variant_id": "variant_shopify_5bda7f9be12a05e46468",
           "sku": "USAM100C-S",
           "title": "Small / Box of 100 Gloves",
           "available": true,
-          "weight_grams": 454,
-          "options": {
-            "Size": "Small",
-            "Pack Size": "Box of 100 Gloves"
-          },
+          "weight_grams": 453.59237,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Medava_USA_S.png?v=1716935128"
         },
         {
-          "variant_id": "45246485987494",
+          "variant_id": "variant_shopify_3ab70b9217f38eb51e07",
           "sku": "USAM100C-M",
           "title": "Medium / Box of 100 Gloves",
-          "available": false,
-          "weight_grams": 624,
-          "options": {
-            "Size": "Medium",
-            "Pack Size": "Box of 100 Gloves"
-          },
+          "available": true,
+          "weight_grams": 623.68950875,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Medava_USA_M.png?v=1716935128"
         },
         {
-          "variant_id": "45246486020262",
+          "variant_id": "variant_shopify_a937bc67b9fb3f554c7a",
           "sku": "USAM100C-L",
           "title": "Large / Box of 100 Gloves",
-          "available": false,
-          "weight_grams": 709,
-          "options": {
-            "Size": "Large",
-            "Pack Size": "Box of 100 Gloves"
-          },
+          "available": true,
+          "weight_grams": 708.738078125,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaUSAL.png?v=1716935426"
         },
         {
-          "variant_id": "45246486053030",
+          "variant_id": "variant_shopify_ae258bf61f0c2ea7c27c",
           "sku": "USAM100C-XL",
           "title": "XL / Box of 100 Gloves",
           "available": true,
-          "weight_grams": 709,
-          "options": {
-            "Size": "XL",
-            "Pack Size": "Box of 100 Gloves"
-          },
+          "weight_grams": 708.738078125,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Medava_USA_XL.png?v=1716935128"
         },
         {
-          "variant_id": "45246486085798",
+          "variant_id": "variant_shopify_8f1f2d33079228ea618f",
           "sku": "USAM90C-2XL",
           "title": "2XL / Box of 90 Gloves",
           "available": true,
-          "weight_grams": 765,
-          "options": {
-            "Size": "2XL",
-            "Pack Size": "Box of 90 Gloves"
-          },
+          "weight_grams": 765.437124375,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Medava_USA_2XL.png?v=1716935128"
         },
         {
-          "variant_id": "45246621122726",
+          "variant_id": "variant_shopify_18e4cda97c64e3610d2a",
           "sku": "USAM1000C-XS",
           "title": "XSmall / Case of 1000 Gloves",
           "available": true,
-          "weight_grams": 4536,
-          "options": {
-            "Size": "XSmall",
-            "Pack Size": "Case of 1000 Gloves"
-          },
+          "weight_grams": 4535.926534952312,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Medava_USA_XS_Front.png?v=1716935127"
         },
         {
-          "variant_id": "45246621483174",
+          "variant_id": "variant_shopify_59676b96af4a636def6f",
           "sku": "USAM1000C-S",
           "title": "Small / Case of 1000 Gloves",
           "available": true,
-          "weight_grams": 4536,
-          "options": {
-            "Size": "Small",
-            "Pack Size": "Case of 1000 Gloves"
-          },
+          "weight_grams": 4535.926534952312,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Medava_USA_S.png?v=1716935128"
         },
         {
-          "variant_id": "45246621843622",
+          "variant_id": "variant_shopify_55159f04ee526d74b671",
           "sku": "USAM1000C-M",
           "title": "Medium / Case of 1000 Gloves",
-          "available": false,
-          "weight_grams": 6237,
-          "options": {
-            "Size": "Medium",
-            "Pack Size": "Case of 1000 Gloves"
-          },
+          "available": true,
+          "weight_grams": 6236.900757404625,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Medava_USA_M.png?v=1716935128"
         },
         {
-          "variant_id": "45246622204070",
+          "variant_id": "variant_shopify_0cf83c006279185452d9",
           "sku": "USAM1000C-L",
           "title": "Large / Case of 1000 Gloves",
-          "available": false,
-          "weight_grams": 7087,
-          "options": {
-            "Size": "Large",
-            "Pack Size": "Case of 1000 Gloves"
-          },
+          "available": true,
+          "weight_grams": 7087.386451154625,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaUSAL.png?v=1716935426"
         },
         {
-          "variant_id": "45246622564518",
+          "variant_id": "variant_shopify_349e6a5f72827c758cb3",
           "sku": "USAM1000C-XL",
           "title": "XL / Case of 1000 Gloves",
           "available": true,
-          "weight_grams": 7087,
-          "options": {
-            "Size": "XL",
-            "Pack Size": "Case of 1000 Gloves"
-          },
+          "weight_grams": 7087.386451154625,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Medava_USA_XL.png?v=1716935128"
         },
         {
-          "variant_id": "45246622924966",
+          "variant_id": "variant_shopify_fb7d18b8013db76e17b4",
           "sku": "USAM900C-2XL",
           "title": "2XL / Case of 900 Gloves",
           "available": true,
-          "weight_grams": 7654,
-          "options": {
-            "Size": "2XL",
-            "Pack Size": "Case of 900 Gloves"
-          },
+          "weight_grams": 7654.376913654625,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Medava_USA_2XL.png?v=1716935128"
         }
       ],
@@ -3361,43 +4801,44 @@ export const PUBLIC_CATALOG = {
         "Gloves",
         "USA"
       ],
-      "collections": [
-        "Medava USA-Made",
-        "Medical Gloves"
-      ],
+      "collections": [],
       "product_type": "Medical Gloves",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
+      "fda_registered": false,
       "pdac_approved": false,
       "taa_compliant": false,
       "berry_compliant": false,
-      "mspv_listed": true,
-      "latex_free": true,
-      "country_of_origin": "US"
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
     },
     {
       "sku": "AMC200-XS",
       "handle": "medava-softtouch-medical-gloves",
-      "name": "medava® SoftTouch Medical Gloves | 200/Box",
+      "name": "medava® SoftTouch Medical Gloves",
       "category": "PPE",
-      "pack_size": "XSmall / Box of 200 Gloves",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "medava® SoftTouch Medical Gloves | 200/Box",
-      "summary": "medava® SoftTouch Medical Gloves (200ct) provide superior comfort and protection for healthcare professionals and distributors seeking reliable, latex-free gloves. These gloves offer excellent puncture resistance and…",
+      "img": "medava® SoftTouch Medical Gloves (200ct) provide superior comfort and protection for healthcare professionals and distributors seeking reliable, latex-free gloves. These gloves offer excellent puncture resistance and dur",
+      "summary": "medava® SoftTouch Medical Gloves (200ct) provide superior comfort and protection for healthcare professionals and distributors seeking reliable, latex-free gloves. These gloves offer excellent puncture resistance and dur",
       "description": "medava® SoftTouch Medical Gloves (200ct) provide superior comfort and protection for healthcare professionals and distributors seeking reliable, latex-free gloves. These gloves offer excellent puncture resistance and durability, ensuring high-performance during medical examinations, lab work, and daily healthcare tasks. The 200-count box is perfect for bulk purchasing, offering a cost-effective solution for healthcare distributors. Designed for comfort and ease of use, medava® SoftTouch gloves provide flexibility, helping healthcare professionals maintain a secure grip while working. Key Features Durable and latex-free for sensitive skin protection High puncture resistance for reliable use in medical settings Ideal for healthcare professionals and lab environments Perfect for bulk distribution with a 200-count box Flexible design for comfortable, extended wear Non-Sterile, For One-Time Use Superior Barrier & Chemical Resistance Beaded Cuff, Powder Free & Latex Free Tested For Use With Chemotherapy Drugs 200 gloves per box, 10 boxes per case See the medava® spec sheet",
       "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaSoftTouchL.jpg?v=1707322623"
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaSoftTouchL.jpg?v=1707322623",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaSoftTouchM.jpg?v=1707322624",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaSoftTouchS.jpg?v=1707322623",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaSoftTouchXL.jpg?v=1707322624",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaSoftTouchXS.jpg?v=1707322623"
       ],
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaSoftTouchL.jpg?v=1707322623",
       "variants": [
         {
-          "variant_id": "45246550900902",
+          "variant_id": "variant_shopify_f5810bf19c3ac8d38955",
           "sku": "AMC200-XS",
           "title": "XSmall / Box of 200 Gloves",
-          "available": false,
-          "weight_grams": 595,
+          "available": true,
+          "weight_grams": 595.339985625,
           "options": {
             "Size": "XSmall",
             "Pack Size": "Box of 200 Gloves"
@@ -3405,333 +4846,452 @@ export const PUBLIC_CATALOG = {
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaSoftTouchXS.jpg?v=1707322623"
         },
         {
-          "variant_id": "45246550933670",
+          "variant_id": "variant_shopify_8e0964f554cc9d3ba8c5",
           "sku": "AMC200-S",
           "title": "Small / Box of 200 Gloves",
           "available": true,
-          "weight_grams": 595,
-          "options": {
-            "Size": "Small",
-            "Pack Size": "Box of 200 Gloves"
-          },
+          "weight_grams": 595.339985625,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaSoftTouchS.jpg?v=1707322623"
         },
         {
-          "variant_id": "45246550966438",
+          "variant_id": "variant_shopify_c2e3bde7f5cda05e6458",
           "sku": "AMC200-M",
           "title": "Medium / Box of 200 Gloves",
-          "available": false,
-          "weight_grams": 595,
-          "options": {
-            "Size": "Medium",
-            "Pack Size": "Box of 200 Gloves"
-          },
+          "available": true,
+          "weight_grams": 595.339985625,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaSoftTouchM.jpg?v=1707322624"
         },
         {
-          "variant_id": "45246550999206",
+          "variant_id": "variant_shopify_69f3029bc70f67a9cb7a",
           "sku": "AMC200-L",
           "title": "Large / Box of 200 Gloves",
           "available": true,
-          "weight_grams": 624,
-          "options": {
-            "Size": "Large",
-            "Pack Size": "Box of 200 Gloves"
-          },
+          "weight_grams": 623.68950875,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaSoftTouchL.jpg?v=1707322623"
         },
         {
-          "variant_id": "45246551031974",
+          "variant_id": "variant_shopify_d32dfb4d2d1cba576fc9",
           "sku": "AMC200-XL",
           "title": "XL / Box of 200 Gloves",
           "available": true,
-          "weight_grams": 652,
-          "options": {
-            "Size": "XL",
-            "Pack Size": "Box of 200 Gloves"
-          },
+          "weight_grams": 652.039031875,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaSoftTouchXL.jpg?v=1707322624"
         },
         {
-          "variant_id": "45248518684838",
+          "variant_id": "variant_shopify_4d71ce709781385bd885",
           "sku": "AMCC2000-XS",
           "title": "XSmall / Case of 2000 Gloves",
-          "available": false,
-          "weight_grams": 5953,
-          "options": {
-            "Size": "XSmall",
-            "Pack Size": "Case of 2000 Gloves"
-          },
+          "available": true,
+          "weight_grams": 5953.402691202313,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaSoftTouchXS.jpg?v=1707322623"
         },
         {
-          "variant_id": "45248518717606",
+          "variant_id": "variant_shopify_78aeeca0e7b53898bb54",
           "sku": "AMCC2000-S",
           "title": "Small / Case of 2000 Gloves",
           "available": true,
-          "weight_grams": 5953,
-          "options": {
-            "Size": "Small",
-            "Pack Size": "Case of 2000 Gloves"
-          },
+          "weight_grams": 5953.402691202313,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaSoftTouchS.jpg?v=1707322623"
         },
         {
-          "variant_id": "45248518750374",
+          "variant_id": "variant_shopify_d1c6468658f45dad22d8",
           "sku": "AMCC2000-M",
           "title": "Medium / Case of 2000 Gloves",
-          "available": false,
-          "weight_grams": 5953,
-          "options": {
-            "Size": "Medium",
-            "Pack Size": "Case of 2000 Gloves"
-          },
+          "available": true,
+          "weight_grams": 5953.402691202313,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaSoftTouchM.jpg?v=1707322624"
         },
         {
-          "variant_id": "45248518783142",
+          "variant_id": "variant_shopify_848fa0fd11b471851e0a",
           "sku": "AMCC2000-L",
           "title": "Large / Case of 2000 Gloves",
           "available": true,
-          "weight_grams": 6237,
-          "options": {
-            "Size": "Large",
-            "Pack Size": "Case of 2000 Gloves"
-          },
+          "weight_grams": 6236.900757404625,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaSoftTouchL.jpg?v=1707322623"
         },
         {
-          "variant_id": "45248518815910",
+          "variant_id": "variant_shopify_f937d8e2c2a2d2445cd4",
           "sku": "AMCC2000-XL",
           "title": "XL / Case of 2000 Gloves",
           "available": true,
-          "weight_grams": 6520,
-          "options": {
-            "Size": "XL",
-            "Pack Size": "Case of 2000 Gloves"
-          },
+          "weight_grams": 6520.395988654625,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaSoftTouchXL.jpg?v=1707322624"
         }
       ],
       "tags": [
         "Gloves"
       ],
-      "collections": [
-        "Medical Gloves"
-      ],
+      "collections": [],
       "product_type": "Medical Gloves",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
+      "fda_registered": false,
       "pdac_approved": false,
       "taa_compliant": false,
       "berry_compliant": false,
-      "mspv_listed": true,
-      "latex_free": true,
-      "country_of_origin": "CN"
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
     },
     {
-      "sku": "AFO0671L-S",
-      "handle": "ankle-foot-orthosis-1",
-      "name": "Ankle Foot Orthosis",
-      "category": "Orthotics",
-      "pack_size": "Small / Left - Single Brace",
+      "sku": "AM350",
+      "handle": "medava®-surgical-mask-astm-level-3",
+      "name": "medava® Surgical Mask | ASTM Level 3",
+      "category": "PPE",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "Ankle Foot Orthosis",
-      "summary": "The Ankle Foot Orthosis provides reliable support and stabilization for patients recovering from foot or ankle injuries. Designed to promote proper foot alignment, this orthosis offers stability while allowing for…",
-      "description": "The Ankle Foot Orthosis provides reliable support and stabilization for patients recovering from foot or ankle injuries. Designed to promote proper foot alignment, this orthosis offers stability while allowing for controlled movement during recovery. The adjustable straps ensure a secure and comfortable fit, making it suitable for long-term use. This ankle brace is ideal for managing tendonitis, ankle strains, or post-surgical recovery, delivering dependable support to improve mobility. Key Features Provides ankle and foot stabilization for injury recovery Adjustable straps for a secure and personalized fit Lightweight and durable design for extended wear Promotes proper foot alignment and improved mobility Ideal for tendonitis, ankle strains, and post-surgical recovery Durable rigid support Low profile Removable extender panel available for additional stabilization Medicare-approved under L1906 and L1971, ensuring easy billing for healthcare providers. Download the PDAC Approval Letter for more details.",
+      "img": "The medava® Surgical Mask (ASTM Level 3) provides the highest level of fluid resistance and particulate filtration. Designed for comfort and protection, this mask meets ASTM Level 3 standards, offering maximum protection",
+      "summary": "The medava® Surgical Mask (ASTM Level 3) provides the highest level of fluid resistance and particulate filtration. Designed for comfort and protection, this mask meets ASTM Level 3 standards, offering maximum protection",
+      "description": "The medava® Surgical Mask (ASTM Level 3) provides the highest level of fluid resistance and particulate filtration. Designed for comfort and protection, this mask meets ASTM Level 3 standards, offering maximum protection in high-risk environments. Its breathable 3-ply design makes it suitable for extended wear, delivering reliable protection while maintaining comfort. Ideal for healthcare professionals and individuals seeking superior protection, the medava® Surgical Mask ensures peace of mind during high-exposure situations. Key Features ASTM Level 3 certified for maximum fluid and particulate protection 3-ply design for enhanced filtration and breathability Ideal for high-risk environments and surgical use Soft, non-woven material for long-lasting comfort Elastic ear loops for a secure and comfortable fit Disposable for convenient use Nose clip molds mask securely to face Fluid resistant and disposable, single use Not made with Natural Rubber Latex Mask Size 7” Wide x 3.625” Tall Fluid Resistance, mmHg: 160 BFE (Bacterial Filtration Efficiency) >98% PFE (Particulate Filtration Efficiency) >98% Differential Pressure, mm H2O/cm2 <5.0 Flame Spread: Class 1 Shipping & Ordering Details 50 masks per box 2,000 masks per case Weight per case: 20 lbs Case dimensions: 20’’ x 16’’ x 16’’ Cases per pallet: 20 Pallet weight: 445 lbs Pallet dimensions: 48’’ x 42’’ x 68’’",
       "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1045_57f0d012-f1fe-4784-868f-f6c7b09c55e6.jpg?v=1583258104"
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/3D_bob_front_level_3_Front.png?v=1736344768",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/3ply-mask-single-pc.jpg?v=1736344768"
       ],
-      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1045_57f0d012-f1fe-4784-868f-f6c7b09c55e6.jpg?v=1583258104",
+      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/3D_bob_front_level_3_Front.png?v=1736344768",
       "variants": [
         {
-          "variant_id": "31298092466235",
-          "sku": "AFO0671L-S",
-          "title": "Small / Left - Single Brace",
+          "variant_id": "variant_shopify_4f4cb335a2d3368db61e",
+          "sku": "AM350",
+          "title": "Box of 50",
           "available": true,
-          "weight_grams": 255,
+          "weight_grams": 226.796185,
           "options": {
-            "Size": "Small",
-            "Style": "Left - Single Brace"
+            "Pack Size": "Box of 50"
           },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1045_57f0d012-f1fe-4784-868f-f6c7b09c55e6.jpg?v=1583258104"
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/3D_bob_front_level_3_Front.png?v=1736344768"
         },
         {
-          "variant_id": "31298092499003",
-          "sku": "AFO0671R-S",
-          "title": "Small / Right - Single Brace",
+          "variant_id": "variant_shopify_0131819807d6531ba1d6",
+          "sku": "AM32000",
+          "title": "Case of 2,000",
           "available": true,
-          "weight_grams": 255,
-          "options": {
-            "Size": "Small",
-            "Style": "Right - Single Brace"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1045_57f0d012-f1fe-4784-868f-f6c7b09c55e6.jpg?v=1583258104"
-        },
-        {
-          "variant_id": "44813645086886",
-          "sku": "AFO0671L-S-CASE30",
-          "title": "Small / Left - Case of 30 Braces",
-          "available": true,
-          "weight_grams": 7654,
-          "options": {
-            "Size": "Small",
-            "Style": "Left - Case of 30 Braces"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1045_57f0d012-f1fe-4784-868f-f6c7b09c55e6.jpg?v=1583258104"
-        },
-        {
-          "variant_id": "44813645119654",
-          "sku": "AFO0671R-S-CASE30",
-          "title": "Small / Right - Case of 30 Braces",
-          "available": true,
-          "weight_grams": 7654,
-          "options": {
-            "Size": "Small",
-            "Style": "Right - Case of 30 Braces"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1045_57f0d012-f1fe-4784-868f-f6c7b09c55e6.jpg?v=1583258104"
-        },
-        {
-          "variant_id": "31298092531771",
-          "sku": "AFO0671L-M",
-          "title": "Medium / Left - Single Brace",
-          "available": true,
-          "weight_grams": 255,
-          "options": {
-            "Size": "Medium",
-            "Style": "Left - Single Brace"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1045_57f0d012-f1fe-4784-868f-f6c7b09c55e6.jpg?v=1583258104"
-        },
-        {
-          "variant_id": "31298092564539",
-          "sku": "AFO0671R-M",
-          "title": "Medium / Right - Single Brace",
-          "available": true,
-          "weight_grams": 255,
-          "options": {
-            "Size": "Medium",
-            "Style": "Right - Single Brace"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1045_57f0d012-f1fe-4784-868f-f6c7b09c55e6.jpg?v=1583258104"
-        },
-        {
-          "variant_id": "44813645152422",
-          "sku": "AFO0671L-M-CASE30",
-          "title": "Medium / Left - Case of 30 Braces",
-          "available": true,
-          "weight_grams": 7654,
-          "options": {
-            "Size": "Medium",
-            "Style": "Left - Case of 30 Braces"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1045_57f0d012-f1fe-4784-868f-f6c7b09c55e6.jpg?v=1583258104"
-        },
-        {
-          "variant_id": "44813645185190",
-          "sku": "AFO0671R-M-CASE30",
-          "title": "Medium / Right - Case of 30 Braces",
-          "available": true,
-          "weight_grams": 7654,
-          "options": {
-            "Size": "Medium",
-            "Style": "Right - Case of 30 Braces"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1045_57f0d012-f1fe-4784-868f-f6c7b09c55e6.jpg?v=1583258104"
-        },
-        {
-          "variant_id": "31298092597307",
-          "sku": "AFO0671L-L",
-          "title": "Large / Left - Single Brace",
-          "available": true,
-          "weight_grams": 255,
-          "options": {
-            "Size": "Large",
-            "Style": "Left - Single Brace"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1045_57f0d012-f1fe-4784-868f-f6c7b09c55e6.jpg?v=1583258104"
-        },
-        {
-          "variant_id": "31298092630075",
-          "sku": "AFO0671R-L",
-          "title": "Large / Right - Single Brace",
-          "available": true,
-          "weight_grams": 255,
-          "options": {
-            "Size": "Large",
-            "Style": "Right - Single Brace"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1045_57f0d012-f1fe-4784-868f-f6c7b09c55e6.jpg?v=1583258104"
-        },
-        {
-          "variant_id": "44813645217958",
-          "sku": "AFO0671L-L-CASE30",
-          "title": "Large / Left - Case of 30 Braces",
-          "available": true,
-          "weight_grams": 7654,
-          "options": {
-            "Size": "Large",
-            "Style": "Left - Case of 30 Braces"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1045_57f0d012-f1fe-4784-868f-f6c7b09c55e6.jpg?v=1583258104"
-        },
-        {
-          "variant_id": "44813645250726",
-          "sku": "AFO0671R-L-CASE30",
-          "title": "Large / Right - Case of 30 Braces",
-          "available": true,
-          "weight_grams": 7654,
-          "options": {
-            "Size": "Large",
-            "Style": "Right - Case of 30 Braces"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1045_57f0d012-f1fe-4784-868f-f6c7b09c55e6.jpg?v=1583258104"
+          "weight_grams": 9071.853069904624,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/3D_bob_front_level_3_Front.png?v=1736344768"
         }
       ],
       "tags": [
-        "ankle foot orthosis",
-        "orthosis"
+        "Masks"
       ],
-      "collections": [
-        "Foot & Ankle Braces",
-        "Orthopedic Bracing"
-      ],
-      "product_type": "Orthopedic Devices",
+      "collections": [],
+      "product_type": "Medical Face Masks",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
-      "pdac_approved": true,
-      "taa_compliant": true,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
       "berry_compliant": false,
       "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
+    },
+    {
+      "sku": "USAM350",
+      "handle": "medava®-surgical-4-ply-mask-astm-level-3",
+      "name": "medava® 4-Ply Surgical Mask | ASTM Level 3",
+      "category": "PPE",
+      "pack_size": "1 ea",
+      "hcpcs": "—",
+      "moq": 1,
+      "img": "The medava® Surgical 4-Ply Mask (ASTM Level 3) offers the highest level of protection with its durable 4-ply design, perfect for use in high-risk environments. Manufactured in the USA by a veteran-owned company, this mas",
+      "summary": "The medava® Surgical 4-Ply Mask (ASTM Level 3) offers the highest level of protection with its durable 4-ply design, perfect for use in high-risk environments. Manufactured in the USA by a veteran-owned company, this mas",
+      "description": "The medava® Surgical 4-Ply Mask (ASTM Level 3) offers the highest level of protection with its durable 4-ply design, perfect for use in high-risk environments. Manufactured in the USA by a veteran-owned company, this mask meets ASTM Level 3 standards, providing maximum fluid resistance and filtration efficiency. Its breathable design ensures comfort during extended wear, making it suitable for surgical settings and high-exposure areas. By choosing medava®, you're supporting American manufacturing and veterans, with the added assurance of ASTM Level 3 certification for superior safety and performance. Key Features ASTM Level 3 certified for maximum fluid and particulate protection Berry Compliant Disposable Mask made with 100% USA Raw Materials Made in the USA by a veteran-owned company 4-ply surgical design for enhanced protection and comfort Ideal for high-risk environments and surgical use Soft, non-woven material for long-lasting comfort Latex-free and breathable design for extended wear Elastic ear loops for a secure and comfortable fit Lightweight, non-woven polypropylene material design is soft on the face Elastic loops fit comfortably around ears Nose clip molds mask securely to face Fluid resistant and disposable, single use Mask Size 7” Wide x 3.625” Tall Fluid Resistance, mmHg: 160 BFE (Bacterial Filtration Efficiency) >98% PFE (Particulate Filtration Efficiency) >98% Differential Pressure, mm H2O/cm2 <5.0 Flame Spread: Class 1 Shipping & Ordering Details 50 masks per box 2,000 masks per case Weight per case: 20 lbs Case dimensions: 20’’ x 16’’ x 16’’ Cases per pallet: 20 Pallet weight: 445 lbs Pallet dimensions: 48’’ x 42’’ x 68’’ Download Spec Sheet",
+      "images": [
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaMasks4PlyLevel3USAM32000.png?v=1716561865"
+      ],
+      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaMasks4PlyLevel3USAM32000.png?v=1716561865",
+      "variants": [
+        {
+          "variant_id": "variant_shopify_3b5ffbbd47357fc5183c",
+          "sku": "USAM350",
+          "title": "Box of 50",
+          "available": true,
+          "weight_grams": 226.796185,
+          "options": {
+            "Pack Size": "Box of 50"
+          },
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaMasks4PlyLevel3USAM32000.png?v=1716561865"
+        },
+        {
+          "variant_id": "variant_shopify_259e95a811cfd6db38db",
+          "sku": "USAM32000",
+          "title": "Case of 2,000",
+          "available": true,
+          "weight_grams": 9071.853069904624,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaMasks4PlyLevel3USAM32000.png?v=1716561865"
+        }
+      ],
+      "tags": [
+        "Masks",
+        "USA"
+      ],
+      "collections": [],
+      "product_type": "Medical Face Masks",
+      "m6_category": null,
+      "quote_only": false,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
+      "berry_compliant": false,
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
+    },
+    {
+      "sku": "USAM250",
+      "handle": "medava-surgical-3-ply-mask-astm-level-2",
+      "name": "medava® 3-Ply Surgical Mask | ASTM Level 2",
+      "category": "PPE",
+      "pack_size": "1 ea",
+      "hcpcs": "—",
+      "moq": 1,
+      "img": "The medava® Surgical 3-Ply Mask (ASTM Level 2) provides enhanced protection with a lightweight, breathable design. Manufactured in the USA by a veteran-owned company, this mask meets ASTM Level 2 standards, offering prot",
+      "summary": "The medava® Surgical 3-Ply Mask (ASTM Level 2) provides enhanced protection with a lightweight, breathable design. Manufactured in the USA by a veteran-owned company, this mask meets ASTM Level 2 standards, offering prot",
+      "description": "The medava® Surgical 3-Ply Mask (ASTM Level 2) provides enhanced protection with a lightweight, breathable design. Manufactured in the USA by a veteran-owned company, this mask meets ASTM Level 2 standards, offering protection against moderate levels of fluid exposure and airborne particles. Its 3-ply design ensures comfort for extended wear, making it ideal for surgical settings and general use. Supporting medava® means supporting high-quality American manufacturing and veterans, with the added assurance of ASTM Level 2 certification for superior performance. Key Features ASTM Level 2 certified for moderate fluid and particulate protection Berry Compliant Disposable Mask made with 100% USA Raw Materials Made in the USA by a veteran-owned company 3-ply surgical design for comfort and breathability Ideal for surgical use and general protection Soft, non-woven material for long-term comfort Latex-free and lightweight for easy wear Elastic ear loops for a secure fit Disposable for convenient use Fluid Resistance, mmHg: 120 BFE (Bacterial Filtration Efficiency) >98% PFE (Particulate Filtration Efficiency) >98% Differential Pressure, mm H2O/cm2 <6.0 Flame Spread: Class 1 Shipping & Ordering Details 50 masks per box 2,000 masks per case Weight per case: 20 lbs Case dimensions: 20’’ x 16’’ x 16’’ Cases per pallet: 20 Pallet weight: 445 lbs Pallet dimensions: 48’’ x 42’’ x 68’’ Download Spec Sheet",
+      "images": [
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaMasksLevel2USAM22000.png?v=1716561807"
+      ],
+      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaMasksLevel2USAM22000.png?v=1716561807",
+      "variants": [
+        {
+          "variant_id": "variant_shopify_65beca9ff9f5c75ea636",
+          "sku": "USAM250",
+          "title": "Box of 50",
+          "available": true,
+          "weight_grams": 226.796185,
+          "options": {
+            "Pack Size": "Box of 50"
+          },
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaMasksLevel2USAM22000.png?v=1716561807"
+        },
+        {
+          "variant_id": "variant_shopify_9b08c991931d4fe1d0e7",
+          "sku": "USAM22000",
+          "title": "Case of 2,000",
+          "available": true,
+          "weight_grams": 9071.853069904624,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaMasksLevel2USAM22000.png?v=1716561807"
+        }
+      ],
+      "tags": [
+        "Masks",
+        "USA"
+      ],
+      "collections": [],
+      "product_type": "Medical Face Masks",
+      "m6_category": null,
+      "quote_only": false,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
+      "berry_compliant": false,
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
+    },
+    {
+      "sku": "UMSL1016",
+      "handle": "surgilock-instrument-platform",
+      "name": "SurgiLock Surgical Instrument Platform",
+      "category": "Surgical",
+      "pack_size": "1 ea",
+      "hcpcs": "—",
+      "moq": 1,
+      "img": "The SurgiLock Instrument Platform provides a stable and organized solution for managing surgical tools during procedures. Designed specifically for surgery centers, this platform ensures that instruments remain securely ",
+      "summary": "The SurgiLock Instrument Platform provides a stable and organized solution for managing surgical tools during procedures. Designed specifically for surgery centers, this platform ensures that instruments remain securely ",
+      "description": "The SurgiLock Instrument Platform provides a stable and organized solution for managing surgical tools during procedures. Designed specifically for surgery centers, this platform ensures that instruments remain securely in place, improving efficiency and safety during operations. The SurgiLock platform is crafted for ease of use, with a durable surface that supports a wide range of surgical instruments. Ideal for high-traffic surgical environments, the SurgiLock platform enhances procedural organization and helps reduce the risk of contamination by keeping instruments safely positioned. Key Features Provides a stable platform for surgical instruments Enhances procedural efficiency and safety Ideal for use in surgery centers and high-traffic ORs Durable surface supports a wide range of surgical tools Reduces risk of contamination with secure instrument placement",
+      "images": [
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Surgilock1.jpg?v=1696442195",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Surgilock3.jpg?v=1696442195",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Surgilock2.jpg?v=1696442196"
+      ],
+      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Surgilock1.jpg?v=1696442195",
+      "variants": [
+        {
+          "variant_id": "variant_shopify_bd9c8c7d2947cf23ee5e",
+          "sku": "UMSL1016",
+          "title": "Case of 15 Pads",
+          "available": true,
+          "weight_grams": 4989.51607,
+          "options": {
+            "Pack Size": "Case of 15 Pads"
+          },
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Surgilock1.jpg?v=1696442195"
+        }
+      ],
+      "tags": [],
+      "collections": [],
+      "product_type": "Surgical Supplies",
+      "m6_category": null,
+      "quote_only": false,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
+      "berry_compliant": false,
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
+    },
+    {
+      "sku": "VGPF3002",
+      "handle": "basic-vinyl-synthetic-exam-gloves",
+      "name": "Vinyl Synthetic Exam Gloves",
+      "category": "PPE",
+      "pack_size": "1 ea",
+      "hcpcs": "—",
+      "moq": 1,
+      "img": "Vinyl Synthetic Exam Gloves are available in a convenient bulk case of 1,000, offering durable, latex-free protection for healthcare professionals and general use. These gloves provide a comfortable fit and reliable punc",
+      "summary": "Vinyl Synthetic Exam Gloves are available in a convenient bulk case of 1,000, offering durable, latex-free protection for healthcare professionals and general use. These gloves provide a comfortable fit and reliable punc",
+      "description": "Vinyl Synthetic Exam Gloves are available in a convenient bulk case of 1,000, offering durable, latex-free protection for healthcare professionals and general use. These gloves provide a comfortable fit and reliable puncture resistance, making them ideal for medical exams, lab work, and other tasks requiring safety and flexibility. The synthetic material ensures easy wear for extended periods without compromising tactile sensitivity. These gloves are an affordable, high-quality option for bulk purchasers looking for reliable protection and convenience. Key Features Available in a bulk case of 1,000 gloves Latex-free to reduce allergy risks Comfortable fit for extended wear Puncture-resistant for reliable protection Ideal for healthcare, lab work, and general use Durable and flexible for enhanced safety Disposable and easy to use 10 0 pcs per box / 1,000 pcs per case Non-Sterile & Disposable Color: Clear",
+      "images": [
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/UniteVinylGlovesL_2.jpg?v=1696262537",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/UniteVinylGlovesL.jpg?v=1696262537",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/UniteVinylGlovesM_2.jpg?v=1696262537",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/UniteVinylGlovesM.jpg?v=1696262537",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/UniteVinylGlovesXL_3.jpg?v=1696262537",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/UniteVinylGlovesXL_2.jpg?v=1696262537"
+      ],
+      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/UniteVinylGlovesL_2.jpg?v=1696262537",
+      "variants": [
+        {
+          "variant_id": "variant_shopify_d07be946aecbc4b0dfd1",
+          "sku": "VGPF3002",
+          "title": "Medium - Case of 1000 Gloves / Case",
+          "available": true,
+          "weight_grams": 5896.70081,
+          "options": {
+            "Size": "Medium - Case of 1000 Gloves",
+            "Pack Size": "Case"
+          },
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/UniteVinylGlovesM.jpg?v=1696262537"
+        },
+        {
+          "variant_id": "variant_shopify_aac4636d37117aff322f",
+          "sku": "VGPF3003",
+          "title": "Large - Case of 1000 Gloves / Case",
+          "available": true,
+          "weight_grams": 6350.29318,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/UniteVinylGlovesL.jpg?v=1696262537"
+        },
+        {
+          "variant_id": "variant_shopify_b337495b2e2f99915149",
+          "sku": "VGPF3004",
+          "title": "XL - Case of 1000 Gloves / Case",
+          "available": true,
+          "weight_grams": 6803.88555,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/UniteVinylGlovesXL_2.jpg?v=1696262537"
+        }
+      ],
+      "tags": [
+        "Gloves"
+      ],
+      "collections": [],
+      "product_type": "Medical Gloves",
+      "m6_category": null,
+      "quote_only": false,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
+      "berry_compliant": false,
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
+    },
+    {
+      "sku": "UMRA9-E00302",
+      "handle": "genabio-covid-19-at-home-tests-2-pack",
+      "name": "Genabio COVID-19 Rapid Self-Test Kit (2 Pack)",
+      "category": "Diagnostics",
+      "pack_size": "1 ea",
+      "hcpcs": "—",
+      "moq": 1,
+      "img": "The Genabio COVID-19 At-Home Test (2-Pack) is a simple and reliable way to test for COVID-19 in the comfort of your home. Cleared by the FDA under a 510(k), this rapid antigen test delivers results in just 15 minutes usi",
+      "summary": "The Genabio COVID-19 At-Home Test (2-Pack) is a simple and reliable way to test for COVID-19 in the comfort of your home. Cleared by the FDA under a 510(k), this rapid antigen test delivers results in just 15 minutes usi",
+      "description": "The Genabio COVID-19 At-Home Test (2-Pack) is a simple and reliable way to test for COVID-19 in the comfort of your home. Cleared by the FDA under a 510(k), this rapid antigen test delivers results in just 15 minutes using a non-invasive anterior nasal swab. Each pack contains two individually packaged test kits, ideal for personal use, families, or workplaces looking for quick and accurate results without needing a lab. Whether you're preparing for travel, screening before events, or simply need peace of mind, the Genabio 2-Pack offers a convenient, reliable solution. FDA 510(k)-Cleared | At-Home Nasal Swab | Fast 15-Minute Results Key Features Results in just 15 minutes FDA 510(k)-cleared for accuracy and safety Easy-to-use at-home nasal swab test Non-invasive sample collection Includes 2 individually boxed test kits FSA/HSA eligible Suitable for ages 2 and up Convenient for travel, events, or home use What’s In The Box (2) COVID-19 Test Cards (2) Pre-Filled Tubes (2) Anterior Nasal Swabs (2) Instructions for Use",
+      "images": [
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Genabio_Product_2_Tests.jpg?v=1730398594",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenabioProductTestII.jpg?v=1730398301",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenabioProductTest.jpg?v=1730398301",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenabioProductTimer.jpg?v=1730398301"
+      ],
+      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Genabio_Product_2_Tests.jpg?v=1730398594",
+      "variants": [
+        {
+          "variant_id": "variant_shopify_758c1caa4e771e417f6e",
+          "sku": "UMRA9-E00302",
+          "title": "Pack (2 Tests)",
+          "available": true,
+          "weight_grams": 56.69904625,
+          "options": {
+            "Pack Size": "Pack (2 Tests)"
+          },
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Genabio_Product_2_Tests.jpg?v=1730398594"
+        },
+        {
+          "variant_id": "variant_shopify_c1acb81905d5d5409802",
+          "sku": "UMRA9-E00302-CASE",
+          "title": "Case (204 Tests)",
+          "available": true,
+          "weight_grams": 5783.305552452312,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Genabio_Product_2_Tests.jpg?v=1730398594"
+        }
+      ],
+      "tags": [
+        "Covid Tests",
+        "Diagnostic Test",
+        "OTC",
+        "Planogram"
+      ],
+      "collections": [],
+      "product_type": "Diagnostic Tests",
+      "m6_category": null,
+      "quote_only": false,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
+      "berry_compliant": false,
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
     },
     {
       "sku": "BC3349-1",
       "handle": "baby-cradle-back-support-bc3449",
       "name": "Baby Cradle Lumbar Support Belt",
       "category": "Orthotics",
-      "pack_size": "Size 1 / Single Brace",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "Baby Cradle Lumbar Support Belt",
-      "summary": "The Baby Cradle Lumbar Support Belt is a lightweight, adjustable back brace designed for both posture correction and relief from lower back pain. Whether you're managing lumbar discomfort or simply need extra support…",
+      "img": "The Baby Cradle Lumbar Support Belt is a lightweight, adjustable back brace designed for both posture correction and relief from lower back pain. Whether you're managing lumbar discomfort or simply need extra support, th",
+      "summary": "The Baby Cradle Lumbar Support Belt is a lightweight, adjustable back brace designed for both posture correction and relief from lower back pain. Whether you're managing lumbar discomfort or simply need extra support, th",
       "description": "The Baby Cradle Lumbar Support Belt is a lightweight, adjustable back brace designed for both posture correction and relief from lower back pain. Whether you're managing lumbar discomfort or simply need extra support, this back brace delivers all-day comfort with its soft materials and flexible fit. Perfect for everyday wear, it offers sturdy support for those with lower back pain and posture-related issues. Key Features Lightweight and breathable design for all-day wear Helps correct posture and reduce lower back pain Adjustable straps for a secure, universal fit Ideal for use at home, work, or during activity Great for lumbar support and posture correction This lumbar brace is HCPCS code-approved under L0633 (Custom Fit) and L0649 (Off-the-Shelf) for Medicare billing. Download the PDAC Approval Letter for full details.",
       "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/LBP_2322_beac3134-fd2f-4d05-aa95-e5c9f7e8af9d.jpg?v=1692902536"
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/LBP_2322_beac3134-fd2f-4d05-aa95-e5c9f7e8af9d.jpg?v=1692902536",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/LBP_2288_068d276a-0bdb-4989-8c3f-707e8a17a279.jpg?v=1692902537"
       ],
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/LBP_2322_beac3134-fd2f-4d05-aa95-e5c9f7e8af9d.jpg?v=1692902536",
       "variants": [
         {
-          "variant_id": "44371556368550",
+          "variant_id": "variant_shopify_106832df0bfe349d1c25",
           "sku": "BC3349-1",
           "title": "Size 1 / Single Brace",
-          "available": false,
-          "weight_grams": 1616,
+          "available": true,
+          "weight_grams": 1615.922818125,
           "options": {
             "Size": "Size 1",
             "Pack Size": "Single Brace"
@@ -3739,243 +5299,183 @@ export const PUBLIC_CATALOG = {
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/LBP_2288_068d276a-0bdb-4989-8c3f-707e8a17a279.jpg?v=1692902537"
         },
         {
-          "variant_id": "44817984028838",
+          "variant_id": "variant_shopify_100d06e65335cf45bc5c",
           "sku": "BC3349-1-CASE10",
           "title": "Size 1 / Case of 10 Braces",
-          "available": false,
-          "weight_grams": 16159,
-          "options": {
-            "Size": "Size 1",
-            "Pack Size": "Case of 10 Braces"
-          },
+          "available": true,
+          "weight_grams": 16159.23952105925,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/LBP_2288_068d276a-0bdb-4989-8c3f-707e8a17a279.jpg?v=1692902537"
         },
         {
-          "variant_id": "45058478637222",
+          "variant_id": "variant_shopify_56eb4370536971f9bed5",
           "sku": "BC3349-1-CASE12",
           "title": "Size 1 / Case of 12 Braces",
-          "available": false,
-          "weight_grams": 19391,
-          "options": {
-            "Size": "Size 1",
-            "Pack Size": "Case of 12 Braces"
-          },
+          "available": true,
+          "weight_grams": 19391.087992261564,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/LBP_2288_068d276a-0bdb-4989-8c3f-707e8a17a279.jpg?v=1692902537"
         },
         {
-          "variant_id": "44371556401318",
+          "variant_id": "variant_shopify_902bbb9e38d02a0f8857",
           "sku": "BC3349-2",
           "title": "Size 2 / Single Brace",
           "available": true,
-          "weight_grams": 1616,
-          "options": {
-            "Size": "Size 2",
-            "Pack Size": "Single Brace"
-          },
+          "weight_grams": 1615.922818125,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/LBP_2288_068d276a-0bdb-4989-8c3f-707e8a17a279.jpg?v=1692902537"
         },
         {
-          "variant_id": "44817984061606",
+          "variant_id": "variant_shopify_42c864b26dc779beff87",
           "sku": "BC3349-2-CASE10",
           "title": "Size 2 / Case of 10 Braces",
-          "available": false,
-          "weight_grams": 16159,
-          "options": {
-            "Size": "Size 2",
-            "Pack Size": "Case of 10 Braces"
-          },
+          "available": true,
+          "weight_grams": 16159.23952105925,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/LBP_2288_068d276a-0bdb-4989-8c3f-707e8a17a279.jpg?v=1692902537"
         },
         {
-          "variant_id": "45058478669990",
+          "variant_id": "variant_shopify_666c7043360bb685dd7b",
           "sku": "BC3349-2-CASE12",
           "title": "Size 2 / Case of 12 Braces",
-          "available": false,
-          "weight_grams": 19391,
-          "options": {
-            "Size": "Size 2",
-            "Pack Size": "Case of 12 Braces"
-          },
+          "available": true,
+          "weight_grams": 19391.087992261564,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/LBP_2288_068d276a-0bdb-4989-8c3f-707e8a17a279.jpg?v=1692902537"
         },
         {
-          "variant_id": "44371556434086",
+          "variant_id": "variant_shopify_cd5ba5c6d307e6bc581e",
           "sku": "BC3349-3",
           "title": "Size 3 / Single Brace",
-          "available": false,
-          "weight_grams": 1616,
-          "options": {
-            "Size": "Size 3",
-            "Pack Size": "Single Brace"
-          },
+          "available": true,
+          "weight_grams": 1615.922818125,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/LBP_2288_068d276a-0bdb-4989-8c3f-707e8a17a279.jpg?v=1692902537"
         },
         {
-          "variant_id": "44817984094374",
+          "variant_id": "variant_shopify_6c11a809c6706f146926",
           "sku": "BC3349-3-CASE10",
           "title": "Size 3 / Case of 10 Braces",
-          "available": false,
-          "weight_grams": 16159,
-          "options": {
-            "Size": "Size 3",
-            "Pack Size": "Case of 10 Braces"
-          },
+          "available": true,
+          "weight_grams": 16159.23952105925,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/LBP_2288_068d276a-0bdb-4989-8c3f-707e8a17a279.jpg?v=1692902537"
         },
         {
-          "variant_id": "45058478702758",
+          "variant_id": "variant_shopify_57b8b3b530145ef9b9bf",
           "sku": "BC3349-3-CASE12",
           "title": "Size 3 / Case of 12 Braces",
-          "available": false,
-          "weight_grams": 19391,
-          "options": {
-            "Size": "Size 3",
-            "Pack Size": "Case of 12 Braces"
-          },
+          "available": true,
+          "weight_grams": 19391.087992261564,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/LBP_2288_068d276a-0bdb-4989-8c3f-707e8a17a279.jpg?v=1692902537"
         },
         {
-          "variant_id": "44371556466854",
+          "variant_id": "variant_shopify_62a955eb3c4369e432d9",
           "sku": "BC3349-4",
           "title": "Size 4 / Single Brace",
           "available": true,
-          "weight_grams": 1616,
-          "options": {
-            "Size": "Size 4",
-            "Pack Size": "Single Brace"
-          },
+          "weight_grams": 1615.922818125,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/LBP_2288_068d276a-0bdb-4989-8c3f-707e8a17a279.jpg?v=1692902537"
         },
         {
-          "variant_id": "44817984127142",
+          "variant_id": "variant_shopify_7fecd398dee4fc4c8e55",
           "sku": "BC3349-4-CASE10",
           "title": "Size 4 / Case of 10 Braces",
           "available": true,
-          "weight_grams": 16159,
-          "options": {
-            "Size": "Size 4",
-            "Pack Size": "Case of 10 Braces"
-          },
+          "weight_grams": 16159.23952105925,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/LBP_2288_068d276a-0bdb-4989-8c3f-707e8a17a279.jpg?v=1692902537"
         },
         {
-          "variant_id": "45058478735526",
+          "variant_id": "variant_shopify_6930d70afa66a678c17e",
           "sku": "BC3349-4-CASE12",
           "title": "Size 4 / Case of 12 Braces",
           "available": true,
-          "weight_grams": 19391,
-          "options": {
-            "Size": "Size 4",
-            "Pack Size": "Case of 12 Braces"
-          },
+          "weight_grams": 19391.087992261564,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/LBP_2288_068d276a-0bdb-4989-8c3f-707e8a17a279.jpg?v=1692902537"
         },
         {
-          "variant_id": "44371556499622",
+          "variant_id": "variant_shopify_ef5784db3265192b7913",
           "sku": "BC3349-5",
           "title": "Size 5 / Single Brace",
-          "available": false,
-          "weight_grams": 1616,
-          "options": {
-            "Size": "Size 5",
-            "Pack Size": "Single Brace"
-          },
+          "available": true,
+          "weight_grams": 1615.922818125,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/LBP_2288_068d276a-0bdb-4989-8c3f-707e8a17a279.jpg?v=1692902537"
         },
         {
-          "variant_id": "44817984159910",
+          "variant_id": "variant_shopify_b979eab1498b2cc26d02",
           "sku": "BC3349-5-CASE10",
           "title": "Size 5 / Case of 10 Braces",
-          "available": false,
-          "weight_grams": 16159,
-          "options": {
-            "Size": "Size 5",
-            "Pack Size": "Case of 10 Braces"
-          },
+          "available": true,
+          "weight_grams": 16159.23952105925,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/LBP_2288_068d276a-0bdb-4989-8c3f-707e8a17a279.jpg?v=1692902537"
         },
         {
-          "variant_id": "45058478768294",
+          "variant_id": "variant_shopify_beb86fe2137dd7490725",
           "sku": "BC3349-5-CASE12",
           "title": "Size 5 / Case of 12 Braces",
-          "available": false,
-          "weight_grams": 19391,
-          "options": {
-            "Size": "Size 5",
-            "Pack Size": "Case of 12 Braces"
-          },
+          "available": true,
+          "weight_grams": 19391.087992261564,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/LBP_2288_068d276a-0bdb-4989-8c3f-707e8a17a279.jpg?v=1692902537"
         },
         {
-          "variant_id": "44371556532390",
+          "variant_id": "variant_shopify_a8ef6749ff0e407811fa",
           "sku": "BC3349-6",
           "title": "Size 6 / Single Brace",
           "available": true,
-          "weight_grams": 1616,
-          "options": {
-            "Size": "Size 6",
-            "Pack Size": "Single Brace"
-          },
+          "weight_grams": 1615.922818125,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/LBP_2288_068d276a-0bdb-4989-8c3f-707e8a17a279.jpg?v=1692902537"
         },
         {
-          "variant_id": "44817984192678",
+          "variant_id": "variant_shopify_9b4ae2972668072d716d",
           "sku": "BC3349-6-CASE10",
           "title": "Size 6 / Case of 10 Braces",
           "available": true,
-          "weight_grams": 16159,
-          "options": {
-            "Size": "Size 6",
-            "Pack Size": "Case of 10 Braces"
-          },
+          "weight_grams": 16159.23952105925,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/LBP_2288_068d276a-0bdb-4989-8c3f-707e8a17a279.jpg?v=1692902537"
         },
         {
-          "variant_id": "45058478801062",
+          "variant_id": "variant_shopify_53f0f915341cc3416d43",
           "sku": "BC3349-6-CASE12",
           "title": "Size 6 / Case of 12 Braces",
           "available": true,
-          "weight_grams": 11311,
-          "options": {
-            "Size": "Size 6",
-            "Pack Size": "Case of 12 Braces"
-          },
+          "weight_grams": 11311.468231731937,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/LBP_2288_068d276a-0bdb-4989-8c3f-707e8a17a279.jpg?v=1692902537"
         },
         {
-          "variant_id": "44371586089126",
+          "variant_id": "variant_shopify_35b9fa4e18105c308678",
           "sku": "BC3349-7",
           "title": "Size 7 / Single Brace",
           "available": true,
-          "weight_grams": 1616,
-          "options": {
-            "Size": "Size 7",
-            "Pack Size": "Single Brace"
-          },
+          "weight_grams": 1615.922818125,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/LBP_2288_068d276a-0bdb-4989-8c3f-707e8a17a279.jpg?v=1692902537"
         },
         {
-          "variant_id": "44817984225446",
+          "variant_id": "variant_shopify_58f5df24fc0636f43c2d",
           "sku": "BC3349-7-CASE10",
           "title": "Size 7 / Case of 10 Braces",
           "available": true,
-          "weight_grams": 16159,
-          "options": {
-            "Size": "Size 7",
-            "Pack Size": "Case of 10 Braces"
-          },
+          "weight_grams": 16159.23952105925,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/LBP_2288_068d276a-0bdb-4989-8c3f-707e8a17a279.jpg?v=1692902537"
         },
         {
-          "variant_id": "45058478833830",
+          "variant_id": "variant_shopify_8ab2b04cefef216a1d2d",
           "sku": "BC3349-7-CASE12",
           "title": "Size 7 / Case of 12 Braces",
           "available": true,
-          "weight_grams": 19391,
-          "options": {
-            "Size": "Size 7",
-            "Pack Size": "Case of 12 Braces"
-          },
+          "weight_grams": 19391.087992261564,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/LBP_2288_068d276a-0bdb-4989-8c3f-707e8a17a279.jpg?v=1692902537"
         }
       ],
@@ -3984,457 +5484,44 @@ export const PUBLIC_CATALOG = {
         "Back Brace",
         "orthosis"
       ],
-      "collections": [
-        "Back Braces",
-        "Orthopedic Bracing"
-      ],
+      "collections": [],
       "product_type": "Back Brace",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
-      "pdac_approved": true,
-      "taa_compliant": true,
-      "berry_compliant": false,
-      "mspv_listed": false,
-      "latex_free": false,
-      "country_of_origin": "CN"
-    },
-    {
-      "sku": "AM350",
-      "handle": "medava®-surgical-mask-astm-level-3",
-      "name": "medava® Surgical Mask | ASTM Level 3",
-      "category": "PPE",
-      "pack_size": "Box of 50",
-      "hcpcs": "—",
-      "moq": 1,
-      "img": "medava® Surgical Mask | ASTM Level 3",
-      "summary": "The medava® Surgical Mask (ASTM Level 3) provides the highest level of fluid resistance and particulate filtration. Designed for comfort and protection, this mask meets ASTM Level 3 standards, offering maximum…",
-      "description": "The medava® Surgical Mask (ASTM Level 3) provides the highest level of fluid resistance and particulate filtration. Designed for comfort and protection, this mask meets ASTM Level 3 standards, offering maximum protection in high-risk environments. Its breathable 3-ply design makes it suitable for extended wear, delivering reliable protection while maintaining comfort. Ideal for healthcare professionals and individuals seeking superior protection, the medava® Surgical Mask ensures peace of mind during high-exposure situations. Key Features ASTM Level 3 certified for maximum fluid and particulate protection 3-ply design for enhanced filtration and breathability Ideal for high-risk environments and surgical use Soft, non-woven material for long-lasting comfort Elastic ear loops for a secure and comfortable fit Disposable for convenient use Nose clip molds mask securely to face Fluid resistant and disposable, single use Not made with Natural Rubber Latex Mask Size 7” Wide x 3.625” Tall Fluid Resistance, mmHg: 160 BFE (Bacterial Filtration Efficiency) >98% PFE (Particulate Filtration Efficiency) >98% Differential Pressure, mm H2O/cm2 <5.0 Flame Spread: Class 1 Shipping & Ordering Details 50 masks per box 2,000 masks per case Weight per case: 20 lbs Case dimensions: 20’’ x 16’’ x 16’’ Cases per pallet: 20 Pallet weight: 445 lbs Pallet dimensions: 48’’ x 42’’ x 68’’",
-      "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/3D_bob_front_level_3_Front.png?v=1736344768"
-      ],
-      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/3D_bob_front_level_3_Front.png?v=1736344768",
-      "variants": [
-        {
-          "variant_id": "46241593524390",
-          "sku": "AM350",
-          "title": "Box of 50",
-          "available": false,
-          "weight_grams": 227,
-          "options": {
-            "Pack Size": "Box of 50"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/3D_bob_front_level_3_Front.png?v=1736344768"
-        },
-        {
-          "variant_id": "44816246571174",
-          "sku": "AM32000",
-          "title": "Case of 2,000",
-          "available": false,
-          "weight_grams": 9072,
-          "options": {
-            "Pack Size": "Case of 2,000"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/3D_bob_front_level_3_Front.png?v=1736344768"
-        }
-      ],
-      "tags": [
-        "Masks"
-      ],
-      "collections": [
-        "Medical Masks"
-      ],
-      "product_type": "Medical Face Masks",
-      "m6_category": null,
-      "quote_only": false,
-      "fda_registered": true,
-      "pdac_approved": false,
-      "taa_compliant": false,
-      "berry_compliant": false,
-      "mspv_listed": true,
-      "latex_free": false,
-      "country_of_origin": "CN"
-    },
-    {
-      "sku": "USAM350",
-      "handle": "medava®-surgical-4-ply-mask-astm-level-3",
-      "name": "medava® 4-Ply Surgical Mask | ASTM Level 3",
-      "category": "PPE",
-      "pack_size": "Box of 50",
-      "hcpcs": "—",
-      "moq": 1,
-      "img": "medava® 4-Ply Surgical Mask | ASTM Level 3",
-      "summary": "The medava® Surgical 4-Ply Mask (ASTM Level 3) offers the highest level of protection with its durable 4-ply design, perfect for use in high-risk environments. Manufactured in the USA by a veteran-owned company, this…",
-      "description": "The medava® Surgical 4-Ply Mask (ASTM Level 3) offers the highest level of protection with its durable 4-ply design, perfect for use in high-risk environments. Manufactured in the USA by a veteran-owned company, this mask meets ASTM Level 3 standards, providing maximum fluid resistance and filtration efficiency. Its breathable design ensures comfort during extended wear, making it suitable for surgical settings and high-exposure areas. By choosing medava®, you're supporting American manufacturing and veterans, with the added assurance of ASTM Level 3 certification for superior safety and performance. Key Features ASTM Level 3 certified for maximum fluid and particulate protection Berry Compliant Disposable Mask made with 100% USA Raw Materials Made in the USA by a veteran-owned company 4-ply surgical design for enhanced protection and comfort Ideal for high-risk environments and surgical use Soft, non-woven material for long-lasting comfort Latex-free and breathable design for extended wear Elastic ear loops for a secure and comfortable fit Lightweight, non-woven polypropylene material design is soft on the face Elastic loops fit comfortably around ears Nose clip molds mask securely to face Fluid resistant and disposable, single use Mask Size 7” Wide x 3.625” Tall Fluid Resistance, mmHg: 160 BFE (Bacterial Filtration Efficiency) >98% PFE (Particulate Filtration Efficiency) >98% Differential Pressure, mm H2O/cm2 <5.0 Flame Spread: Class 1 Shipping & Ordering Details 50 masks per box 2,000 masks per case Weight per case: 20 lbs Case dimensions: 20’’ x 16’’ x 16’’ Cases per pallet: 20 Pallet weight: 445 lbs Pallet dimensions: 48’’ x 42’’ x 68’’ Download Spec Sheet",
-      "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaMasks4PlyLevel3USAM32000.png?v=1716561865"
-      ],
-      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaMasks4PlyLevel3USAM32000.png?v=1716561865",
-      "variants": [
-        {
-          "variant_id": "46241649426598",
-          "sku": "USAM350",
-          "title": "Box of 50",
-          "available": true,
-          "weight_grams": 227,
-          "options": {
-            "Pack Size": "Box of 50"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaMasks4PlyLevel3USAM32000.png?v=1716561865"
-        },
-        {
-          "variant_id": "44816262529190",
-          "sku": "USAM32000",
-          "title": "Case of 2,000",
-          "available": true,
-          "weight_grams": 9072,
-          "options": {
-            "Pack Size": "Case of 2,000"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaMasks4PlyLevel3USAM32000.png?v=1716561865"
-        }
-      ],
-      "tags": [
-        "Masks",
-        "USA"
-      ],
-      "collections": [
-        "Medava USA-Made",
-        "Medical Masks"
-      ],
-      "product_type": "Medical Face Masks",
-      "m6_category": null,
-      "quote_only": false,
-      "fda_registered": true,
-      "pdac_approved": false,
-      "taa_compliant": false,
-      "berry_compliant": false,
-      "mspv_listed": true,
-      "latex_free": true,
-      "country_of_origin": "US"
-    },
-    {
-      "sku": "USAM250",
-      "handle": "medava-surgical-3-ply-mask-astm-level-2",
-      "name": "medava® 3-Ply Surgical Mask | ASTM Level 2",
-      "category": "PPE",
-      "pack_size": "Box of 50",
-      "hcpcs": "—",
-      "moq": 1,
-      "img": "medava® 3-Ply Surgical Mask | ASTM Level 2",
-      "summary": "The medava® Surgical 3-Ply Mask (ASTM Level 2) provides enhanced protection with a lightweight, breathable design. Manufactured in the USA by a veteran-owned company, this mask meets ASTM Level 2 standards, offering…",
-      "description": "The medava® Surgical 3-Ply Mask (ASTM Level 2) provides enhanced protection with a lightweight, breathable design. Manufactured in the USA by a veteran-owned company, this mask meets ASTM Level 2 standards, offering protection against moderate levels of fluid exposure and airborne particles. Its 3-ply design ensures comfort for extended wear, making it ideal for surgical settings and general use. Supporting medava® means supporting high-quality American manufacturing and veterans, with the added assurance of ASTM Level 2 certification for superior performance. Key Features ASTM Level 2 certified for moderate fluid and particulate protection Berry Compliant Disposable Mask made with 100% USA Raw Materials Made in the USA by a veteran-owned company 3-ply surgical design for comfort and breathability Ideal for surgical use and general protection Soft, non-woven material for long-term comfort Latex-free and lightweight for easy wear Elastic ear loops for a secure fit Disposable for convenient use Fluid Resistance, mmHg: 120 BFE (Bacterial Filtration Efficiency) >98% PFE (Particulate Filtration Efficiency) >98% Differential Pressure, mm H2O/cm2 <6.0 Flame Spread: Class 1 Shipping & Ordering Details 50 masks per box 2,000 masks per case Weight per case: 20 lbs Case dimensions: 20’’ x 16’’ x 16’’ Cases per pallet: 20 Pallet weight: 445 lbs Pallet dimensions: 48’’ x 42’’ x 68’’ Download Spec Sheet",
-      "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaMasksLevel2USAM22000.png?v=1716561807"
-      ],
-      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaMasksLevel2USAM22000.png?v=1716561807",
-      "variants": [
-        {
-          "variant_id": "46241643102374",
-          "sku": "USAM250",
-          "title": "Box of 50",
-          "available": true,
-          "weight_grams": 227,
-          "options": {
-            "Pack Size": "Box of 50"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaMasksLevel2USAM22000.png?v=1716561807"
-        },
-        {
-          "variant_id": "46241643135142",
-          "sku": "USAM22000",
-          "title": "Case of 2,000",
-          "available": false,
-          "weight_grams": 9072,
-          "options": {
-            "Pack Size": "Case of 2,000"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/MedavaMasksLevel2USAM22000.png?v=1716561807"
-        }
-      ],
-      "tags": [
-        "Masks",
-        "USA"
-      ],
-      "collections": [
-        "Medava USA-Made",
-        "Medical Masks"
-      ],
-      "product_type": "Medical Face Masks",
-      "m6_category": null,
-      "quote_only": false,
-      "fda_registered": true,
-      "pdac_approved": false,
-      "taa_compliant": false,
-      "berry_compliant": false,
-      "mspv_listed": true,
-      "latex_free": true,
-      "country_of_origin": "US"
-    },
-    {
-      "sku": "UMRA9-E00302",
-      "handle": "genabio-covid-19-at-home-tests-2-pack",
-      "name": "Genabio COVID-19 Rapid Self-Test Kit (2 Pack)",
-      "category": "Diagnostics",
-      "pack_size": "Pack (2 Tests)",
-      "hcpcs": "—",
-      "moq": 1,
-      "img": "Genabio COVID-19 Rapid Self-Test Kit (2 Pack)",
-      "summary": "The Genabio COVID-19 At-Home Test (2-Pack) is a simple and reliable way to test for COVID-19 in the comfort of your home. Cleared by the FDA under a 510(k), this rapid antigen test delivers results in just 15 minutes…",
-      "description": "The Genabio COVID-19 At-Home Test (2-Pack) is a simple and reliable way to test for COVID-19 in the comfort of your home. Cleared by the FDA under a 510(k), this rapid antigen test delivers results in just 15 minutes using a non-invasive anterior nasal swab. Each pack contains two individually packaged test kits, ideal for personal use, families, or workplaces looking for quick and accurate results without needing a lab. Whether you're preparing for travel, screening before events, or simply need peace of mind, the Genabio 2-Pack offers a convenient, reliable solution. FDA 510(k)-Cleared | At-Home Nasal Swab | Fast 15-Minute Results Key Features Results in just 15 minutes FDA 510(k)-cleared for accuracy and safety Easy-to-use at-home nasal swab test Non-invasive sample collection Includes 2 individually boxed test kits FSA/HSA eligible Suitable for ages 2 and up Convenient for travel, events, or home use What’s In The Box (2) COVID-19 Test Cards (2) Pre-Filled Tubes (2) Anterior Nasal Swabs (2) Instructions for Use",
-      "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Genabio_Product_2_Tests.jpg?v=1730398594"
-      ],
-      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Genabio_Product_2_Tests.jpg?v=1730398594",
-      "variants": [
-        {
-          "variant_id": "44770818293926",
-          "sku": "UMRA9-E00302",
-          "title": "Pack (2 Tests)",
-          "available": true,
-          "weight_grams": 57,
-          "options": {
-            "Pack Size": "Pack (2 Tests)"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Genabio_Product_2_Tests.jpg?v=1730398594"
-        },
-        {
-          "variant_id": "44770818326694",
-          "sku": "UMRA9-E00302-CASE",
-          "title": "Case (204 Tests)",
-          "available": true,
-          "weight_grams": 5783,
-          "options": {
-            "Pack Size": "Case (204 Tests)"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Genabio_Product_2_Tests.jpg?v=1730398594"
-        }
-      ],
-      "tags": [
-        "Covid Tests",
-        "Diagnostic Test",
-        "OTC",
-        "Planogram"
-      ],
-      "collections": [
-        "Diagnostic Tests"
-      ],
-      "product_type": "Diagnostic Tests",
-      "m6_category": null,
-      "quote_only": false,
-      "fda_registered": true,
+      "fda_registered": false,
       "pdac_approved": false,
       "taa_compliant": false,
       "berry_compliant": false,
       "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
-    },
-    {
-      "sku": "UMSL1016",
-      "handle": "surgilock-instrument-platform",
-      "name": "SurgiLock Surgical Instrument Platform",
-      "category": "Surgical",
-      "pack_size": "Case of 15 Pads",
-      "hcpcs": "—",
-      "moq": 1,
-      "img": "SurgiLock Surgical Instrument Platform",
-      "summary": "The SurgiLock Instrument Platform provides a stable and organized solution for managing surgical tools during procedures. Designed specifically for surgery centers, this platform ensures that instruments remain…",
-      "description": "The SurgiLock Instrument Platform provides a stable and organized solution for managing surgical tools during procedures. Designed specifically for surgery centers, this platform ensures that instruments remain securely in place, improving efficiency and safety during operations. The SurgiLock platform is crafted for ease of use, with a durable surface that supports a wide range of surgical instruments. Ideal for high-traffic surgical environments, the SurgiLock platform enhances procedural organization and helps reduce the risk of contamination by keeping instruments safely positioned. Key Features Provides a stable platform for surgical instruments Enhances procedural efficiency and safety Ideal for use in surgery centers and high-traffic ORs Durable surface supports a wide range of surgical tools Reduces risk of contamination with secure instrument placement",
-      "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Surgilock1.jpg?v=1696442195"
-      ],
-      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Surgilock1.jpg?v=1696442195",
-      "variants": [
-        {
-          "variant_id": "44458244276390",
-          "sku": "UMSL1016",
-          "title": "Case of 15 Pads",
-          "available": true,
-          "weight_grams": 4990,
-          "options": {
-            "Pack Size": "Case of 15 Pads"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Surgilock1.jpg?v=1696442195"
-        }
-      ],
-      "tags": [],
-      "collections": [
-        "Instrument Platforms"
-      ],
-      "product_type": "Surgical Supplies",
-      "m6_category": null,
-      "quote_only": false,
-      "fda_registered": true,
-      "pdac_approved": false,
-      "taa_compliant": false,
-      "berry_compliant": false,
-      "mspv_listed": true,
-      "latex_free": false,
-      "country_of_origin": "CN"
-    },
-    {
-      "sku": "VGPF3002",
-      "handle": "basic-vinyl-synthetic-exam-gloves",
-      "name": "Vinyl Synthetic Exam Gloves | Case of 1,000",
-      "category": "PPE",
-      "pack_size": "Medium - Case of 1000 Gloves / Case",
-      "hcpcs": "—",
-      "moq": 1,
-      "img": "Vinyl Synthetic Exam Gloves | Case of 1,000",
-      "summary": "Vinyl Synthetic Exam Gloves are available in a convenient bulk case of 1,000, offering durable, latex-free protection for healthcare professionals and general use. These gloves provide a comfortable fit and reliable…",
-      "description": "Vinyl Synthetic Exam Gloves are available in a convenient bulk case of 1,000, offering durable, latex-free protection for healthcare professionals and general use. These gloves provide a comfortable fit and reliable puncture resistance, making them ideal for medical exams, lab work, and other tasks requiring safety and flexibility. The synthetic material ensures easy wear for extended periods without compromising tactile sensitivity. These gloves are an affordable, high-quality option for bulk purchasers looking for reliable protection and convenience. Key Features Available in a bulk case of 1,000 gloves Latex-free to reduce allergy risks Comfortable fit for extended wear Puncture-resistant for reliable protection Ideal for healthcare, lab work, and general use Durable and flexible for enhanced safety Disposable and easy to use 10 0 pcs per box / 1,000 pcs per case Non-Sterile & Disposable Color: Clear",
-      "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/UniteVinylGlovesL_2.jpg?v=1696262537"
-      ],
-      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/UniteVinylGlovesL_2.jpg?v=1696262537",
-      "variants": [
-        {
-          "variant_id": "44450960998566",
-          "sku": "VGPF3002",
-          "title": "Medium - Case of 1000 Gloves / Case",
-          "available": true,
-          "weight_grams": 5897,
-          "options": {
-            "Size": "Medium - Case of 1000 Gloves",
-            "Pack Size": "Case"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/UniteVinylGlovesM.jpg?v=1696262537"
-        },
-        {
-          "variant_id": "44450961064102",
-          "sku": "VGPF3003",
-          "title": "Large - Case of 1000 Gloves / Case",
-          "available": true,
-          "weight_grams": 6350,
-          "options": {
-            "Size": "Large - Case of 1000 Gloves",
-            "Pack Size": "Case"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/UniteVinylGlovesL.jpg?v=1696262537"
-        },
-        {
-          "variant_id": "44450961129638",
-          "sku": "VGPF3004",
-          "title": "XL - Case of 1000 Gloves / Case",
-          "available": false,
-          "weight_grams": 6804,
-          "options": {
-            "Size": "XL - Case of 1000 Gloves",
-            "Pack Size": "Case"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/UniteVinylGlovesXL_2.jpg?v=1696262537"
-        }
-      ],
-      "tags": [
-        "Gloves"
-      ],
-      "collections": [
-        "Medical Gloves"
-      ],
-      "product_type": "Medical Gloves",
-      "m6_category": null,
-      "quote_only": false,
-      "fda_registered": true,
-      "pdac_approved": false,
-      "taa_compliant": false,
-      "berry_compliant": false,
-      "mspv_listed": true,
-      "latex_free": true,
-      "country_of_origin": "CN"
-    },
-    {
-      "sku": "UMRA9-E00301",
-      "handle": "genabio-covid-19-at-home-test",
-      "name": "Genabio COVID-19 Rapid Self-Test Kit (1 Pack)",
-      "category": "Diagnostics",
-      "pack_size": "Pack (1 Test)",
-      "hcpcs": "—",
-      "moq": 1,
-      "img": "Genabio COVID-19 Rapid Self-Test Kit (1 Pack)",
-      "summary": "The Genabio COVID-19 At-Home Test (1-Pack) delivers fast and reliable results, allowing you to test for COVID-19 from the comfort of your home. This FDA 510(k) cleared test uses a simple nasal swab to detect COVID-19…",
-      "description": "The Genabio COVID-19 At-Home Test (1-Pack) delivers fast and reliable results, allowing you to test for COVID-19 from the comfort of your home. This FDA 510(k) cleared test uses a simple nasal swab to detect COVID-19 with results in just 15 minutes. Designed for ease of use and dependable accuracy, the Genabio test is ideal for individuals or families looking for a convenient and trustworthy solution. Whether you're testing yourself or a family member, Genabio offers peace of mind and FDA-cleared performance. FDA 510(k)-Cleared | At-Home Nasal Swab | Fast 15-Minute Results Key Features FDA 510(k) Cleared for OTC use Results in just 15 minutes Non-invasive anterior nasal swab Easy at-home self-testing Safe for individuals ages 2 and up Ideal for personal or family use Single test per box FSA/HSA eligible Convenient Retail Display Option (14 Single Boxes) What’s In The Box 1 x COVID-19 Test Card 1 x Anterior Nasal Swab 1 x Pre-Filled Tube 1 x Instructions for Use",
-      "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenabioProductMain.jpg?v=1730398301"
-      ],
-      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenabioProductMain.jpg?v=1730398301",
-      "variants": [
-        {
-          "variant_id": "44770672378022",
-          "sku": "UMRA9-E00301",
-          "title": "Pack (1 Test)",
-          "available": false,
-          "weight_grams": 57,
-          "options": {
-            "Pack Size": "Pack (1 Test)"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenabioProductMain.jpg?v=1730398301"
-        },
-        {
-          "variant_id": "46342632865958",
-          "sku": "UMRA9-E00301-RDB",
-          "title": "Retail Display (14 Tests)",
-          "available": false,
-          "weight_grams": 794,
-          "options": {
-            "Pack Size": "Retail Display (14 Tests)"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/Genabio_Counter_Pack.jpg?v=1746481915"
-        },
-        {
-          "variant_id": "44770672410790",
-          "sku": "UMRA9-E00301-CASE",
-          "title": "Case (252 Tests)",
-          "available": false,
-          "weight_grams": 14288,
-          "options": {
-            "Pack Size": "Case (252 Tests)"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/files/GenabioProductMain.jpg?v=1730398301"
-        }
-      ],
-      "tags": [
-        "Covid Tests",
-        "Diagnostic Test",
-        "OTC",
-        "Planogram"
-      ],
-      "collections": [
-        "Diagnostic Tests"
-      ],
-      "product_type": "Diagnostic Tests",
-      "m6_category": null,
-      "quote_only": false,
-      "fda_registered": true,
-      "pdac_approved": false,
-      "taa_compliant": false,
-      "berry_compliant": false,
-      "mspv_listed": false,
-      "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
     },
     {
       "sku": "LO2742",
       "handle": "lumbar-orthosis-back-brace",
       "name": "Lumbar Orthosis Back Brace Support",
       "category": "Orthotics",
-      "pack_size": "One Size / Single Brace",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "Lumbar Orthosis Back Brace Support",
-      "summary": "The Lumbar Orthosis Back Brace provides firm support for the lower back, helping to relieve pain and improve posture. Designed with rigid anterior and posterior panels, this lightweight and adjustable brace is perfect…",
+      "img": "The Lumbar Orthosis Back Brace provides firm support for the lower back, helping to relieve pain and improve posture. Designed with rigid anterior and posterior panels, this lightweight and adjustable brace is perfect fo",
+      "summary": "The Lumbar Orthosis Back Brace provides firm support for the lower back, helping to relieve pain and improve posture. Designed with rigid anterior and posterior panels, this lightweight and adjustable brace is perfect fo",
       "description": "The Lumbar Orthosis Back Brace provides firm support for the lower back, helping to relieve pain and improve posture. Designed with rigid anterior and posterior panels, this lightweight and adjustable brace is perfect for those experiencing lower back discomfort or needing extra spinal stability. The universal fit makes it suitable for most wearers, ensuring comfort throughout the day. Whether for post-injury recovery or daily back support, this lumbar brace helps stabilize the lumbar region while allowing ease of movement. Key Features Rigid panels for full lumbar support Lightweight and breathable for extended wear Adjustable straps for a secure and personalized fit Ideal for lumbar pain relief and posture correction Universal design to fit most users Approved under HCPCS codes L0627 and L0631, this lumbar orthosis is Medicare-compliant and ready for insurance billing. Download the PDAC Approval Letter for more information.",
       "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/IMG7422.jpg?v=1591632099"
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/IMG7422.jpg?v=1591632099",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/UM_LumbarSacralOrthosis_Both1.jpg?v=1591632232",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/UM_LumbarSacralOrthosis_Both2.jpg?v=1591632238",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/UM_LumbarSacralOrthosis_Both3.jpg?v=1591632242",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/IMG7423.jpg?v=1591632271"
       ],
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/IMG7422.jpg?v=1591632099",
       "variants": [
         {
-          "variant_id": "44817989468326",
+          "variant_id": "variant_shopify_fd5e953b712a109a1cf3",
           "sku": "LO2742",
           "title": "One Size / Single Brace",
           "available": true,
-          "weight_grams": 680,
+          "weight_grams": 680.388555,
           "options": {
             "Size": "One Size",
             "Pack Size": "Single Brace"
@@ -4442,15 +5529,12 @@ export const PUBLIC_CATALOG = {
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/UM_LumbarSacralOrthosis_Both1.jpg?v=1591632232"
         },
         {
-          "variant_id": "44817989501094",
-          "sku": "LO2742-CASE14",
+          "variant_id": "variant_shopify_e56b8a7ac39686e194d2",
+          "sku": "LO2742C-14",
           "title": "One Size / Case of 14 Braces",
           "available": true,
-          "weight_grams": 9525,
-          "options": {
-            "Size": "One Size",
-            "Pack Size": "Case of 14 Braces"
-          },
+          "weight_grams": 9525.445439904624,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/UM_LumbarSacralOrthosis_Both1.jpg?v=1591632232"
         }
       ],
@@ -4459,273 +5543,41 @@ export const PUBLIC_CATALOG = {
         "orthosis",
         "Product Group 2"
       ],
-      "collections": [
-        "Back Braces",
-        "Orthopedic Bracing"
-      ],
+      "collections": [],
       "product_type": "Back Brace",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
-      "pdac_approved": true,
-      "taa_compliant": true,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
       "berry_compliant": false,
       "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
-    },
-    {
-      "sku": "KO4552L-S",
-      "handle": "double-upright-knee-orthosis",
-      "name": "Double Upright Knee Orthosis",
-      "category": "Orthotics",
-      "pack_size": "Small / Left - Single Brace",
-      "hcpcs": "—",
-      "moq": 1,
-      "img": "Double Upright Knee Orthosis",
-      "summary": "The Double Upright Knee Orthosis provides reliable hinged support and stabilization, ideal for patients recovering from ACL injuries, managing arthritis, or undergoing post-surgical rehabilitation. This knee brace…",
-      "description": "The Double Upright Knee Orthosis provides reliable hinged support and stabilization, ideal for patients recovering from ACL injuries, managing arthritis, or undergoing post-surgical rehabilitation. This knee brace allows controlled movement while providing excellent support to reduce pain and improve mobility. With double uprights and adjustable straps, it ensures a secure and comfortable fit, allowing for optimal knee stabilization throughout recovery. This orthosis is lightweight and durable, perfect for extended use during recovery or daily activity. Designed for ease of wear and stability, the Double Upright Knee Orthosis is a trusted solution for managing knee pain and ensuring proper knee alignment. Key Features: Hinged knee support for controlled movement and stability Double uprights for enhanced knee stabilization Adjustable straps for personalized fit and comfort Ideal for ACL recovery, arthritis management, and post-surgical care Lightweight and durable for extended wear Universal fit, adaptable to both legs Medicare-approved under L1852 and L1845, ensuring easy billing and reimbursement for healthcare providers. Download the PDAC Approval Letter for more details.",
-      "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Dual_OA_Main_Image.jpg?v=1583259525"
-      ],
-      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Dual_OA_Main_Image.jpg?v=1583259525",
-      "variants": [
-        {
-          "variant_id": "31298048688187",
-          "sku": "KO4552L-S",
-          "title": "Small / Left - Single Brace",
-          "available": true,
-          "weight_grams": 794,
-          "options": {
-            "Size": "Small",
-            "Side & Pack Size": "Left - Single Brace"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Dual_OA_-_Product_Flyer.jpg?v=1583259529"
-        },
-        {
-          "variant_id": "31298048720955",
-          "sku": "KO4552R-S",
-          "title": "Small / Right - Single Brace",
-          "available": true,
-          "weight_grams": 794,
-          "options": {
-            "Size": "Small",
-            "Side & Pack Size": "Right - Single Brace"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Dual_OA_-_Product_Flyer.jpg?v=1583259529"
-        },
-        {
-          "variant_id": "44811319738534",
-          "sku": "KO4552L-S-CASE6",
-          "title": "Small / Left - Case of 6 Braces",
-          "available": true,
-          "weight_grams": 4763,
-          "options": {
-            "Size": "Small",
-            "Side & Pack Size": "Left - Case of 6 Braces"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Dual_OA_-_Product_Flyer.jpg?v=1583259529"
-        },
-        {
-          "variant_id": "44811319771302",
-          "sku": "KO4552R-S-CASE6",
-          "title": "Small / Right- Case of 6 Braces",
-          "available": true,
-          "weight_grams": 4763,
-          "options": {
-            "Size": "Small",
-            "Side & Pack Size": "Right- Case of 6 Braces"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Dual_OA_-_Product_Flyer.jpg?v=1583259529"
-        },
-        {
-          "variant_id": "31298048753723",
-          "sku": "KO4552L-M",
-          "title": "Medium / Left - Single Brace",
-          "available": true,
-          "weight_grams": 794,
-          "options": {
-            "Size": "Medium",
-            "Side & Pack Size": "Left - Single Brace"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Dual_OA_-_Product_Flyer.jpg?v=1583259529"
-        },
-        {
-          "variant_id": "31298048786491",
-          "sku": "KO4552R-M",
-          "title": "Medium / Right - Single Brace",
-          "available": true,
-          "weight_grams": 794,
-          "options": {
-            "Size": "Medium",
-            "Side & Pack Size": "Right - Single Brace"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Dual_OA_-_Product_Flyer.jpg?v=1583259529"
-        },
-        {
-          "variant_id": "44811319804070",
-          "sku": "KO4552L-M-CASE6",
-          "title": "Medium / Left - Case of 6 Braces",
-          "available": true,
-          "weight_grams": 4763,
-          "options": {
-            "Size": "Medium",
-            "Side & Pack Size": "Left - Case of 6 Braces"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Dual_OA_-_Product_Flyer.jpg?v=1583259529"
-        },
-        {
-          "variant_id": "44811319836838",
-          "sku": "KO4552R-M-CASE6",
-          "title": "Medium / Right- Case of 6 Braces",
-          "available": true,
-          "weight_grams": 4763,
-          "options": {
-            "Size": "Medium",
-            "Side & Pack Size": "Right- Case of 6 Braces"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Dual_OA_-_Product_Flyer.jpg?v=1583259529"
-        },
-        {
-          "variant_id": "31298048819259",
-          "sku": "KO4552L-L",
-          "title": "Large / Left - Single Brace",
-          "available": true,
-          "weight_grams": 794,
-          "options": {
-            "Size": "Large",
-            "Side & Pack Size": "Left - Single Brace"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Dual_OA_-_Product_Flyer.jpg?v=1583259529"
-        },
-        {
-          "variant_id": "31298048852027",
-          "sku": "KO4552R-L",
-          "title": "Large / Right - Single Brace",
-          "available": true,
-          "weight_grams": 794,
-          "options": {
-            "Size": "Large",
-            "Side & Pack Size": "Right - Single Brace"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Dual_OA_-_Product_Flyer.jpg?v=1583259529"
-        },
-        {
-          "variant_id": "44811319869606",
-          "sku": "KO4552L-L-CASE6",
-          "title": "Large / Left - Case of 6 Braces",
-          "available": true,
-          "weight_grams": 4763,
-          "options": {
-            "Size": "Large",
-            "Side & Pack Size": "Left - Case of 6 Braces"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Dual_OA_-_Product_Flyer.jpg?v=1583259529"
-        },
-        {
-          "variant_id": "44811319902374",
-          "sku": "KO4552R-L-CASE6",
-          "title": "Large / Right- Case of 6 Braces",
-          "available": true,
-          "weight_grams": 4763,
-          "options": {
-            "Size": "Large",
-            "Side & Pack Size": "Right- Case of 6 Braces"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Dual_OA_-_Product_Flyer.jpg?v=1583259529"
-        },
-        {
-          "variant_id": "31298048884795",
-          "sku": "KO4552L-XL",
-          "title": "X-Large / Left - Single Brace",
-          "available": true,
-          "weight_grams": 794,
-          "options": {
-            "Size": "X-Large",
-            "Side & Pack Size": "Left - Single Brace"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Dual_OA_-_Product_Flyer.jpg?v=1583259529"
-        },
-        {
-          "variant_id": "31298048917563",
-          "sku": "KO4552R-XL",
-          "title": "X-Large / Right - Single Brace",
-          "available": true,
-          "weight_grams": 794,
-          "options": {
-            "Size": "X-Large",
-            "Side & Pack Size": "Right - Single Brace"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Dual_OA_-_Product_Flyer.jpg?v=1583259529"
-        },
-        {
-          "variant_id": "44811319935142",
-          "sku": "KO4552L-XL-CASE6",
-          "title": "X-Large / Left - Case of 6 Braces",
-          "available": true,
-          "weight_grams": 4763,
-          "options": {
-            "Size": "X-Large",
-            "Side & Pack Size": "Left - Case of 6 Braces"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Dual_OA_-_Product_Flyer.jpg?v=1583259529"
-        },
-        {
-          "variant_id": "44811319967910",
-          "sku": "KO4552R-XL-CASE6",
-          "title": "X-Large / Right- Case of 6 Braces",
-          "available": true,
-          "weight_grams": 4763,
-          "options": {
-            "Size": "X-Large",
-            "Side & Pack Size": "Right- Case of 6 Braces"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Dual_OA_-_Product_Flyer.jpg?v=1583259529"
-        }
-      ],
-      "tags": [
-        "double upright knee orthosis",
-        "Knee Brace",
-        "orthosis",
-        "Product Group 4"
-      ],
-      "collections": [
-        "Knee Braces",
-        "Orthopedic Bracing"
-      ],
-      "product_type": "Orthopedic Devices",
-      "m6_category": null,
-      "quote_only": false,
-      "fda_registered": true,
-      "pdac_approved": true,
-      "taa_compliant": true,
-      "berry_compliant": false,
-      "mspv_listed": false,
-      "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
     },
     {
       "sku": "HS3170-S",
       "handle": "heel-cup-stabilizer",
       "name": "Heel Stabilizer Orthosis",
       "category": "Orthotics",
-      "pack_size": "Small / Single Pair",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "Heel Stabilizer Orthosis",
-      "summary": "The Heel Stabilizer Orthosis is designed to provide targeted support and pain relief for the foot and ankle. This orthosis is perfect for individuals recovering from foot or ankle injuries, offering lightweight…",
+      "img": "The Heel Stabilizer Orthosis is designed to provide targeted support and pain relief for the foot and ankle. This orthosis is perfect for individuals recovering from foot or ankle injuries, offering lightweight stabiliza",
+      "summary": "The Heel Stabilizer Orthosis is designed to provide targeted support and pain relief for the foot and ankle. This orthosis is perfect for individuals recovering from foot or ankle injuries, offering lightweight stabiliza",
       "description": "The Heel Stabilizer Orthosis is designed to provide targeted support and pain relief for the foot and ankle. This orthosis is perfect for individuals recovering from foot or ankle injuries, offering lightweight stabilization and improved alignment. Its universal fit makes it comfortable for most wearers, ensuring effective support during daily activities or recovery. This stabilizer is easy to wear and delivers reliable comfort throughout the day. Whether you're seeking relief from tendonitis, ankle strain, or need extra foot support, the Heel Stabilizer Orthosis provides a dependable solution. Key Features Provides foot and ankle support for injury recovery Lightweight and comfortable for all-day wear Universal fit for most wearers Ideal for relieving pain from tendonitis and ankle strain Medicare-approved under L3170, this orthosis simplifies the billing process for healthcare providers. Download the PDAC Approval Letter for more information.",
       "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Heel_Cup_Main_copy_e595253b-728c-44e2-9be2-f1d91181b04a.jpg?v=1583939845"
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Heel_Cup_Main_copy_e595253b-728c-44e2-9be2-f1d91181b04a.jpg?v=1583939845",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Heel_Cup_1_1c0573d1-679b-4649-a083-72b9f43106b0.jpg?v=1583939845"
       ],
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Heel_Cup_Main_copy_e595253b-728c-44e2-9be2-f1d91181b04a.jpg?v=1583939845",
       "variants": [
         {
-          "variant_id": "32672588693563",
+          "variant_id": "variant_shopify_5d24b0eba9c4629f4887",
           "sku": "HS3170-S",
           "title": "Small / Single Pair",
           "available": true,
-          "weight_grams": 85,
+          "weight_grams": 85.048569375,
           "options": {
             "Size": "Small",
             "Pack Size": "Single Pair"
@@ -4733,87 +5585,66 @@ export const PUBLIC_CATALOG = {
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Heel_Cup_1_1c0573d1-679b-4649-a083-72b9f43106b0.jpg?v=1583939845"
         },
         {
-          "variant_id": "44814044463270",
+          "variant_id": "variant_shopify_930aa09330f0787ce12f",
           "sku": "HS3170-S-CASE30",
           "title": "Small / Case of 30 Pairs",
           "available": true,
-          "weight_grams": 2551,
-          "options": {
-            "Size": "Small",
-            "Pack Size": "Case of 30 Pairs"
-          },
+          "weight_grams": 2551.4599162023123,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Heel_Cup_1_1c0573d1-679b-4649-a083-72b9f43106b0.jpg?v=1583939845"
         },
         {
-          "variant_id": "32672588759099",
+          "variant_id": "variant_shopify_c0c545f0f15dd6fef3ae",
           "sku": "HS3170-M",
           "title": "Medium / Single Pair",
           "available": true,
-          "weight_grams": 85,
-          "options": {
-            "Size": "Medium",
-            "Pack Size": "Single Pair"
-          },
+          "weight_grams": 85.048569375,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Heel_Cup_1_1c0573d1-679b-4649-a083-72b9f43106b0.jpg?v=1583939845"
         },
         {
-          "variant_id": "44814044496038",
+          "variant_id": "variant_shopify_0a1f18592ce535bd4530",
           "sku": "HS3170-M-CASE30",
           "title": "Medium / Case of 30 Pairs",
           "available": true,
-          "weight_grams": 2551,
-          "options": {
-            "Size": "Medium",
-            "Pack Size": "Case of 30 Pairs"
-          },
+          "weight_grams": 2551.4599162023123,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Heel_Cup_1_1c0573d1-679b-4649-a083-72b9f43106b0.jpg?v=1583939845"
         },
         {
-          "variant_id": "32672588857403",
+          "variant_id": "variant_shopify_12a48f78f98863796e38",
           "sku": "HS3170-L",
           "title": "Large / Single Pair",
           "available": true,
-          "weight_grams": 85,
-          "options": {
-            "Size": "Large",
-            "Pack Size": "Single Pair"
-          },
+          "weight_grams": 85.048569375,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Heel_Cup_1_1c0573d1-679b-4649-a083-72b9f43106b0.jpg?v=1583939845"
         },
         {
-          "variant_id": "44814044528806",
+          "variant_id": "variant_shopify_51c74725947dbbc442bc",
           "sku": "HS3170-L-CASE30",
           "title": "Large / Case of 30 Pairs",
           "available": true,
-          "weight_grams": 2551,
-          "options": {
-            "Size": "Large",
-            "Pack Size": "Case of 30 Pairs"
-          },
+          "weight_grams": 2551.4599162023123,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Heel_Cup_1_1c0573d1-679b-4649-a083-72b9f43106b0.jpg?v=1583939845"
         },
         {
-          "variant_id": "32672588922939",
+          "variant_id": "variant_shopify_1ae722c91644ad164c09",
           "sku": "HS3170-XL",
           "title": "X-Large / Single Pair",
           "available": true,
-          "weight_grams": 85,
-          "options": {
-            "Size": "X-Large",
-            "Pack Size": "Single Pair"
-          },
+          "weight_grams": 85.048569375,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Heel_Cup_1_1c0573d1-679b-4649-a083-72b9f43106b0.jpg?v=1583939845"
         },
         {
-          "variant_id": "44814044561574",
+          "variant_id": "variant_shopify_e9df9b8546bc6a8afeaa",
           "sku": "HS3170-XL-CASE30",
           "title": "X-Large / Case of 30 Pairs",
           "available": true,
-          "weight_grams": 2551,
-          "options": {
-            "Size": "X-Large",
-            "Pack Size": "Case of 30 Pairs"
-          },
+          "weight_grams": 2551.4599162023123,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Heel_Cup_1_1c0573d1-679b-4649-a083-72b9f43106b0.jpg?v=1583939845"
         }
       ],
@@ -4823,43 +5654,43 @@ export const PUBLIC_CATALOG = {
         "Product Group 3",
         "silicone heel cup"
       ],
-      "collections": [
-        "Foot & Ankle Braces",
-        "Orthopedic Bracing"
-      ],
+      "collections": [],
       "product_type": "Orthopedic Devices",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
-      "pdac_approved": true,
-      "taa_compliant": true,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
       "berry_compliant": false,
       "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
     },
     {
       "sku": "SEWH3960",
       "handle": "shoulder-abduction-orthosis-l3960",
       "name": "Shoulder Abduction Orthosis",
       "category": "Orthotics",
-      "pack_size": "One Size / Single Brace",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "Shoulder Abduction Orthosis",
-      "summary": "The Shoulder Abduction Orthosis is designed to provide effective stabilization for patients recovering from rotator cuff injuries or shoulder surgery. This orthosis positions the shoulder in an optimal abduction angle…",
+      "img": "The Shoulder Abduction Orthosis is designed to provide effective stabilization for patients recovering from rotator cuff injuries or shoulder surgery. This orthosis positions the shoulder in an optimal abduction angle, r",
+      "summary": "The Shoulder Abduction Orthosis is designed to provide effective stabilization for patients recovering from rotator cuff injuries or shoulder surgery. This orthosis positions the shoulder in an optimal abduction angle, r",
       "description": "The Shoulder Abduction Orthosis is designed to provide effective stabilization for patients recovering from rotator cuff injuries or shoulder surgery. This orthosis positions the shoulder in an optimal abduction angle, reducing strain and promoting faster healing. With adjustable straps, it offers a personalized fit for all-day comfort during recovery. Lightweight and easy to wear, this shoulder orthosis helps manage pain and provides compression, supporting proper shoulder alignment throughout rehabilitation. Ideal for post-operative care, it offers essential support during the healing process. Key Features Designed for post-surgical recovery and rotator cuff injuries Adjustable design for personalized fit and comfort Provides shoulder stabilization and compression Medicare-approved and covered under L3960, this orthosis ensures easy billing and reimbursement for healthcare providers. Download the PDAC Approval Letter for more details on Medicare compliance and coverage.",
       "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Shoulder_Abduction_Main_63b1915c-1503-47af-97e3-512a3a484c3e.jpg?v=1583264017"
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Shoulder_Abduction_Main_63b1915c-1503-47af-97e3-512a3a484c3e.jpg?v=1583264017",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Shoulder_Abduction_1_ad0963c9-a8d1-40f9-988d-828902b35de1.jpg?v=1583264017",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Shoulder_Abduction_2_12730875-9420-422b-8b91-689dba5e4a4f.jpg?v=1583264009",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/IMG-5178_1f5fe92a-cee6-4532-b26e-e2619b7a2469.jpg?v=1583264012"
       ],
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Shoulder_Abduction_Main_63b1915c-1503-47af-97e3-512a3a484c3e.jpg?v=1583264017",
       "variants": [
         {
-          "variant_id": "44818010964134",
+          "variant_id": "variant_shopify_8f56c5e6360d89d105e4",
           "sku": "SEWH3960",
           "title": "One Size / Single Brace",
           "available": true,
-          "weight_grams": 1021,
+          "weight_grams": 1020.5828325,
           "options": {
             "Size": "One Size",
             "Pack Size": "Single Brace"
@@ -4867,15 +5698,12 @@ export const PUBLIC_CATALOG = {
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Shoulder_Abduction_Main_63b1915c-1503-47af-97e3-512a3a484c3e.jpg?v=1583264017"
         },
         {
-          "variant_id": "44818014273702",
-          "sku": "SEWH3960-CASE8",
+          "variant_id": "variant_shopify_26e2492e009b2815cf9c",
+          "sku": "SEWH3960C-8",
           "title": "One Size / Case of 8 Braces",
           "available": true,
-          "weight_grams": 8165,
-          "options": {
-            "Size": "One Size",
-            "Pack Size": "Case of 8 Braces"
-          },
+          "weight_grams": 8164.668329904625,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Shoulder_Abduction_Main_63b1915c-1503-47af-97e3-512a3a484c3e.jpg?v=1583264017"
         }
       ],
@@ -4883,43 +5711,42 @@ export const PUBLIC_CATALOG = {
         "orthosis",
         "Shoulder Brace"
       ],
-      "collections": [
-        "Shoulder & Elbow Braces",
-        "Orthopedic Bracing"
-      ],
+      "collections": [],
       "product_type": "Orthopedic Devices",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
-      "pdac_approved": true,
-      "taa_compliant": true,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
       "berry_compliant": false,
       "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
     },
     {
       "sku": "AFO71-Panel",
       "handle": "afo-extender-panel-adjustable-support",
       "name": "Foot & Ankle Extender Panel",
       "category": "Orthotics",
-      "pack_size": "One Size / Single Panel",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "Foot & Ankle Extender Panel",
-      "summary": "The Foot & Ankle Extender Panel is designed to provide additional support and adjustability to Ankle Foot Orthosis (AFO) devices. This extender panel helps improve the fit and comfort of your AFO brace, making it ideal…",
+      "img": "The Foot & Ankle Extender Panel is designed to provide additional support and adjustability to Ankle Foot Orthosis (AFO) devices. This extender panel helps improve the fit and comfort of your AFO brace, making it ideal f",
+      "summary": "The Foot & Ankle Extender Panel is designed to provide additional support and adjustability to Ankle Foot Orthosis (AFO) devices. This extender panel helps improve the fit and comfort of your AFO brace, making it ideal f",
       "description": "The Foot & Ankle Extender Panel is designed to provide additional support and adjustability to Ankle Foot Orthosis (AFO) devices. This extender panel helps improve the fit and comfort of your AFO brace, making it ideal for users who need extra flexibility and stability. The universal design ensures it fits most wearers, offering customizable support for both foot and ankle orthotics. Lightweight and easy to attach, the extender panel extends the functionality of your orthosis, providing enhanced comfort during daily activities. Whether you're recovering from an injury or require ongoing support, this extender panel helps optimize the performance of your AFO. Key Features Adjustable extender panel for improved foot and ankle support Universal design fits most AFO braces Lightweight and easy to wear Enhances AFO fit and stability for extended use",
       "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Extender_Panel_Main_1b424c07-9c6e-4986-9315-8b99c88f6235.jpg?v=1583167722"
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Extender_Panel_Main_1b424c07-9c6e-4986-9315-8b99c88f6235.jpg?v=1583167722",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Extender_Panel_1_d6b23737-1e60-4a96-a03b-56dcdfcaa23e.jpg?v=1583167730",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/IMG_4751_7cfed06d-e5c2-4a3d-8215-e1229c6be344.jpg?v=1583167732"
       ],
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Extender_Panel_Main_1b424c07-9c6e-4986-9315-8b99c88f6235.jpg?v=1583167722",
       "variants": [
         {
-          "variant_id": "44813746143398",
+          "variant_id": "variant_shopify_303e02575d9b89c59ef7",
           "sku": "AFO71-Panel",
           "title": "One Size / Single Panel",
           "available": true,
-          "weight_grams": 57,
+          "weight_grams": 56.69904625,
           "options": {
             "Size": "One Size",
             "Pack Size": "Single Panel"
@@ -4927,15 +5754,12 @@ export const PUBLIC_CATALOG = {
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Extender_Panel_Main_1b424c07-9c6e-4986-9315-8b99c88f6235.jpg?v=1583167722"
         },
         {
-          "variant_id": "44813746176166",
+          "variant_id": "variant_shopify_962256c2a07acf308e93",
           "sku": "AFO71-Panel-CASE30",
           "title": "One Size / Case of 30 Panels",
           "available": true,
-          "weight_grams": 1701,
-          "options": {
-            "Size": "One Size",
-            "Pack Size": "Case of 30 Panels"
-          },
+          "weight_grams": 1700.9713875,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Extender_Panel_Main_1b424c07-9c6e-4986-9315-8b99c88f6235.jpg?v=1583167722"
         }
       ],
@@ -4943,43 +5767,44 @@ export const PUBLIC_CATALOG = {
         "ankle foot orthosis",
         "orthosis"
       ],
-      "collections": [
-        "Foot & Ankle Braces",
-        "Orthopedic Bracing"
-      ],
+      "collections": [],
       "product_type": "Orthopedic Devices",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
-      "pdac_approved": true,
-      "taa_compliant": true,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
       "berry_compliant": false,
       "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
     },
     {
       "sku": "LSO3148",
       "handle": "lumbar-sacral-orthosis-3",
       "name": "Lumbar Sacral Orthosis Back Brace",
       "category": "Orthotics",
-      "pack_size": "One Size / Single Brace",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "Lumbar Sacral Orthosis Back Brace",
-      "summary": "The Lumbar Sacral Orthosis Back Brace is designed to provide rigid support to the lower back, helping relieve pain and stabilize the lumbar region. Equipped with anterior, posterior, and lateral panels, this brace…",
+      "img": "The Lumbar Sacral Orthosis Back Brace is designed to provide rigid support to the lower back, helping relieve pain and stabilize the lumbar region. Equipped with anterior, posterior, and lateral panels, this brace delive",
+      "summary": "The Lumbar Sacral Orthosis Back Brace is designed to provide rigid support to the lower back, helping relieve pain and stabilize the lumbar region. Equipped with anterior, posterior, and lateral panels, this brace delive",
       "description": "The Lumbar Sacral Orthosis Back Brace is designed to provide rigid support to the lower back, helping relieve pain and stabilize the lumbar region. Equipped with anterior, posterior, and lateral panels, this brace delivers comprehensive lumbar-sacral support for those recovering from injury or managing chronic lower back pain. Its lightweight design and adjustable straps ensure a secure and comfortable fit for daily wear. Key Features Rigid anterior, posterior, and lateral panels for full lumbar-sacral support Lightweight and breathable design for extended comfort Adjustable fit to accommodate most users Ideal for managing lower back pain and supporting post-injury recovery Universal design ensures a personalized fit This brace is Medicare-compliant under HCPCS codes L0631 (Custom Fit) and L0648 (Off-the-Shelf). Download the PDAC Approval Letter for further details.",
       "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/UM_Lumbar_Sacral_Orthosis_Main_LSO3148.jpg?v=1583259621"
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/UM_Lumbar_Sacral_Orthosis_Main_LSO3148.jpg?v=1583259621",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/UM_Lumbar_Sacral_Orthosis_Both_1.jpg?v=1583259667",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/UM_Lumbar_Sacral_Orthosis_Both_2.jpg?v=1583259667",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/UM_Lumbar_Sacral_Orthosis_Both_3.jpg?v=1583259667",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/UM_Lumbar_Sacral_Orthosis_Both_4.jpg?v=1583259689"
       ],
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/UM_Lumbar_Sacral_Orthosis_Main_LSO3148.jpg?v=1583259621",
       "variants": [
         {
-          "variant_id": "44817995333798",
+          "variant_id": "variant_shopify_1487e8e5eaa957c75608",
           "sku": "LSO3148",
           "title": "One Size / Single Brace",
           "available": true,
-          "weight_grams": 680,
+          "weight_grams": 680.388555,
           "options": {
             "Size": "One Size",
             "Pack Size": "Single Brace"
@@ -4987,15 +5812,12 @@ export const PUBLIC_CATALOG = {
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/UM_Lumbar_Sacral_Orthosis_Both_1.jpg?v=1583259667"
         },
         {
-          "variant_id": "44817995366566",
-          "sku": "LSO3148-CASE12",
+          "variant_id": "variant_shopify_a32a02d47e3b15ada22a",
+          "sku": "LSO3148C-12",
           "title": "One Size / Case of 12 Braces",
           "available": true,
-          "weight_grams": 8165,
-          "options": {
-            "Size": "One Size",
-            "Pack Size": "Case of 12 Braces"
-          },
+          "weight_grams": 8164.668329904625,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/UM_Lumbar_Sacral_Orthosis_Both_1.jpg?v=1583259667"
         }
       ],
@@ -5004,43 +5826,44 @@ export const PUBLIC_CATALOG = {
         "orthosis",
         "Product Group 2"
       ],
-      "collections": [
-        "Back Braces",
-        "Orthopedic Bracing"
-      ],
+      "collections": [],
       "product_type": "Orthopedic Devices",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
-      "pdac_approved": true,
-      "taa_compliant": true,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
       "berry_compliant": false,
       "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
     },
     {
       "sku": "LSO3750",
       "handle": "lumbar-sacral-orthosis-2",
       "name": "Lumbar Sacral Back Brace with Rigid Panels",
       "category": "Orthotics",
-      "pack_size": "One Size / One Brace",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "Lumbar Sacral Back Brace with Rigid Panels",
-      "summary": "The Lumbar Sacral Back Brace offers superior support and comfort, making it an ideal choice for those requiring spinal stabilization and relief from lower back pain. With a combination of rigid 14\" anterior and…",
+      "img": "The Lumbar Sacral Back Brace offers superior support and comfort, making it an ideal choice for those requiring spinal stabilization and relief from lower back pain. With a combination of rigid 14\" anterior and posterior",
+      "summary": "The Lumbar Sacral Back Brace offers superior support and comfort, making it an ideal choice for those requiring spinal stabilization and relief from lower back pain. With a combination of rigid 14\" anterior and posterior",
       "description": "The Lumbar Sacral Back Brace offers superior support and comfort, making it an ideal choice for those requiring spinal stabilization and relief from lower back pain. With a combination of rigid 14\" anterior and posterior panels and lateral supports, this lightweight brace ensures optimal stability and restriction of movement while maintaining comfort for extended wear. Key features include: Rigid Panels: 14\" rigid anterior and posterior panels provide targeted support, while the lateral panels add extra stability. Lightweight Design: Made for all-day wear, it’s designed to be breathable and comfortable for various body types. Universal Fit: With a customizable fit, this back brace accommodates most wearers for convenient, versatile use. Optional Hot/Cold Therapy: Available with an optional Hot/Cold gel pack for enhanced pain relief during recovery or injury management. This brace is ideal for post-operative recovery, chronic pain management, and patients in need of long-term lumbar-sacral support. Approved under HCPCS codes L0637 (Custom Fit) and L0650 (Off-the-Shelf) for Medicare reimbursement. PDAC Approval Letter",
       "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/UM_Lumbar_Sacral_Orthosis_Main_LSO3750.jpg?v=1583259739"
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/UM_Lumbar_Sacral_Orthosis_Main_LSO3750.jpg?v=1583259739",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/UM_Lumbar_Sacral_Orthosis_Both_1_65e50f80-c7da-446d-a071-470ce89800f5.jpg?v=1583259741",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/UM_Lumbar_Sacral_Orthosis_Both_2_d7dad28a-c112-4776-a76e-14af7f21b202.jpg?v=1583259756",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/UM_Lumbar_Sacral_Orthosis_Both_3_2c49849c-f906-4470-9164-51044bda0e3a.jpg?v=1583259756",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/UM_Lumbar_Sacral_Orthosis_Both_4_88ec2c56-ae14-4c16-881d-998368fa2fdc.jpg?v=1583259755"
       ],
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/UM_Lumbar_Sacral_Orthosis_Main_LSO3750.jpg?v=1583259739",
       "variants": [
         {
-          "variant_id": "44817998282918",
+          "variant_id": "variant_shopify_a05ad56babdb78cded35",
           "sku": "LSO3750",
           "title": "One Size / One Brace",
           "available": true,
-          "weight_grams": 936,
+          "weight_grams": 935.534263125,
           "options": {
             "Size": "One Size",
             "Pack Size": "One Brace"
@@ -5048,15 +5871,12 @@ export const PUBLIC_CATALOG = {
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/UM_Lumbar_Sacral_Orthosis_Main_LSO3750.jpg?v=1583259739"
         },
         {
-          "variant_id": "44817998315686",
+          "variant_id": "variant_shopify_65433fd569a042cd791b",
           "sku": "LSO3750-CASE12",
           "title": "One Size / Case of 12 Braces",
           "available": true,
-          "weight_grams": 11226,
-          "options": {
-            "Size": "One Size",
-            "Pack Size": "Case of 12 Braces"
-          },
+          "weight_grams": 11226.419662356937,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/UM_Lumbar_Sacral_Orthosis_Main_LSO3750.jpg?v=1583259739"
         }
       ],
@@ -5065,833 +5885,41 @@ export const PUBLIC_CATALOG = {
         "orthosis",
         "Product Group 2"
       ],
-      "collections": [
-        "Back Braces",
-        "Orthopedic Bracing"
-      ],
+      "collections": [],
       "product_type": "Orthopedic Devices",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
-      "pdac_approved": true,
-      "taa_compliant": true,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
       "berry_compliant": false,
       "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
-    },
-    {
-      "sku": "WHO1615-SM",
-      "handle": "wrist-hand-orthosis-1",
-      "name": "Wrist Hand Orthosis",
-      "category": "Orthotics",
-      "pack_size": "Small/Medium / Single Brace",
-      "hcpcs": "—",
-      "moq": 1,
-      "img": "Wrist Hand Orthosis",
-      "summary": "The Wrist Hand Orthosis offers comprehensive support for the wrist and hand, making it ideal for injury recovery, post-surgical rehabilitation, and arthritis management. This orthosis provides stability while allowing…",
-      "description": "The Wrist Hand Orthosis offers comprehensive support for the wrist and hand, making it ideal for injury recovery, post-surgical rehabilitation, and arthritis management. This orthosis provides stability while allowing controlled movement, with adjustable straps to ensure a comfortable and secure fit. Its lightweight design makes it suitable for extended wear, promoting effective recovery and improved function. This brace is perfect for managing wrist and hand injuries, offering dependable support for long-term use. Key Features Adjustable wrist and hand support for injury recovery Stabilizes the wrist and hand while promoting controlled movement Lightweight and durable design for extended wear Adjustable straps for a personalized fit Universal fit suitable for most wearers Moldable aluminum insert for additional custom fitting and added comfort Fully adjustable and locking non-torsion joint Internal form fitting sleeve to help prevent migration and irritation due to migration Medicare-approved under L3915 and L3916, ensuring easy billing for healthcare providers. Download the PDAC Approval Letter for more details.",
-      "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1039_1_1_b4c9db3c-bff7-46b7-afe6-986c71429343.jpg?v=1583510242"
-      ],
-      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1039_1_1_b4c9db3c-bff7-46b7-afe6-986c71429343.jpg?v=1583510242",
-      "variants": [
-        {
-          "variant_id": "31298014838843",
-          "sku": "WHO1615-SM",
-          "title": "Small/Medium / Single Brace",
-          "available": true,
-          "weight_grams": 283,
-          "options": {
-            "Size": "Small/Medium",
-            "Pack Size": "Single Brace"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/LBP_9749_1_-1_548b467c-93bb-4ccd-b88f-66d234ebcbce.jpg?v=1583510244"
-        },
-        {
-          "variant_id": "44818030133414",
-          "sku": "WHO1615-SM-CASE35",
-          "title": "Small/Medium / Case of 35 Braces",
-          "available": true,
-          "weight_grams": 9922,
-          "options": {
-            "Size": "Small/Medium",
-            "Pack Size": "Case of 35 Braces"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/LBP_9749_1_-1_548b467c-93bb-4ccd-b88f-66d234ebcbce.jpg?v=1583510244"
-        },
-        {
-          "variant_id": "31298014871611",
-          "sku": "WHO1615-LXL",
-          "title": "Large/X-Large / Single Brace",
-          "available": true,
-          "weight_grams": 283,
-          "options": {
-            "Size": "Large/X-Large",
-            "Pack Size": "Single Brace"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/LBP_9749_1_-1_548b467c-93bb-4ccd-b88f-66d234ebcbce.jpg?v=1583510244"
-        },
-        {
-          "variant_id": "44818030166182",
-          "sku": "WHO1615-LXL-CASE35",
-          "title": "Large/X-Large / Case of 35 Braces",
-          "available": true,
-          "weight_grams": 9922,
-          "options": {
-            "Size": "Large/X-Large",
-            "Pack Size": "Case of 35 Braces"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/LBP_9749_1_-1_548b467c-93bb-4ccd-b88f-66d234ebcbce.jpg?v=1583510244"
-        }
-      ],
-      "tags": [
-        "orthosis",
-        "Product Group 1",
-        "wrist hand orthosis"
-      ],
-      "collections": [
-        "Wrist Braces",
-        "Orthopedic Bracing"
-      ],
-      "product_type": "Orthopedic Devices",
-      "m6_category": null,
-      "quote_only": false,
-      "fda_registered": true,
-      "pdac_approved": true,
-      "taa_compliant": true,
-      "berry_compliant": false,
-      "mspv_listed": false,
-      "latex_free": false,
-      "country_of_origin": "CN"
-    },
-    {
-      "sku": "SS2397",
-      "handle": "suspension-sleeve-1",
-      "name": "Suspension Sleeve | Knee Brace Support",
-      "category": "Orthotics",
-      "pack_size": "One Size / Single Sleeve",
-      "hcpcs": "—",
-      "moq": 1,
-      "img": "Suspension Sleeve | Knee Brace Support",
-      "summary": "The Suspension Sleeve provides essential support and comfort by keeping your knee brace securely in place. Made from durable, flexible materials, this sleeve prevents your knee brace from slipping during movement…",
-      "description": "The Suspension Sleeve provides essential support and comfort by keeping your knee brace securely in place. Made from durable, flexible materials, this sleeve prevents your knee brace from slipping during movement, offering added stability and comfort. Ideal for use with knee braces and orthotics, the suspension sleeve is perfect for individuals recovering from knee injuries or managing chronic knee conditions. Key Features Prevents knee brace from slipping during movement Provides enhanced stability and comfort Made from durable, flexible materials for long-term use Lightweight and breathable design for extended wear Ideal for use with knee braces and orthotics Medicare billing available under HCPCS Code L2397 Medicare billing is available under HCPCS Code L2397 ,with PDAC Approval Letter making this suspension sleeve a practical solution for those seeking enhanced knee brace support.",
-      "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/IMG_5184_de28f91f-7367-4b17-9f4b-0ac862a3590c.jpg?v=1583260116"
-      ],
-      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/IMG_5184_de28f91f-7367-4b17-9f4b-0ac862a3590c.jpg?v=1583260116",
-      "variants": [
-        {
-          "variant_id": "44811379310758",
-          "sku": "SS2397",
-          "title": "One Size / Single Sleeve",
-          "available": true,
-          "weight_grams": 85,
-          "options": {
-            "Size": "One Size",
-            "Pack Size": "Single Sleeve"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/IMG_5180_fd993f81-4f51-47a1-9684-5df3d74105f3.jpg?v=1583260122"
-        },
-        {
-          "variant_id": "44811379343526",
-          "sku": "SS2397-CASE150",
-          "title": "One Size / Case of 150 Sleeves",
-          "available": true,
-          "weight_grams": 12757,
-          "options": {
-            "Size": "One Size",
-            "Pack Size": "Case of 150 Sleeves"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/IMG_5180_fd993f81-4f51-47a1-9684-5df3d74105f3.jpg?v=1583260122"
-        }
-      ],
-      "tags": [
-        "Knee Brace",
-        "orthosis",
-        "Product Group 3"
-      ],
-      "collections": [
-        "Knee Braces",
-        "Orthopedic Bracing"
-      ],
-      "product_type": "Orthopedic Devices",
-      "m6_category": null,
-      "quote_only": false,
-      "fda_registered": true,
-      "pdac_approved": true,
-      "taa_compliant": true,
-      "berry_compliant": false,
-      "mspv_listed": false,
-      "latex_free": false,
-      "country_of_origin": "CN"
-    },
-    {
-      "sku": "KO4351L",
-      "handle": "single-upright-knee-orthosis-1",
-      "name": "Single Upright Knee Orthosis",
-      "category": "Orthotics",
-      "pack_size": "One Size / Left - Single Brace",
-      "hcpcs": "—",
-      "moq": 1,
-      "img": "Single Upright Knee Orthosis",
-      "summary": "The Single Upright Knee Orthosis provides reliable hinged support and knee stabilization, designed for individuals recovering from knee injuries or post-surgery rehabilitation. This knee brace offers controlled…",
-      "description": "The Single Upright Knee Orthosis provides reliable hinged support and knee stabilization, designed for individuals recovering from knee injuries or post-surgery rehabilitation. This knee brace offers controlled movement, promoting stability and protecting the joint during recovery. Its lightweight construction and adjustable straps ensure a comfortable and secure fit, perfect for extended wear throughout the rehabilitation process. Ideal for ACL recovery, arthritis management, and post-operative care, this orthosis delivers dependable support to help improve mobility and function. Key Features Hinged knee support for controlled movement and stabilization Single upright design for targeted knee stability Adjustable straps for a personalized fit Ideal for ACL recovery and post-surgical rehabilitation Lightweight and durable for extended wear Adjustable polycentric hinge for flexion & extension joint Medial, lateral & rotational adjustments combined with varus / valgus control Anti-slip pads for added comfort and extended wear Universal in size to accommodate most wearers (Left/Right) Sequence numbered straps for application assistance Medicare-approved under L1843 & L1851, making billing simple for healthcare providers. Download the PDAC Approval Letter for more details.",
-      "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Single_Upright_Knee_Main_7b6490c6-a4b7-47fa-bfec-6889b9cf3f4c.jpg?v=1583260020"
-      ],
-      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Single_Upright_Knee_Main_7b6490c6-a4b7-47fa-bfec-6889b9cf3f4c.jpg?v=1583260020",
-      "variants": [
-        {
-          "variant_id": "31297776549947",
-          "sku": "KO4351L",
-          "title": "One Size / Left - Single Brace",
-          "available": true,
-          "weight_grams": 624,
-          "options": {
-            "Size": "One Size",
-            "Pack Size": "Left - Single Brace"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Single_Upright_Knee_4_5c1fc1b7-def3-4858-a938-2902ccde6ae2.jpg?v=1583260029"
-        },
-        {
-          "variant_id": "31297776582715",
-          "sku": "KO4351R",
-          "title": "One Size / Right - Single Brace",
-          "available": true,
-          "weight_grams": 624,
-          "options": {
-            "Size": "One Size",
-            "Pack Size": "Right - Single Brace"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Single_Upright_Knee_3_7ab8ffcd-a6cd-474e-82cf-942397cd2035.jpg?v=1583260026"
-        },
-        {
-          "variant_id": "44810882351270",
-          "sku": "KO4351L-CASE10",
-          "title": "One Size / Left - Case of 10 Braces",
-          "available": true,
-          "weight_grams": 6237,
-          "options": {
-            "Size": "One Size",
-            "Pack Size": "Left - Case of 10 Braces"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Single_Upright_Knee_4_5c1fc1b7-def3-4858-a938-2902ccde6ae2.jpg?v=1583260029"
-        },
-        {
-          "variant_id": "44810882384038",
-          "sku": "KO4351R-CASE10",
-          "title": "One Size / Right - Case of 10 Braces",
-          "available": true,
-          "weight_grams": 6237,
-          "options": {
-            "Size": "One Size",
-            "Pack Size": "Right - Case of 10 Braces"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Single_Upright_Knee_3_7ab8ffcd-a6cd-474e-82cf-942397cd2035.jpg?v=1583260026"
-        }
-      ],
-      "tags": [
-        "Knee Brace",
-        "orthosis"
-      ],
-      "collections": [
-        "Knee Braces",
-        "Orthopedic Bracing"
-      ],
-      "product_type": "Orthopedic Devices",
-      "m6_category": null,
-      "quote_only": false,
-      "fda_registered": true,
-      "pdac_approved": true,
-      "taa_compliant": true,
-      "berry_compliant": false,
-      "mspv_listed": false,
-      "latex_free": false,
-      "country_of_origin": "CN"
-    },
-    {
-      "sku": "KO3233-1",
-      "handle": "deluxe-universal-rom-knee-brace-1",
-      "name": "Deluxe Universal ROM Knee Brace",
-      "category": "Orthotics",
-      "pack_size": "One Size / Single Brace",
-      "hcpcs": "—",
-      "moq": 1,
-      "img": "Deluxe Universal ROM Knee Brace",
-      "summary": "The Deluxe Universal ROM Knee Brace offers adjustable range of motion (ROM) and hinged support, ideal for post-surgical recovery and knee injury rehabilitation. Designed to promote controlled knee movement, this brace…",
-      "description": "The Deluxe Universal ROM Knee Brace offers adjustable range of motion (ROM) and hinged support, ideal for post-surgical recovery and knee injury rehabilitation. Designed to promote controlled knee movement, this brace provides customizable flexion and extension, ensuring joint protection during recovery. Its lightweight design and adjustable straps ensure a secure and comfortable fit, making it perfect for long-term wear. This knee brace is an excellent solution for ACL recovery, arthritis management, and general knee stabilization, helping to improve mobility during the rehabilitation process. Key Features Adjustable range of motion (ROM) for controlled knee movement Hinged support for enhanced stability during recovery Lightweight and durable for extended wear Adjustable straps for a secure, personalized fit Universal fit suitable for most wearers Medicare-approved under L1832 and L1833, ensuring easy billing for healthcare providers. Download the PDAC Approval Letter for more information.",
-      "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/3B7A7961_dfbff583-1769-4c4f-b9c6-815fc529594d.jpg?v=1583259471"
-      ],
-      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/3B7A7961_dfbff583-1769-4c4f-b9c6-815fc529594d.jpg?v=1583259471",
-      "variants": [
-        {
-          "variant_id": "44811311513766",
-          "sku": "KO3233-1",
-          "title": "One Size / Single Brace",
-          "available": true,
-          "weight_grams": 454,
-          "options": {
-            "Size": "One Size",
-            "Pack Size": "Single Brace"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/3B7A7961_dfbff583-1769-4c4f-b9c6-815fc529594d.jpg?v=1583259471"
-        },
-        {
-          "variant_id": "44811311546534",
-          "sku": "KO3233-1-CASE30",
-          "title": "One Size / Case of 30 Braces",
-          "available": true,
-          "weight_grams": 13608,
-          "options": {
-            "Size": "One Size",
-            "Pack Size": "Case of 30 Braces"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/3B7A7961_dfbff583-1769-4c4f-b9c6-815fc529594d.jpg?v=1583259471"
-        }
-      ],
-      "tags": [
-        "Knee Brace",
-        "orthosis",
-        "Product Group 1"
-      ],
-      "collections": [
-        "Knee Braces",
-        "Orthopedic Bracing"
-      ],
-      "product_type": "Orthopedic Devices",
-      "m6_category": null,
-      "quote_only": false,
-      "fda_registered": true,
-      "pdac_approved": true,
-      "taa_compliant": true,
-      "berry_compliant": false,
-      "mspv_listed": false,
-      "latex_free": false,
-      "country_of_origin": "CN"
-    },
-    {
-      "sku": "KO3233",
-      "handle": "universal-rom-knee-brace",
-      "name": "Universal ROM Knee Brace",
-      "category": "Orthotics",
-      "pack_size": "One Size / Single Brace",
-      "hcpcs": "—",
-      "moq": 1,
-      "img": "Universal ROM Knee Brace",
-      "summary": "The Universal ROM Knee Brace provides adjustable range of motion (ROM) and hinged support, making it ideal for post-surgical recovery and knee injury rehabilitation. This brace allows for precise control of knee…",
-      "description": "The Universal ROM Knee Brace provides adjustable range of motion (ROM) and hinged support, making it ideal for post-surgical recovery and knee injury rehabilitation. This brace allows for precise control of knee flexion and extension, helping to stabilize the joint and protect it during recovery. Its universal design and adjustable straps offer a secure and comfortable fit for most wearers. This brace is perfect for ACL recovery, arthritis management, and general knee stabilization. The lightweight and durable design ensures it can be worn comfortably throughout the rehabilitation process. Key Features Adjustable range of motion (ROM) for controlled knee movement Hinged support for enhanced stability during recovery Lightweight and durable for extended wear Adjustable straps for a personalized fit Universal fit for most wearers Medicare-approved under L1832 and L1833, making billing easy for healthcare providers. Download the PDAC Approval Letter for more details.",
-      "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Universal_ROM_Knee_Main_39b3924e-26e9-41ca-a88e-2fbe5aa0425e.jpg?v=1583260216"
-      ],
-      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Universal_ROM_Knee_Main_39b3924e-26e9-41ca-a88e-2fbe5aa0425e.jpg?v=1583260216",
-      "variants": [
-        {
-          "variant_id": "44795828273318",
-          "sku": "KO3233",
-          "title": "One Size / Single Brace",
-          "available": true,
-          "weight_grams": 454,
-          "options": {
-            "Size": "One Size",
-            "Pack Size": "Single Brace"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Universal_ROM_Knee_2_1e080d3b-20fd-42d5-86c0-8ae55c225067.jpg?v=1583260220"
-        },
-        {
-          "variant_id": "44811382554790",
-          "sku": "KO3233-CASE30",
-          "title": "One Size / Case of 30 Braces",
-          "available": true,
-          "weight_grams": 13608,
-          "options": {
-            "Size": "One Size",
-            "Pack Size": "Case of 30 Braces"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Universal_ROM_Knee_2_1e080d3b-20fd-42d5-86c0-8ae55c225067.jpg?v=1583260220"
-        }
-      ],
-      "tags": [
-        "Knee Brace",
-        "orthosis",
-        "Product Group 1"
-      ],
-      "collections": [
-        "Knee Braces",
-        "Orthopedic Bracing"
-      ],
-      "product_type": "Orthopedic Devices",
-      "m6_category": null,
-      "quote_only": false,
-      "fda_registered": true,
-      "pdac_approved": true,
-      "taa_compliant": true,
-      "berry_compliant": false,
-      "mspv_listed": false,
-      "latex_free": false,
-      "country_of_origin": "CN"
-    },
-    {
-      "sku": "Cryo3670",
-      "handle": "cryo-pneumatic-shoulder",
-      "name": "Cryo Pneumatic Shoulder Brace",
-      "category": "Orthotics",
-      "pack_size": "One Size / Single Brace",
-      "hcpcs": "—",
-      "moq": 1,
-      "img": "Cryo Pneumatic Shoulder Brace",
-      "summary": "The Cryo Pneumatic Shoulder Brace offers advanced cold therapy and compression, designed to relieve shoulder pain and aid in recovery. Ideal for post-surgical care, rotator cuff injuries, or shoulder strain, this brace…",
-      "description": "The Cryo Pneumatic Shoulder Brace offers advanced cold therapy and compression, designed to relieve shoulder pain and aid in recovery. Ideal for post-surgical care, rotator cuff injuries, or shoulder strain, this brace combines the benefits of pneumatic compression with cold therapy to reduce swelling and discomfort. Its universal design fits most wearers, and the brace can be easily adjusted for personalized comfort. Perfect for reducing shoulder inflammation and providing targeted support, the Cryo Pneumatic Shoulder Brace is lightweight and comfortable for extended wear, ensuring that patients can continue their recovery without restrictions. Key Features Provides cold therapy and pneumatic compression for shoulder pain relief Ideal for rotator cuff injuries and post-surgery recovery Universal fit with adjustable straps for personalized comfort Lightweight and comfortable for all-day wear Medicare-approved under L3670 and L3960, making it easy for healthcare providers to handle billing. Download the PDAC Approval Letter for more information.",
-      "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1137.jpg?v=1583259398"
-      ],
-      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1137.jpg?v=1583259398",
-      "variants": [
-        {
-          "variant_id": "44818007785638",
-          "sku": "Cryo3670",
-          "title": "One Size / Single Brace",
-          "available": true,
-          "weight_grams": 680,
-          "options": {
-            "Size": "One Size",
-            "Pack Size": "Single Brace"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1137.jpg?v=1583259398"
-        },
-        {
-          "variant_id": "44818007818406",
-          "sku": "Cryo3670-CASE20",
-          "title": "One Size / Case of 20 Braces",
-          "available": true,
-          "weight_grams": 13608,
-          "options": {
-            "Size": "One Size",
-            "Pack Size": "Case of 20 Braces"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1137.jpg?v=1583259398"
-        }
-      ],
-      "tags": [
-        "orthosis",
-        "Shoulder Brace"
-      ],
-      "collections": [
-        "Shoulder & Elbow Braces",
-        "Orthopedic Bracing"
-      ],
-      "product_type": "Orthopedic Devices",
-      "m6_category": null,
-      "quote_only": false,
-      "fda_registered": true,
-      "pdac_approved": true,
-      "taa_compliant": true,
-      "berry_compliant": false,
-      "mspv_listed": false,
-      "latex_free": false,
-      "country_of_origin": "CN"
-    },
-    {
-      "sku": "Cryo3233",
-      "handle": "cryo-pneumatic-rom-knee-brace",
-      "name": "Cryo Pneumatic ROM Knee Brace",
-      "category": "Orthotics",
-      "pack_size": "One Size / Single Brace",
-      "hcpcs": "—",
-      "moq": 1,
-      "img": "Cryo Pneumatic ROM Knee Brace",
-      "summary": "The Cryo Pneumatic ROM Knee Brace combines cold therapy with adjustable range of motion (ROM) support to provide effective relief for knee pain and injury recovery. Designed for post-surgical care, ACL recovery, or…",
-      "description": "The Cryo Pneumatic ROM Knee Brace combines cold therapy with adjustable range of motion (ROM) support to provide effective relief for knee pain and injury recovery. Designed for post-surgical care, ACL recovery, or arthritis management, this brace offers pneumatic compression and cold therapy to reduce swelling and discomfort while maintaining knee stabilization. The range of motion feature allows for controlled knee movement, helping patients recover faster with better flexibility. Its universal design ensures a comfortable fit for most wearers, and adjustable settings allow for personalized therapy and support. Lightweight and easy to wear, this knee brace is ideal for extended use during recovery or daily activity. Key Features Combines cold therapy with pneumatic compression for knee pain relief Adjustable range of motion (ROM) support for controlled movement Ideal for ACL recovery, post-surgical care, and arthritis management Universal fit and adjustable straps for personalized comfort Lightweight design for extended wear Medicare-approved under L1833 and L1845, simplifying billing for healthcare providers. Download the PDAC Approval Letter for more details.",
-      "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1148.jpg?v=1583259361"
-      ],
-      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1148.jpg?v=1583259361",
-      "variants": [
-        {
-          "variant_id": "44811305615526",
-          "sku": "Cryo3233",
-          "title": "One Size / Single Brace",
-          "available": true,
-          "weight_grams": 850,
-          "options": {
-            "Size": "One Size",
-            "Pack Size": "Single Brace"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1160.jpg?v=1583259377"
-        },
-        {
-          "variant_id": "44811305648294",
-          "sku": "Cryo3233-CASE20",
-          "title": "One Size / Case of 20 Braces",
-          "available": true,
-          "weight_grams": 17010,
-          "options": {
-            "Size": "One Size",
-            "Pack Size": "Case of 20 Braces"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1160.jpg?v=1583259377"
-        }
-      ],
-      "tags": [
-        "Knee Brace",
-        "orthosis",
-        "Product Group 5"
-      ],
-      "collections": [
-        "Knee Braces",
-        "Orthopedic Bracing"
-      ],
-      "product_type": "Orthopedic Devices",
-      "m6_category": null,
-      "quote_only": false,
-      "fda_registered": true,
-      "pdac_approved": true,
-      "taa_compliant": true,
-      "berry_compliant": false,
-      "mspv_listed": false,
-      "latex_free": false,
-      "country_of_origin": "CN"
-    },
-    {
-      "sku": "CryoAnkle",
-      "handle": "cryo-pneumatic-ankle-brace",
-      "name": "Cryo Pneumatic Ankle Brace",
-      "category": "Orthotics",
-      "pack_size": "One Size / Single Brace",
-      "hcpcs": "—",
-      "moq": 1,
-      "img": "Cryo Pneumatic Ankle Brace",
-      "summary": "The Cryo Pneumatic Ankle Compression Cold Therapy Brace offers advanced cold therapy combined with pneumatic compression to relieve ankle pain, reduce swelling, and accelerate recovery. This brace is ideal for managing…",
-      "description": "The Cryo Pneumatic Ankle Compression Cold Therapy Brace offers advanced cold therapy combined with pneumatic compression to relieve ankle pain, reduce swelling, and accelerate recovery. This brace is ideal for managing Achilles tendonitis, ankle strains, or post-surgical care, offering targeted compression and cold therapy for maximum relief. Designed for comfort, the brace features a universal fit with adjustable straps to accommodate most wearers. Lightweight and easy to wear, this brace is perfect for use throughout the day to aid in ankle stabilization and pain management. Key Features Combines cold therapy with pneumatic compression for ankle pain relief Ideal for Achilles tendonitis, ankle strains, and post-surgical recovery Universal fit with adjustable straps for personalized comfort Lightweight design for extended wear Medicare-approved under A4467 (custom fit) and A9273 (off-the-shelf), making billing easy for healthcare providers. Download the PDAC Approval Letter for more details.",
-      "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1142-2.jpg?v=1583259303"
-      ],
-      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1142-2.jpg?v=1583259303",
-      "variants": [
-        {
-          "variant_id": "44814036893862",
-          "sku": "CryoAnkle",
-          "title": "One Size / Single Brace",
-          "available": true,
-          "weight_grams": 454,
-          "options": {
-            "Size": "One Size",
-            "Pack Size": "Single Brace"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1142-2.jpg?v=1583259303"
-        },
-        {
-          "variant_id": "44814036926630",
-          "sku": "CryoAnkle-CASE30",
-          "title": "One Size / Case of 30 Braces",
-          "available": true,
-          "weight_grams": 13608,
-          "options": {
-            "Size": "One Size",
-            "Pack Size": "Case of 30 Braces"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1142-2.jpg?v=1583259303"
-        }
-      ],
-      "tags": [
-        "ankle foot orthosis",
-        "orthosis",
-        "Product Group 1"
-      ],
-      "collections": [
-        "Foot & Ankle Braces",
-        "Orthopedic Bracing"
-      ],
-      "product_type": "Orthopedic Devices",
-      "m6_category": null,
-      "quote_only": false,
-      "fda_registered": true,
-      "pdac_approved": true,
-      "taa_compliant": true,
-      "berry_compliant": false,
-      "mspv_listed": false,
-      "latex_free": false,
-      "country_of_origin": "CN"
-    },
-    {
-      "sku": "CC180",
-      "handle": "cervical-collar",
-      "name": "Cervical Orthosis Neck Support Collar",
-      "category": "Orthotics",
-      "pack_size": "One Size / Single Collar",
-      "hcpcs": "—",
-      "moq": 1,
-      "img": "Cervical Orthosis Neck Support Collar",
-      "summary": "The Cervical Orthosis Neck Support Collar offers reliable neck stabilization and support for individuals recovering from injury or managing cervical conditions. Designed for maximum comfort, this lightweight…",
-      "description": "The Cervical Orthosis Neck Support Collar offers reliable neck stabilization and support for individuals recovering from injury or managing cervical conditions. Designed for maximum comfort, this lightweight, adjustable collar provides necessary immobilization while allowing for a secure, personalized fit. It helps reduce pain and pressure on the cervical spine, making it ideal for recovery and daily wear. Key Features: Lightweight and breathable design for extended comfort Adjustable dual-post anterior mount for flexion and extension adjustments Universal design fits most wearers Ideal for cervical spine immobilization, whiplash, arthritis, and more This cervical collar is HCPCS off the shelf code L0180, ensuring Medicare billing coverage for eligible patients. Download the PDAC Approval Letter for further details.",
-      "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/neck4.jpg?v=1607356344"
-      ],
-      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/neck4.jpg?v=1607356344",
-      "variants": [
-        {
-          "variant_id": "44818000609446",
-          "sku": "CC180",
-          "title": "One Size / Single Collar",
-          "available": true,
-          "weight_grams": 680,
-          "options": {
-            "Size": "One Size",
-            "Pack Size": "Single Collar"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/neck4.jpg?v=1607356344"
-        },
-        {
-          "variant_id": "44818000642214",
-          "sku": "CC180-CASE10",
-          "title": "One Size / Case of 10 Collars",
-          "available": true,
-          "weight_grams": 6804,
-          "options": {
-            "Size": "One Size",
-            "Pack Size": "Case of 10 Collars"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/neck4.jpg?v=1607356344"
-        }
-      ],
-      "tags": [
-        "Cervical Collar",
-        "orthosis",
-        "Product Group 2"
-      ],
-      "collections": [
-        "Cervical Braces",
-        "Orthopedic Bracing"
-      ],
-      "product_type": "Cervical Collar",
-      "m6_category": null,
-      "quote_only": false,
-      "fda_registered": true,
-      "pdac_approved": true,
-      "taa_compliant": true,
-      "berry_compliant": false,
-      "mspv_listed": false,
-      "latex_free": false,
-      "country_of_origin": "CN"
-    },
-    {
-      "sku": "HO1690",
-      "handle": "bilateral-hip-orthosis",
-      "name": "Bilateral Hip Orthosis",
-      "category": "Orthotics",
-      "pack_size": "One Size / Single Brace",
-      "hcpcs": "—",
-      "moq": 1,
-      "img": "Bilateral Hip Orthosis",
-      "summary": "The Bilateral Hip Orthosis provides essential stabilization and pain relief for patients recovering from hip surgeries or injuries. Designed for post-operative care, this brace ensures proper alignment and support…",
-      "description": "The Bilateral Hip Orthosis provides essential stabilization and pain relief for patients recovering from hip surgeries or injuries. Designed for post-operative care, this brace ensures proper alignment and support, reducing strain on the hips. The universal design offers a comfortable, adjustable fit for most wearers. Lightweight yet durable, this hip brace stabilizer helps patients regain mobility while managing chronic hip pain. Whether for post-surgical recovery or ongoing pain management, this orthosis offers continuous support for improved mobility and comfort. Key Features Provides bilateral hip stabilization and pain relief Adjustable, universal design for most wearers Lightweight and comfortable for extended wear Ideal for post-surgery recovery and hip injury rehabilitation Multi-setting adjustments of: flexion, extension, adduction, abduction Optional Hot/Cold gel pack available Medicare-approved and covered under L1686, this orthosis simplifies billing for healthcare providers. Download the PDAC Approval Letter for more details.",
-      "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/HB166D_Bilateral_Hip_1.jpg?v=1583258350"
-      ],
-      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/HB166D_Bilateral_Hip_1.jpg?v=1583258350",
-      "variants": [
-        {
-          "variant_id": "44818001952934",
-          "sku": "HO1690",
-          "title": "One Size / Single Brace",
-          "available": true,
-          "weight_grams": 680,
-          "options": {
-            "Size": "One Size",
-            "Pack Size": "Single Brace"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1127.jpg?v=1583258364"
-        },
-        {
-          "variant_id": "46498943729830",
-          "sku": "HO1690-CASE5",
-          "title": "One Size / Case of 5 Braces",
-          "available": true,
-          "weight_grams": 3402,
-          "options": {
-            "Size": "One Size",
-            "Pack Size": "Case of 5 Braces"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1127.jpg?v=1583258364"
-        },
-        {
-          "variant_id": "44818001985702",
-          "sku": "HO1690-CASE10",
-          "title": "One Size / Case of 10 Braces",
-          "available": true,
-          "weight_grams": 6804,
-          "options": {
-            "Size": "One Size",
-            "Pack Size": "Case of 10 Braces"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1127.jpg?v=1583258364"
-        }
-      ],
-      "tags": [
-        "Hip Brace",
-        "orthosis",
-        "Product Group 2"
-      ],
-      "collections": [
-        "Hip Braces",
-        "Orthopedic Bracing"
-      ],
-      "product_type": "Orthopedic Devices",
-      "m6_category": null,
-      "quote_only": false,
-      "fda_registered": true,
-      "pdac_approved": true,
-      "taa_compliant": true,
-      "berry_compliant": false,
-      "mspv_listed": false,
-      "latex_free": false,
-      "country_of_origin": "CN"
-    },
-    {
-      "sku": "CryoElbow",
-      "handle": "cryo-pneumatic-elbow-brace",
-      "name": "Cryo Pneumatic Elbow Brace",
-      "category": "Orthotics",
-      "pack_size": "One Size / Single Brace",
-      "hcpcs": "—",
-      "moq": 1,
-      "img": "Cryo Pneumatic Elbow Brace",
-      "summary": "The Cryo Pneumatic Elbow Brace combines compression and cold therapy to reduce swelling and pain in the elbow. Designed for post-operative care or injury recovery, this elbow brace delivers targeted cold therapy to…",
-      "description": "The Cryo Pneumatic Elbow Brace combines compression and cold therapy to reduce swelling and pain in the elbow. Designed for post-operative care or injury recovery, this elbow brace delivers targeted cold therapy to help reduce muscle spasms and inflammation. The universal design ensures a secure fit for most wearers, making it ideal for both medical professionals and personal use. Key Features Combines compression and cold therapy for optimal relief Reduces swelling, inflammation, and muscle spasms Universal design for a secure and comfortable fit Adjustable straps for personalized compression Lightweight and durable for long-term use Ideal for injury recovery and post-operative care Medicare billing available under L-Code A9273 Hot/cold gel pack for additional pain relief Removable gel pack for customized therapy Form fitting design for maximum comfort and wear ability Medicare billing is available under L-Code A9273 for off-the-shelf use, with PDAC Approval Letter",
-      "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1142-2_9524b9ef-0ba1-40cf-967f-9d28435dab60.jpg?v=1583259325"
-      ],
-      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1142-2_9524b9ef-0ba1-40cf-967f-9d28435dab60.jpg?v=1583259325",
-      "variants": [
-        {
-          "variant_id": "44818006343846",
-          "sku": "CryoElbow",
-          "title": "One Size / Single Brace",
-          "available": true,
-          "weight_grams": 454,
-          "options": {
-            "Size": "One Size",
-            "Pack Size": "Single Brace"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1170E_1521321b-27e8-490b-b364-2aed4df9e910.jpg?v=1583259328"
-        },
-        {
-          "variant_id": "44818006376614",
-          "sku": "CryoElbow-CASE30",
-          "title": "One Size / Case of 30 Braces",
-          "available": false,
-          "weight_grams": 13608,
-          "options": {
-            "Size": "One Size",
-            "Pack Size": "Case of 30 Braces"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1170E_1521321b-27e8-490b-b364-2aed4df9e910.jpg?v=1583259328"
-        }
-      ],
-      "tags": [
-        "Elbow Brace",
-        "orthosis",
-        "Product Group 1"
-      ],
-      "collections": [
-        "Shoulder & Elbow Braces",
-        "Orthopedic Bracing"
-      ],
-      "product_type": "Orthopedic Devices",
-      "m6_category": null,
-      "quote_only": false,
-      "fda_registered": true,
-      "pdac_approved": true,
-      "taa_compliant": true,
-      "berry_compliant": false,
-      "mspv_listed": false,
-      "latex_free": false,
-      "country_of_origin": "CN"
-    },
-    {
-      "sku": "HO1686",
-      "handle": "hip-orthosis",
-      "name": "Hip Orthosis",
-      "category": "Orthotics",
-      "pack_size": "One Size / Single Brace",
-      "hcpcs": "—",
-      "moq": 1,
-      "img": "Hip Orthosis",
-      "summary": "The Hip Orthosis is designed to provide superior stabilization and support for patients recovering from hip surgery or managing hip injuries. This brace is ideal for reducing pain and maintaining proper alignment…",
-      "description": "The Hip Orthosis is designed to provide superior stabilization and support for patients recovering from hip surgery or managing hip injuries. This brace is ideal for reducing pain and maintaining proper alignment during recovery. With its universal fit, the Hip Orthosis ensures a comfortable and adjustable experience for most wearers, offering effective support during daily activities or post-operative care. Whether you're recovering from surgery or managing chronic hip pain, this lightweight orthosis is built for extended wear, promoting healing and improving mobility. Key Features: Provides hip stabilization and pain relief Ideal for post-surgery recovery and injury management Universal fit with adjustable straps for personalized comfort Lightweight and durable for extended use Medicare-approved under L1686 and A9272, making billing and reimbursement straightforward for healthcare providers. Download the PDAC Approval Letter for more details.",
-      "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/HB165S_-_Hip_Orthosis_1.jpg?v=1583259590"
-      ],
-      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/HB165S_-_Hip_Orthosis_1.jpg?v=1583259590",
-      "variants": [
-        {
-          "variant_id": "44818002280614",
-          "sku": "HO1686",
-          "title": "One Size / Single Brace",
-          "available": true,
-          "weight_grams": 680,
-          "options": {
-            "Size": "One Size",
-            "Pack Size": "Single Brace"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1123.jpg?v=1583259599"
-        },
-        {
-          "variant_id": "44818002313382",
-          "sku": "HO1686-CASE8",
-          "title": "One Size / Case of 8 Braces",
-          "available": true,
-          "weight_grams": 5443,
-          "options": {
-            "Size": "One Size",
-            "Pack Size": "Case of 8 Braces"
-          },
-          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1123.jpg?v=1583259599"
-        }
-      ],
-      "tags": [
-        "Hip Brace",
-        "orthosis",
-        "Product Group 2"
-      ],
-      "collections": [
-        "Hip Braces",
-        "Orthopedic Bracing"
-      ],
-      "product_type": "Orthopedic Devices",
-      "m6_category": null,
-      "quote_only": false,
-      "fda_registered": true,
-      "pdac_approved": true,
-      "taa_compliant": true,
-      "berry_compliant": false,
-      "mspv_listed": false,
-      "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
     },
     {
       "sku": "WHFO0709L",
       "handle": "wrist-hand-finger-orthosis",
       "name": "Wrist Hand Finger Orthosis",
       "category": "Orthotics",
-      "pack_size": "Left / Single Brace",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "Wrist Hand Finger Orthosis",
-      "summary": "The Wrist Hand Finger Orthosis is designed to provide comprehensive support for the wrist, hand, and fingers. This brace helps stabilize the wrist and fingers, making it ideal for injury recovery, arthritis management…",
+      "img": "The Wrist Hand Finger Orthosis is designed to provide comprehensive support for the wrist, hand, and fingers. This brace helps stabilize the wrist and fingers, making it ideal for injury recovery, arthritis management, o",
+      "summary": "The Wrist Hand Finger Orthosis is designed to provide comprehensive support for the wrist, hand, and fingers. This brace helps stabilize the wrist and fingers, making it ideal for injury recovery, arthritis management, o",
       "description": "The Wrist Hand Finger Orthosis is designed to provide comprehensive support for the wrist, hand, and fingers. This brace helps stabilize the wrist and fingers, making it ideal for injury recovery, arthritis management, or post-surgical rehabilitation. Its adjustable straps ensure a secure and comfortable fit for most wearers, allowing for personalized support during recovery. Lightweight and durable, the Wrist Hand Finger Orthosis delivers effective stabilization and is suitable for extended use throughout the day. Key Features Adjustable wrist, hand, and finger support for injury recovery Provides stabilization for post-surgery rehabilitation Lightweight and durable design for extended wear Adjustable straps for a secure and personalized fit Universal fit suitable for most wearers Durable wrist, hand, & metal stay providing rigid static support Universal design to fit most wearers (Left/Right) Speed-lace design allows for easy application Medicare-approved under L3807 and L3809, making billing simple for healthcare providers. Download the PDAC Approval Letter for more details.",
       "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/LBP_2522.jpg?v=1583260265"
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/LBP_2522.jpg?v=1583260265",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/LBP_2521.jpg?v=1583260266"
       ],
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/LBP_2522.jpg?v=1583260265",
       "variants": [
         {
-          "variant_id": "31298352119867",
+          "variant_id": "variant_shopify_8fe4da7d52e446d19402",
           "sku": "WHFO0709L",
           "title": "Left / Single Brace",
           "available": true,
-          "weight_grams": 99,
+          "weight_grams": 99.2233309375,
           "options": {
             "Side": "Left",
             "Pack Size": "Single Brace"
@@ -5899,39 +5927,30 @@ export const PUBLIC_CATALOG = {
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/LBP_2522.jpg?v=1583260265"
         },
         {
-          "variant_id": "44818022498470",
-          "sku": "WHFO0709L-CASE100",
+          "variant_id": "variant_shopify_9a5d54892b92fccec883",
+          "sku": "WHFO0709L-C100",
           "title": "Left / Case of 100 Braces",
           "available": true,
-          "weight_grams": 9922,
-          "options": {
-            "Side": "Left",
-            "Pack Size": "Case of 100 Braces"
-          },
+          "weight_grams": 9922.338763654625,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/LBP_2522.jpg?v=1583260265"
         },
         {
-          "variant_id": "31298352152635",
+          "variant_id": "variant_shopify_84f539bd632d5d471d26",
           "sku": "WHFO0709R",
           "title": "Right / Single Brace",
           "available": true,
-          "weight_grams": 99,
-          "options": {
-            "Side": "Right",
-            "Pack Size": "Single Brace"
-          },
+          "weight_grams": 99.2233309375,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/LBP_2522.jpg?v=1583260265"
         },
         {
-          "variant_id": "44818022531238",
-          "sku": "WHFO0709R-CASE100",
+          "variant_id": "variant_shopify_e7b3733530666b7e6df0",
+          "sku": "WHFO0709R-C100",
           "title": "Right / Case of 100 Braces",
           "available": true,
-          "weight_grams": 9922,
-          "options": {
-            "Side": "Right",
-            "Pack Size": "Case of 100 Braces"
-          },
+          "weight_grams": 9922.338763654625,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/LBP_2522.jpg?v=1583260265"
         }
       ],
@@ -5940,43 +5959,454 @@ export const PUBLIC_CATALOG = {
         "Product Group 6",
         "wrist hand orthosis"
       ],
-      "collections": [
-        "Wrist Braces",
-        "Orthopedic Bracing"
-      ],
+      "collections": [],
       "product_type": "Orthopedic Devices",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
-      "pdac_approved": true,
-      "taa_compliant": true,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
       "berry_compliant": false,
       "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
+    },
+    {
+      "sku": "HO1690",
+      "handle": "bilateral-hip-orthosis",
+      "name": "Bilateral Hip Orthosis",
+      "category": "Orthotics",
+      "pack_size": "1 ea",
+      "hcpcs": "—",
+      "moq": 1,
+      "img": "The Bilateral Hip Orthosis provides essential stabilization and pain relief for patients recovering from hip surgeries or injuries. Designed for post-operative care, this brace ensures proper alignment and support, reduc",
+      "summary": "The Bilateral Hip Orthosis provides essential stabilization and pain relief for patients recovering from hip surgeries or injuries. Designed for post-operative care, this brace ensures proper alignment and support, reduc",
+      "description": "The Bilateral Hip Orthosis provides essential stabilization and pain relief for patients recovering from hip surgeries or injuries. Designed for post-operative care, this brace ensures proper alignment and support, reducing strain on the hips. The universal design offers a comfortable, adjustable fit for most wearers. Lightweight yet durable, this hip brace stabilizer helps patients regain mobility while managing chronic hip pain. Whether for post-surgical recovery or ongoing pain management, this orthosis offers continuous support for improved mobility and comfort. Key Features Provides bilateral hip stabilization and pain relief Adjustable, universal design for most wearers Lightweight and comfortable for extended wear Ideal for post-surgery recovery and hip injury rehabilitation Multi-setting adjustments of: flexion, extension, adduction, abduction Optional Hot/Cold gel pack available Medicare-approved and covered under L1681, this orthosis simplifies billing for healthcare providers. Download the PDAC Approval Letter for more details.",
+      "images": [
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/HB166D_Bilateral_Hip_1.jpg?v=1583258350",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1106.jpg?v=1583258361",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1127.jpg?v=1583258364",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1132.jpg?v=1583258367",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1130.jpg?v=1583258368"
+      ],
+      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/HB166D_Bilateral_Hip_1.jpg?v=1583258350",
+      "variants": [
+        {
+          "variant_id": "variant_shopify_b68de875110676972838",
+          "sku": "HO1690",
+          "title": "One Size / Single Brace",
+          "available": true,
+          "weight_grams": 680.388555,
+          "options": {
+            "Size": "One Size",
+            "Pack Size": "Single Brace"
+          },
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1127.jpg?v=1583258364"
+        },
+        {
+          "variant_id": "variant_shopify_d602e23c78af0e8b3c1a",
+          "sku": "HO1690C-5",
+          "title": "One Size / Case of 5 Braces",
+          "available": true,
+          "weight_grams": 3401.9456099523127,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1127.jpg?v=1583258364"
+        },
+        {
+          "variant_id": "variant_shopify_e4349400f664c5430066",
+          "sku": "HO1690C-10",
+          "title": "One Size / Case of 10 Braces",
+          "available": true,
+          "weight_grams": 6803.891219904625,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1127.jpg?v=1583258364"
+        }
+      ],
+      "tags": [
+        "Hip Brace",
+        "orthosis",
+        "Product Group 2"
+      ],
+      "collections": [],
+      "product_type": "Orthopedic Devices",
+      "m6_category": null,
+      "quote_only": false,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
+      "berry_compliant": false,
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
+    },
+    {
+      "sku": "CC180",
+      "handle": "cervical-collar",
+      "name": "Cervical Orthosis Neck Support Collar",
+      "category": "Orthotics",
+      "pack_size": "1 ea",
+      "hcpcs": "—",
+      "moq": 1,
+      "img": "The Cervical Orthosis Neck Support Collar offers reliable neck stabilization and support for individuals recovering from injury or managing cervical conditions. Designed for maximum comfort, this lightweight, adjustable ",
+      "summary": "The Cervical Orthosis Neck Support Collar offers reliable neck stabilization and support for individuals recovering from injury or managing cervical conditions. Designed for maximum comfort, this lightweight, adjustable ",
+      "description": "The Cervical Orthosis Neck Support Collar offers reliable neck stabilization and support for individuals recovering from injury or managing cervical conditions. Designed for maximum comfort, this lightweight, adjustable collar provides necessary immobilization while allowing for a secure, personalized fit. It helps reduce pain and pressure on the cervical spine, making it ideal for recovery and daily wear. Key Features: Lightweight and breathable design for extended comfort Adjustable dual-post anterior mount for flexion and extension adjustments Universal design fits most wearers Ideal for cervical spine immobilization, whiplash, arthritis, and more This cervical collar is HCPCS off the shelf code L0180, ensuring Medicare billing coverage for eligible patients. Download the PDAC Approval Letter for further details.",
+      "images": [
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/neck4.jpg?v=1607356344",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/neck1.jpg?v=1607356357",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/neck3.jpg?v=1607356360",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/neck2.jpg?v=1607356363"
+      ],
+      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/neck4.jpg?v=1607356344",
+      "variants": [
+        {
+          "variant_id": "variant_shopify_dc7858a9f514261835b5",
+          "sku": "CC180",
+          "title": "One Size / Single Collar",
+          "available": true,
+          "weight_grams": 680.388555,
+          "options": {
+            "Size": "One Size",
+            "Pack Size": "Single Collar"
+          },
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/neck4.jpg?v=1607356344"
+        },
+        {
+          "variant_id": "variant_shopify_c0c9c36ae0441ea69e54",
+          "sku": "CC180C-10",
+          "title": "One Size / Case of 10 Collars",
+          "available": true,
+          "weight_grams": 6803.891219904625,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/neck4.jpg?v=1607356344"
+        }
+      ],
+      "tags": [
+        "Cervical Collar",
+        "orthosis",
+        "Product Group 2"
+      ],
+      "collections": [],
+      "product_type": "Cervical Collar",
+      "m6_category": null,
+      "quote_only": false,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
+      "berry_compliant": false,
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
+    },
+    {
+      "sku": "Cryo3670",
+      "handle": "cryo-pneumatic-shoulder",
+      "name": "Cryo Pneumatic Shoulder Brace",
+      "category": "Orthotics",
+      "pack_size": "1 ea",
+      "hcpcs": "—",
+      "moq": 1,
+      "img": "The Cryo Pneumatic Shoulder Brace offers advanced cold therapy and compression, designed to relieve shoulder pain and aid in recovery. Ideal for post-surgical care, rotator cuff injuries, or shoulder strain, this brace c",
+      "summary": "The Cryo Pneumatic Shoulder Brace offers advanced cold therapy and compression, designed to relieve shoulder pain and aid in recovery. Ideal for post-surgical care, rotator cuff injuries, or shoulder strain, this brace c",
+      "description": "The Cryo Pneumatic Shoulder Brace offers advanced cold therapy and compression, designed to relieve shoulder pain and aid in recovery. Ideal for post-surgical care, rotator cuff injuries, or shoulder strain, this brace combines the benefits of pneumatic compression with cold therapy to reduce swelling and discomfort. Its universal design fits most wearers, and the brace can be easily adjusted for personalized comfort. Perfect for reducing shoulder inflammation and providing targeted support, the Cryo Pneumatic Shoulder Brace is lightweight and comfortable for extended wear, ensuring that patients can continue their recovery without restrictions. Key Features Provides cold therapy and pneumatic compression for shoulder pain relief Ideal for rotator cuff injuries and post-surgery recovery Universal fit with adjustable straps for personalized comfort Lightweight and comfortable for all-day wear Medicare-approved under L3670 and L3960, making it easy for healthcare providers to handle billing. Download the PDAC Approval Letter for more information.",
+      "images": [
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1137.jpg?v=1583259398",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1140.jpg?v=1583259400",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1174E.jpg?v=1583259402"
+      ],
+      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1137.jpg?v=1583259398",
+      "variants": [
+        {
+          "variant_id": "variant_shopify_09412a813793753f5e42",
+          "sku": "Cryo3670",
+          "title": "One Size / Single Brace",
+          "available": true,
+          "weight_grams": 680.388555,
+          "options": {
+            "Size": "One Size",
+            "Pack Size": "Single Brace"
+          },
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1137.jpg?v=1583259398"
+        },
+        {
+          "variant_id": "variant_shopify_2f948086d9a929a6e2a9",
+          "sku": "Cryo3670-CASE20",
+          "title": "One Size / Case of 20 Braces",
+          "available": true,
+          "weight_grams": 13607.779604856938,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1137.jpg?v=1583259398"
+        }
+      ],
+      "tags": [
+        "orthosis",
+        "Shoulder Brace"
+      ],
+      "collections": [],
+      "product_type": "Orthopedic Devices",
+      "m6_category": null,
+      "quote_only": false,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
+      "berry_compliant": false,
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
+    },
+    {
+      "sku": "Cryo3233",
+      "handle": "cryo-pneumatic-rom-knee-brace",
+      "name": "Cryo Pneumatic ROM Knee Brace",
+      "category": "Orthotics",
+      "pack_size": "1 ea",
+      "hcpcs": "—",
+      "moq": 1,
+      "img": "The Cryo Pneumatic ROM Knee Brace combines cold therapy with adjustable range of motion (ROM) support to provide effective relief for knee pain and injury recovery. Designed for post-surgical care, ACL recovery, or arthr",
+      "summary": "The Cryo Pneumatic ROM Knee Brace combines cold therapy with adjustable range of motion (ROM) support to provide effective relief for knee pain and injury recovery. Designed for post-surgical care, ACL recovery, or arthr",
+      "description": "The Cryo Pneumatic ROM Knee Brace combines cold therapy with adjustable range of motion (ROM) support to provide effective relief for knee pain and injury recovery. Designed for post-surgical care, ACL recovery, or arthritis management, this brace offers pneumatic compression and cold therapy to reduce swelling and discomfort while maintaining knee stabilization. The range of motion feature allows for controlled knee movement, helping patients recover faster with better flexibility. Its universal design ensures a comfortable fit for most wearers, and adjustable settings allow for personalized therapy and support. Lightweight and easy to wear, this knee brace is ideal for extended use during recovery or daily activity. Key Features Combines cold therapy with pneumatic compression for knee pain relief Adjustable range of motion (ROM) support for controlled movement Ideal for ACL recovery, post-surgical care, and arthritis management Universal fit and adjustable straps for personalized comfort Lightweight design for extended wear Medicare-approved under L1833 and L1845, simplifying billing for healthcare providers. Download the PDAC Approval Letter for more details.",
+      "images": [
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1148.jpg?v=1583259361",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1161.jpg?v=1583259377",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1160.jpg?v=1583259377",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1151.jpg?v=1583259377"
+      ],
+      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1148.jpg?v=1583259361",
+      "variants": [
+        {
+          "variant_id": "variant_shopify_d0e8ec096a598c2b542a",
+          "sku": "Cryo3233",
+          "title": "One Size / Single Brace",
+          "available": true,
+          "weight_grams": 850.48569375,
+          "options": {
+            "Size": "One Size",
+            "Pack Size": "Single Brace"
+          },
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1160.jpg?v=1583259377"
+        },
+        {
+          "variant_id": "variant_shopify_07d3b96361c9d6e05145",
+          "sku": "Cryo3233C-20",
+          "title": "One Size / Case of 20 Braces",
+          "available": true,
+          "weight_grams": 17009.72521480925,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1160.jpg?v=1583259377"
+        }
+      ],
+      "tags": [
+        "Knee Brace",
+        "orthosis",
+        "Product Group 5"
+      ],
+      "collections": [],
+      "product_type": "Orthopedic Devices",
+      "m6_category": null,
+      "quote_only": false,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
+      "berry_compliant": false,
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
+    },
+    {
+      "sku": "CryoAnkle",
+      "handle": "cryo-pneumatic-ankle-brace",
+      "name": "Cryo Pneumatic Ankle Brace",
+      "category": "Orthotics",
+      "pack_size": "1 ea",
+      "hcpcs": "—",
+      "moq": 1,
+      "img": "The Cryo Pneumatic Ankle Compression Cold Therapy Brace offers advanced cold therapy combined with pneumatic compression to relieve ankle pain, reduce swelling, and accelerate recovery. This brace is ideal for managing A",
+      "summary": "The Cryo Pneumatic Ankle Compression Cold Therapy Brace offers advanced cold therapy combined with pneumatic compression to relieve ankle pain, reduce swelling, and accelerate recovery. This brace is ideal for managing A",
+      "description": "The Cryo Pneumatic Ankle Compression Cold Therapy Brace offers advanced cold therapy combined with pneumatic compression to relieve ankle pain, reduce swelling, and accelerate recovery. This brace is ideal for managing Achilles tendonitis, ankle strains, or post-surgical care, offering targeted compression and cold therapy for maximum relief. Designed for comfort, the brace features a universal fit with adjustable straps to accommodate most wearers. Lightweight and easy to wear, this brace is perfect for use throughout the day to aid in ankle stabilization and pain management. Key Features Combines cold therapy with pneumatic compression for ankle pain relief Ideal for Achilles tendonitis, ankle strains, and post-surgical recovery Universal fit with adjustable straps for personalized comfort Lightweight design for extended wear Medicare-approved under A4467 (custom fit) and A9273 (off-the-shelf), making billing easy for healthcare providers. Download the PDAC Approval Letter for more details.",
+      "images": [
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1142-2.jpg?v=1583259303",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1170E.jpg?v=1583259303",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1162E.jpg?v=1583259288",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1165-2.jpg?v=1583259290"
+      ],
+      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1142-2.jpg?v=1583259303",
+      "variants": [
+        {
+          "variant_id": "variant_shopify_cc16e88752b0c3f3d7c0",
+          "sku": "CryoAnkle",
+          "title": "One Size / Single Brace",
+          "available": true,
+          "weight_grams": 453.59237,
+          "options": {
+            "Size": "One Size",
+            "Pack Size": "Single Brace"
+          },
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1142-2.jpg?v=1583259303"
+        },
+        {
+          "variant_id": "variant_shopify_581cf727fb1fc7540200",
+          "sku": "CryoAnkle-C30",
+          "title": "One Size / Case of 30 Braces",
+          "available": true,
+          "weight_grams": 13607.779604856938,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1142-2.jpg?v=1583259303"
+        }
+      ],
+      "tags": [
+        "ankle foot orthosis",
+        "orthosis",
+        "Product Group 1"
+      ],
+      "collections": [],
+      "product_type": "Orthopedic Devices",
+      "m6_category": null,
+      "quote_only": false,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
+      "berry_compliant": false,
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
+    },
+    {
+      "sku": "CryoElbow",
+      "handle": "cryo-pneumatic-elbow-brace",
+      "name": "Cryo Pneumatic Elbow Brace",
+      "category": "Orthotics",
+      "pack_size": "1 ea",
+      "hcpcs": "—",
+      "moq": 1,
+      "img": "The Cryo Pneumatic Elbow Brace combines compression and cold therapy to reduce swelling and pain in the elbow. Designed for post-operative care or injury recovery, this elbow brace delivers targeted cold therapy to help ",
+      "summary": "The Cryo Pneumatic Elbow Brace combines compression and cold therapy to reduce swelling and pain in the elbow. Designed for post-operative care or injury recovery, this elbow brace delivers targeted cold therapy to help ",
+      "description": "The Cryo Pneumatic Elbow Brace combines compression and cold therapy to reduce swelling and pain in the elbow. Designed for post-operative care or injury recovery, this elbow brace delivers targeted cold therapy to help reduce muscle spasms and inflammation. The universal design ensures a secure fit for most wearers, making it ideal for both medical professionals and personal use. Key Features Combines compression and cold therapy for optimal relief Reduces swelling, inflammation, and muscle spasms Universal design for a secure and comfortable fit Adjustable straps for personalized compression Lightweight and durable for long-term use Ideal for injury recovery and post-operative care Medicare billing available under L-Code A9273 Hot/cold gel pack for additional pain relief Removable gel pack for customized therapy Form fitting design for maximum comfort and wear ability Medicare billing is available under L-Code A9273 for off-the-shelf use, with PDAC Approval Letter",
+      "images": [
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1142-2_9524b9ef-0ba1-40cf-967f-9d28435dab60.jpg?v=1583259325",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1170E_1521321b-27e8-490b-b364-2aed4df9e910.jpg?v=1583259328",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1167-2.jpg?v=1583259332"
+      ],
+      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1142-2_9524b9ef-0ba1-40cf-967f-9d28435dab60.jpg?v=1583259325",
+      "variants": [
+        {
+          "variant_id": "variant_shopify_690b38dfd29243c667fa",
+          "sku": "CryoElbow",
+          "title": "One Size / Single Brace",
+          "available": true,
+          "weight_grams": 453.59237,
+          "options": {
+            "Size": "One Size",
+            "Pack Size": "Single Brace"
+          },
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1170E_1521321b-27e8-490b-b364-2aed4df9e910.jpg?v=1583259328"
+        },
+        {
+          "variant_id": "variant_shopify_f02fe5ce9e6c60b0f73d",
+          "sku": "CryoElbow-C30",
+          "title": "One Size / Case of 30 Braces",
+          "available": true,
+          "weight_grams": 13607.779604856938,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1170E_1521321b-27e8-490b-b364-2aed4df9e910.jpg?v=1583259328"
+        }
+      ],
+      "tags": [
+        "Elbow Brace",
+        "orthosis",
+        "Product Group 1"
+      ],
+      "collections": [],
+      "product_type": "Orthopedic Devices",
+      "m6_category": null,
+      "quote_only": false,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
+      "berry_compliant": false,
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
+    },
+    {
+      "sku": "HO1686",
+      "handle": "hip-orthosis",
+      "name": "Hip Orthosis",
+      "category": "Orthotics",
+      "pack_size": "1 ea",
+      "hcpcs": "—",
+      "moq": 1,
+      "img": "The Hip Orthosis is designed to provide superior stabilization and support for patients recovering from hip surgery or managing hip injuries. This brace is ideal for reducing pain and maintaining proper alignment during ",
+      "summary": "The Hip Orthosis is designed to provide superior stabilization and support for patients recovering from hip surgery or managing hip injuries. This brace is ideal for reducing pain and maintaining proper alignment during ",
+      "description": "The Hip Orthosis is designed to provide superior stabilization and support for patients recovering from hip surgery or managing hip injuries. This brace is ideal for reducing pain and maintaining proper alignment during recovery. With its universal fit, the Hip Orthosis ensures a comfortable and adjustable experience for most wearers, offering effective support during daily activities or post-operative care. Whether you're recovering from surgery or managing chronic hip pain, this lightweight orthosis is built for extended wear, promoting healing and improving mobility. Key Features: Provides hip stabilization and pain relief Ideal for post-surgery recovery and injury management Universal fit with adjustable straps for personalized comfort Lightweight and durable for extended use Medicare-approved under L1686 and A9272, making billing and reimbursement straightforward for healthcare providers. Download the PDAC Approval Letter for more details.",
+      "images": [
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/HB165S_-_Hip_Orthosis_1.jpg?v=1583259590",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1106_a8d9b7af-8468-454b-9147-ef4af98fff10.jpg?v=1583259595",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Hip_Orthosis.jpg?v=1583259598",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1123.jpg?v=1583259599"
+      ],
+      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/HB165S_-_Hip_Orthosis_1.jpg?v=1583259590",
+      "variants": [
+        {
+          "variant_id": "variant_shopify_5f7b8a2797dc45efe9b9",
+          "sku": "HO1686",
+          "title": "One Size / Single Brace",
+          "available": true,
+          "weight_grams": 680.388555,
+          "options": {
+            "Size": "One Size",
+            "Pack Size": "Single Brace"
+          },
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1123.jpg?v=1583259599"
+        },
+        {
+          "variant_id": "variant_shopify_b1e066ce9c82438175f4",
+          "sku": "HO1686C-8",
+          "title": "One Size / Case of 8 Braces",
+          "available": true,
+          "weight_grams": 5443.111274952313,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1123.jpg?v=1583259599"
+        }
+      ],
+      "tags": [
+        "Hip Brace",
+        "orthosis",
+        "Product Group 2"
+      ],
+      "collections": [],
+      "product_type": "Orthopedic Devices",
+      "m6_category": null,
+      "quote_only": false,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
+      "berry_compliant": false,
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
     },
     {
       "sku": "EO6061L",
       "handle": "telescoping-rom-elbow-brace",
       "name": "Telescoping ROM Elbow Brace",
       "category": "Orthotics",
-      "pack_size": "Left / Single Brace",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "Telescoping ROM Elbow Brace",
-      "summary": "The Telescoping ROM Elbow Brace provides adjustable range of motion (ROM) support, ideal for recovery after surgery or elbow injuries. Designed with hinged support, this elbow brace allows precise control of flexion…",
+      "img": "The Telescoping ROM Elbow Brace provides adjustable range of motion (ROM) support, ideal for recovery after surgery or elbow injuries. Designed with hinged support, this elbow brace allows precise control of flexion and ",
+      "summary": "The Telescoping ROM Elbow Brace provides adjustable range of motion (ROM) support, ideal for recovery after surgery or elbow injuries. Designed with hinged support, this elbow brace allows precise control of flexion and ",
       "description": "The Telescoping ROM Elbow Brace provides adjustable range of motion (ROM) support, ideal for recovery after surgery or elbow injuries. Designed with hinged support, this elbow brace allows precise control of flexion and extension to assist in rehabilitation. The telescoping feature ensures a comfortable and personalized fit for most wearers, while the adjustable straps offer additional stability and comfort. This brace is perfect for post-surgery recovery, managing arthritis, and reducing elbow strain during daily activities. Lightweight and durable, it provides continuous support throughout the recovery process. Key Features Adjustable ROM settings for controlled elbow movement Hinged support for enhanced stability and pain relief Telescoping design for a personalized, secure fit Ideal for post-surgery recovery and injury rehabilitation Lightweight and durable for extended wear Universal in size to accommodate most wearers (Left/Right) Extension adjustments from 0° - 90° Flexion adjustments from 0° - 120° Extension adjustments for the arm and forearm Straps designed for custom cutting resulting in a more custom fit and added comfort Medicare-approved under L3760 and L3761, making billing and reimbursement easy for healthcare providers. Download the PDAC Approval Letter for more details.",
       "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/LBP_9154.jpg?v=1583260137"
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/LBP_9154.jpg?v=1583260137",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/LBP_9210.jpg?v=1583260139"
       ],
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/LBP_9154.jpg?v=1583260137",
       "variants": [
         {
-          "variant_id": "31298279440443",
+          "variant_id": "variant_shopify_8265a904d64b59d9322f",
           "sku": "EO6061L",
           "title": "Left / Single Brace",
           "available": true,
-          "weight_grams": 567,
+          "weight_grams": 566.9904625,
           "options": {
             "Side": "Left",
             "Pack Size": "Single Brace"
@@ -5984,39 +6414,30 @@ export const PUBLIC_CATALOG = {
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/LBP_9210.jpg?v=1583260139"
         },
         {
-          "variant_id": "44818017124518",
-          "sku": "EO6061L-CASE20",
+          "variant_id": "variant_shopify_aaac12cc30b83f7b57ec",
+          "sku": "EO6061LC-20",
           "title": "Left / Case of 20 Braces",
           "available": true,
-          "weight_grams": 11340,
-          "options": {
-            "Side": "Left",
-            "Pack Size": "Case of 20 Braces"
-          },
+          "weight_grams": 11339.817754856938,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/LBP_9210.jpg?v=1583260139"
         },
         {
-          "variant_id": "31298279473211",
+          "variant_id": "variant_shopify_101e4475e56c1c2445f6",
           "sku": "EO6061R",
           "title": "Right / Single Brace",
           "available": true,
-          "weight_grams": 567,
-          "options": {
-            "Side": "Right",
-            "Pack Size": "Single Brace"
-          },
+          "weight_grams": 566.9904625,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/LBP_9210.jpg?v=1583260139"
         },
         {
-          "variant_id": "44818017157286",
-          "sku": "EO6061R-CASE20",
+          "variant_id": "variant_shopify_2d7ed6adec64bd4ddd46",
+          "sku": "EO6061RC-20",
           "title": "Right / Case of 20 Braces",
           "available": true,
-          "weight_grams": 11340,
-          "options": {
-            "Side": "Right",
-            "Pack Size": "Case of 20 Braces"
-          },
+          "weight_grams": 11339.817754856938,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/LBP_9210.jpg?v=1583260139"
         }
       ],
@@ -6025,43 +6446,449 @@ export const PUBLIC_CATALOG = {
         "orthosis",
         "Product Group 2"
       ],
-      "collections": [
-        "Shoulder & Elbow Braces",
-        "Orthopedic Bracing"
-      ],
+      "collections": [],
       "product_type": "Orthopedic Devices",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
-      "pdac_approved": true,
-      "taa_compliant": true,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
       "berry_compliant": false,
       "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
+    },
+    {
+      "sku": "AFO0671L-S",
+      "handle": "ankle-foot-orthosis-1",
+      "name": "Ankle Foot Orthosis",
+      "category": "Orthotics",
+      "pack_size": "1 ea",
+      "hcpcs": "—",
+      "moq": 1,
+      "img": "The Ankle Foot Orthosis provides reliable support and stabilization for patients recovering from foot or ankle injuries. Designed to promote proper foot alignment, this orthosis offers stability while allowing for contro",
+      "summary": "The Ankle Foot Orthosis provides reliable support and stabilization for patients recovering from foot or ankle injuries. Designed to promote proper foot alignment, this orthosis offers stability while allowing for contro",
+      "description": "The Ankle Foot Orthosis provides reliable support and stabilization for patients recovering from foot or ankle injuries. Designed to promote proper foot alignment, this orthosis offers stability while allowing for controlled movement during recovery. The adjustable straps ensure a secure and comfortable fit, making it suitable for long-term use. This ankle brace is ideal for managing tendonitis, ankle strains, or post-surgical recovery, delivering dependable support to improve mobility. Key Features Provides ankle and foot stabilization for injury recovery Adjustable straps for a secure and personalized fit Lightweight and durable design for extended wear Promotes proper foot alignment and improved mobility Ideal for tendonitis, ankle strains, and post-surgical recovery Durable rigid support Low profile Removable extender panel available for additional stabilization Medicare-approved under L1906 and L1971, ensuring easy billing for healthcare providers. Download the PDAC Approval Letter for more details.",
+      "images": [
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1045_57f0d012-f1fe-4784-868f-f6c7b09c55e6.jpg?v=1583258104",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1040_0be3b0e7-1704-4caf-a1d2-b6d4427a0d0a.jpg?v=1583258116",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/LBP_7556_1_1_613f6408-2898-4c9b-baa2-30023197d6a8.jpg?v=1583510174",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/LBP_7557_36c06777-dffc-4d48-bdda-f01a3d543352.jpg?v=1583510174"
+      ],
+      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1045_57f0d012-f1fe-4784-868f-f6c7b09c55e6.jpg?v=1583258104",
+      "variants": [
+        {
+          "variant_id": "variant_shopify_40fece30c49149a61677",
+          "sku": "AFO0671L-S",
+          "title": "Small / Left - Single Brace",
+          "available": true,
+          "weight_grams": 255.145708125,
+          "options": {
+            "Size": "Small",
+            "Style": "Left - Single Brace"
+          },
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1045_57f0d012-f1fe-4784-868f-f6c7b09c55e6.jpg?v=1583258104"
+        },
+        {
+          "variant_id": "variant_shopify_7559f5075a19bb1ab961",
+          "sku": "AFO0671R-S",
+          "title": "Small / Right - Single Brace",
+          "available": true,
+          "weight_grams": 255.145708125,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1045_57f0d012-f1fe-4784-868f-f6c7b09c55e6.jpg?v=1583258104"
+        },
+        {
+          "variant_id": "variant_shopify_a9db1e72d02652f3227e",
+          "sku": "AFO0671L-S-CASE30",
+          "title": "Small / Left - Case of 30 Braces",
+          "available": true,
+          "weight_grams": 7654.376913654625,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1045_57f0d012-f1fe-4784-868f-f6c7b09c55e6.jpg?v=1583258104"
+        },
+        {
+          "variant_id": "variant_shopify_31c179240ec83400982e",
+          "sku": "AFO0671R-S-CASE30",
+          "title": "Small / Right - Case of 30 Braces",
+          "available": true,
+          "weight_grams": 7654.376913654625,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1045_57f0d012-f1fe-4784-868f-f6c7b09c55e6.jpg?v=1583258104"
+        },
+        {
+          "variant_id": "variant_shopify_8d31d8789783d732cefc",
+          "sku": "AFO0671L-M",
+          "title": "Medium / Left - Single Brace",
+          "available": true,
+          "weight_grams": 255.145708125,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1045_57f0d012-f1fe-4784-868f-f6c7b09c55e6.jpg?v=1583258104"
+        },
+        {
+          "variant_id": "variant_shopify_41c7168a31537f5be9da",
+          "sku": "AFO0671R-M",
+          "title": "Medium / Right - Single Brace",
+          "available": true,
+          "weight_grams": 255.145708125,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1045_57f0d012-f1fe-4784-868f-f6c7b09c55e6.jpg?v=1583258104"
+        },
+        {
+          "variant_id": "variant_shopify_a267b8239c327dbcf680",
+          "sku": "AFO0671L-M-CASE30",
+          "title": "Medium / Left - Case of 30 Braces",
+          "available": true,
+          "weight_grams": 7654.376913654625,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1045_57f0d012-f1fe-4784-868f-f6c7b09c55e6.jpg?v=1583258104"
+        },
+        {
+          "variant_id": "variant_shopify_b2184bdd52c34d9fc904",
+          "sku": "AFO0671R-M-CASE30",
+          "title": "Medium / Right - Case of 30 Braces",
+          "available": true,
+          "weight_grams": 7654.376913654625,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1045_57f0d012-f1fe-4784-868f-f6c7b09c55e6.jpg?v=1583258104"
+        },
+        {
+          "variant_id": "variant_shopify_cb6f4797e0ee7e7aa1c9",
+          "sku": "AFO0671L-L",
+          "title": "Large / Left - Single Brace",
+          "available": true,
+          "weight_grams": 255.145708125,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1045_57f0d012-f1fe-4784-868f-f6c7b09c55e6.jpg?v=1583258104"
+        },
+        {
+          "variant_id": "variant_shopify_2749872ccddf7c772ddf",
+          "sku": "AFO0671R-L",
+          "title": "Large / Right - Single Brace",
+          "available": true,
+          "weight_grams": 255.145708125,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1045_57f0d012-f1fe-4784-868f-f6c7b09c55e6.jpg?v=1583258104"
+        },
+        {
+          "variant_id": "variant_shopify_090cce435c1a058a4d04",
+          "sku": "AFO0671L-L-CASE30",
+          "title": "Large / Left - Case of 30 Braces",
+          "available": true,
+          "weight_grams": 7654.376913654625,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1045_57f0d012-f1fe-4784-868f-f6c7b09c55e6.jpg?v=1583258104"
+        },
+        {
+          "variant_id": "variant_shopify_b571378c089ac60b37b7",
+          "sku": "AFO0671R-L-CASE30",
+          "title": "Large / Right - Case of 30 Braces",
+          "available": true,
+          "weight_grams": 7654.376913654625,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1045_57f0d012-f1fe-4784-868f-f6c7b09c55e6.jpg?v=1583258104"
+        }
+      ],
+      "tags": [
+        "ankle foot orthosis",
+        "orthosis"
+      ],
+      "collections": [],
+      "product_type": "Orthopedic Devices",
+      "m6_category": null,
+      "quote_only": false,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
+      "berry_compliant": false,
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
+    },
+    {
+      "sku": "KO4552L-S",
+      "handle": "double-upright-knee-orthosis",
+      "name": "Double Upright Knee Orthosis",
+      "category": "Orthotics",
+      "pack_size": "1 ea",
+      "hcpcs": "—",
+      "moq": 1,
+      "img": "The Double Upright Knee Orthosis provides reliable hinged support and stabilization, ideal for patients recovering from ACL injuries, managing arthritis, or undergoing post-surgical rehabilitation. This knee brace allows",
+      "summary": "The Double Upright Knee Orthosis provides reliable hinged support and stabilization, ideal for patients recovering from ACL injuries, managing arthritis, or undergoing post-surgical rehabilitation. This knee brace allows",
+      "description": "The Double Upright Knee Orthosis provides reliable hinged support and stabilization, ideal for patients recovering from ACL injuries, managing arthritis, or undergoing post-surgical rehabilitation. This knee brace allows controlled movement while providing excellent support to reduce pain and improve mobility. With double uprights and adjustable straps, it ensures a secure and comfortable fit, allowing for optimal knee stabilization throughout recovery. This orthosis is lightweight and durable, perfect for extended use during recovery or daily activity. Designed for ease of wear and stability, the Double Upright Knee Orthosis is a trusted solution for managing knee pain and ensuring proper knee alignment. Key Features: Hinged knee support for controlled movement and stability Double uprights for enhanced knee stabilization Adjustable straps for personalized fit and comfort Ideal for ACL recovery, arthritis management, and post-surgical care Lightweight and durable for extended wear Universal fit, adaptable to both legs Medicare-approved under L1852 and L1845, ensuring easy billing and reimbursement for healthcare providers. Download the PDAC Approval Letter for more details.",
+      "images": [
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Dual_OA_Main_Image.jpg?v=1583259525",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Dual_OA_-_Product_Flyer.jpg?v=1583259529",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Dual_OA_1.jpg?v=1583259531"
+      ],
+      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Dual_OA_Main_Image.jpg?v=1583259525",
+      "variants": [
+        {
+          "variant_id": "variant_shopify_f97ac1a2f8191a932379",
+          "sku": "KO4552L-S",
+          "title": "Small / Left - Single Brace",
+          "available": true,
+          "weight_grams": 793.7866475,
+          "options": {
+            "Size": "Small",
+            "Side & Pack Size": "Left - Single Brace"
+          },
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Dual_OA_-_Product_Flyer.jpg?v=1583259529"
+        },
+        {
+          "variant_id": "variant_shopify_9c34ff01c4e5bfa26d7b",
+          "sku": "KO4552R-S",
+          "title": "Small / Right - Single Brace",
+          "available": true,
+          "weight_grams": 793.7866475,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Dual_OA_-_Product_Flyer.jpg?v=1583259529"
+        },
+        {
+          "variant_id": "variant_shopify_85fb53f83b6e74a028c5",
+          "sku": "KO4552L-S-CASE6",
+          "title": "Small / Left - Case of 6 Braces",
+          "available": true,
+          "weight_grams": 4762.722719952312,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Dual_OA_-_Product_Flyer.jpg?v=1583259529"
+        },
+        {
+          "variant_id": "variant_shopify_1dba0a3afca5f521cafe",
+          "sku": "KO4552R-S-CASE6",
+          "title": "Small / Right- Case of 6 Braces",
+          "available": true,
+          "weight_grams": 4762.722719952312,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Dual_OA_-_Product_Flyer.jpg?v=1583259529"
+        },
+        {
+          "variant_id": "variant_shopify_b8832dee21cca41b3b22",
+          "sku": "KO4552L-M",
+          "title": "Medium / Left - Single Brace",
+          "available": true,
+          "weight_grams": 793.7866475,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Dual_OA_-_Product_Flyer.jpg?v=1583259529"
+        },
+        {
+          "variant_id": "variant_shopify_77af572f4809fdae20e2",
+          "sku": "KO4552R-M",
+          "title": "Medium / Right - Single Brace",
+          "available": true,
+          "weight_grams": 793.7866475,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Dual_OA_-_Product_Flyer.jpg?v=1583259529"
+        },
+        {
+          "variant_id": "variant_shopify_177a9c74b496e2f34acc",
+          "sku": "KO4552L-M-CASE6",
+          "title": "Medium / Left - Case of 6 Braces",
+          "available": true,
+          "weight_grams": 4762.722719952312,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Dual_OA_-_Product_Flyer.jpg?v=1583259529"
+        },
+        {
+          "variant_id": "variant_shopify_5c12c717fc38c5bba738",
+          "sku": "KO4552R-M-CASE6",
+          "title": "Medium / Right- Case of 6 Braces",
+          "available": true,
+          "weight_grams": 4762.722719952312,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Dual_OA_-_Product_Flyer.jpg?v=1583259529"
+        },
+        {
+          "variant_id": "variant_shopify_48ca890b934714d4213a",
+          "sku": "KO4552L-L",
+          "title": "Large / Left - Single Brace",
+          "available": true,
+          "weight_grams": 793.7866475,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Dual_OA_-_Product_Flyer.jpg?v=1583259529"
+        },
+        {
+          "variant_id": "variant_shopify_39514bdec9be518205b7",
+          "sku": "KO4552R-L",
+          "title": "Large / Right - Single Brace",
+          "available": true,
+          "weight_grams": 793.7866475,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Dual_OA_-_Product_Flyer.jpg?v=1583259529"
+        },
+        {
+          "variant_id": "variant_shopify_d96ccb7a739edd74ddb2",
+          "sku": "KO4552L-L-CASE6",
+          "title": "Large / Left - Case of 6 Braces",
+          "available": true,
+          "weight_grams": 4762.722719952312,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Dual_OA_-_Product_Flyer.jpg?v=1583259529"
+        },
+        {
+          "variant_id": "variant_shopify_404499690333c9ff94ac",
+          "sku": "KO4552R-L-CASE6",
+          "title": "Large / Right- Case of 6 Braces",
+          "available": true,
+          "weight_grams": 4762.722719952312,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Dual_OA_-_Product_Flyer.jpg?v=1583259529"
+        },
+        {
+          "variant_id": "variant_shopify_c576119f39b435dcdd70",
+          "sku": "KO4552L-XL",
+          "title": "X-Large / Left - Single Brace",
+          "available": true,
+          "weight_grams": 793.7866475,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Dual_OA_-_Product_Flyer.jpg?v=1583259529"
+        },
+        {
+          "variant_id": "variant_shopify_572393bd92d7b731baa6",
+          "sku": "KO4552R-XL",
+          "title": "X-Large / Right - Single Brace",
+          "available": true,
+          "weight_grams": 793.7866475,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Dual_OA_-_Product_Flyer.jpg?v=1583259529"
+        },
+        {
+          "variant_id": "variant_shopify_372fb9c998ceb5fe50f1",
+          "sku": "KO4552L-XL-CASE6",
+          "title": "X-Large / Left - Case of 6 Braces",
+          "available": true,
+          "weight_grams": 4762.722719952312,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Dual_OA_-_Product_Flyer.jpg?v=1583259529"
+        },
+        {
+          "variant_id": "variant_shopify_476913ff3fb71304f418",
+          "sku": "KO4552R-XL-CASE6",
+          "title": "X-Large / Right- Case of 6 Braces",
+          "available": true,
+          "weight_grams": 4762.722719952312,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Dual_OA_-_Product_Flyer.jpg?v=1583259529"
+        }
+      ],
+      "tags": [
+        "double upright knee orthosis",
+        "Knee Brace",
+        "orthosis",
+        "Product Group 4"
+      ],
+      "collections": [],
+      "product_type": "Orthopedic Devices",
+      "m6_category": null,
+      "quote_only": false,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
+      "berry_compliant": false,
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
+    },
+    {
+      "sku": "WHO1615-SM",
+      "handle": "wrist-hand-orthosis-1",
+      "name": "Wrist Hand Orthosis",
+      "category": "Orthotics",
+      "pack_size": "1 ea",
+      "hcpcs": "—",
+      "moq": 1,
+      "img": "The Wrist Hand Orthosis offers comprehensive support for the wrist and hand, making it ideal for injury recovery, post-surgical rehabilitation, and arthritis management. This orthosis provides stability while allowing co",
+      "summary": "The Wrist Hand Orthosis offers comprehensive support for the wrist and hand, making it ideal for injury recovery, post-surgical rehabilitation, and arthritis management. This orthosis provides stability while allowing co",
+      "description": "The Wrist Hand Orthosis offers comprehensive support for the wrist and hand, making it ideal for injury recovery, post-surgical rehabilitation, and arthritis management. This orthosis provides stability while allowing controlled movement, with adjustable straps to ensure a comfortable and secure fit. Its lightweight design makes it suitable for extended wear, promoting effective recovery and improved function. This brace is perfect for managing wrist and hand injuries, offering dependable support for long-term use. Key Features Adjustable wrist and hand support for injury recovery Stabilizes the wrist and hand while promoting controlled movement Lightweight and durable design for extended wear Adjustable straps for a personalized fit Universal fit suitable for most wearers Moldable aluminum insert for additional custom fitting and added comfort Fully adjustable and locking non-torsion joint Internal form fitting sleeve to help prevent migration and irritation due to migration Medicare-approved under L3915 and L3916, ensuring easy billing for healthcare providers. Download the PDAC Approval Letter for more details.",
+      "images": [
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1039_1_1_b4c9db3c-bff7-46b7-afe6-986c71429343.jpg?v=1583510242",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/LBP_9749_1_-1_548b467c-93bb-4ccd-b88f-66d234ebcbce.jpg?v=1583510244",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/LBP_9746_898c66fa-48c6-4a75-b43b-61c3ca8ad07b.jpg?v=1583510245"
+      ],
+      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/DSC_1039_1_1_b4c9db3c-bff7-46b7-afe6-986c71429343.jpg?v=1583510242",
+      "variants": [
+        {
+          "variant_id": "variant_shopify_dbb31385f77ae2b98072",
+          "sku": "WHO1615-SM",
+          "title": "Small/Medium / Single Brace",
+          "available": true,
+          "weight_grams": 283.49523125,
+          "options": {
+            "Size": "Small/Medium",
+            "Pack Size": "Single Brace"
+          },
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/LBP_9749_1_-1_548b467c-93bb-4ccd-b88f-66d234ebcbce.jpg?v=1583510244"
+        },
+        {
+          "variant_id": "variant_shopify_8878473ae2b1a3704fb7",
+          "sku": "WHO1615-SM-CASE35",
+          "title": "Small/Medium / Case of 35 Braces",
+          "available": true,
+          "weight_grams": 9922.338763654625,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/LBP_9749_1_-1_548b467c-93bb-4ccd-b88f-66d234ebcbce.jpg?v=1583510244"
+        },
+        {
+          "variant_id": "variant_shopify_91d119b59f3111ab2a7e",
+          "sku": "WHO1615-LXL",
+          "title": "Large/X-Large / Single Brace",
+          "available": true,
+          "weight_grams": 283.49523125,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/LBP_9749_1_-1_548b467c-93bb-4ccd-b88f-66d234ebcbce.jpg?v=1583510244"
+        },
+        {
+          "variant_id": "variant_shopify_f3a6381ac7ead675a65f",
+          "sku": "WHO1615-LXL-CASE35",
+          "title": "Large/X-Large / Case of 35 Braces",
+          "available": true,
+          "weight_grams": 9922.338763654625,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/LBP_9749_1_-1_548b467c-93bb-4ccd-b88f-66d234ebcbce.jpg?v=1583510244"
+        }
+      ],
+      "tags": [
+        "orthosis",
+        "Product Group 1",
+        "wrist hand orthosis"
+      ],
+      "collections": [],
+      "product_type": "Orthopedic Devices",
+      "m6_category": null,
+      "quote_only": false,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
+      "berry_compliant": false,
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
     },
     {
       "sku": "KO3233-PO",
       "handle": "post-operative-knee-brace",
       "name": "Post-Operative Knee Brace",
       "category": "Orthotics",
-      "pack_size": "One Size / Single Brace",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "Post-Operative Knee Brace",
-      "summary": "The Post-Operative Knee Brace offers adjustable range of motion (ROM) control, making it ideal for patients recovering from knee surgery or managing severe knee injuries. This brace allows controlled knee flexion and…",
+      "img": "The Post-Operative Knee Brace offers adjustable range of motion (ROM) control, making it ideal for patients recovering from knee surgery or managing severe knee injuries. This brace allows controlled knee flexion and ext",
+      "summary": "The Post-Operative Knee Brace offers adjustable range of motion (ROM) control, making it ideal for patients recovering from knee surgery or managing severe knee injuries. This brace allows controlled knee flexion and ext",
       "description": "The Post-Operative Knee Brace offers adjustable range of motion (ROM) control, making it ideal for patients recovering from knee surgery or managing severe knee injuries. This brace allows controlled knee flexion and extension, helping to reduce pain while stabilizing the joint. The adjustable straps ensure a secure and comfortable fit, making it suitable for extended use during recovery. Designed for optimal support, the Post-Operative Knee Brace is lightweight and durable, providing reliable stabilization during rehabilitation. Key Features Adjustable range of motion (ROM) control for post-surgery recovery Provides knee stabilization to reduce pain and improve mobility Adjustable straps for a personalized fit Lightweight and durable for extended wear Ideal for ACL recovery and post-surgical rehabilitation Universal in size to accommodate most wearers Extension adjustments from 0° - 90° Flexion adjustments from 0° - 120° Knee immobilization lock at 0°, 15°, 30° Straps designed for custom cutting resulting in a more custom fit and added comfort Medicare-approved under L1833 and L1845, making billing easy for healthcare providers. Download the PDAC Approval Letter for more details.",
       "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Post_Op_Knee_Main_and_Slider.jpg?v=1583259773"
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Post_Op_Knee_Main_and_Slider.jpg?v=1583259773",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/LBP_9149.jpg?v=1583259783",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/LBP_9143.jpg?v=1583259784",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/LBP_9195.jpg?v=1583259785"
       ],
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Post_Op_Knee_Main_and_Slider.jpg?v=1583259773",
       "variants": [
         {
-          "variant_id": "44811355816102",
+          "variant_id": "variant_shopify_1c8251b93f72df7e79c4",
           "sku": "KO3233-PO",
           "title": "One Size / Single Brace",
           "available": true,
-          "weight_grams": 1361,
+          "weight_grams": 1360.77711,
           "options": {
             "Size": "One Size",
             "Pack Size": "Single Brace"
@@ -6069,15 +6896,12 @@ export const PUBLIC_CATALOG = {
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/LBP_9195.jpg?v=1583259785"
         },
         {
-          "variant_id": "44811355848870",
-          "sku": "KO3233-PO-CASE10",
+          "variant_id": "variant_shopify_e9e482d33320ae98543b",
+          "sku": "KO3233-PO-C10",
           "title": "One Size / Case of 10 Braces",
           "available": true,
-          "weight_grams": 13608,
-          "options": {
-            "Size": "One Size",
-            "Pack Size": "Case of 10 Braces"
-          },
+          "weight_grams": 13607.779604856938,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/LBP_9195.jpg?v=1583259785"
         }
       ],
@@ -6086,43 +6910,175 @@ export const PUBLIC_CATALOG = {
         "orthosis",
         "Product Group 2"
       ],
-      "collections": [
-        "Knee Braces",
-        "Orthopedic Bracing"
-      ],
+      "collections": [],
       "product_type": "Orthopedic Devices",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
-      "pdac_approved": true,
-      "taa_compliant": true,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
       "berry_compliant": false,
       "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
+    },
+    {
+      "sku": "SS2397",
+      "handle": "suspension-sleeve-1",
+      "name": "Suspension Sleeve | Knee Brace Support",
+      "category": "Orthotics",
+      "pack_size": "1 ea",
+      "hcpcs": "—",
+      "moq": 1,
+      "img": "The Suspension Sleeve provides essential support and comfort by keeping your knee brace securely in place. Made from durable, flexible materials, this sleeve prevents your knee brace from slipping during movement, offeri",
+      "summary": "The Suspension Sleeve provides essential support and comfort by keeping your knee brace securely in place. Made from durable, flexible materials, this sleeve prevents your knee brace from slipping during movement, offeri",
+      "description": "The Suspension Sleeve provides essential support and comfort by keeping your knee brace securely in place. Made from durable, flexible materials, this sleeve prevents your knee brace from slipping during movement, offering added stability and comfort. Ideal for use with knee braces and orthotics, the suspension sleeve is perfect for individuals recovering from knee injuries or managing chronic knee conditions. Key Features Prevents knee brace from slipping during movement Provides enhanced stability and comfort Made from durable, flexible materials for long-term use Lightweight and breathable design for extended wear Ideal for use with knee braces and orthotics Medicare billing available under HCPCS Code L2397 Medicare billing is available under HCPCS Code L2397 ,with PDAC Approval Letter making this suspension sleeve a practical solution for those seeking enhanced knee brace support.",
+      "images": [
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/IMG_5184_de28f91f-7367-4b17-9f4b-0ac862a3590c.jpg?v=1583260116",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/IMG_5182_b88abadb-0053-4430-b135-cf71847f327b.jpg?v=1583260121",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/IMG_5180_fd993f81-4f51-47a1-9684-5df3d74105f3.jpg?v=1583260122",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/IMG_5183_e6f27cfc-d7ca-44eb-a0ed-ce9ced908623.jpg?v=1583260123"
+      ],
+      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/IMG_5184_de28f91f-7367-4b17-9f4b-0ac862a3590c.jpg?v=1583260116",
+      "variants": [
+        {
+          "variant_id": "variant_shopify_8107cb7545f76c0cd66f",
+          "sku": "SS2397",
+          "title": "One Size / Single Sleeve",
+          "available": true,
+          "weight_grams": 85.048569375,
+          "options": {
+            "Size": "One Size",
+            "Pack Size": "Single Sleeve"
+          },
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/IMG_5180_fd993f81-4f51-47a1-9684-5df3d74105f3.jpg?v=1583260122"
+        },
+        {
+          "variant_id": "variant_shopify_aa46c38cef5b8e36ecb7",
+          "sku": "SS2397-CASE150",
+          "title": "One Size / Case of 150 Sleeves",
+          "available": true,
+          "weight_grams": 12757.293911106937,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/IMG_5180_fd993f81-4f51-47a1-9684-5df3d74105f3.jpg?v=1583260122"
+        }
+      ],
+      "tags": [
+        "Knee Brace",
+        "orthosis",
+        "Product Group 3"
+      ],
+      "collections": [],
+      "product_type": "Orthopedic Devices",
+      "m6_category": null,
+      "quote_only": false,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
+      "berry_compliant": false,
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
+    },
+    {
+      "sku": "KO4351L",
+      "handle": "single-upright-knee-orthosis-1",
+      "name": "Single Upright Knee Orthosis",
+      "category": "Orthotics",
+      "pack_size": "1 ea",
+      "hcpcs": "—",
+      "moq": 1,
+      "img": "The Single Upright Knee Orthosis provides reliable hinged support and knee stabilization, designed for individuals recovering from knee injuries or post-surgery rehabilitation. This knee brace offers controlled movement,",
+      "summary": "The Single Upright Knee Orthosis provides reliable hinged support and knee stabilization, designed for individuals recovering from knee injuries or post-surgery rehabilitation. This knee brace offers controlled movement,",
+      "description": "The Single Upright Knee Orthosis provides reliable hinged support and knee stabilization, designed for individuals recovering from knee injuries or post-surgery rehabilitation. This knee brace offers controlled movement, promoting stability and protecting the joint during recovery. Its lightweight construction and adjustable straps ensure a comfortable and secure fit, perfect for extended wear throughout the rehabilitation process. Ideal for ACL recovery, arthritis management, and post-operative care, this orthosis delivers dependable support to help improve mobility and function. Key Features Hinged knee support for controlled movement and stabilization Single upright design for targeted knee stability Adjustable straps for a personalized fit Ideal for ACL recovery and post-surgical rehabilitation Lightweight and durable for extended wear Adjustable polycentric hinge for flexion & extension joint Medial, lateral & rotational adjustments combined with varus / valgus control Anti-slip pads for added comfort and extended wear Universal in size to accommodate most wearers (Left/Right) Sequence numbered straps for application assistance Medicare-approved under L1843 & L1851, making billing simple for healthcare providers. Download the PDAC Approval Letter for more details.",
+      "images": [
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Single_Upright_Knee_Main_7b6490c6-a4b7-47fa-bfec-6889b9cf3f4c.jpg?v=1583260020",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Single_Upright_Knee_1_1bb93398-4a91-4240-bb32-6b53baac2de9.jpg?v=1583260022",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Single_Upright_Knee_2_24e72205-784b-4c0f-bc6a-cfe0f2c0663d.jpg?v=1583260025",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Single_Upright_Knee_3_7ab8ffcd-a6cd-474e-82cf-942397cd2035.jpg?v=1583260026",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Single_Upright_Knee_4_5c1fc1b7-def3-4858-a938-2902ccde6ae2.jpg?v=1583260029"
+      ],
+      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Single_Upright_Knee_Main_7b6490c6-a4b7-47fa-bfec-6889b9cf3f4c.jpg?v=1583260020",
+      "variants": [
+        {
+          "variant_id": "variant_shopify_a2ae58f0633bb7b6c2bc",
+          "sku": "KO4351L",
+          "title": "One Size / Left - Single Brace",
+          "available": true,
+          "weight_grams": 623.68950875,
+          "options": {
+            "Size": "One Size",
+            "Pack Size": "Left - Single Brace"
+          },
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Single_Upright_Knee_4_5c1fc1b7-def3-4858-a938-2902ccde6ae2.jpg?v=1583260029"
+        },
+        {
+          "variant_id": "variant_shopify_428f933d8d6ad32c4e87",
+          "sku": "KO4351R",
+          "title": "One Size / Right - Single Brace",
+          "available": true,
+          "weight_grams": 623.68950875,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Single_Upright_Knee_3_7ab8ffcd-a6cd-474e-82cf-942397cd2035.jpg?v=1583260026"
+        },
+        {
+          "variant_id": "variant_shopify_596f04ecdc495ab00d2c",
+          "sku": "KO4351L-CASE10",
+          "title": "One Size / Left - Case of 10 Braces",
+          "available": true,
+          "weight_grams": 6236.900757404625,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Single_Upright_Knee_4_5c1fc1b7-def3-4858-a938-2902ccde6ae2.jpg?v=1583260029"
+        },
+        {
+          "variant_id": "variant_shopify_909d8f140ea2d8c496f4",
+          "sku": "KO4351R-CASE10",
+          "title": "One Size / Right - Case of 10 Braces",
+          "available": true,
+          "weight_grams": 6236.900757404625,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Single_Upright_Knee_3_7ab8ffcd-a6cd-474e-82cf-942397cd2035.jpg?v=1583260026"
+        }
+      ],
+      "tags": [
+        "Knee Brace",
+        "orthosis"
+      ],
+      "collections": [],
+      "product_type": "Orthopedic Devices",
+      "m6_category": null,
+      "quote_only": false,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
+      "berry_compliant": false,
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
     },
     {
       "sku": "KO3233-SM",
       "handle": "sized-rom-knee-brace",
       "name": "Sized ROM Knee Brace",
       "category": "Orthotics",
-      "pack_size": "Small / Single Brace",
+      "pack_size": "1 ea",
       "hcpcs": "—",
       "moq": 1,
-      "img": "Sized ROM Knee Brace",
-      "summary": "The Sized ROM Knee Brace offers controlled range of motion (ROM) and adjustable knee stabilization, ideal for post-surgical recovery or injury rehabilitation. This knee brace allows precise adjustments in flexion and…",
+      "img": "The Sized ROM Knee Brace offers controlled range of motion (ROM) and adjustable knee stabilization, ideal for post-surgical recovery or injury rehabilitation. This knee brace allows precise adjustments in flexion and ext",
+      "summary": "The Sized ROM Knee Brace offers controlled range of motion (ROM) and adjustable knee stabilization, ideal for post-surgical recovery or injury rehabilitation. This knee brace allows precise adjustments in flexion and ext",
       "description": "The Sized ROM Knee Brace offers controlled range of motion (ROM) and adjustable knee stabilization, ideal for post-surgical recovery or injury rehabilitation. This knee brace allows precise adjustments in flexion and extension, providing customized support to help improve mobility and protect the knee joint. With its lightweight design and adjustable straps, the Sized ROM Knee Brace ensures comfort and a secure fit for most wearers. Perfect for ACL recovery, arthritis management, or post-operative care, this brace promotes knee stability throughout the rehabilitation process. Key Features Adjustable range of motion (ROM) for controlled knee movement Provides knee stabilization for injury recovery and post-surgery care Lightweight design with adjustable straps for personalized fit Suitable for ACL recovery and arthritis management Available in various sizes for a customized fit Sized wrap around design allows for custom fit and maximum comfort Polycentric hinge provides for flexion & extension adjustments Easily accessible hinge for quick and easy adjustments Excellent choice for patients who are not able to pull a knee sleeve brace over their foot Medicare-approved under L1833, making billing simple for healthcare providers. Download the PDAC Approval Letter for more information. ROM Knee Brace Sizing Instructions",
       "images": [
-        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/3B7A7962.jpg?v=1583776450"
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/3B7A7962.jpg?v=1583776450",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/LBP_8110.jpg?v=1583776450"
       ],
       "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/3B7A7962.jpg?v=1583776450",
       "variants": [
         {
-          "variant_id": "44811235295398",
+          "variant_id": "variant_shopify_ed99408e3bfff285a477",
           "sku": "KO3233-SM",
           "title": "Small / Single Brace",
           "available": true,
-          "weight_grams": 454,
+          "weight_grams": 453.59237,
           "options": {
             "Size": "Small",
             "Pack Size": "Single Brace"
@@ -6130,183 +7086,138 @@ export const PUBLIC_CATALOG = {
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/LBP_8110.jpg?v=1583776450"
         },
         {
-          "variant_id": "31297770946619",
+          "variant_id": "variant_shopify_f19853dde9c7e8fc585d",
           "sku": "KO3233-SM-CASE30",
           "title": "Small / Case of 30 Braces",
           "available": true,
-          "weight_grams": 13608,
-          "options": {
-            "Size": "Small",
-            "Pack Size": "Case of 30 Braces"
-          },
+          "weight_grams": 13607.779604856938,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/LBP_8110.jpg?v=1583776450"
         },
         {
-          "variant_id": "44811235328166",
+          "variant_id": "variant_shopify_65c21025418ff8ec56dd",
           "sku": "KO3233-MD",
           "title": "Medium / Single Brace",
           "available": true,
-          "weight_grams": 454,
-          "options": {
-            "Size": "Medium",
-            "Pack Size": "Single Brace"
-          },
+          "weight_grams": 453.59237,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/LBP_8110.jpg?v=1583776450"
         },
         {
-          "variant_id": "31297770979387",
+          "variant_id": "variant_shopify_052709fb8e8fa41bacdf",
           "sku": "KO3233-MD-CASE30",
           "title": "Medium / Case of 30 Braces",
           "available": true,
-          "weight_grams": 13608,
-          "options": {
-            "Size": "Medium",
-            "Pack Size": "Case of 30 Braces"
-          },
+          "weight_grams": 13607.779604856938,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/LBP_8110.jpg?v=1583776450"
         },
         {
-          "variant_id": "44811235360934",
+          "variant_id": "variant_shopify_ca266edddecfb16c1361",
           "sku": "KO3233-LG",
           "title": "Large / Single Brace",
           "available": true,
-          "weight_grams": 454,
-          "options": {
-            "Size": "Large",
-            "Pack Size": "Single Brace"
-          },
+          "weight_grams": 453.59237,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/LBP_8110.jpg?v=1583776450"
         },
         {
-          "variant_id": "31297771012155",
+          "variant_id": "variant_shopify_f57311fe94505a22abcc",
           "sku": "KO3233-LG-CASE30",
           "title": "Large / Case of 30 Braces",
           "available": true,
-          "weight_grams": 13608,
-          "options": {
-            "Size": "Large",
-            "Pack Size": "Case of 30 Braces"
-          },
+          "weight_grams": 13607.779604856938,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/LBP_8110.jpg?v=1583776450"
         },
         {
-          "variant_id": "44811235393702",
+          "variant_id": "variant_shopify_8bf63376d2f72c127eac",
           "sku": "KO3233-XL",
           "title": "XL / Single Brace",
           "available": true,
-          "weight_grams": 454,
-          "options": {
-            "Size": "XL",
-            "Pack Size": "Single Brace"
-          },
+          "weight_grams": 453.59237,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/LBP_8110.jpg?v=1583776450"
         },
         {
-          "variant_id": "31297771044923",
+          "variant_id": "variant_shopify_900c433dc2978506596d",
           "sku": "KO3233-XL-CASE30",
           "title": "XL / Case of 30 Braces",
           "available": true,
-          "weight_grams": 13608,
-          "options": {
-            "Size": "XL",
-            "Pack Size": "Case of 30 Braces"
-          },
+          "weight_grams": 13607.779604856938,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/LBP_8110.jpg?v=1583776450"
         },
         {
-          "variant_id": "44811235426470",
+          "variant_id": "variant_shopify_6dba40840488d32224f3",
           "sku": "KO3233-2X",
           "title": "XXL / Single Brace",
           "available": true,
-          "weight_grams": 454,
-          "options": {
-            "Size": "XXL",
-            "Pack Size": "Single Brace"
-          },
+          "weight_grams": 453.59237,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/LBP_8110.jpg?v=1583776450"
         },
         {
-          "variant_id": "31297771077691",
+          "variant_id": "variant_shopify_9822b8c6e6c787ccfb3c",
           "sku": "KO3233-2X-CASE30",
           "title": "XXL / Case of 30 Braces",
           "available": true,
-          "weight_grams": 13608,
-          "options": {
-            "Size": "XXL",
-            "Pack Size": "Case of 30 Braces"
-          },
+          "weight_grams": 13607.779604856938,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/LBP_8110.jpg?v=1583776450"
         },
         {
-          "variant_id": "44811235459238",
+          "variant_id": "variant_shopify_32420f48555f63069b3b",
           "sku": "KO3233-3X",
           "title": "XXXL / Single Brace",
           "available": true,
-          "weight_grams": 454,
-          "options": {
-            "Size": "XXXL",
-            "Pack Size": "Single Brace"
-          },
+          "weight_grams": 453.59237,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/LBP_8110.jpg?v=1583776450"
         },
         {
-          "variant_id": "31297771110459",
+          "variant_id": "variant_shopify_1698ce8a3d3585cead93",
           "sku": "KO3233-3X-CASE30",
           "title": "XXXL / Case of 30 Braces",
           "available": true,
-          "weight_grams": 13608,
-          "options": {
-            "Size": "XXXL",
-            "Pack Size": "Case of 30 Braces"
-          },
+          "weight_grams": 13607.779604856938,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/LBP_8110.jpg?v=1583776450"
         },
         {
-          "variant_id": "44811235492006",
+          "variant_id": "variant_shopify_6c4ed4f2d9cd6950a8f0",
           "sku": "KO3233-4X",
           "title": "4XL / Single Brace",
           "available": true,
-          "weight_grams": 454,
-          "options": {
-            "Size": "4XL",
-            "Pack Size": "Single Brace"
-          },
+          "weight_grams": 453.59237,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/LBP_8110.jpg?v=1583776450"
         },
         {
-          "variant_id": "31297771143227",
+          "variant_id": "variant_shopify_85a7be62689e7c7d9139",
           "sku": "KO3233-4X-CASE30",
           "title": "4XL / Case of 30 Braces",
           "available": true,
-          "weight_grams": 13608,
-          "options": {
-            "Size": "4XL",
-            "Pack Size": "Case of 30 Braces"
-          },
+          "weight_grams": 13607.779604856938,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/LBP_8110.jpg?v=1583776450"
         },
         {
-          "variant_id": "44811235524774",
+          "variant_id": "variant_shopify_dba57f610261141a4a44",
           "sku": "KO3233-5X",
           "title": "5XL / Single Brace",
           "available": true,
-          "weight_grams": 454,
-          "options": {
-            "Size": "5XL",
-            "Pack Size": "Single Brace"
-          },
+          "weight_grams": 453.59237,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/LBP_8110.jpg?v=1583776450"
         },
         {
-          "variant_id": "31297771175995",
+          "variant_id": "variant_shopify_fadf8394319c04aeef90",
           "sku": "KO3233-5X-CASE30",
           "title": "5XL / Case of 30 Braces",
           "available": true,
-          "weight_grams": 13608,
-          "options": {
-            "Size": "5XL",
-            "Pack Size": "Case of 30 Braces"
-          },
+          "weight_grams": 13607.779604856938,
+          "options": {},
           "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/LBP_8110.jpg?v=1583776450"
         }
       ],
@@ -6315,20 +7226,133 @@ export const PUBLIC_CATALOG = {
         "orthosis",
         "sized rom knee brace"
       ],
-      "collections": [
-        "Knee Braces",
-        "Orthopedic Bracing"
-      ],
+      "collections": [],
       "product_type": "Orthopedic Devices",
       "m6_category": null,
       "quote_only": false,
-      "fda_registered": true,
-      "pdac_approved": true,
-      "taa_compliant": true,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
       "berry_compliant": false,
       "mspv_listed": false,
       "latex_free": false,
-      "country_of_origin": "CN"
+      "country_of_origin": null
+    },
+    {
+      "sku": "KO3233-1",
+      "handle": "deluxe-universal-rom-knee-brace-1",
+      "name": "Deluxe Universal ROM Knee Brace",
+      "category": "Orthotics",
+      "pack_size": "1 ea",
+      "hcpcs": "—",
+      "moq": 1,
+      "img": "The Deluxe Universal ROM Knee Brace offers adjustable range of motion (ROM) and hinged support, ideal for post-surgical recovery and knee injury rehabilitation. Designed to promote controlled knee movement, this brace pr",
+      "summary": "The Deluxe Universal ROM Knee Brace offers adjustable range of motion (ROM) and hinged support, ideal for post-surgical recovery and knee injury rehabilitation. Designed to promote controlled knee movement, this brace pr",
+      "description": "The Deluxe Universal ROM Knee Brace offers adjustable range of motion (ROM) and hinged support, ideal for post-surgical recovery and knee injury rehabilitation. Designed to promote controlled knee movement, this brace provides customizable flexion and extension, ensuring joint protection during recovery. Its lightweight design and adjustable straps ensure a secure and comfortable fit, making it perfect for long-term wear. This knee brace is an excellent solution for ACL recovery, arthritis management, and general knee stabilization, helping to improve mobility during the rehabilitation process. Key Features Adjustable range of motion (ROM) for controlled knee movement Hinged support for enhanced stability during recovery Lightweight and durable for extended wear Adjustable straps for a secure, personalized fit Universal fit suitable for most wearers Medicare-approved under L1832 and L1833, ensuring easy billing for healthcare providers. Download the PDAC Approval Letter for more information.",
+      "images": [
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/3B7A7961_dfbff583-1769-4c4f-b9c6-815fc529594d.jpg?v=1583259471",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Rogue_Gen_II_Main_cca8a5ab-b4dc-4dc9-830a-16a9e2480582.jpg?v=1583259473",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Gen_II_1_d19f8b97-133a-426d-97fe-33b1aa246dba.jpg?v=1583259491",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/IMG-5038_9fd97901-74af-42aa-bf46-d30dca8055f4.jpg?v=1583260195"
+      ],
+      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/3B7A7961_dfbff583-1769-4c4f-b9c6-815fc529594d.jpg?v=1583259471",
+      "variants": [
+        {
+          "variant_id": "variant_shopify_1a0cb0befe4e3a34adde",
+          "sku": "KO3233-1",
+          "title": "One Size / Single Brace",
+          "available": true,
+          "weight_grams": 453.59237,
+          "options": {
+            "Size": "One Size",
+            "Pack Size": "Single Brace"
+          },
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/3B7A7961_dfbff583-1769-4c4f-b9c6-815fc529594d.jpg?v=1583259471"
+        },
+        {
+          "variant_id": "variant_shopify_a1172e7e42f58421cd15",
+          "sku": "KO3233-1-C30",
+          "title": "One Size / Case of 30 Braces",
+          "available": true,
+          "weight_grams": 13607.779604856938,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/3B7A7961_dfbff583-1769-4c4f-b9c6-815fc529594d.jpg?v=1583259471"
+        }
+      ],
+      "tags": [
+        "Knee Brace",
+        "orthosis",
+        "Product Group 1"
+      ],
+      "collections": [],
+      "product_type": "Orthopedic Devices",
+      "m6_category": null,
+      "quote_only": false,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
+      "berry_compliant": false,
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
+    },
+    {
+      "sku": "KO3233",
+      "handle": "universal-rom-knee-brace",
+      "name": "Universal ROM Knee Brace",
+      "category": "Orthotics",
+      "pack_size": "1 ea",
+      "hcpcs": "—",
+      "moq": 1,
+      "img": "The Universal ROM Knee Brace provides adjustable range of motion (ROM) and hinged support, making it ideal for post-surgical recovery and knee injury rehabilitation. This brace allows for precise control of knee flexion ",
+      "summary": "The Universal ROM Knee Brace provides adjustable range of motion (ROM) and hinged support, making it ideal for post-surgical recovery and knee injury rehabilitation. This brace allows for precise control of knee flexion ",
+      "description": "The Universal ROM Knee Brace provides adjustable range of motion (ROM) and hinged support, making it ideal for post-surgical recovery and knee injury rehabilitation. This brace allows for precise control of knee flexion and extension, helping to stabilize the joint and protect it during recovery. Its universal design and adjustable straps offer a secure and comfortable fit for most wearers. This brace is perfect for ACL recovery, arthritis management, and general knee stabilization. The lightweight and durable design ensures it can be worn comfortably throughout the rehabilitation process. Key Features Adjustable range of motion (ROM) for controlled knee movement Hinged support for enhanced stability during recovery Lightweight and durable for extended wear Adjustable straps for a personalized fit Universal fit for most wearers Medicare-approved under L1832 and L1833, making billing easy for healthcare providers. Download the PDAC Approval Letter for more details.",
+      "images": [
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Universal_ROM_Knee_Main_39b3924e-26e9-41ca-a88e-2fbe5aa0425e.jpg?v=1583260216",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Universal_ROM_Knee_1_87d9c5d3-ff2d-4fa4-a784-396c6d72c8d5.jpg?v=1583260218",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Universal_ROM_Knee_2_1e080d3b-20fd-42d5-86c0-8ae55c225067.jpg?v=1583260220",
+        "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/IMG-5038_60d3611c-eab0-4602-ac00-67c98fe88322.jpg?v=1583260221"
+      ],
+      "hero_image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Universal_ROM_Knee_Main_39b3924e-26e9-41ca-a88e-2fbe5aa0425e.jpg?v=1583260216",
+      "variants": [
+        {
+          "variant_id": "variant_shopify_442a6f99143dd186aab9",
+          "sku": "KO3233",
+          "title": "One Size / Single Brace",
+          "available": true,
+          "weight_grams": 453.59237,
+          "options": {
+            "Size": "One Size",
+            "Pack Size": "Single Brace"
+          },
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Universal_ROM_Knee_2_1e080d3b-20fd-42d5-86c0-8ae55c225067.jpg?v=1583260220"
+        },
+        {
+          "variant_id": "variant_shopify_a285a49bc32265b98efc",
+          "sku": "KO3233-CASE30",
+          "title": "One Size / Case of 30 Braces",
+          "available": true,
+          "weight_grams": 13607.779604856938,
+          "options": {},
+          "image": "https://cdn.shopify.com/s/files/1/0265/2009/2731/products/Universal_ROM_Knee_2_1e080d3b-20fd-42d5-86c0-8ae55c225067.jpg?v=1583260220"
+        }
+      ],
+      "tags": [
+        "Knee Brace",
+        "orthosis",
+        "Product Group 1"
+      ],
+      "collections": [],
+      "product_type": "Orthopedic Devices",
+      "m6_category": null,
+      "quote_only": false,
+      "fda_registered": false,
+      "pdac_approved": false,
+      "taa_compliant": false,
+      "berry_compliant": false,
+      "mspv_listed": false,
+      "latex_free": false,
+      "country_of_origin": null
     },
     {
       "sku": "REGENICOOL-PRO",
@@ -6364,34 +7388,46 @@ export const PUBLIC_CATALOG = {
   ],
   "categories": [
     {
+      "slug": "consumable",
+      "name": "Consumable",
+      "parent": null,
+      "count": 4
+    },
+    {
+      "slug": "ppe",
+      "name": "PPE",
+      "parent": null,
+      "count": 12
+    },
+    {
+      "slug": "diagnostics",
+      "name": "Diagnostics",
+      "parent": null,
+      "count": 31
+    },
+    {
+      "slug": "surgical",
+      "name": "Surgical",
+      "parent": null,
+      "count": 25
+    },
+    {
       "slug": "orthotics",
       "name": "Orthotics",
       "parent": null,
       "count": 28
     },
     {
-      "slug": "diagnostics",
-      "name": "Diagnostics",
-      "parent": null,
-      "count": 21
-    },
-    {
-      "slug": "ppe",
-      "name": "PPE",
-      "parent": null,
-      "count": 10
-    },
-    {
-      "slug": "surgical",
-      "name": "Surgical",
-      "parent": null,
-      "count": 11
-    },
-    {
       "slug": "supplements",
       "name": "Supplements",
       "parent": null,
       "count": 17
+    },
+    {
+      "slug": "dme",
+      "name": "DME",
+      "parent": null,
+      "count": 1
     }
   ],
   "collections": [
@@ -6452,8 +7488,7 @@ export const PUBLIC_CATALOG = {
         "speedy-swab-covid-19-flu-self-test-2-pack",
         "speedyswab-covid-19-flu-self-test",
         "status-covid-19-flu-rapid-test",
-        "genabio-covid-19-at-home-tests-2-pack",
-        "genabio-covid-19-at-home-test"
+        "genabio-covid-19-at-home-tests-2-pack"
       ],
       "category": "Diagnostics"
     },
