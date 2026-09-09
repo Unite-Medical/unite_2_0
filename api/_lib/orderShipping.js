@@ -1,4 +1,6 @@
+import { orderApprovalGate } from './orderApproval.js';
 import crypto from 'node:crypto';
+import {validShippingOrigin} from './shippingOrigin.js';
 
 function stableId(prefix, value) {
   return `${prefix}_${crypto.createHash('sha256').update(String(value)).digest('hex').slice(0, 20)}`;
@@ -7,13 +9,16 @@ function number(value) { return Number(value) || 0; }
 
 export function buildLabelRequest({ order, address, items = [], now = new Date() } = {}) {
   if (!order) return { ok: false, reason: 'order_not_found' };
+  const approvalGate=orderApprovalGate(order); if(!approvalGate.ok)return approvalGate;
   if (!['paid', 'terms_approved'].includes(order.payment_status)) return { ok: false, reason: 'payment_not_released' };
   if (order.status !== 'inventory_reserved') return { ok: false, reason: 'inventory_not_reserved' };
   if (!address || address.id !== order.ship_to_address_id) return { ok: false, reason: 'shipping_address_not_found' };
   if (!items.length) return { ok: false, reason: 'order_lines_required' };
   const service = order.ship_method || 'fedex_ground';
-  const carrier = service.startsWith('ups') ? 'ups' : service.startsWith('usps') ? 'stamps_com' : 'fedex';
-  const weight = Math.max(2, items.reduce((sum, item) => sum + number(item.qty) * 0.6, 0));
+  const carrier = order.carrier || (service.startsWith('ups') ? 'ups' : service.startsWith('usps') ? 'stamps_com' : 'fedex');
+  const pack=order.shipping_package;
+  if(!pack?.weight?.value||!pack?.dimensions?.length||!pack?.dimensions?.width||!pack?.dimensions?.height)return {ok:false,reason:'verified_shipping_package_required'};
+  if(!validShippingOrigin(order.ship_from))return {ok:false,reason:'verified_shipping_origin_required'};
   const shipDate = (now instanceof Date ? now : new Date(now)).toISOString().slice(0, 10);
   return {
     ok: true,
@@ -24,11 +29,9 @@ export function buildLabelRequest({ order, address, items = [], now = new Date()
       packageCode: 'package',
       confirmation: 'delivery',
       shipDate,
-      weight: { value: +weight.toFixed(1), units: 'pounds' },
-      shipFrom: {
-        name: 'Unite Medical', company: 'Unite Medical', street1: '1487 Trae Lane',
-        city: 'Lithia Springs', state: 'GA', postalCode: '30122', country: 'US',
-      },
+      weight: pack.weight,
+      dimensions: pack.dimensions,
+      shipFrom: order.ship_from,
       shipTo: {
         name: address.recipient || address.label || order.customer_name,
         company: address.company || order.customer_name,

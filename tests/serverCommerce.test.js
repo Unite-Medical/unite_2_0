@@ -74,7 +74,8 @@ test('server order draft requires PO and uses authoritative price, payment, addr
   assert.equal(result.lines[0].unit_price, 100);
   assert.equal(result.lines[0].ext_price, 200);
   assert.equal(result.order.subtotal, 200);
-  assert.equal(result.order.total, 242);
+  assert.equal(result.order.total, 200);
+  assert.equal(result.order.totals_verified, false);
 
   assert.equal(buildAuthoritativeOrderDraft({ ...base, request: { ...base.request, po_number: '' } }).reason, 'customer_po_required');
   assert.equal(buildAuthoritativeOrderDraft({ ...base, request: { ...base.request, payment_method: 'card' } }).reason, 'payment_method_not_allowed');

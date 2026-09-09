@@ -1,3 +1,4 @@
+import {orderApprovalGate} from '../../_lib/orderApproval.js';
 import crypto from 'node:crypto';
 import { neon } from '@neondatabase/serverless';
 import { authorizeLiveRequest } from '../../_lib/auth.js';
@@ -29,6 +30,11 @@ function decryptToken(value) {
 async function getRow(sql, table, id) {
   const rows = await sql`SELECT data FROM um_rows WHERE tbl=${table} AND id=${id} AND deleted=false LIMIT 1`;
   return rows[0]?.data || null;
+}
+async function linkedOrderApproval(sql,po){
+ let orderId=po?.order_id;
+ if(!orderId&&po?.sourcing_request_id){const request=await getRow(sql,'sourcing_requests',po.sourcing_request_id);orderId=request?.order_id;if(!orderId&&request?.quote_id){const quote=await getRow(sql,'quotes',request.quote_id);orderId=quote?.accepted_order_id;}}
+ return orderId?orderApprovalGate(await getRow(sql,'orders',orderId)):{ok:true};
 }
 export function validateVendorPurchaseOrderDelivery(po, outbox) {
   if (!po) return { ok: false, reason: 'purchase_order_not_found' };
@@ -75,7 +81,8 @@ export async function retryVendorPurchaseOrderOutbox(sql, outbox, { claimed = fa
     return { purchase_order: null, outbox: current, claimed: false };
   }
   const po = await getRow(sql, 'purchase_orders', current.ref_id);
-  const validation = validateVendorPurchaseOrderDelivery(po, current);
+  const approval=await linkedOrderApproval(sql,po);
+  const validation = approval.ok?validateVendorPurchaseOrderDelivery(po, current):approval;
   if (!validation.ok) {
     const cancelled = {
       ...current, status: 'cancelled', last_error: validation.reason,
@@ -162,6 +169,7 @@ export default async function handler(req, res) {
     if (!poId || idempotencyKey.length < 8 || !Number.isInteger(expectedRevision)) return sendJson(res, 400, { error: 'po_idempotency_and_revision_required' });
     let po = await getRow(sql, 'purchase_orders', poId);
     if (!po) return sendJson(res, 404, { error: 'po_not_found' });
+    const approval=await linkedOrderApproval(sql,po);if(!approval.ok)return sendJson(res,409,{error:approval.reason});
     const revision = Number(po.revision || 1);
     if (expectedRevision !== revision) return sendJson(res, 409, { error: 'purchase_order_revision_changed' });
     const sendId = stableId('posend', `${poId}:${revision}`);

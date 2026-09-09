@@ -1,3 +1,4 @@
+import {trackFunnel} from '../lib/funnelTelemetry.js';
 import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { D } from '../tokens.js';
@@ -50,7 +51,9 @@ export function Register() {
     e.preventDefault();
     setError(null); setSubmitting(true);
     try {
+      trackFunnel('account_started');
       const session = await auth.register({ email: form.email, password: form.password, name: form.name, org_name: form.org_name, segment: form.segment, website: form.website });
+      trackFunnel('account_completed');
       navigate(quoteToken ? `/q/${encodeURIComponent(quoteToken)}` : session.role === 'admin' ? '/admin' : '/dashboard');
     } catch (err) {
       setError(err.message || 'Could not create account.');

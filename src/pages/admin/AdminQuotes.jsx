@@ -1,3 +1,4 @@
+import {QuoteDeliveryReview} from './QuoteDeliveryReview.jsx';
 /**
  * Admin quote desk — PRD-16 Phase 5 + 7.
  *
@@ -251,6 +252,7 @@ export function AdminQuotes() {
               </div>
 
               {/* Action banners */}
+              <QuoteDeliveryReview key={active.id} quoteId={active.id}/>
               {active.needs_approval && (
                 <div style={{ marginTop: 18, padding: 16, background: '#fdf6e3', border: '1px solid #ecd9a8', borderRadius: 8, display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
                   <div style={{ fontSize: 13, color: '#7c5b1d', flex: 1, minWidth: 220 }}>

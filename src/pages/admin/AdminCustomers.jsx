@@ -1,3 +1,6 @@
+import {CustomerTools} from './CustomerTools.jsx';
+import { Link } from 'react-router-dom';
+import '../../styles/workspace.css';
 import { useState } from 'react';
 import { D } from '../../tokens.js';
 import { AdminShell } from '../../components/layout/AdminShell.jsx';
@@ -19,6 +22,8 @@ export function AdminCustomers() {
   const { isMobile } = useViewport();
   const padX = isMobile ? 18 : 40;
   const orgs = db.useTable('organizations', { orderBy: 'total_spend', dir: 'desc' });
+  const [search, setSearch] = useState('');
+  const visibleOrgs = orgs.filter(o=>`${o.name||''} ${o.account_rep||''}`.toLowerCase().includes(search.toLowerCase()));
   const [activeId, setActiveId] = useState(orgs[0]?.id);
   const active = db.useRow('organizations', activeId);
   const recentOrders = db.useTable('orders', { where: { customer_id: activeId }, orderBy: 'placed_at', dir: 'desc' }).slice(0, 6);
@@ -39,13 +44,17 @@ export function AdminCustomers() {
 
   return (
     <AdminShell active="customers">
+      <CustomerTools/>
       <div style={{ padding: `${isMobile ? 28 : 40}px ${padX}px ${isMobile ? 18 : 24}px`, borderBottom: `1px solid ${D.line}` }}>
         <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 12 }}>SALES · CUSTOMERS</div>
+        <Link to="/admin/launch?tab=customers" style={{float:'right',color:D.plum}}>Review customer activation →</Link>
         <h1 style={{ fontFamily: D.display, fontSize: 'clamp(34px, 5.6vw, 56px)', fontWeight: 400, letterSpacing: -1.3, lineHeight: 1.02, margin: 0 }}>Customers · {orgs.length}</h1>
       </div>
       <div style={{ padding: isMobile ? 20 : 32, display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '320px 1fr', gap: 20 }}>
         <div style={{ background: D.card, borderRadius: 12, border: `1px solid ${D.line}`, overflow: 'hidden' }}>
-          {orgs.map((o) => (
+          <label style={{display:'grid',gap:8,padding:16,fontSize:14}}>Find a customer<input type="search" value={search} onChange={e=>setSearch(e.target.value)} placeholder="Company or account rep" style={{padding:12,fontSize:16,border:`1px solid ${D.line}`,borderRadius:5}}/></label>
+          {!visibleOrgs.length && <p style={{padding:16}}>No matching customers.</p>}
+          {visibleOrgs.map((o) => (
             <button key={o.id} onClick={() => setActiveId(o.id)} style={{ width: '100%', textAlign: 'left', padding: '14px 16px', borderTop: `1px solid ${D.line}`, background: activeId === o.id ? 'rgba(29,92,77,.06)' : 'transparent', cursor: 'pointer', fontFamily: D.sans, color: D.ink, display: 'grid', gridTemplateColumns: '1fr auto', gap: 8 }}>
               <div>
                 <div style={{ fontSize: 13, fontWeight: 600 }}>{o.name}</div>
@@ -163,9 +172,9 @@ export function AdminCustomers() {
               </table>
               </div>
 
-              <ContractPricingPanel org={active} isMobile={isMobile} />
-              <PaymentMethodsPanel org={active} />
-              <NotificationsPanel org={active} />
+              <details className="ws-details"><summary>Customer pricing</summary><ContractPricingPanel org={active} isMobile={isMobile} /></details>
+              <details className="ws-details"><summary>Payment methods</summary><PaymentMethodsPanel org={active} /></details>
+              <details className="ws-details"><summary>Email recipients</summary><NotificationsPanel org={active} /></details>
             </>
           )}
         </div>

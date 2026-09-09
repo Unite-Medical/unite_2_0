@@ -118,6 +118,16 @@ export const auth = {
     }
   },
 
+  async switchRole(role){
+    const response=await fetch('/api/auth/role',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({role})});const body=await response.json();if(!response.ok)throw new Error(body.error||'Role switch failed');const {stopRemoteDb,startRemoteDb}=await import('./remoteDb.js');stopRemoteDb();session=body.session;db.clearPublic();notify();if(session?.role==='admin')await startRemoteDb({session});return session;
+  },
+  async completeMfa(challenge,code,recoveryCode) {
+    const response=await fetch('/api/auth/mfa',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({challenge,code,recovery_code:recoveryCode})});
+    const body=await response.json();if(!response.ok)throw new Error((body.error||'Verification failed').replaceAll('_',' '));
+    session=body.session;try{localStorage.removeItem(LOGOUT_PENDING_KEY);}catch{/* storage unavailable */}notify();
+    if(session?.role==='admin'){const {startRemoteDb}=await import('./remoteDb.js');await startRemoteDb({session});}
+    return body;
+  },
   async login(email, password) {
     if (typeof window !== 'undefined') {
       try {
@@ -128,6 +138,7 @@ export const auth = {
         });
         if (response.ok) {
           const body = await response.json();
+          if(body.mfa_required)return body;
           session = body.session;
           try { localStorage.removeItem(LOGOUT_PENDING_KEY); } catch { /* storage unavailable */ }
           notify();
@@ -176,6 +187,7 @@ export const auth = {
         });
         const body = await response.json().catch(() => ({}));
         if (response.ok) {
+          if(body.mfa_required)return body;
           session = body.session;
           try { localStorage.removeItem(LOGOUT_PENDING_KEY); } catch { /* storage unavailable */ }
           notify();

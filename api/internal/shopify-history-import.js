@@ -26,8 +26,7 @@ export default async function handler(req, res) {
     const { run_id, records = [], reset_entity = null } = JSON.parse((await readRawBody(req)).toString('utf8') || '{}');
     if (reset_entity) {
       if (!run_id || !['inventory_snapshot'].includes(reset_entity)) return sendJson(res, 400, { error: 'invalid_reset' });
-      await sql`DELETE FROM um_rows WHERE tbl='shopify_history_rows' AND data->>'run_id'=${String(run_id)} AND data->>'entity'=${String(reset_entity)}`;
-      return sendJson(res, 200, { ok: true, reset_entity });
+      return sendJson(res,409,{error:'retained_snapshot_use_new_run_id'});
     }
     if (!run_id || !Array.isArray(records) || records.length < 1 || records.length > 250) return sendJson(res, 400, { error: 'invalid_import_batch' });
     await sql`CREATE TABLE IF NOT EXISTS um_rows (tbl TEXT NOT NULL, id TEXT NOT NULL, data JSONB NOT NULL, updated_at TIMESTAMPTZ NOT NULL DEFAULT now(), deleted BOOLEAN NOT NULL DEFAULT false, PRIMARY KEY (tbl, id))`;

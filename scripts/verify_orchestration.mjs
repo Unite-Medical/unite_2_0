@@ -104,7 +104,11 @@ section('PRD-20 · webhook bus');
 section('PRD-24 · fulfillment');
 {
   // Build a synthetic order with one in-stock SKU and one short SKU.
-  const sku = db.list('inventory')[0]?.sku || 'SKU-1';
+  // The production opening snapshot is provisional; the verifier needs its own
+  // reconciled, unexpired fixture rather than assuming the first seed row is sellable.
+  const sku = 'VERIFY-STOCKED';
+  db.insert('inventory',{id:'verify_stock',sku,warehouse_id:'wh_atl',on_hand:10,reserved:0,owner_type:'unite'});
+  db.insert('lots',{id:'verify_lot',lot_number:'VERIFY-LOT',product_sku:sku,warehouse_id:'wh_atl',qty_remaining:10,expiration_date:'2099-12-31',status:'available'});
   const orderId = `UM-TEST-${db.count('orders')}`;
   db.insert('orders', { id: orderId, customer_id: 'org_test', customer_name: 'Verifier Health', contact_email: 'buyer@verifier.example', total: 500, payment_method: 'ach', payment_terms: 'prepaid', payment_status: 'pending', status: 'payment_pending', segment: 'asc' });
   db.insert('order_items', { id: uid('oi'), order_id: orderId, sku, name: 'In-stock item', qty: 1, unit_price: 100, ext_price: 100 });
@@ -120,7 +124,7 @@ section('PRD-24 · fulfillment');
   ok(steps.find((s) => s.step === 'validate')?.status === 'completed', 'validate completed');
   ok(res.backorders.length >= 1, 'shortfall created a backorder');
   ok(db.list('shipments', { where: { order_id: orderId } }).length >= 1, 'shipment created');
-  ok(db.list('shipments', { where: { order_id: orderId } })[0].status === 'label_created', 'label creation does not mark shipped');
+  ok(db.list('shipments', { where: { order_id: orderId } })[0]?.status === 'label_created', 'label creation does not mark shipped');
   const handoff = await confirmShipmentHandoff(orderId, { actor_id: 'verifier', handoff_reference: 'VERIFY-CARRIER-SCAN' });
   ok(handoff.ok, 'physical handoff posts shipment');
   ok(db.list('documents', { where: { document_type: 'packing_slip', ref_id: orderId } }).length >= 1, 'packing slip document generated');
@@ -258,18 +262,20 @@ section('PRD-25 · PO receiving + lots (FEFO)');
   ok(db.get('purchase_orders', po.id).status === 'sent', 'PO sent');
 
   const onHandBefore = availability.onHand(sku, 'wh_atl');
+  const earlyExpiry=new Date(Date.now()+90*86400000).toISOString().slice(0,10);
+  const lateExpiry=new Date(Date.now()+180*86400000).toISOString().slice(0,10);
   // Partial receipt with a lot + expiry.
-  const r1 = await purchaseOrders.receive(po.id, [{ sku, qty: 40, lot_number: 'LOTA', expiration_date: '2027-01-01', unit_cost: 1 }], { warehouse_id: 'wh_atl' });
+  const r1 = await purchaseOrders.receive(po.id, [{ sku, qty: 40, lot_number: 'LOTA', expiration_date: lateExpiry, unit_cost: 1 }], { warehouse_id: 'wh_atl' });
   ok(r1.status === 'partial', `partial receipt leaves PO partial (got ${r1.status})`);
   ok(availability.onHand(sku, 'wh_atl') === onHandBefore + 40, 'on_hand += 40 via ledger receipt');
 
   // Idempotent replay of the same receipt is a no-op.
-  const dup = await purchaseOrders.receive(po.id, [{ sku, qty: 40, lot_number: 'LOTA', expiration_date: '2027-01-01', unit_cost: 1, idempotency_key: r1.lots[0] ? `po_recv:${po.id}:${sku}:LOTA:40` : undefined }]);
+  const dup = await purchaseOrders.receive(po.id, [{ sku, qty: 40, lot_number: 'LOTA', expiration_date: lateExpiry, unit_cost: 1, idempotency_key: r1.lots[0] ? `po_recv:${po.id}:${sku}:LOTA:40` : undefined }]);
   ok(availability.onHand(sku, 'wh_atl') === onHandBefore + 40, 'replayed receipt did not double on_hand');
   void dup;
 
   // Finish the PO with a second, earlier-expiring lot.
-  const r2 = await purchaseOrders.receive(po.id, [{ sku, qty: 60, lot_number: 'LOTB', expiration_date: '2026-09-01', unit_cost: 1 }], { warehouse_id: 'wh_atl' });
+  const r2 = await purchaseOrders.receive(po.id, [{ sku, qty: 60, lot_number: 'LOTB', expiration_date: earlyExpiry, unit_cost: 1 }], { warehouse_id: 'wh_atl' });
   ok(r2.status === 'received', 'full receipt → PO received');
   const line = db.get('purchase_orders', po.id).line_items[0];
   ok(line.received_qty === 100, 'line.received_qty == 100 (PO math)');

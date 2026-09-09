@@ -65,15 +65,23 @@ async function pull({ full = false } = {}) {
   const url = !full && stateRef.latest
     ? `${SYNC_URL}?since=${encodeURIComponent(stateRef.latest)}`
     : SYNC_URL;
-  const res = await fetch(url, { headers: headers(), credentials: 'include' });
+  let cursor=null,total=0,latest=null;const seen=new Set();
+  do {
+  const pageUrl=cursor?`${url}${url.includes('?')?'&':'?'}cursor=${encodeURIComponent(cursor)}`:url;
+  const res = await fetch(pageUrl, { headers: headers(), credentials: 'include' });
   if (!res.ok) {
     authorizationLost(res.status);
     throw new Error(`pull failed: HTTP ${res.status}`);
   }
   const json = await res.json();
-  if (json.latest) stateRef.latest = json.latest;
+  if (json.latest) latest = json.latest;
   if (json.row_count > 0) db.applyRemoteSnapshot(json.tables);
-  return json.row_count || 0;
+  total+=json.row_count||0;
+  cursor=json.next_cursor||null;
+  if(cursor){if(seen.has(cursor)||seen.size>=1000)throw new Error('Database pagination did not complete');seen.add(cursor);}
+  }while(cursor);
+  if(latest)stateRef.latest=latest;
+  return total;
 }
 
 async function flushQueue() {

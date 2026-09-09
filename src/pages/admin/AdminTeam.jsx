@@ -1,3 +1,4 @@
+import {StaffRoles} from './StaffRoles.jsx';
 import { useState } from 'react';
 import { D } from '../../tokens.js';
 import { AdminShell } from '../../components/layout/AdminShell.jsx';
@@ -44,6 +45,7 @@ export function AdminTeam() {
 
   return (
     <AdminShell active="team">
+      <StaffRoles/>
       <div style={{ padding: `${isMobile ? 28 : 40}px ${padX}px 24px`, borderBottom: `1px solid ${D.line}` }}>
         <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 12 }}>TEAM · ORDER-ENTRY AUTHORITY (RBAC)</div>
         <h1 style={{ fontFamily: D.display, fontSize: 'clamp(34px, 5.6vw, 56px)', fontWeight: 400, letterSpacing: -1.3, lineHeight: 1.02, margin: 0 }}>Rep authority</h1>

@@ -5,13 +5,9 @@ import { fileURLToPath } from 'node:url';
 
 // https://vite.dev/config/
 //
-// `npm run dev` runs only the Vite frontend — the /api serverless functions
-// don't run locally, so proxied integrations (HubSpot, etc.) would fall back
-// to stubs. We forward /api to the deployed Vercel functions (which hold the
-// secrets) so localhost shows real data. Vite proxies server-side, so there's
-// no browser CORS issue. Override the target with VITE_DEV_API_TARGET, e.g.
-// point it at a local `vercel dev` on :3000.
-const DEV_API_TARGET = process.env.VITE_DEV_API_TARGET || 'https://unite-2-0.vercel.app';
+// Local review defaults to a local API server. Set VITE_DEV_API_TARGET explicitly
+// to a configured staging deployment when authenticated integration testing is ready.
+const DEV_API_TARGET = process.env.VITE_DEV_API_TARGET || 'http://127.0.0.1:4399';
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
 

@@ -1,3 +1,4 @@
+import { beginMfa,requiresMfa } from '../_lib/mfa.js';
 import crypto from 'node:crypto';
 import { neon } from '@neondatabase/serverless';
 import {
@@ -24,6 +25,7 @@ function safeSession(profile, organization = null) {
     email: profile.email,
     name: profile.name || null,
     role: profile.role,
+    roles:[...new Set([profile.role,...(profile.roles||[])])],
     org_id: profile.org_id || null,
     approval_status: organization?.approval_status || profile.approval_status || null,
     commerce_hold_reason: organization?.commerce_hold_reason || null,
@@ -118,7 +120,7 @@ export default async function handler(req, res) {
         clearSessionCookie(res);
         return sendJson(res, 401, { error: live.reason });
       }
-      const session = safeSession(profile, await organizationFor(sql, profile));
+      const session = {...safeSession(profile, await organizationFor(sql, profile)),mfa_verified:claimed.mfa_verified===true,role:claimed.role};
       setSessionCookie(res, createSessionToken(session));
       return sendJson(res, 200, { session });
     } catch (error) {
@@ -207,6 +209,7 @@ export default async function handler(req, res) {
       clearThrottle(sql, descriptors.find((row) => row.scope === 'pair').id),
       releaseSuccessfulIpAttempt(sql, descriptors.find((row) => row.scope === 'ip').id),
     ]);
+    if(requiresMfa([profile.role,...(profile.roles||[])])) { clearSessionCookie(res); return sendJson(res,200,await beginMfa(sql,profile)); }
     const session = safeSession(profile, await organizationFor(sql, profile));
     setSessionCookie(res, createSessionToken(session));
     logEvent('auth.session', 'login_succeeded', { user_id: session.user_id, role: session.role });

@@ -7,7 +7,7 @@ const QUERIES = {
           id legacyResourceId handle title descriptionHtml updatedAt
           seo { title description }
           image { url altText }
-          products(first: 250) { nodes { id legacyResourceId handle } }
+          products(first: 250) { pageInfo { hasNextPage endCursor } nodes { id legacyResourceId handle } }
         }
       }
     }`,
@@ -53,7 +53,7 @@ export async function exportShopifySnapshot({ endpoint, token, datasets = Object
     const query = QUERIES[dataset];
     if (!query) throw new Error(`unsupported_shopify_dataset:${dataset}`);
     let cursor = null;
-    const rows = [];
+    const rows = [];const cursors=new Set();
     do {
       const response = await fetchImpl(endpoint, {
         method: 'POST',
@@ -67,8 +67,11 @@ export async function exportShopifySnapshot({ endpoint, token, datasets = Object
       }
       const connection = payload.data?.[dataset];
       if (!connection) throw new Error(`shopify_snapshot_shape_invalid:${dataset}`);
+      if(dataset==='collections'&&connection.nodes?.some(n=>n.products?.pageInfo?.hasNextPage))throw new Error('collection_product_pagination_required');
       rows.push(...(connection.nodes || []));
       cursor = connection.pageInfo?.hasNextPage ? connection.pageInfo.endCursor : null;
+      if(connection.pageInfo?.hasNextPage&&(!cursor||cursors.has(cursor)))throw new Error('shopify_snapshot_cursor_invalid');
+      if(cursor)cursors.add(cursor);
     } while (cursor);
     output[dataset] = rows;
   }

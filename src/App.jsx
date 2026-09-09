@@ -6,6 +6,7 @@ import { PageLoader } from './components/layout/PageLoader.jsx';
 import { Bootstrap } from './components/layout/Bootstrap.jsx';
 import { RequireAdmin } from './components/layout/RequireAdmin.jsx';
 import { RequireSession } from './components/layout/RequireSession.jsx';
+const AdminTesting = lazy(() => import('./pages/admin/AdminTesting.jsx').then(m=>({default:m.AdminTesting})));
 
 const Homepage = lazy(() => import('./pages/Homepage.jsx').then((m) => ({ default: m.Homepage })));
 const Catalog = lazy(() => import('./pages/Catalog.jsx').then((m) => ({ default: m.Catalog })));
@@ -99,13 +100,23 @@ const AdminTransfers = lazy(() => import('./pages/admin/AdminTransfers.jsx').the
 const AdminTeam = lazy(() => import('./pages/admin/AdminTeam.jsx').then((m) => ({ default: m.AdminTeam })));
 const AdminConsignment = lazy(() => import('./pages/admin/AdminConsignment.jsx').then((m) => ({ default: m.AdminConsignment })));
 const AdminShopifyHistory = lazy(() => import('./pages/admin/AdminShopifyHistory.jsx').then((m) => ({ default: m.AdminShopifyHistory })));
+const AdminBarcodes = lazy(() => import('./pages/admin/AdminBarcodes.jsx').then((m) => ({ default: m.AdminBarcodes })));
 const AccountOrder = lazy(() => import('./pages/AccountOrder.jsx').then((m) => ({ default: m.AccountOrder })));
 const DistributorPortal = lazy(() => import('./pages/DistributorPortal.jsx').then((m) => ({ default: m.DistributorPortal })));
 const VendorPurchaseOrderReview = lazy(() => import('./pages/VendorPurchaseOrderReview.jsx').then((m) => ({ default: m.VendorPurchaseOrderReview })));
 
+const ActivateAccount = lazy(() => import('./pages/ActivateAccount.jsx').then(m=>({default:m.ActivateAccount})));
+const AdminPacking = lazy(() => import('./pages/admin/AdminPacking.jsx').then(m=>({default:m.AdminPacking})));
+const StaffWork = lazy(() => import('./pages/StaffWork.jsx').then(m=>({default:m.StaffWork})));
+const AdminDocuments = lazy(() => import('./pages/admin/AdminDocuments.jsx').then(m=>({default:m.AdminDocuments})));
+const AdminDesk = lazy(() => import('./pages/admin/AdminDesk.jsx').then(m=>({default:m.AdminDesk})));
+const AdminLaunch = lazy(() => import('./pages/admin/AdminLaunch.jsx').then(m=>({default:m.AdminLaunch})));
+const AccountDocuments = lazy(() => import('./pages/AccountDocuments.jsx').then(m=>({default:m.AccountDocuments})));
+
 export default function App() {
   return (
     <BrowserRouter>
+      {import.meta.env.VITE_UNITE_ENVIRONMENT==='staging'&&<div style={{background:'#fff0c2',color:'#30270e',padding:'10px 16px',textAlign:'center',fontSize:14}}>Staging · Workflow testing · <a href="/admin/testing">Damon’s checklist and feedback</a></div>}
       <a href="#main" className="um-skip-link">Skip to content</a>
       <ScrollToTop />
       <Bootstrap />
@@ -182,6 +193,14 @@ export default function App() {
           <Route path="/segments/ems" element={<SegmentEMS />} />
           <Route path="/segments/distributors" element={<SegmentDealers />} />
 
+          <Route path="/activate" element={<ActivateAccount />} />
+          <Route path="/account/documents" element={<RequireSession roles={['customer','distributor']}><AccountDocuments /></RequireSession>} />
+          <Route path="/work" element={<RequireSession roles={['admin','sales','sales_manager','customer_service','warehouse_operator','warehouse_manager','finance','sourcing','sourcing_manager']}><StaffWork /></RequireSession>} />
+          <Route path="/admin/packing" element={<RequireAdmin><AdminPacking /></RequireAdmin>} />
+          <Route path="/admin/documents" element={<RequireAdmin><AdminDocuments /></RequireAdmin>} />
+          <Route path="/admin/desk" element={<RequireAdmin><AdminDesk /></RequireAdmin>} />
+          <Route path="/admin/launch" element={<RequireAdmin><AdminLaunch /></RequireAdmin>} />
+          <Route path="/admin/testing" element={<RequireAdmin><AdminTesting /></RequireAdmin>} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
@@ -214,6 +233,7 @@ export default function App() {
           <Route path="/admin/team"      element={<RequireAdmin><AdminTeam /></RequireAdmin>} />
           <Route path="/admin/consignment" element={<RequireAdmin><AdminConsignment /></RequireAdmin>} />
           <Route path="/admin/shopify-history" element={<RequireAdmin><AdminShopifyHistory /></RequireAdmin>} />
+          <Route path="/admin/inventory/barcodes" element={<RequireAdmin><AdminBarcodes /></RequireAdmin>} />
           <Route path="/admin/quotes"    element={<RequireAdmin><AdminQuotes /></RequireAdmin>} />
           <Route path="/admin/sourcing"  element={<RequireAdmin><AdminSourcing /></RequireAdmin>} />
           <Route path="/admin/orders"    element={<RequireAdmin><AdminOrders /></RequireAdmin>} />

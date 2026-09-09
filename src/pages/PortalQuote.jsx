@@ -1,3 +1,5 @@
+import {trackFunnel} from '../lib/funnelTelemetry.js';
+import '../styles/workspace.css';
 /**
  * Customer self-serve quoting portal — PRD-19.
  *
@@ -8,7 +10,7 @@
  * box captures anything we don't stock.
  */
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { D } from '../tokens.js';
 import { Nav } from '../components/layout/Nav.jsx';
@@ -35,6 +37,8 @@ export function PortalQuote() {
   const accountPrices = db.useTable('account_prices');
 
   const [query, setQuery] = useState('');
+  useEffect(()=>{trackFunnel('session_started');},[]);
+  const [intent,setIntent]=useState('');const [category,setCategory]=useState('');
   const [cart, setCart] = useState(() => {
     const sku = searchParams.get('sku');
     const qty = Math.max(1, Number(searchParams.get('qty')) || 1);
@@ -56,8 +60,9 @@ export function PortalQuote() {
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     const list = q ? products.filter((p) => `${p.name} ${p.sku} ${p.category || ''}`.toLowerCase().includes(q)) : products;
-    return list.slice(0, 40);
-  }, [products, query]);
+    const pattern={diagnostics:/diagnostic|test|lab/i,ppe:/ppe|glove|mask|gown|protect/i,orthotics:/orthot|brace|recovery|support/i}[intent];
+    return list.filter(p=>(!category||p.category===category)&&(!pattern||pattern.test(`${p.name} ${p.category||''}`))).slice(0, 40);
+  }, [products, query, category, intent]);
 
   const lines = useMemo(() => Object.entries(cart)
     .filter(([, qty]) => qty > 0)
@@ -77,6 +82,7 @@ export function PortalQuote() {
   const total = commerce.can_view_prices && lines.every((line) => line.ext != null) ? lines.reduce((a, l) => a + l.ext, 0) : null;
 
   function setQty(sku, qty) {
+    trackFunnel(qty<=0?'item_removed':cart[sku]?'quantity_changed':'item_added');
     setCart((c) => ({ ...c, [sku]: Math.max(0, Math.round(qty || 0)) }));
     setIdempotencyKey(newQuoteKey());
     setQuoteError(null);
@@ -95,6 +101,7 @@ export function PortalQuote() {
     });
     const payload = await response.json().catch(() => ({}));
     if (response.ok && payload.ok && payload.token) {
+      trackFunnel('quote_generated');trackFunnel('business_verification_passed');
       navigate(`/q/${payload.token}`);
       return payload;
     }
@@ -105,16 +112,17 @@ export function PortalQuote() {
       business_website_unreachable: 'We could not reach the company website.',
     }[payload.error] || 'We could not generate this quote. Check the details and try again.';
     setQuoteError(message);
+    trackFunnel('business_verification_failed');
     return { ok: false, reason: payload.error || 'quick_quote_failed' };
   }
 
   async function generate() {
     setBusy(true);
-    await generateFor({ shipping_zip: org?.shipping_zip || '00000' });
-    setBusy(false);
+    try{await generateFor({ shipping_zip: org?.shipping_zip || '' });}catch{setQuoteError('Could not reach the quote service. Your list is saved here; try again.');}finally{setBusy(false);}
   }
 
   async function verifyAndGenerate() {
+    trackFunnel('business_verification_started');
     setIdentityError(null);
     setBusy(true);
     if (!identity.company_name || !identity.contact_name || !identity.email || !identity.website || !identity.shipping_zip) {
@@ -122,8 +130,7 @@ export function PortalQuote() {
       setBusy(false);
       return;
     }
-    await generateFor(identity);
-    setBusy(false);
+    try{await generateFor(identity);}catch{setQuoteError('Could not reach the quote service. Your list is saved here; try again.');}finally{setBusy(false);}
   }
 
   async function submitSourcing() {
@@ -132,6 +139,7 @@ export function PortalQuote() {
       setSourceError('Enter your company and work email in the quote form first.');
       return;
     }
+    trackFunnel('noncatalog_item_added');
     setSourceBusy(true);
     setSourceError(null);
     try {
@@ -174,11 +182,13 @@ export function PortalQuote() {
         </div>
 
         <div style={{ maxWidth: 1280, margin: '0 auto', padding: `8px ${pad}px 80px`, display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.5fr 1fr', gap: 24, alignItems: 'start' }}>
+          <section className="ws-card" style={{gridColumn:'1 / -1'}}><h2>What do you need?</h2><div className="ws-actions">{[['restock','Restock'],['substitute','Find a substitute'],['diagnostics','Diagnostic tests'],['ppe','PPE'],['orthotics','Braces and recovery'],['source','Source something else']].map(([id,label])=><button className={`ws-button ${intent===id?'primary':''}`} key={id} onClick={()=>{setIntent(id);setCategory('');trackFunnel('intent_selected',{intent:id});}}>{label}</button>)}</div><label>Category<select value={category} onChange={e=>{setCategory(e.target.value);trackFunnel('category_viewed',{category:e.target.value});}}><option value="">All categories</option>{[...new Set(products.map(p=>p.category).filter(Boolean))].sort().map(c=><option key={c}>{c}</option>)}</select></label><p>Your quote list stays intact when you switch categories.</p></section>
           {/* Catalog picker */}
           <div>
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
+              onBlur={()=>{if(query.trim())trackFunnel('search_performed');}}
               placeholder="Search the catalog — name, SKU, or category"
               style={{ width: '100%', padding: '14px 16px', borderRadius: 12, border: `1.5px solid ${D.line}`, fontSize: 15, fontFamily: D.sans, background: D.card, color: D.ink, boxSizing: 'border-box' }}
             />

@@ -1,0 +1,11 @@
+.git
+.env*
+migration-data
+customer-data
+customer-certificates
+docs
+tests
+tmp
+forecasting
+*.csv
+*.zip

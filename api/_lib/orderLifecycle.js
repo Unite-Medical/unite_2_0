@@ -1,3 +1,4 @@
+import { orderApprovalGate } from './orderApproval.js';
 import crypto from 'node:crypto';
 import { buildSettlementDrafts } from './distributorSettlement.js';
 import { buildCustomerIoOutbox } from './customerioOutbox.js';
@@ -67,6 +68,7 @@ export function buildHandoffNotification({ order, shipment, organizations = [], 
 
 export function planPaidOrderRelease({ order, items = [], inventory = [], lots = [], ownerLots = [], reservations = [], now = new Date() } = {}) {
   if (!order) return { ok: false, reason: 'order_not_found' };
+  const approvalGate=orderApprovalGate(order); if(!approvalGate.ok)return approvalGate;
   const ownerOnlyNoCharge = order.distributor_flow === 'blind_ship' && order.payment_status === 'not_required' && number(order.total) === 0;
   if (!['paid', 'terms_approved'].includes(order.payment_status) && !ownerOnlyNoCharge) return { ok: false, reason: 'payment_not_released' };
   if (!items.length) return { ok: false, reason: 'order_lines_required' };
@@ -163,6 +165,7 @@ export function planOrderHandoff({
   now = new Date(),
 } = {}) {
   if (!order) return { ok: false, reason: 'order_not_found' };
+  const approvalGate=orderApprovalGate(order); if(!approvalGate.ok)return approvalGate;
   if (!shipment) return { ok: false, reason: 'shipment_not_found' };
   const actor = String(actorId || '').trim();
   const reference = String(handoffReference || '').trim();
@@ -368,6 +371,7 @@ export async function releasePaidOrder(sql, orderId, { actorId = 'payment_webhoo
       WHERE tbl='orders' AND id=${orderId} AND deleted=false
         AND (data->>'payment_status' IN ('paid','terms_approved')
           OR (data->>'payment_status'='not_required' AND data->>'distributor_flow'='blind_ship' AND COALESCE((data->>'total')::numeric,0)=0))
+        AND data=${JSON.stringify(orders[0])}::jsonb
         AND COALESCE((data->>'fulfillment_revision')::int,0)=${number(orders[0]?.fulfillment_revision)}
         AND NOT EXISTS (
           SELECT 1 FROM jsonb_to_recordset(${JSON.stringify(inventoryChecks)}::jsonb) AS expected(id text,on_hand numeric,reserved numeric)
@@ -475,6 +479,7 @@ export async function persistOrderHandoff(sql, orderId, {
     ...locks.map((id) => txn`SELECT pg_advisory_xact_lock(hashtext(${id}))`),
     txn`UPDATE um_rows SET data=${JSON.stringify(plan.order)}::jsonb,updated_at=now()
       WHERE tbl='orders' AND id=${orderId} AND deleted=false AND data->>'status' IN ('ready_to_ship','ready_for_pickup')
+        AND data=${JSON.stringify(orders[0])}::jsonb
         AND COALESCE((data->>'fulfillment_revision')::int,0)=${number(orders[0]?.fulfillment_revision)}
         AND EXISTS (SELECT 1 FROM um_rows s WHERE s.tbl='shipments' AND s.id=${plan.shipment.id} AND s.data->>'status' IN ('label_created','pickup_ready'))
         AND NOT EXISTS (
@@ -593,6 +598,7 @@ export function orderPaymentFromStripeEvent(event = {}) {
 
 export function planOrderPaymentApplication({ order, payment, now = new Date() } = {}) {
   if (!order) return { ok: false, reason: 'order_not_found' };
+  const approvalGate=orderApprovalGate(order); if(!approvalGate.ok)return approvalGate;
   if (!payment?.ok || payment.order_id !== order.id) return { ok: false, reason: 'payment_order_mismatch' };
   if (!(number(payment.amount) > 0)) return { ok: false, reason: 'invalid_payment_amount' };
   if (!payment.canonical_payment_id) return { ok: false, reason: 'canonical_payment_reference_required' };

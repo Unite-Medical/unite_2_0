@@ -317,6 +317,7 @@ export function AdminIntegrations() {
         </div>
       </div>
 
+      {serverHealth&&<section style={{padding:24}}><h2>Launch controls</h2><p>Configuration present does not prove a successful end-to-end test.</p><ul>{['mfa','shipping_origin','document_scanner','document_extraction','operations_digest'].map(k=><li key={k}>{serverHealth.services?.[k]?.label||k}: {serverHealth.services?.[k]?.configured?'Configuration present':'Configuration needed'}</li>)}</ul></section>}
       <div style={{ padding: isMobile ? 20 : 32, display: 'grid', gridTemplateColumns: '1fr', gap: 18 }}>
         {INTEGRATIONS.map((it) => {
           const s = status(it);

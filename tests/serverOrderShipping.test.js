@@ -4,6 +4,8 @@ import assert from 'node:assert/strict';
 import { buildLabelRequest, applyLabelEvidence } from '../api/_lib/orderShipping.js';
 
 const order = {
+  ship_from:{street1:'1 Test Warehouse',city:'Atlanta',state:'GA',postalCode:'30303',country:'US'},
+  shipping_package:{weight:{value:5,units:'pounds'},dimensions:{length:10,width:8,height:6,units:'inches'}},
   id: 'UM-SHIP-1', status: 'inventory_reserved', payment_status: 'paid',
   ship_to_address_id: 'addr_1', ship_method: 'fedex_ground', customer_name: 'Buyer ASC',
 };

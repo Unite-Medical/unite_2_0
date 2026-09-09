@@ -95,7 +95,7 @@ export function useSEO({
     document.title = fullTitle;
 
     setMeta({ name: 'description', content: description });
-    setMeta({ name: 'robots', content: noindex ? 'noindex,nofollow' : 'index,follow' });
+    setMeta({ name: 'robots', content: noindex || import.meta.env.VITE_UNITE_ENVIRONMENT==='staging' ? 'noindex,nofollow' : 'index,follow' });
 
     const canonicalHref = canonical
       ? (canonical.startsWith('http') ? canonical : `${SITE_URL}${canonical}`)

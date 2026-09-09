@@ -1,3 +1,4 @@
+import { requiresMfa } from './mfa.js';
 import crypto from 'node:crypto';
 import { safeEqual, sendJson } from './http.js';
 
@@ -21,11 +22,13 @@ export function createSessionToken(session, { secret, now = Date.now(), ttlMs = 
     email: session.email ? String(session.email).toLowerCase() : null,
     name: session.name || null,
     role: String(session.role || ''),
+    roles: Array.isArray(session.roles)?session.roles:[String(session.role||'')],
     org_id: session.org_id || null,
     approval_status: session.approval_status || null,
     commerce_hold_reason: session.commerce_hold_reason || null,
     tier: session.tier || null,
     session_revision: Number(session.session_revision || 0),
+    mfa_verified: session.mfa_verified === true,
     iat: Math.floor(now / 1000),
     exp: Math.floor((now + ttlMs) / 1000),
   };
@@ -74,10 +77,10 @@ export function passwordNeedsUpgrade(profile) {
 export function authorizeLiveProfile(session, profile, { roles = null } = {}) {
   if (!session || !profile || String(profile.id) !== String(session.user_id)) return { ok: false, reason: 'profile_not_found' };
   if (profile.status !== 'active') return { ok: false, reason: 'profile_inactive' };
-  if (String(profile.role || '') !== String(session.role || '')) return { ok: false, reason: 'session_role_stale' };
+  if (![profile.role,...(profile.roles||[])].includes(session.role)) return { ok: false, reason: 'session_role_stale' };
   if (String(profile.org_id || '') !== String(session.org_id || '')) return { ok: false, reason: 'session_organization_stale' };
   if (Number(profile.session_revision || 0) !== Number(session.session_revision || 0)) return { ok: false, reason: 'session_revoked' };
-  if (roles && !roles.includes(profile.role)) return { ok: false, reason: 'forbidden' };
+  if (roles && !roles.includes(session.role)) return { ok: false, reason: 'forbidden' };
   return { ok: true, profile };
 }
 
@@ -93,7 +96,8 @@ export function sessionFromRequest(req, options = {}) {
   const authorization = String(req.headers?.authorization || '');
   const bearer = authorization.startsWith('Bearer ') ? authorization.slice(7).trim() : null;
   const cookie = parseCookies(req.headers?.cookie || '')[COOKIE_NAME];
-  return verifySessionToken(bearer || cookie, options);
+  const session=verifySessionToken(bearer || cookie, options);
+  return session && (!requiresMfa([session.role,...(session.roles||[])]) || session.mfa_verified===true) ? session : null;
 }
 
 export async function authorizeLiveRequest(req, sql, { roles = null } = {}) {

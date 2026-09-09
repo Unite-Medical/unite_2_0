@@ -1,3 +1,4 @@
+import {quoteDeliveryValid} from '../_lib/quoteDelivery.js';
 import crypto from 'node:crypto';
 import { neon } from '@neondatabase/serverless';
 import { readRawBody, sendJson, logEvent } from '../_lib/http.js';
@@ -210,7 +211,8 @@ export function sanitizePublicQuoteAcceptance({ quote, items = [], organization 
       tax: Number(quote.tax || 0),
       total: Number(quote.total || 0),
       currency: quote.currency || 'USD',
-      acceptance_available: acceptanceAvailable,
+      acceptance_available: acceptanceAvailable&&quoteDeliveryValid(quote,items),
+      delivery_review_required:!quoteDeliveryValid(quote,items),
       account_completion_required: !acceptanceAvailable,
     },
     items: items.map((item) => {
@@ -447,6 +449,9 @@ export default async function handler(req, res) {
       if (challenge.email !== signer.email) return sendJson(res, 400, { error: 'email_mismatch' });
       const itemRows = await sql`SELECT data FROM um_rows WHERE tbl='quote_items' AND deleted=false AND data->>'quote_id'=${String(quote.id)}`;
       const items = itemRows.map((row) => row.data);
+      if(!quoteDeliveryValid(quote,items)||quote.delivery_review.tax_exempt_basis!==(organization.tax_exempt===true||organization.shopify_tax_exempt===true))return sendJson(res,409,{error:'delivered_price_review_required'});
+      const address=await getRow(sql,'addresses',quote.ship_to_address_id);
+      if(!address||address.org_id!==quote.customer_id||JSON.stringify(address)!==JSON.stringify(quote.delivery_review.address))return sendJson(res,409,{error:'delivery_address_changed_review_again'});
       if (!items.length) return sendJson(res, 400, { error: 'no_items' });
       const normalizedItems = normalizeAcceptedQuoteItems(items);
       if (normalizedItems.some((item) => !item.sku || !(item.qty > 0) || !(item.unit_price > 0) || !(item.ext_price > 0))) {
@@ -471,6 +476,7 @@ export default async function handler(req, res) {
         customer_po: String(body.po_number).trim(), po_number: String(body.po_number).trim(),
         status: 'payment_pending', payment_status: 'pending',
         payment_terms: quote.payment_terms || 'prepaid', payment_method: quote.payment_method || 'ach',
+        totals_verified:true,ship_to_address_id:quote.ship_to_address_id,ship_from:quote.ship_from,shipping_package:quote.shipping_package,carrier:quote.carrier,ship_method:quote.ship_method,tax_basis:quote.tax_basis,
         subtotal: computedSubtotal, shipping_cost: Number(quote.shipping_cost || 0),
         tax: Number(quote.tax || 0), total: Number(quote.total || 0),
         acceptance_event_id: evidenceId, accepted_at: now.toISOString(),

@@ -144,7 +144,7 @@ export function buildAuthoritativeOrderDraft({
     });
   }
   const subtotal = money(lines.reduce((sum, line) => sum + line.ext_price, 0));
-  const freight = subtotal > 500 ? 0 : 42;
+  const freight = 0; // Preliminary merchandise draft; placement requires a server estimate.
   const total = money(subtotal + freight);
   if (paymentGrant.credit_limit != null && /^net\d+$/.test(paymentMethod) && total > Number(paymentGrant.credit_limit)) {
     return { ok: false, reason: 'over_credit_limit', credit_limit: Number(paymentGrant.credit_limit) };
@@ -170,6 +170,8 @@ export function buildAuthoritativeOrderDraft({
       subtotal,
       freight,
       tax: 0,
+      totals_verified: false,
+      tax_exempt_basis: authorization.organization.shopify_tax_exempt===true||authorization.organization.tax_exempt===true,
       total,
       placed_at: now instanceof Date ? now.toISOString() : new Date(now).toISOString(),
     },

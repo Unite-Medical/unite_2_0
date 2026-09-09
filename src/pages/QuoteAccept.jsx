@@ -1,3 +1,4 @@
+import {trackFunnel} from '../lib/funnelTelemetry.js';
 /**
  * Public quote acceptance — PRD-16 / PRD-19.
  *
@@ -103,7 +104,7 @@ export function QuoteAccept() {
       poNumber,
       userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : null,
     });
-    if (res.ok) setState({ status: 'accepted', order: res.order });
+    if (res.ok) {trackFunnel('quote_accepted');setState({ status: 'accepted', order: res.order });}
     else setState({ status: 'error', reason: res.reason });
   }
 
@@ -128,6 +129,7 @@ export function QuoteAccept() {
   }
 
   async function handleCounterSubmit() {
+    trackFunnel('quote_change_requested',{reason:'counter_offer'});
     const list = Object.entries(counters)
       .filter(([, v]) => Number(v) > 0)
       .map(([item_id, price]) => ({ item_id, price: Number(price) }));
@@ -144,6 +146,7 @@ export function QuoteAccept() {
   }
 
   async function handleRefreshRequest() {
+    trackFunnel('quote_change_requested',{reason:'refresh_price'});
     const res = await requestRefresh(token);
     if (res.ok) setNonce((n) => n + 1);
   }
@@ -262,7 +265,7 @@ export function QuoteAccept() {
         </tbody>
         <tfoot>
           <tr>
-            <td colSpan={countering ? 4 : 3} style={{ padding: '14px 8px', fontWeight: 600 }}>Total (FOB Georgia)</td>
+            <td colSpan={countering ? 4 : 3} style={{ padding: '14px 8px', fontWeight: 600 }}>{quote.delivery_review_required?'Merchandise estimate':'Delivered total'}</td>
             <td style={{ padding: '14px 8px', textAlign: 'right', fontFamily: D.display, fontSize: 22, color: D.plum }}>{fmt.money(total)}</td>
           </tr>
         </tfoot>
@@ -276,6 +279,7 @@ export function QuoteAccept() {
         </div>
       )}
 
+      {quote.delivery_review_required&&<p role="status" style={{marginTop:20}}>Shipping and tax are awaiting review. You can review the items now; our team must confirm the delivered total before acceptance.</p>}
       {quote.account_completion_required ? (
         <div style={{ marginTop: 28, padding: 20, background: D.card, border: `1px solid ${D.line}`, borderRadius: 10 }}>
           <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.plum }}>ACCOUNT SETUP REQUIRED</div>

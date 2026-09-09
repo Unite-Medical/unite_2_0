@@ -1,3 +1,5 @@
+import { RETAINED_TABLES } from '../_lib/retention.js';
+import { projectSyncPage } from '../_lib/syncPage.js';
 /**
  * Durable persistence — PRD-13 (interim row-store).
  *
@@ -124,17 +126,16 @@ export default async function handler(req, res) {
 
     if (req.method === 'GET') {
       const since = req.query.since ? new Date(req.query.since) : null;
-      const rows = since && !Number.isNaN(since.getTime())
-        ? await sql`SELECT tbl, id, data, updated_at, deleted FROM um_rows WHERE updated_at > ${since.toISOString()}`
-        : await sql`SELECT tbl, id, data, updated_at, deleted FROM um_rows WHERE deleted = false`;
-      const tables = {};
-      let latest = since ? since.toISOString() : null;
-      for (const r of rows) {
-        (tables[r.tbl] ||= []).push(since ? { ...r.data, __deleted: r.deleted } : r.data);
-        const u = new Date(r.updated_at).toISOString();
-        if (!latest || u > latest) latest = u;
-      }
-      return sendJson(res, 200, { tables, latest, row_count: rows.length });
+      const cursor=req.query.cursor?JSON.parse(Buffer.from(String(req.query.cursor),'base64url').toString('utf8')):null;
+      const cutoff=cursor?.cutoff||new Date().toISOString();
+      if(!Number.isFinite(Date.parse(cutoff))||(since&&Number.isNaN(since.getTime())))return sendJson(res,400,{error:'invalid_cursor'});
+      const rows=await sql`SELECT tbl,id,data,updated_at,updated_at::text AS cursor_at,deleted FROM um_rows
+        WHERE updated_at<=${cutoff}::timestamptz
+        AND (${Boolean(since)} OR deleted=false)
+        AND updated_at>${since?since.toISOString():'1970-01-01T00:00:00Z'}::timestamptz
+        AND (updated_at,tbl,id)>(${cursor?.at||'1970-01-01T00:00:00Z'}::timestamptz,${cursor?.table||''},${cursor?.id||''})
+        ORDER BY updated_at,tbl,id LIMIT 501`;
+      return sendJson(res,200,projectSyncPage(rows,{since,serviceAccess,cutoff}));
     }
 
     if (req.method === 'POST') {
@@ -158,11 +159,17 @@ export default async function handler(req, res) {
           const validation = validateAdminProductMutation(existingRows[0]?.data || {}, row, op);
           if (!validation.ok) return sendJson(res, 400, { error: validation.reason, id: String(id), minimum_price: validation.minimum_price });
         }
+        // Operational history is never deleted through generic synchronization.
+        if(op==='delete'&&RETAINED_TABLES.has(table))return sendJson(res,403,{error:'retained_record_requires_dedicated_review'});
         if (op === 'delete') {
-          await sql`
-            INSERT INTO um_rows (tbl, id, data, deleted, updated_at)
-            VALUES (${table}, ${String(id)}, '{}'::jsonb, true, now())
-            ON CONFLICT (tbl, id) DO UPDATE SET deleted = true, updated_at = now()`;
+          const deletion=await sql.transaction(txn=>[
+            txn`SELECT pg_advisory_xact_lock(hashtext('unite-retention-policy'))`,
+            txn`INSERT INTO um_rows(tbl,id,data,deleted,updated_at)
+              SELECT ${table},${String(id)},'{}'::jsonb,true,now()
+              WHERE NOT EXISTS(SELECT 1 FROM um_rows WHERE tbl='legal_holds' AND deleted=false AND data->>'status'='active' AND data->>'table' IN (${table},'*') AND (NULLIF(data->>'record_id','') IS NULL OR data->>'record_id'=${String(id)}))
+              ON CONFLICT(tbl,id) DO UPDATE SET deleted=true,updated_at=now() WHERE COALESCE(um_rows.data->>'legal_hold','false')<>'true' RETURNING id`
+          ]);
+          if(!deletion[1]?.length)return sendJson(res,403,{error:'legal_hold_active'});
         } else {
           await sql`
             INSERT INTO um_rows (tbl, id, data, deleted, updated_at)

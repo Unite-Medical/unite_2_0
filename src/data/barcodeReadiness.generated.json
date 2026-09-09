@@ -1,0 +1,1759 @@
+{
+  "summary": {
+    "variants": 451,
+    "mapped": 265,
+    "missing": 186,
+    "conflicts": 6,
+    "launch_operational": 80
+  },
+  "conflicts": [
+    {
+      "value": "850052096465",
+      "skus": [
+        "BC3349-1-CASE10",
+        "BC3349-2"
+      ],
+      "variant_ids": [
+        "baby-cradle-back-support-bc3449:BC3349-1-CASE10",
+        "baby-cradle-back-support-bc3449:BC3349-2"
+      ],
+      "status": "conflict"
+    },
+    {
+      "value": "850052096502",
+      "skus": [
+        "BC3349-5-CASE10",
+        "BC3349-6"
+      ],
+      "variant_ids": [
+        "baby-cradle-back-support-bc3449:BC3349-5-CASE10",
+        "baby-cradle-back-support-bc3449:BC3349-6"
+      ],
+      "status": "conflict"
+    },
+    {
+      "value": "852433008586",
+      "skus": [
+        "HS3170-S",
+        "HC-162-01"
+      ],
+      "variant_ids": [
+        "heel-cup-stabilizer:HS3170-S",
+        "name-tbd-silicone-heel-cup:HC-162-01"
+      ],
+      "status": "conflict"
+    },
+    {
+      "value": "852433008593",
+      "skus": [
+        "HS3170-M",
+        "HC-162-02"
+      ],
+      "variant_ids": [
+        "heel-cup-stabilizer:HS3170-M",
+        "name-tbd-silicone-heel-cup:HC-162-02"
+      ],
+      "status": "conflict"
+    },
+    {
+      "value": "852433008609",
+      "skus": [
+        "HS3170-L",
+        "HC-162-03"
+      ],
+      "variant_ids": [
+        "heel-cup-stabilizer:HS3170-L",
+        "name-tbd-silicone-heel-cup:HC-162-03"
+      ],
+      "status": "conflict"
+    },
+    {
+      "value": "852433008616",
+      "skus": [
+        "HS3170-XL",
+        "HC-162-04"
+      ],
+      "variant_ids": [
+        "heel-cup-stabilizer:HS3170-XL",
+        "name-tbd-silicone-heel-cup:HC-162-04"
+      ],
+      "status": "conflict"
+    }
+  ],
+  "queue": [
+    {
+      "product_handle": "megapre-dairy-free-prebiotic",
+      "product_name": "MegaPre™ Precision Dairy Free Prebiotic (180ct)",
+      "sku": "11023528963C",
+      "variant_title": "Case of 12 – 180 Capsules Each",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "megapre-precision-gut-prebiotic",
+      "product_name": "MegaPre™ Precision Prebiotic (180ct)",
+      "sku": "11023528963C",
+      "variant_title": "Case of 12 – 180 Capsules Each",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "mega-lgg2000-gut-immune-support",
+      "product_name": "MegaIgG2000™ Gut & Immune Support (120ct)",
+      "sku": "18010475496C",
+      "variant_title": "Case of 12 – 120 Capsules Each",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "megamucosa-intestinal-support",
+      "product_name": "MegaMucosa™ Intestinal Support (180ct)",
+      "sku": "18024527461C",
+      "variant_title": "Case of 12 – 180 Capsules Each",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "megamarine-omega-3-fish-oil",
+      "product_name": "MegaMarine™ Gut & Immune Support (60ct)",
+      "sku": "18065476592C",
+      "variant_title": "Case of 12 – 60 Capsules Each",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "1-ml-luer-lock-syringe-without-needle-sample",
+      "product_name": "1 ml Luer Lock Syringe without Needle (Sample)",
+      "sku": "21IN-0103000012-S",
+      "variant_title": "1 ml Luer Lock Syringe without Needle (Sample)",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "3-ml-luer-lock-syringe-without-needle-sample",
+      "product_name": "3 ml Luer Lock Syringe without Needle (Sample)",
+      "sku": "21IN-0303000002-S",
+      "variant_title": "3 ml Luer Lock Syringe without Needle (Sample)",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "5-ml-luer-lock-syringe-without-needle-sample",
+      "product_name": "5 ml Luer Lock Syringe without Needle (Sample)",
+      "sku": "21IN-0503000010-S",
+      "variant_title": "5 ml Luer Lock Syringe without Needle (Sample)",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "10-ml-luer-lock-syringe-without-needle-sample",
+      "product_name": "10 ml Luer Lock Syringe without Needle (Sample)",
+      "sku": "21IN-1003000008-S",
+      "variant_title": "10 ml Luer Lock Syringe without Needle (Sample)",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "20-ml-luer-lock-syringe-without-needle-sample",
+      "product_name": "20 ml Luer Lock Syringe without Needle (Sample)",
+      "sku": "21IN-2003000002-S",
+      "variant_title": "20 ml Luer Lock Syringe without Needle (Sample)",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "50-60-ml-luer-lock-syringe-without-needle-sample",
+      "product_name": "50/60 mL Luer Lock Syringe without Needle (Sample)",
+      "sku": "21IN-5023000001-S",
+      "variant_title": "50/60 mL Luer Lock Syringe without Needle (Sample)",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "3m-ranger-blood-fluid-warming-standard-flow-set-24200",
+      "product_name": "3M Ranger Blood/Fluid Warming Standard Flow Set 24200 (Case of 10)",
+      "sku": "24200",
+      "variant_title": "3M Ranger Blood/Fluid Warming Standard Flow Set 24200 (Case of 10)",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "3m-ranger-blood-and-fluid-warming-standard-flow-set-24200-case-of-10-copy-2",
+      "product_name": "3M Ranger Blood/Fluid Warming Standard Flow Set 24250 (Case of 10)",
+      "sku": "24250",
+      "variant_title": "3M Ranger Blood/Fluid Warming Standard Flow Set 24250 (Case of 10)",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "irrigation-warming-set",
+      "product_name": "Irrigation Warmer | Rapid Fluid Heating",
+      "sku": "24750",
+      "variant_title": "Irrigation Warmer | Rapid Fluid Heating",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "neuro-sponge-x-ray-detectable",
+      "product_name": "Neuro Sponges - 200pc",
+      "sku": "35501110",
+      "variant_title": "Neuro Sponges - 200pc",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "neuro-sponge-x-ray-detectable",
+      "product_name": "Neuro Sponges - 200pc",
+      "sku": "35501310",
+      "variant_title": "1/2\" x 1\"",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "neuro-sponge-x-ray-detectable",
+      "product_name": "Neuro Sponges - 200pc",
+      "sku": "35501410",
+      "variant_title": "1/2\" x 1-1/2\"",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "neuro-sponge-x-ray-detectable",
+      "product_name": "Neuro Sponges - 200pc",
+      "sku": "35501610",
+      "variant_title": "1/2\" x 3\"",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "neuro-sponge-x-ray-detectable",
+      "product_name": "Neuro Sponges - 200pc",
+      "sku": "35503610",
+      "variant_title": "1\" x 3\"",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "3m-bair-hugger-lower-body-warming-blanket-52500",
+      "product_name": "3M Bair Hugger Lower Body Warming Blanket 52500 (Case of 10)",
+      "sku": "52500",
+      "variant_title": "3M Bair Hugger Lower Body Warming Blanket 52500 (Case of 10)",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "3m-bair-hugger-large-pediatric-underbody-warming-blanket-55001",
+      "product_name": "3M Bair Hugger Large Pediatric Underbody Warming Blanket 55501 (Case of 10)",
+      "sku": "55001",
+      "variant_title": "3M Bair Hugger Large Pediatric Underbody Warming Blanket 55501 (Case of 10)",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "3m-bair-hugger-pediatric-underbody-warming-blanket-55502",
+      "product_name": "3M Bair Hugger Pediatric Underbody Warming Blanket 55502 (Case of 10)",
+      "sku": "55502",
+      "variant_title": "3M Bair Hugger Pediatric Underbody Warming Blanket 55502 (Case of 10)",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "ray-cot-neurosurgical-patties",
+      "product_name": "Ray-Cot® Neurosurgical Patties – 1½\" x 3\" (200/Box)",
+      "sku": "60-22",
+      "variant_title": "Ray-Cot® Neurosurgical Patties – 1½\" x 3\" (200/Box)",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "3m-bair-hugger-multi-position-upper-body-warming-blanket-62200",
+      "product_name": "3M Bair Hugger Multi-Position Upper Body Warming Blanket 62200 (Case of 10)",
+      "sku": "62200",
+      "variant_title": "3M Bair Hugger Multi-Position Upper Body Warming Blanket 62200 (Case of 10)",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "3m-bair-hugger-full-access-underbody-warming-blanket-63501",
+      "product_name": "3M Bair Hugger Full Access Underbody Warming Blanket 63501 (Case of 5)",
+      "sku": "63501",
+      "variant_title": "3M Bair Hugger Full Access Underbody Warming Blanket 63501 (Case of 5)",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "zenbiome-sleep-probiotic",
+      "product_name": "ZenBiome™ Sleep  Probiotic (30ct)",
+      "sku": "6935208C",
+      "variant_title": "Case of 12 – 30 Capsules Each",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "zenbiome-cope-probiotic",
+      "product_name": "ZenBiome™ Cope  Probiotic (60ct)",
+      "sku": "6935209C",
+      "variant_title": "Case of 12 – 60 Capsules Each",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "megasporebiotic-gummies-adults",
+      "product_name": "MegaSporeBiotic™ Gummies for Adults (60ct)",
+      "sku": "6935256C",
+      "variant_title": "Case of 12 – 60 Capsules Each",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "digestmate-enzyme-probiotic-blend",
+      "product_name": "DigestMate™ Enzyme & Probiotic Blend (120ct)",
+      "sku": "6935258C",
+      "variant_title": "Case of 12 – 120 Capsules Each",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "sereneskin-gut-skin-support",
+      "product_name": "SereneSkin™ Probiotic Skin Support (60ct)",
+      "sku": "6935286C",
+      "variant_title": "Case of 12 – 60 Capsules Each",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "megaguard-digestive-support",
+      "product_name": "MegaGuard™ Digestive Support (60ct)",
+      "sku": "6935296C",
+      "variant_title": "Case of 12 – 60 Capsules Each",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "megaquin-k2-d3-vitamin-supplement",
+      "product_name": "MegaQuinK2+D3™ Bone & Heart Support (60ct)",
+      "sku": "6935297C",
+      "variant_title": "Case of 12 – 60 Capsules Each",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "restorflora-60-count",
+      "product_name": "RestorFlora™ Daily Probiotic (60ct)",
+      "sku": "6935298C",
+      "variant_title": "Case of 12 – 60 Capsules Each",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "restorflora-probiotic-21ct",
+      "product_name": "RestorFlora™ Daily Probiotic (21ct)",
+      "sku": "6935299C",
+      "variant_title": "Case of 12 – 21 Capsules Each",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "vaginal-balance-probiotic-women",
+      "product_name": "Vaginal Balance Probiotic (60ct)",
+      "sku": "6935305C",
+      "variant_title": "Case of 12 – 120 Capsules Each",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "reinforced-surgical-gown-aami-level-3-sterile",
+      "product_name": "Regard Reinforced Surgical Gown – AAMI Level 3, Sterile (2XL)",
+      "sku": "7678383",
+      "variant_title": "Regard Reinforced Surgical Gown – AAMI Level 3, Sterile (2XL)",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "ankle-foot-orthosis-drm",
+      "product_name": "Ankle Foot Orthosis (DRM)",
+      "sku": "AB0103-150L-02-CASE30",
+      "variant_title": "Medium",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "ankle-foot-orthosis-drm",
+      "product_name": "Ankle Foot Orthosis (DRM)",
+      "sku": "AB0103-150R-02-CASE30",
+      "variant_title": "Medium",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "afo-extender-panel",
+      "product_name": "AFO Extender Panel Case of 30 (DRM)",
+      "sku": "ABO103-150X-CASE30",
+      "variant_title": "AFO Extender Panel Case of 30 (DRM)",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "cordx-flu-covid-test",
+      "product_name": "CorDx TyFast Flu A/B & COVID-19 | 1 Test",
+      "sku": "ACT21002-1 OTC 1-CASE",
+      "variant_title": "Case (150 Tests)",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "avina-pure-4-mil-blue-nitrile-examination-gloves",
+      "product_name": "Avina Pure 4 Mil Blue Nitrile Examination Gloves",
+      "sku": "APN 3001",
+      "variant_title": "Avina Pure 4 Mil Blue Nitrile Examination Gloves",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "avina-pure-4-mil-blue-nitrile-examination-gloves",
+      "product_name": "Avina Pure 4 Mil Blue Nitrile Examination Gloves",
+      "sku": "APN 3001-C",
+      "variant_title": "Small",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "avina-pure-4-mil-blue-nitrile-examination-gloves",
+      "product_name": "Avina Pure 4 Mil Blue Nitrile Examination Gloves",
+      "sku": "APN 3002",
+      "variant_title": "Medium",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "avina-pure-4-mil-blue-nitrile-examination-gloves",
+      "product_name": "Avina Pure 4 Mil Blue Nitrile Examination Gloves",
+      "sku": "APN 3002-C",
+      "variant_title": "Medium",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "avina-pure-4-mil-blue-nitrile-examination-gloves",
+      "product_name": "Avina Pure 4 Mil Blue Nitrile Examination Gloves",
+      "sku": "APN 3003",
+      "variant_title": "Large",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "avina-pure-4-mil-blue-nitrile-examination-gloves",
+      "product_name": "Avina Pure 4 Mil Blue Nitrile Examination Gloves",
+      "sku": "APN 3003-C",
+      "variant_title": "Large",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "avina-pure-4-mil-blue-nitrile-examination-gloves",
+      "product_name": "Avina Pure 4 Mil Blue Nitrile Examination Gloves",
+      "sku": "APN 3004",
+      "variant_title": "XL",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "avina-pure-4-mil-blue-nitrile-examination-gloves",
+      "product_name": "Avina Pure 4 Mil Blue Nitrile Examination Gloves",
+      "sku": "APN 3004-C",
+      "variant_title": "XL",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "baby-cradle-back-support-bc3449",
+      "product_name": "Baby Cradle Lumbar Support Belt",
+      "sku": "BC3349-1-CASE12",
+      "variant_title": "Size 1",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "baby-cradle-back-support-bc3449",
+      "product_name": "Baby Cradle Lumbar Support Belt",
+      "sku": "BC3349-2-CASE12",
+      "variant_title": "Size 2",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "baby-cradle-back-support-bc3449",
+      "product_name": "Baby Cradle Lumbar Support Belt",
+      "sku": "BC3349-4-CASE12",
+      "variant_title": "Size 4",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "baby-cradle-back-support-bc3449",
+      "product_name": "Baby Cradle Lumbar Support Belt",
+      "sku": "BC3349-5-CASE12",
+      "variant_title": "Size 5",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "baby-cradle-back-support-bc3449",
+      "product_name": "Baby Cradle Lumbar Support Belt",
+      "sku": "BC3349-6-CASE12",
+      "variant_title": "Size 6",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "baby-cradle-back-support-bc3449",
+      "product_name": "Baby Cradle Lumbar Support Belt",
+      "sku": "BC3349-7-CASE12",
+      "variant_title": "Size 7",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "big-foot-personal-6-inch-fan",
+      "product_name": "Big Foot Personal 6 Inch Fan",
+      "sku": "BF-6INFAN",
+      "variant_title": "Big Foot Personal 6 Inch Fan",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "table-top-battery-fan",
+      "product_name": "Table Top Battery Fan (Case of 24)",
+      "sku": "BF-Battery-Fan",
+      "variant_title": "Table Top Battery Fan (Case of 24)",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "bf-corners-sterilization-protection",
+      "product_name": "Big Foot Corner Protectors",
+      "sku": "BF-Corners",
+      "variant_title": "Big Foot Corner Protectors",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "iv-start-kits",
+      "product_name": "Big Foot IV Start Kits",
+      "sku": "BF-IVStartKits",
+      "variant_title": "Big Foot IV Start Kits",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "pill-crusher",
+      "product_name": "Pill Crusher - Case 200pcs",
+      "sku": "BF-PillCrusher",
+      "variant_title": "Pill Crusher - Case 200pcs",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "cryo-pneumatic-shoulder",
+      "product_name": "Cryo Pneumatic Shoulder Brace",
+      "sku": "Cryo3670-CASE20",
+      "variant_title": "One Size",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "single-upright-knee-orthosis",
+      "product_name": "Single Upright Knee Orthosis (DRM)",
+      "sku": "KB-138L-CASE10",
+      "variant_title": "Left - Case of 10 Braces",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "sized-rom-knee-brace",
+      "product_name": "Sized ROM Knee Brace",
+      "sku": "KO3233-2X-CASE30",
+      "variant_title": "XXL",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "sized-rom-knee-brace",
+      "product_name": "Sized ROM Knee Brace",
+      "sku": "KO3233-3X-CASE30",
+      "variant_title": "XXXL",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "sized-rom-knee-brace",
+      "product_name": "Sized ROM Knee Brace",
+      "sku": "KO3233-4X-CASE30",
+      "variant_title": "4XL",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "sized-rom-knee-brace",
+      "product_name": "Sized ROM Knee Brace",
+      "sku": "KO3233-5X-CASE30",
+      "variant_title": "5XL",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "sized-rom-knee-brace",
+      "product_name": "Sized ROM Knee Brace",
+      "sku": "KO3233-LG-CASE30",
+      "variant_title": "Large",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "sized-rom-knee-brace",
+      "product_name": "Sized ROM Knee Brace",
+      "sku": "KO3233-MD-CASE30",
+      "variant_title": "Medium",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "sized-rom-knee-brace",
+      "product_name": "Sized ROM Knee Brace",
+      "sku": "KO3233-SM-CASE30",
+      "variant_title": "Small",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "sized-rom-knee-brace",
+      "product_name": "Sized ROM Knee Brace",
+      "sku": "KO3233-XL-CASE30",
+      "variant_title": "XL",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "medzah-disposable-3-ply-face-masks",
+      "product_name": "Medzah Disposable 3-Ply Face Masks",
+      "sku": "MDZH-FM01-B",
+      "variant_title": "Medzah Disposable 3-Ply Face Masks",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "medzah-disposable-3-ply-face-masks",
+      "product_name": "Medzah Disposable 3-Ply Face Masks",
+      "sku": "MDZH-FM01-C",
+      "variant_title": "Case of 2000",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "postday-one-step-emergency-contraceptive",
+      "product_name": "PostDay One-Step Levonorgestrel Tablet - Emergency Contraceptive",
+      "sku": "PD00525",
+      "variant_title": "PostDay One-Step Levonorgestrel Tablet - Emergency Contraceptive",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "genabio-genacheck-covid-flu-4-test-pack",
+      "product_name": "GenaCheck® 3-in-1 COVID -19/Flu A&B Rapid Self-Test  (4 Pack)",
+      "sku": "RA9-E02404-C",
+      "variant_title": "1 Case: 216 Tests",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "shoulder-abduction-brace",
+      "product_name": "Shoulder Abduction System (DRM)",
+      "sku": "SS - 154-CASE8",
+      "variant_title": "One Size",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "status-covid-19-flu-rapid-test",
+      "product_name": "Status™ COVID-19/Flu A&B",
+      "sku": "Status-33225 (B25)",
+      "variant_title": "Status™ COVID-19/Flu A&B",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "guardian-drug-screening-cup",
+      "product_name": "GuardianScreen™ 15 Forensic and Workplace Urine Drug Screening Cup",
+      "sku": "UM-GS15-UNIT",
+      "variant_title": "GuardianScreen™ 15 Forensic and Workplace Urine Drug Screening Cup",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "surgilock-instrument-platform",
+      "product_name": "SurgiLock Surgical Instrument Platform",
+      "sku": "UMSL1016",
+      "variant_title": "SurgiLock Surgical Instrument Platform",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "basic-vinyl-synthetic-exam-gloves",
+      "product_name": "Vinyl Synthetic Exam Gloves",
+      "sku": "VGPF3002",
+      "variant_title": "Vinyl Synthetic Exam Gloves",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "basic-vinyl-synthetic-exam-gloves",
+      "product_name": "Vinyl Synthetic Exam Gloves",
+      "sku": "VGPF3003",
+      "variant_title": "Large - Case of 1000 Gloves",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "welllife-covid-19-influenza-test-point-of-care",
+      "product_name": "WELLlife™ COVID-19 / Influenza A&B Antigen Test (Point of Care)",
+      "sku": "WCOVFLU-POC-25",
+      "variant_title": "WELLlife™ COVID-19 / Influenza A&B Antigen Test (Point of Care)",
+      "priority": "launch_operational",
+      "operational_exposure": true,
+      "launch": true
+    },
+    {
+      "product_handle": "neuro-sponge-x-ray-detectable",
+      "product_name": "Neuro Sponges - 200pc",
+      "sku": "35504410",
+      "variant_title": "1-1/2\" x 1-1/2\"",
+      "priority": "launch_no_stock",
+      "operational_exposure": false,
+      "launch": true
+    },
+    {
+      "product_handle": "3m-bair-hugger-adult-underbody-warming-blanket-54501",
+      "product_name": "3M Bair Hugger Adult Underbody Warming Blanket 54501 / 54500 (Case of 10)",
+      "sku": "54501",
+      "variant_title": "3M Bair Hugger Adult Underbody Warming Blanket 54501 / 54500 (Case of 10)",
+      "priority": "launch_no_stock",
+      "operational_exposure": false,
+      "launch": true
+    },
+    {
+      "product_handle": "medical-suction-canister-fluid-collection",
+      "product_name": "Medical Suction Canister | Fluid Collection",
+      "sku": "65651-515",
+      "variant_title": "Medical Suction Canister | Fluid Collection",
+      "priority": "launch_no_stock",
+      "operational_exposure": false,
+      "launch": true
+    },
+    {
+      "product_handle": "megasporebiotic-60-count",
+      "product_name": "MegaSporeBiotic™ Daily Gut Support (60ct)",
+      "sku": "6935153C",
+      "variant_title": "Case of 12 – 60 Capsules Each",
+      "priority": "launch_no_stock",
+      "operational_exposure": false,
+      "launch": true
+    },
+    {
+      "product_handle": "megasporebiotic-gummies-kids",
+      "product_name": "MegaSporeBiotic™ Gummies for Kids (30ct)",
+      "sku": "6935309C",
+      "variant_title": "Case of 12 – 30 Capsules Each",
+      "priority": "launch_no_stock",
+      "operational_exposure": false,
+      "launch": true
+    },
+    {
+      "product_handle": "3m-bair-hugger-warming-gown-81001",
+      "product_name": "3M Bair Hugger Warming Gown 81001, Standard (Case of 30)",
+      "sku": "81001",
+      "variant_title": "3M Bair Hugger Warming Gown 81001, Standard (Case of 30)",
+      "priority": "launch_no_stock",
+      "operational_exposure": false,
+      "launch": true
+    },
+    {
+      "product_handle": "3m-bair-hugger-flex-warming-gown-81003",
+      "product_name": "3M Bair Hugger Flex Warming Gown 81003, Standard (Case of 30)",
+      "sku": "81003",
+      "variant_title": "3M Bair Hugger Flex Warming Gown 81003, Standard (Case of 30)",
+      "priority": "launch_no_stock",
+      "operational_exposure": false,
+      "launch": true
+    },
+    {
+      "product_handle": "3m-bair-hugger-warming-gown-x-large-81201",
+      "product_name": "3M Bair Hugger Warming Gown 81201, X-Large (Case of 20)",
+      "sku": "81201",
+      "variant_title": "3M Bair Hugger Warming Gown 81201, X-Large (Case of 20)",
+      "priority": "launch_no_stock",
+      "operational_exposure": false,
+      "launch": true
+    },
+    {
+      "product_handle": "3m-bair-hugger-plus-warming-gown-x-large-81202",
+      "product_name": "3M Bair Hugger Plus Warming Gown 81202, X-Large (Case of 20)",
+      "sku": "81202",
+      "variant_title": "3M Bair Hugger Plus Warming Gown 81202, X-Large (Case of 20)",
+      "priority": "launch_no_stock",
+      "operational_exposure": false,
+      "launch": true
+    },
+    {
+      "product_handle": "ankle-foot-orthosis-drm",
+      "product_name": "Ankle Foot Orthosis (DRM)",
+      "sku": "AB0103-150L-01-CASE30",
+      "variant_title": "Small",
+      "priority": "launch_no_stock",
+      "operational_exposure": false,
+      "launch": true
+    },
+    {
+      "product_handle": "ankle-foot-orthosis-drm",
+      "product_name": "Ankle Foot Orthosis (DRM)",
+      "sku": "AB0103-150L-03-CASE30",
+      "variant_title": "Large",
+      "priority": "launch_no_stock",
+      "operational_exposure": false,
+      "launch": true
+    },
+    {
+      "product_handle": "ankle-foot-orthosis-drm",
+      "product_name": "Ankle Foot Orthosis (DRM)",
+      "sku": "AB0103-150R-01-CASE30",
+      "variant_title": "Small",
+      "priority": "launch_no_stock",
+      "operational_exposure": false,
+      "launch": true
+    },
+    {
+      "product_handle": "ankle-foot-orthosis-drm",
+      "product_name": "Ankle Foot Orthosis (DRM)",
+      "sku": "AB0103-150R-03-CASE30",
+      "variant_title": "Large",
+      "priority": "launch_no_stock",
+      "operational_exposure": false,
+      "launch": true
+    },
+    {
+      "product_handle": "cordx-tyfast-flu-covid-test",
+      "product_name": "CorDx Tyfast Flu A/B & COVID-19 Multiplex Rapid Test — OTC Single Test",
+      "sku": "ACT21002-1-OTC",
+      "variant_title": "CorDx Tyfast Flu A/B & COVID-19 Multiplex Rapid Test — OTC Single Test",
+      "priority": "launch_no_stock",
+      "operational_exposure": false,
+      "launch": true
+    },
+    {
+      "product_handle": "cordx-tyfast-flu-covid-test",
+      "product_name": "CorDx Tyfast Flu A/B & COVID-19 Multiplex Rapid Test — OTC Single Test",
+      "sku": "ACT21002-1-OTC-C",
+      "variant_title": "Case (300 Tests)",
+      "priority": "launch_no_stock",
+      "operational_exposure": false,
+      "launch": true
+    },
+    {
+      "product_handle": "baby-cradle-back-support-bc3449",
+      "product_name": "Baby Cradle Lumbar Support Belt",
+      "sku": "BC3349-3-CASE12",
+      "variant_title": "Size 3",
+      "priority": "launch_no_stock",
+      "operational_exposure": false,
+      "launch": true
+    },
+    {
+      "product_handle": "bonefoam-knee-buddy",
+      "product_name": "BoneFoam Knee Buddy",
+      "sku": "BF-KB",
+      "variant_title": "BoneFoam Knee Buddy",
+      "priority": "launch_no_stock",
+      "operational_exposure": false,
+      "launch": true
+    },
+    {
+      "product_handle": "pill-crusher-cutter-combo",
+      "product_name": "Pill Crusher Cutter Combo - Case 200pcs",
+      "sku": "BF-PCC-Combo",
+      "variant_title": "Pill Crusher Cutter Combo - Case 200pcs",
+      "priority": "launch_no_stock",
+      "operational_exposure": false,
+      "launch": true
+    },
+    {
+      "product_handle": "reusable-corner-protectors",
+      "product_name": "Reusable Corner Protectors - 500/Case",
+      "sku": "BF-RECorners",
+      "variant_title": "Reusable Corner Protectors - 500/Case",
+      "priority": "launch_no_stock",
+      "operational_exposure": false,
+      "launch": true
+    },
+    {
+      "product_handle": "big-foot-underpads",
+      "product_name": "Big Foot Underpads",
+      "sku": "BF-Underpads-30x36",
+      "variant_title": "Big Foot Underpads",
+      "priority": "launch_no_stock",
+      "operational_exposure": false,
+      "launch": true
+    },
+    {
+      "product_handle": "bonefoam-zero-degree-knee",
+      "product_name": "BoneFoam Zero Degree Knee",
+      "sku": "BF-ZDK",
+      "variant_title": "BoneFoam Zero Degree Knee",
+      "priority": "launch_no_stock",
+      "operational_exposure": false,
+      "launch": true
+    },
+    {
+      "product_handle": "binaxnow-covid-flu-ab-combo-self-test",
+      "product_name": "BinaxNOW™ COVID-19 & Flu A/B Combo Self Test - 10 Tests/Box",
+      "sku": "Binax-COV/FLU",
+      "variant_title": "BinaxNOW™ COVID-19 & Flu A/B Combo Self Test - 10 Tests/Box",
+      "priority": "launch_no_stock",
+      "operational_exposure": false,
+      "launch": true
+    },
+    {
+      "product_handle": "ihealth-4-in-1-flu-covid-rsv-test",
+      "product_name": "iHealth 4-in-1 Flu A/B, COVID-19 & RSV - 1 Test/Box",
+      "sku": "CFR-1",
+      "variant_title": "iHealth 4-in-1 Flu A/B, COVID-19 & RSV - 1 Test/Box",
+      "priority": "launch_no_stock",
+      "operational_exposure": false,
+      "launch": true
+    },
+    {
+      "product_handle": "ihealth-4-in-1-flu-covid-rsv-test",
+      "product_name": "iHealth 4-in-1 Flu A/B, COVID-19 & RSV - 1 Test/Box",
+      "sku": "CFR-1-C",
+      "variant_title": "Case (48 Tests)",
+      "priority": "launch_no_stock",
+      "operational_exposure": false,
+      "launch": true
+    },
+    {
+      "product_handle": "ihealth-rapid-covid-flu-test",
+      "product_name": "iHealth COVID-19/Flu A&B Rapid Test | 2 Tests",
+      "sku": "COV-FLU-2-CASE",
+      "variant_title": "Case (96 Tests)",
+      "priority": "launch_no_stock",
+      "operational_exposure": false,
+      "launch": true
+    },
+    {
+      "product_handle": "cryo-gel-pack",
+      "product_name": "Cryo Pneumatic Gel Pack for Knee Orthosis",
+      "sku": "CryoGel-Cryo3233",
+      "variant_title": "Cryo Pneumatic Gel Pack for Knee Orthosis",
+      "priority": "launch_no_stock",
+      "operational_exposure": false,
+      "launch": true
+    },
+    {
+      "product_handle": "single-upright-knee-orthosis",
+      "product_name": "Single Upright Knee Orthosis (DRM)",
+      "sku": "KB-138R-CASE10",
+      "variant_title": "Right- Case of 10 Braces",
+      "priority": "launch_no_stock",
+      "operational_exposure": false,
+      "launch": true
+    },
+    {
+      "product_handle": "flowflex-covid-19-flu-home-test",
+      "product_name": "Flowflex Plus 3-in-1 COVID-19 and Flu A/B Rapid Home Test (1 Pack)",
+      "sku": "L03A-R0645-C",
+      "variant_title": "1 Case: 300 Tests",
+      "priority": "launch_no_stock",
+      "operational_exposure": false,
+      "launch": true
+    },
+    {
+      "product_handle": "flowflex-rsv-flu-covid-home-test",
+      "product_name": "Flowflex Plus 4-in-1 RSV + Flu A/B + COVID Home Test (1 Pack)",
+      "sku": "L03A-R1445",
+      "variant_title": "Flowflex Plus 4-in-1 RSV + Flu A/B + COVID Home Test (1 Pack)",
+      "priority": "launch_no_stock",
+      "operational_exposure": false,
+      "launch": true
+    },
+    {
+      "product_handle": "flowflex-rsv-flu-covid-home-test",
+      "product_name": "Flowflex Plus 4-in-1 RSV + Flu A/B + COVID Home Test (1 Pack)",
+      "sku": "L03A-R1445-C",
+      "variant_title": "1 Case: 48 Tests",
+      "priority": "launch_no_stock",
+      "operational_exposure": false,
+      "launch": true
+    },
+    {
+      "product_handle": "synguard-blue-nitrile-exam-gloves-3-5-mil-100-box-1000-case-x-small",
+      "product_name": "SynGuard Blue Nitrile Exam Gloves, 3.5 mil, 100/box, 1000/case (X-Small)",
+      "sku": "NGPF7000",
+      "variant_title": "SynGuard Blue Nitrile Exam Gloves, 3.5 mil, 100/box, 1000/case (X-Small)",
+      "priority": "launch_no_stock",
+      "operational_exposure": false,
+      "launch": true
+    },
+    {
+      "product_handle": "osom-flu-covid-combo-home-test",
+      "product_name": "OSOM Flu & SARS-CoV-2 Combo Home Test - 1 Test/Box",
+      "sku": "OSOM-Flu-SARS-CoV-2",
+      "variant_title": "OSOM Flu & SARS-CoV-2 Combo Home Test - 1 Test/Box",
+      "priority": "launch_no_stock",
+      "operational_exposure": false,
+      "launch": true
+    },
+    {
+      "product_handle": "osom-flu-covid-combo-home-test",
+      "product_name": "OSOM Flu & SARS-CoV-2 Combo Home Test - 1 Test/Box",
+      "sku": "OSOM-Flu-SARS-CoV-2-C",
+      "variant_title": "Case (300 Tests)",
+      "priority": "launch_no_stock",
+      "operational_exposure": false,
+      "launch": true
+    },
+    {
+      "product_handle": "postday-one-step-emergency-contraceptive",
+      "product_name": "PostDay One-Step Levonorgestrel Tablet - Emergency Contraceptive",
+      "sku": "PD00525-C",
+      "variant_title": "1 Case: 24 Tablets",
+      "priority": "launch_no_stock",
+      "operational_exposure": false,
+      "launch": true
+    },
+    {
+      "product_handle": "genacheck-covid-flu-ab-rapid-self-test",
+      "product_name": "GenaCheck® 3-in-1 COVID -19/Flu A&B Rapid Self-Test (1 Pack)",
+      "sku": "RA2-E02401-12",
+      "variant_title": "1 RDB: 12 Tests",
+      "priority": "launch_no_stock",
+      "operational_exposure": false,
+      "launch": true
+    },
+    {
+      "product_handle": "genacheck-covid-flu-ab-rapid-self-test",
+      "product_name": "GenaCheck® 3-in-1 COVID -19/Flu A&B Rapid Self-Test (1 Pack)",
+      "sku": "RA2-E02401-144",
+      "variant_title": "1 Case: 144 Tests",
+      "priority": "launch_no_stock",
+      "operational_exposure": false,
+      "launch": true
+    },
+    {
+      "product_handle": "genacheck-self-test-for-fob",
+      "product_name": "GenaCheck™ Rapid Self-Test Kit for FOB",
+      "sku": "RA9-E01701",
+      "variant_title": "1 Case of 102 Tests",
+      "priority": "launch_no_stock",
+      "operational_exposure": false,
+      "launch": true
+    },
+    {
+      "product_handle": "genacheck-self-test-for-uti",
+      "product_name": "GenaCheck® Rapid Self-Test Kit for UTI",
+      "sku": "RA9-E01802",
+      "variant_title": "1 Case of 204 Tests",
+      "priority": "launch_no_stock",
+      "operational_exposure": false,
+      "launch": true
+    },
+    {
+      "product_handle": "genacheck-self-test-for-twelve-drugs",
+      "product_name": "GenaCheck™ Rapid Self-Test Kit for 12 Drugs",
+      "sku": "RA9-E01902",
+      "variant_title": "1 Case of 204 Tests",
+      "priority": "launch_no_stock",
+      "operational_exposure": false,
+      "launch": true
+    },
+    {
+      "product_handle": "genacheck-self-test-cannabis",
+      "product_name": "GenaCheck™ Rapid Self-Test Kit for Cannabis",
+      "sku": "RA9-E02005",
+      "variant_title": "1 Case of 270 Tests",
+      "priority": "launch_no_stock",
+      "operational_exposure": false,
+      "launch": true
+    },
+    {
+      "product_handle": "genacheck-rapid-test-five-5-drugs",
+      "product_name": "GenaCheck™ Rapid Self-Test Kit for 5 Drugs",
+      "sku": "RA9-E02105",
+      "variant_title": "1 Case of 270 Tests",
+      "priority": "launch_no_stock",
+      "operational_exposure": false,
+      "launch": true
+    },
+    {
+      "product_handle": "genacheck-vaginal-health-ph-screening",
+      "product_name": "GenaCheck™ Vaginal Health pH Screening",
+      "sku": "RA9-E02303",
+      "variant_title": "1 Case of 306 Tests",
+      "priority": "launch_no_stock",
+      "operational_exposure": false,
+      "launch": true
+    },
+    {
+      "product_handle": "genabio-genacheck-covid-19-flu-2-pack",
+      "product_name": "GenaCheck® 3-in-1 COVID -19/Flu A&B Rapid Self-Test  (2 Pack)",
+      "sku": "RA9-E02403",
+      "variant_title": "1 Case: 288 Tests",
+      "priority": "launch_no_stock",
+      "operational_exposure": false,
+      "launch": true
+    },
+    {
+      "product_handle": "caresuperb-covid-flu-ab-combo-test",
+      "product_name": "CareSuperb COVID-19 & Flu A/B Combo Test - 1 Test/Box",
+      "sku": "RCUM-00171",
+      "variant_title": "CareSuperb COVID-19 & Flu A/B Combo Test - 1 Test/Box",
+      "priority": "launch_no_stock",
+      "operational_exposure": false,
+      "launch": true
+    },
+    {
+      "product_handle": "caresuperb-covid-flu-ab-combo-test",
+      "product_name": "CareSuperb COVID-19 & Flu A/B Combo Test - 1 Test/Box",
+      "sku": "RCUM-00171-C",
+      "variant_title": "Case (328 Tests)",
+      "priority": "launch_no_stock",
+      "operational_exposure": false,
+      "launch": true
+    },
+    {
+      "product_handle": "status-covid-19-flu-rapid-test",
+      "product_name": "Status™ COVID-19/Flu A&B",
+      "sku": "Status-33225 (C500)",
+      "variant_title": "Case of 500 Tests",
+      "priority": "launch_no_stock",
+      "operational_exposure": false,
+      "launch": true
+    },
+    {
+      "product_handle": "basic-vinyl-synthetic-exam-gloves",
+      "product_name": "Vinyl Synthetic Exam Gloves",
+      "sku": "VGPF3004",
+      "variant_title": "XL - Case of 1000 Gloves",
+      "priority": "launch_no_stock",
+      "operational_exposure": false,
+      "launch": true
+    },
+    {
+      "product_handle": "welllife-covid-flu-ab-home-test",
+      "product_name": "WELLlife™ COVID-19 & Influenza A/B Home Test - 2 Tests/Box",
+      "sku": "WCOVFLU-OTC",
+      "variant_title": "WELLlife™ COVID-19 & Influenza A/B Home Test - 2 Tests/Box",
+      "priority": "launch_no_stock",
+      "operational_exposure": false,
+      "launch": true
+    },
+    {
+      "product_handle": "welllife-covid-flu-ab-home-test",
+      "product_name": "WELLlife™ COVID-19 & Influenza A/B Home Test - 2 Tests/Box",
+      "sku": "WCOVFLU-OTC-C",
+      "variant_title": "Case (288 Tests)",
+      "priority": "launch_no_stock",
+      "operational_exposure": false,
+      "launch": true
+    },
+    {
+      "product_handle": "welllife-flu-ab-home-test",
+      "product_name": "WELLlife™ Flu A&B Home Test - 2 Tests/Box",
+      "sku": "WFLUAB-OTC-2",
+      "variant_title": "WELLlife™ Flu A&B Home Test - 2 Tests/Box",
+      "priority": "launch_no_stock",
+      "operational_exposure": false,
+      "launch": true
+    },
+    {
+      "product_handle": "welllife-flu-ab-home-test",
+      "product_name": "WELLlife™ Flu A&B Home Test - 2 Tests/Box",
+      "sku": "WFLUAB-OTC-2-C",
+      "variant_title": "Case (216 Tests)",
+      "priority": "launch_no_stock",
+      "operational_exposure": false,
+      "launch": true
+    },
+    {
+      "product_handle": "ansell-encore-latex-powder-free-surgical-gloves",
+      "product_name": "Ansell Encore® Latex Powder Free Surgical Gloves",
+      "sku": "578805-Size 8",
+      "variant_title": "Ansell Encore® Latex Powder Free Surgical Gloves",
+      "priority": "not_launching",
+      "operational_exposure": true,
+      "launch": false
+    },
+    {
+      "product_handle": "ankle-foot-orthosis-case-of-30",
+      "product_name": "Ankle Foot Orthosis (Case of 30)",
+      "sku": "AB0103-150L-02-CASE",
+      "variant_title": "Ankle Foot Orthosis (Case of 30)",
+      "priority": "not_launching",
+      "operational_exposure": false,
+      "launch": false
+    },
+    {
+      "product_handle": "ankle-foot-orthosis-case-of-30",
+      "product_name": "Ankle Foot Orthosis (Case of 30)",
+      "sku": "AB0103-150R-02-CASE",
+      "variant_title": "Medium",
+      "priority": "not_launching",
+      "operational_exposure": false,
+      "launch": false
+    },
+    {
+      "product_handle": "afo-extender-panel-case-of-30",
+      "product_name": "AFO Extender Panel (Case of 30)",
+      "sku": "AB0103-150X-CASE",
+      "variant_title": "AFO Extender Panel (Case of 30)",
+      "priority": "not_launching",
+      "operational_exposure": false,
+      "launch": false
+    },
+    {
+      "product_handle": "afo-extender-panel-2",
+      "product_name": "AFO + Extender Panel",
+      "sku": "AFO0671BL-L",
+      "variant_title": "Large",
+      "priority": "not_launching",
+      "operational_exposure": false,
+      "launch": false
+    },
+    {
+      "product_handle": "afo-extender-panel-2",
+      "product_name": "AFO + Extender Panel",
+      "sku": "AFO0671BL-M",
+      "variant_title": "Medium",
+      "priority": "not_launching",
+      "operational_exposure": false,
+      "launch": false
+    },
+    {
+      "product_handle": "afo-extender-panel-2",
+      "product_name": "AFO + Extender Panel",
+      "sku": "AFO0671BL-S",
+      "variant_title": "AFO + Extender Panel",
+      "priority": "not_launching",
+      "operational_exposure": false,
+      "launch": false
+    },
+    {
+      "product_handle": "afo-extender-panel-2",
+      "product_name": "AFO + Extender Panel",
+      "sku": "AFO0671BR-L",
+      "variant_title": "Large",
+      "priority": "not_launching",
+      "operational_exposure": false,
+      "launch": false
+    },
+    {
+      "product_handle": "afo-extender-panel-2",
+      "product_name": "AFO + Extender Panel",
+      "sku": "AFO0671BR-M",
+      "variant_title": "Medium",
+      "priority": "not_launching",
+      "operational_exposure": false,
+      "launch": false
+    },
+    {
+      "product_handle": "afo-extender-panel-2",
+      "product_name": "AFO + Extender Panel",
+      "sku": "AFO0671BR-S",
+      "variant_title": "Small",
+      "priority": "not_launching",
+      "operational_exposure": false,
+      "launch": false
+    },
+    {
+      "product_handle": "black-3ply-surgical-mask-case-of-2400",
+      "product_name": "Black 3-Ply Surgical Mask | Case of 2,400",
+      "sku": "AH-3Ply (Case)",
+      "variant_title": "Black 3-Ply Surgical Mask | Case of 2,400",
+      "priority": "not_launching",
+      "operational_exposure": false,
+      "launch": false
+    },
+    {
+      "product_handle": "lumbar-sacral-orthosis-case-of-13",
+      "product_name": "Lumbar Sacral Orthosis (Case of 12)",
+      "sku": "BB - 157-CASE",
+      "variant_title": "Lumbar Sacral Orthosis (Case of 12)",
+      "priority": "not_launching",
+      "operational_exposure": false,
+      "launch": false
+    },
+    {
+      "product_handle": "lumbar-sacral-orthosis-case-of-12",
+      "product_name": "Lumbar Sacral Orthosis (Case of 12)",
+      "sku": "BB - 160-CASE",
+      "variant_title": "Lumbar Sacral Orthosis (Case of 12)",
+      "priority": "not_launching",
+      "operational_exposure": false,
+      "launch": false
+    },
+    {
+      "product_handle": "baby-cradle-lso-1",
+      "product_name": "Baby Cradle LSO (L0639 / L0651) - Coming Soon!",
+      "sku": "BC3951-1",
+      "variant_title": "Baby Cradle LSO (L0639 / L0651) - Coming Soon!",
+      "priority": "not_launching",
+      "operational_exposure": false,
+      "launch": false
+    },
+    {
+      "product_handle": "baby-cradle-lso-1",
+      "product_name": "Baby Cradle LSO (L0639 / L0651) - Coming Soon!",
+      "sku": "BC3951-2",
+      "variant_title": "2",
+      "priority": "not_launching",
+      "operational_exposure": false,
+      "launch": false
+    },
+    {
+      "product_handle": "baby-cradle-lso-1",
+      "product_name": "Baby Cradle LSO (L0639 / L0651) - Coming Soon!",
+      "sku": "BC3951-3",
+      "variant_title": "3",
+      "priority": "not_launching",
+      "operational_exposure": false,
+      "launch": false
+    },
+    {
+      "product_handle": "baby-cradle-lso-1",
+      "product_name": "Baby Cradle LSO (L0639 / L0651) - Coming Soon!",
+      "sku": "BC3951-4",
+      "variant_title": "4",
+      "priority": "not_launching",
+      "operational_exposure": false,
+      "launch": false
+    },
+    {
+      "product_handle": "baby-cradle-lso-1",
+      "product_name": "Baby Cradle LSO (L0639 / L0651) - Coming Soon!",
+      "sku": "BC3951-5",
+      "variant_title": "5",
+      "priority": "not_launching",
+      "operational_exposure": false,
+      "launch": false
+    },
+    {
+      "product_handle": "baby-cradle-lso-1",
+      "product_name": "Baby Cradle LSO (L0639 / L0651) - Coming Soon!",
+      "sku": "BC3951-6",
+      "variant_title": "6",
+      "priority": "not_launching",
+      "operational_exposure": false,
+      "launch": false
+    },
+    {
+      "product_handle": "baby-cradle-lso",
+      "product_name": "Baby Cradle LSO (L0633 / L0649)",
+      "sku": "BC5037-1",
+      "variant_title": "Baby Cradle LSO (L0633 / L0649)",
+      "priority": "not_launching",
+      "operational_exposure": false,
+      "launch": false
+    },
+    {
+      "product_handle": "baby-cradle-lso",
+      "product_name": "Baby Cradle LSO (L0633 / L0649)",
+      "sku": "BC5037-2",
+      "variant_title": "2",
+      "priority": "not_launching",
+      "operational_exposure": false,
+      "launch": false
+    },
+    {
+      "product_handle": "baby-cradle-lso",
+      "product_name": "Baby Cradle LSO (L0633 / L0649)",
+      "sku": "BC5037-3",
+      "variant_title": "3",
+      "priority": "not_launching",
+      "operational_exposure": false,
+      "launch": false
+    },
+    {
+      "product_handle": "baby-cradle-lso",
+      "product_name": "Baby Cradle LSO (L0633 / L0649)",
+      "sku": "BC5037-4",
+      "variant_title": "4",
+      "priority": "not_launching",
+      "operational_exposure": false,
+      "launch": false
+    },
+    {
+      "product_handle": "baby-cradle-lso",
+      "product_name": "Baby Cradle LSO (L0633 / L0649)",
+      "sku": "BC5037-5",
+      "variant_title": "5",
+      "priority": "not_launching",
+      "operational_exposure": false,
+      "launch": false
+    },
+    {
+      "product_handle": "baby-cradle-lso",
+      "product_name": "Baby Cradle LSO (L0633 / L0649)",
+      "sku": "BC5037-6",
+      "variant_title": "6",
+      "priority": "not_launching",
+      "operational_exposure": false,
+      "launch": false
+    },
+    {
+      "product_handle": "flexxy-touch-blue-nitrile-exam-gloves",
+      "product_name": "Flexxy Touch Blue Nitrile Exam Gloves",
+      "sku": "FTL-200",
+      "variant_title": "Large",
+      "priority": "not_launching",
+      "operational_exposure": false,
+      "launch": false
+    },
+    {
+      "product_handle": "flexxy-touch-blue-nitrile-exam-gloves",
+      "product_name": "Flexxy Touch Blue Nitrile Exam Gloves",
+      "sku": "FTLC-2000",
+      "variant_title": "Large",
+      "priority": "not_launching",
+      "operational_exposure": false,
+      "launch": false
+    },
+    {
+      "product_handle": "flexxy-touch-blue-nitrile-exam-gloves",
+      "product_name": "Flexxy Touch Blue Nitrile Exam Gloves",
+      "sku": "FTM-200",
+      "variant_title": "Medium",
+      "priority": "not_launching",
+      "operational_exposure": false,
+      "launch": false
+    },
+    {
+      "product_handle": "flexxy-touch-blue-nitrile-exam-gloves",
+      "product_name": "Flexxy Touch Blue Nitrile Exam Gloves",
+      "sku": "FTMC-2000",
+      "variant_title": "Medium",
+      "priority": "not_launching",
+      "operational_exposure": false,
+      "launch": false
+    },
+    {
+      "product_handle": "flexxy-touch-blue-nitrile-exam-gloves",
+      "product_name": "Flexxy Touch Blue Nitrile Exam Gloves",
+      "sku": "FTS-200",
+      "variant_title": "Flexxy Touch Blue Nitrile Exam Gloves",
+      "priority": "not_launching",
+      "operational_exposure": false,
+      "launch": false
+    },
+    {
+      "product_handle": "flexxy-touch-blue-nitrile-exam-gloves",
+      "product_name": "Flexxy Touch Blue Nitrile Exam Gloves",
+      "sku": "FTSC-2000",
+      "variant_title": "Small",
+      "priority": "not_launching",
+      "operational_exposure": false,
+      "launch": false
+    },
+    {
+      "product_handle": "flexxy-touch-blue-nitrile-exam-gloves",
+      "product_name": "Flexxy Touch Blue Nitrile Exam Gloves",
+      "sku": "FTXL-180",
+      "variant_title": "X-Large",
+      "priority": "not_launching",
+      "operational_exposure": false,
+      "launch": false
+    },
+    {
+      "product_handle": "flexxy-touch-blue-nitrile-exam-gloves",
+      "product_name": "Flexxy Touch Blue Nitrile Exam Gloves",
+      "sku": "FTXLC-1800",
+      "variant_title": "X-Large",
+      "priority": "not_launching",
+      "operational_exposure": false,
+      "launch": false
+    },
+    {
+      "product_handle": "single-upright-knee-orthosis-case-of-10",
+      "product_name": "Single Upright Knee Orthosis (Case of 10)",
+      "sku": "KB-138L-CASE",
+      "variant_title": "Single Upright Knee Orthosis (Case of 10)",
+      "priority": "not_launching",
+      "operational_exposure": false,
+      "launch": false
+    },
+    {
+      "product_handle": "single-upright-knee-orthosis-case-of-10",
+      "product_name": "Single Upright Knee Orthosis (Case of 10)",
+      "sku": "KB-138R-CASE",
+      "variant_title": "Right",
+      "priority": "not_launching",
+      "operational_exposure": false,
+      "launch": false
+    },
+    {
+      "product_handle": "suspension-sleeve-case-of-150",
+      "product_name": "Suspension Sleeve (Case of 150)",
+      "sku": "KB-139-CASE",
+      "variant_title": "Suspension Sleeve (Case of 150)",
+      "priority": "not_launching",
+      "operational_exposure": false,
+      "launch": false
+    },
+    {
+      "product_handle": "universal-rom-knee-brace-1",
+      "product_name": "Universal ROM Knee Brace (L1832 / L1833) (DRM)",
+      "sku": "KB0000-126",
+      "variant_title": "Universal ROM Knee Brace (L1832 / L1833) (DRM)",
+      "priority": "not_launching",
+      "operational_exposure": false,
+      "launch": false
+    },
+    {
+      "product_handle": "universal-rom-knee-case-of-30",
+      "product_name": "Universal ROM Knee Brace (Case of 30)",
+      "sku": "KB0000-126-CASE",
+      "variant_title": "Universal ROM Knee Brace (Case of 30)",
+      "priority": "not_launching",
+      "operational_exposure": false,
+      "launch": false
+    },
+    {
+      "product_handle": "lw-concept-vinyl-gloves-disposable-powder-free",
+      "product_name": "LW Concept Vinyl Powder Free Gloves | Case of 1,000",
+      "sku": "LWVGFP-L",
+      "variant_title": "Large - Case of 1,000",
+      "priority": "not_launching",
+      "operational_exposure": false,
+      "launch": false
+    },
+    {
+      "product_handle": "lw-concept-vinyl-gloves-disposable-powder-free",
+      "product_name": "LW Concept Vinyl Powder Free Gloves | Case of 1,000",
+      "sku": "LWVGFP-M",
+      "variant_title": "Medium - Case of 1,000",
+      "priority": "not_launching",
+      "operational_exposure": false,
+      "launch": false
+    },
+    {
+      "product_handle": "lw-concept-vinyl-gloves-disposable-powder-free",
+      "product_name": "LW Concept Vinyl Powder Free Gloves | Case of 1,000",
+      "sku": "LWVGFP-S",
+      "variant_title": "LW Concept Vinyl Powder Free Gloves | Case of 1,000",
+      "priority": "not_launching",
+      "operational_exposure": false,
+      "launch": false
+    },
+    {
+      "product_handle": "lw-concept-vinyl-gloves-disposable-powder-free",
+      "product_name": "LW Concept Vinyl Powder Free Gloves | Case of 1,000",
+      "sku": "LWVGFP-XL",
+      "variant_title": "XL - Case of 1,000",
+      "priority": "not_launching",
+      "operational_exposure": false,
+      "launch": false
+    },
+    {
+      "product_handle": "waho-3ply-surgical-mask",
+      "product_name": "Waho 3Ply Surgical Mask - Case of 2,000",
+      "sku": "MK-WAHO-3PLY-LVL3-BLU-2000",
+      "variant_title": "Waho 3Ply Surgical Mask - Case of 2,000",
+      "priority": "not_launching",
+      "operational_exposure": false,
+      "launch": false
+    },
+    {
+      "product_handle": "starmed-plus-nitrile-exam-gloves",
+      "product_name": "StarMed Plus Nitrile Exam Gloves",
+      "sku": "SMNP-302C",
+      "variant_title": "StarMed Plus Nitrile Exam Gloves",
+      "priority": "not_launching",
+      "operational_exposure": false,
+      "launch": false
+    },
+    {
+      "product_handle": "starmed-plus-nitrile-exam-gloves",
+      "product_name": "StarMed Plus Nitrile Exam Gloves",
+      "sku": "SMNP-303C",
+      "variant_title": "Medium - Case of 3000 Gloves",
+      "priority": "not_launching",
+      "operational_exposure": false,
+      "launch": false
+    },
+    {
+      "product_handle": "starmed-plus-nitrile-exam-gloves",
+      "product_name": "StarMed Plus Nitrile Exam Gloves",
+      "sku": "SMNP-304C",
+      "variant_title": "Large - Case of 3000 Gloves",
+      "priority": "not_launching",
+      "operational_exposure": false,
+      "launch": false
+    },
+    {
+      "product_handle": "starmed-plus-nitrile-exam-gloves",
+      "product_name": "StarMed Plus Nitrile Exam Gloves",
+      "sku": "SMNP-305C",
+      "variant_title": "XL - Case of 2500 Gloves",
+      "priority": "not_launching",
+      "operational_exposure": false,
+      "launch": false
+    },
+    {
+      "product_handle": "shoulder-abduction-system-case-of-9",
+      "product_name": "Shoulder Abduction System (Case of 8)",
+      "sku": "SS - 154-CASE",
+      "variant_title": "Shoulder Abduction System (Case of 8)",
+      "priority": "not_launching",
+      "operational_exposure": false,
+      "launch": false
+    },
+    {
+      "product_handle": "starmed-plus-nitrile-exam-gloves-wen",
+      "product_name": "StarMed Plus Nitrile Exam Gloves (Wen's)",
+      "sku": "StarMed-LG-2000-Wen",
+      "variant_title": "Large",
+      "priority": "not_launching",
+      "operational_exposure": false,
+      "launch": false
+    },
+    {
+      "product_handle": "starmed-plus-nitrile-exam-gloves-wen",
+      "product_name": "StarMed Plus Nitrile Exam Gloves (Wen's)",
+      "sku": "StarMed-MD-2000-Wen",
+      "variant_title": "Medium",
+      "priority": "not_launching",
+      "operational_exposure": false,
+      "launch": false
+    },
+    {
+      "product_handle": "starmed-plus-nitrile-exam-gloves-wen",
+      "product_name": "StarMed Plus Nitrile Exam Gloves (Wen's)",
+      "sku": "StarMed-XL-2000-Wen",
+      "variant_title": "X-Large",
+      "priority": "not_launching",
+      "operational_exposure": false,
+      "launch": false
+    },
+    {
+      "product_handle": "copy-of-quick-product-setup",
+      "product_name": "Test New Product Setup",
+      "sku": "test-product",
+      "variant_title": "Test New Product Setup",
+      "priority": "not_launching",
+      "operational_exposure": true,
+      "launch": false
+    },
+    {
+      "product_handle": "versea-easy-lab-pro-rsv-tests",
+      "product_name": "Verséa™ Easy Lab PRO RSV Tests",
+      "sku": "UM_2012C",
+      "variant_title": "Verséa™ Easy Lab PRO RSV Tests",
+      "priority": "not_launching",
+      "operational_exposure": true,
+      "launch": false
+    },
+    {
+      "product_handle": "cordx-covid-19-at-home-tests-2-pack",
+      "product_name": "Cordx COVID-19 At-Home Tests | 2 Tests",
+      "sku": "UMCO291-2-CASE",
+      "variant_title": "Case (300 Tests)",
+      "priority": "not_launching",
+      "operational_exposure": true,
+      "launch": false
+    },
+    {
+      "product_handle": "wrist-hand-orthosis-case-of-35",
+      "product_name": "Wrist Hand Orthosis (Case of 35)",
+      "sku": "WB0104-148-03-CASE",
+      "variant_title": "Wrist Hand Orthosis (Case of 35)",
+      "priority": "not_launching",
+      "operational_exposure": false,
+      "launch": false
+    }
+  ]
+}

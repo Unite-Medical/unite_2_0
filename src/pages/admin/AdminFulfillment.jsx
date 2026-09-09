@@ -31,6 +31,7 @@ export function AdminFulfillment() {
   const orders = db.useTable('orders', { orderBy: 'placed_at', dir: 'desc' });
   const shipments = db.useTable('shipments');
   const orderItems = db.useTable('order_items');
+  const reservations = db.useTable('reservations');
   const distributorProducts = db.useTable('distributor_products');
   const ownerLots = db.useTable('inventory_lots');
   const organizations = db.useTable('organizations');
@@ -43,6 +44,7 @@ export function AdminFulfillment() {
   const [log, setLog] = useState([]);
   const [freightByBackorder, setFreightByBackorder] = useState({});
   const [handoffReference, setHandoffReference] = useState('');
+  const [pickScanByItem, setPickScanByItem] = useState({});
   const [ownerByItem, setOwnerByItem] = useState({});
   const [readinessEvidence, setReadinessEvidence] = useState({ document_type: 'booking', provider_reference: '' });
   const [pickupEvidence, setPickupEvidence] = useState({});
@@ -87,6 +89,29 @@ export function AdminFulfillment() {
     setBusy(backorder.id);
     const result = await fulfillBackorders(backorder.sku, { shipping_cost: freight });
     setLog((rows) => [...rows, { label: result.suborders.length ? `Created ${result.suborders.map((order) => order.id).join(', ')}` : 'Backorder still waiting for allocatable stock.' }]);
+    setBusy(null);
+  }
+
+  async function verifyPickScan(orderId, item) {
+    const input = pickScanByItem[item.id] || {};
+    const reservation = reservations.find((row) => row.order_id === orderId && row.order_item_id === item.id && row.status === 'held');
+    if (!input.barcode?.trim() || !reservation) return;
+    setBusy(`pick:${item.id}`);
+    const response = await fetch('/api/wms/picks/scan', {
+      method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        order_id: orderId, order_item_id: item.id, barcode: input.barcode.trim(),
+        warehouse_id: reservation.warehouse_id, bin_id: input.bin_id || reservation.bin_id || null,
+        lot_id: reservation.lot_id || reservation.inventory_lot_id || null,
+        idempotency_key: `pick_${crypto.randomUUID().replaceAll('-', '')}`,
+      }),
+    });
+    const result = await response.json().catch(() => ({}));
+    if (response.ok && result.event) db.applyRemoteSnapshot({ scan_events: [result.event] });
+    setLog((rows) => [...rows, { label: response.ok
+      ? `${item.sku}: ${result.event.units_verified} units verified. On-hand unchanged.`
+      : `${item.sku} scan blocked: ${result.error || 'request failed'}` }]);
+    if (response.ok) setPickScanByItem((current) => ({ ...current, [item.id]: { ...input, barcode: '' } }));
     setBusy(null);
   }
 
@@ -309,6 +334,20 @@ export function AdminFulfillment() {
                       </div>
                     </div>
                   )}
+                  {['inventory_reserved', 'ready_to_ship'].includes(selectedOrder?.status) && selectedItems.map((item) => {
+                    const reservation = reservations.find((row) => row.order_id === selected && row.order_item_id === item.id && row.status === 'held');
+                    if (!reservation) return null;
+                    const input = pickScanByItem[item.id] || {};
+                    return <div key={`pick-${item.id}`} style={{ padding: 10, border: `1px solid ${D.line}`, borderRadius: 7 }}>
+                      <div style={{ fontFamily: D.mono, fontSize: 10, color: D.ink3 }}>PICK VERIFY · {item.sku} × {item.qty} · {reservation.warehouse_id}</div>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 90px auto', gap: 8, marginTop: 7 }}>
+                        <input autoComplete="off" value={input.barcode || ''} onChange={(event) => setPickScanByItem((current) => ({ ...current, [item.id]: { ...input, barcode: event.target.value } }))} onKeyDown={(event) => { if (event.key === 'Enter') verifyPickScan(selected, item); }} placeholder="Scan product barcode" style={{ padding: 7, border: `1px solid ${D.line}`, borderRadius: 5 }} />
+                        <input value={input.bin_id || reservation.bin_id || ''} onChange={(event) => setPickScanByItem((current) => ({ ...current, [item.id]: { ...input, bin_id: event.target.value } }))} placeholder="Bin" style={{ padding: 7, border: `1px solid ${D.line}`, borderRadius: 5 }} />
+                        <button type="button" disabled={!input.barcode?.trim() || busy === `pick:${item.id}`} onClick={() => verifyPickScan(selected, item)} style={btn(true)}>Verify</button>
+                      </div>
+                      <div style={{ fontSize: 11, color: D.ink3, marginTop: 5 }}>Verification only. Inventory changes only at documented custody handoff.</div>
+                    </div>;
+                  })}
                   {PIPELINE_STEPS.map((s) => {
                     const row = (stepsByOrder.get(selected) || {})[s];
                     const [color, glyph] = STEP_CHIP[row?.status || 'pending'];

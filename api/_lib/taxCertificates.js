@@ -22,7 +22,7 @@ export function planTaxCertificateVersion({orgId,uploaderId,pathname,bytes,conte
   const at=(now instanceof Date?now:new Date(now)).toISOString();
   const sha256=crypto.createHash('sha256').update(bytes).digest('hex');
   const certificateId=`taxcert_${crypto.createHash('sha256').update(String(orgId)).digest('hex').slice(0,20)}`;
-  const versionId=`taxcertver_${sha256.slice(0,24)}`;
+  const versionId=`taxcertver_${crypto.createHash('sha256').update(`${orgId}:${sha256}`).digest('hex').slice(0,24)}`;
   return {ok:true,certificate:{id:certificateId,org_id:orgId,status:'documentation_pending_review',checkout_blocked:false,current_version_id:versionId,updated_at:at},version:{id:versionId,certificate_id:certificateId,org_id:orgId,private_storage_key:String(pathname),sha256,detected_mime:contentType,size:bytes.length,scan_status:'quarantine_pending',review_status:'pending',uploaded_by:uploaderId,uploaded_at:at}};
 }
 

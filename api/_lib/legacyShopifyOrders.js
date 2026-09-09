@@ -6,7 +6,7 @@ export const LEGACY_ORDER_QUERY = `query LegacyOrder($id: ID!) {
     id legacyResourceId name updatedAt cancelledAt closed currencyCode
     displayFinancialStatus displayFulfillmentStatus
     customer { id legacyResourceId email }
-    lineItems(first: 250) { nodes { id sku name quantity currentQuantity unfulfilledQuantity } }
+    lineItems(first: 250) { pageInfo { hasNextPage } nodes { id sku name quantity currentQuantity unfulfilledQuantity } }
   }
 }`;
 
@@ -26,6 +26,7 @@ function hash(value){return crypto.createHash('sha256').update(JSON.stringify(va
 function legacyId(order){return String(order?.legacyResourceId||String(order?.id||'').split('/').pop()||'');}
 export function buildLegacyTransferPreview(order){
  if(!order?.id||!order?.updatedAt) throw new Error('live Shopify order identity and updatedAt required');
+ if(order.lineItems?.pageInfo?.hasNextPage)throw new Error('order_line_pagination_required');
  const lines=(order.lineItems?.nodes||[]).map((line)=>({
   source_line_id:String(line.id||''),sku:String(line.sku||'').trim(),name:line.name||'',
   ordered_quantity:Number(line.quantity||0),current_quantity:Number(line.currentQuantity??line.quantity??0),

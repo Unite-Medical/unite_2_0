@@ -1,3 +1,4 @@
+import {quoteDeliveryValid} from '../_lib/quoteDelivery.js';
 import crypto from 'node:crypto';
 import { neon } from '@neondatabase/serverless';
 import { authorizeLiveProfile, sessionFromRequest } from '../_lib/auth.js';
@@ -61,6 +62,7 @@ export default async function handler(req, res) {
     const live = authorizeLiveProfile(session, profile, { roles: ['admin'] });
     if (!live.ok) return sendJson(res, 403, { error: live.reason });
     const quote = await getRow(sql, 'quotes', quoteId);
+    if(quote){const items=await sql`SELECT data FROM um_rows WHERE tbl='quote_items' AND deleted=false AND data->>'quote_id'=${quote.id}`;if(!quoteDeliveryValid(quote,items.map(r=>r.data)))return sendJson(res,409,{error:'delivered_price_review_required'});}
     const plan = buildQuoteIssuePlan({ quote, tokenSecret, actorId: session.user_id });
     if (!plan.ok) return sendJson(res, 400, { error: plan.reason });
     const expectedRevision = Number(body.expected_revision ?? quote.revision ?? 0);

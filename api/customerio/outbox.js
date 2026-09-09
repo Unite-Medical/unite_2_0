@@ -22,6 +22,7 @@ async function adminSession(req, sql) {
 }
 
 export default async function handler(req, res) {
+  if(process.env.UNITE_ENVIRONMENT==='staging')return sendJson(res,200,{ok:true,skipped:'staging_no_delivery'});
   res.setHeader('Cache-Control', 'no-store');
   if (!process.env.DATABASE_URL) return sendJson(res, 503, { error: 'not_configured' });
   const sql = neon(process.env.DATABASE_URL);

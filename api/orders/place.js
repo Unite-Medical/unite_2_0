@@ -1,3 +1,5 @@
+import { validateEstimate } from '../_lib/checkoutEstimate.js';
+import { orderApprovalGate } from '../_lib/orderApproval.js';
 import crypto from 'node:crypto';
 import { neon } from '@neondatabase/serverless';
 import { sessionFromRequest } from '../_lib/auth.js';
@@ -25,6 +27,7 @@ export function orderRequestHash(session, body = {}) {
     user_id: session?.user_id || null,
     org_id: session?.org_id || null,
     po_number: String(body.po_number || '').trim(),
+    estimate_id:body.estimate_id||null,shipping_option_id:body.shipping_option_id||null,
     payment_method: String(body.payment_method || '').trim(),
     ship_to_address_id: String(body.ship_to_address_id || '').trim(),
     ship_method: String(body.ship_method || 'fedex_ground'),
@@ -54,6 +57,8 @@ function publicOrder(order) {
     ship_to_address_id: order.ship_to_address_id,
     placed_at: order.placed_at,
     payment_url: order.payment_url || null,
+    approval_required: !orderApprovalGate(order).ok,
+    approval_status: order.approval?.status || null,
   };
 }
 
@@ -63,10 +68,14 @@ async function upsertRow(sql, table, row) {
     ON CONFLICT (tbl,id) DO UPDATE SET data=EXCLUDED.data,deleted=false,updated_at=now()`;
 }
 
-async function ensureOrderPayment(sql, order, orderItems) {
+export async function ensureOrderPayment(sql, order, orderItems) {
+  if(['cancelled','refunded','shipped','delivered'].includes(order?.status))return {order,payment:{ok:false,reason:'order_already_closed'}};
+  const gate=orderApprovalGate(order);
+  if(!gate.ok) return {order,payment:{ok:false,reason:gate.reason}};
   if (['net15', 'net30', 'net60', 'mspv'].includes(order.payment_method)) {
     const releasedOrder = { ...order, payment_status: 'terms_approved', credit_released_at: new Date().toISOString() };
-    await upsertRow(sql, 'orders', releasedOrder);
+    const saved=await sql`UPDATE um_rows SET data=${JSON.stringify(releasedOrder)}::jsonb,updated_at=now() WHERE tbl='orders' AND id=${order.id} AND deleted=false AND data=${JSON.stringify(order)}::jsonb RETURNING id`;
+    if(!saved.length)return {order,payment:{ok:false,reason:'order_changed_retry'}};
     const release = await releasePaidOrder(sql, order.id, { actorId: 'approved_credit_terms' });
     const label = release.ok ? await createOrderLabel(sql, order.id, { actorId: 'approved_credit_terms' }) : null;
     return { order: label?.ok ? label.order : release.ok ? release.order : releasedOrder, payment: { ok: true, terms_released: true }, release, label };
@@ -98,7 +107,8 @@ async function ensureOrderPayment(sql, order, orderItems) {
     payment_url: payment.payment_url,
     payment_request_status: 'open',
   };
-  await upsertRow(sql, 'orders', updatedOrder);
+  const saved=await sql`UPDATE um_rows SET data=${JSON.stringify(updatedOrder)}::jsonb,updated_at=now() WHERE tbl='orders' AND id=${order.id} AND deleted=false AND data=${JSON.stringify(order)}::jsonb RETURNING id`;
+  if(!saved.length)return {order,payment:{ok:false,reason:'order_changed_payment_reconciliation_required'}};
   await upsertRow(sql, 'invoices', {
     id: `INV-${order.id}`, order_id: order.id, customer_id: order.customer_id,
     amount: order.total, terms: order.payment_terms, status: 'open',
@@ -156,6 +166,13 @@ export default async function handler(req, res) {
       products, pricingRows, contractRows, volumeBreakRows, paymentMethods, addresses,
     });
     if (!draft.ok) return sendJson(res, statusFor(draft.reason), { error: draft.reason, sku: draft.sku || null });
+    const estimates=await sql`SELECT data FROM um_rows WHERE tbl='checkout_estimates' AND id=${String(body.estimate_id||'')} AND deleted=false AND data->>'customer_id'=${session.org_id}`;
+    const checked=validateEstimate(estimates[0]?.data,draft,body.shipping_option_id);
+    if(!checked.ok)return sendJson(res,409,{error:checked.reason});
+    const option=checked.option;
+    Object.assign(draft.order,{freight:option.freight,tax:option.tax,total:option.total,ship_method:option.service,carrier:option.carrier,shipping_package:option.shipping_package,ship_from:option.ship_from,tax_calculation_id:option.tax_calculation_id,tax_basis:option.tax_basis,estimate_id:body.estimate_id,totals_verified:true});
+    if(draft.payment_grant.credit_limit!=null&&/^net\d+$/.test(draft.order.payment_method)&&draft.order.total>Number(draft.payment_grant.credit_limit))return sendJson(res,409,{error:'over_credit_limit'});
+
 
     for (const line of draft.lines) {
       const available = inventoryRows

@@ -1,39 +1,120 @@
 {
+  "framework": "vite",
+  "outputDirectory": "dist",
   "rewrites": [
-    { "source": "/api/proxy/:path*", "destination": "/api/proxy?__proxypath=:path*" },
-    { "source": "/((?!api/).*)", "destination": "/index.html" }
+    {
+      "source": "/api/proxy/:path*",
+      "destination": "/api/proxy?__proxypath=:path*"
+    },
+    {
+      "source": "/((?!api/).*)",
+      "destination": "/index.html"
+    }
   ],
   "redirects": [
-    { "source": "/pages/pdac-consulting", "destination": "/services/pdac", "permanent": true },
-    { "source": "/pages/about-us", "destination": "/about", "permanent": true },
-    { "source": "/pages/contact-us", "destination": "/contact", "permanent": true },
-    { "source": "/pages/dealer-program", "destination": "/services/distributors", "permanent": true },
-    { "source": "/pages/private-labeling", "destination": "/services/private-label", "permanent": true },
-    { "source": "/pages/pdac-approval-letters", "destination": "/services/pdac", "permanent": true },
-    { "source": "/blogs/orthopedic-insights", "destination": "/blog", "permanent": true },
-    { "source": "/collections/:slug*", "destination": "/catalog", "permanent": true },
-    { "source": "/solutions", "destination": "/services", "permanent": true },
-    { "source": "/services/education", "destination": "/blog", "permanent": true },
-    { "source": "/services/dealer", "destination": "/services/distributors", "permanent": true },
-    { "source": "/about/veteran-owned", "destination": "/procurement", "permanent": true },
-    { "source": "/segments/gov", "destination": "/government", "permanent": true }
+    {
+      "source": "/pages/pdac-consulting",
+      "destination": "/services/pdac",
+      "permanent": true
+    },
+    {
+      "source": "/pages/about-us",
+      "destination": "/about",
+      "permanent": true
+    },
+    {
+      "source": "/pages/contact-us",
+      "destination": "/contact",
+      "permanent": true
+    },
+    {
+      "source": "/pages/dealer-program",
+      "destination": "/services/distributors",
+      "permanent": true
+    },
+    {
+      "source": "/pages/private-labeling",
+      "destination": "/services/private-label",
+      "permanent": true
+    },
+    {
+      "source": "/pages/pdac-approval-letters",
+      "destination": "/services/pdac",
+      "permanent": true
+    },
+    {
+      "source": "/blogs/orthopedic-insights",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/collections/:slug*",
+      "destination": "/catalog",
+      "permanent": true
+    },
+    {
+      "source": "/solutions",
+      "destination": "/services",
+      "permanent": true
+    },
+    {
+      "source": "/services/education",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/services/dealer",
+      "destination": "/services/distributors",
+      "permanent": true
+    },
+    {
+      "source": "/about/veteran-owned",
+      "destination": "/procurement",
+      "permanent": true
+    },
+    {
+      "source": "/segments/gov",
+      "destination": "/government",
+      "permanent": true
+    }
   ],
   "headers": [
     {
+      "source": "/(.*)",
+      "has": [{"type": "host", "value": "staging.unitemedical.net"}],
+      "headers": [{"key": "X-Robots-Tag", "value": "noindex, nofollow"}]
+    },
+    {
       "source": "/assets/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
       ]
     },
     {
       "source": "/images/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
       ]
     }
   ],
   "crons": [
-    { "path": "/api/customerio/outbox", "schedule": "*/5 * * * *" },
-    { "path": "/api/webhooks/process", "schedule": "*/5 * * * *" }
+    {
+      "path": "/api/customerio/outbox",
+      "schedule": "*/5 * * * *"
+    },
+    {
+      "path": "/api/webhooks/process",
+      "schedule": "*/5 * * * *"
+    },
+    {
+      "path": "/api/internal/operations-refresh",
+      "schedule": "0 * * * *"
+    }
   ]
 }

@@ -27,6 +27,7 @@ export function dueDateFor(terms) {
 
 export async function placeCustomerOrder({
   idempotency_key,
+  estimate_id, shipping_option_id,
   po_number,
   payment_method,
   ship_to_address_id,
@@ -36,13 +37,13 @@ export async function placeCustomerOrder({
   lines = [],
 } = {}) {
   if (typeof window !== 'undefined') {
-    try {
+    {
       const response = await fetch('/api/orders/place', {
         method: 'POST', credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           idempotency_key, po_number, payment_method, ship_to_address_id,
-          ship_method, notes, order_source,
+          ship_method, notes, order_source, estimate_id, shipping_option_id,
           lines: lines.map((line) => ({ sku: line.sku, qty: line.qty })),
         }),
       });
@@ -59,13 +60,11 @@ export async function placeCustomerOrder({
         }
         return body;
       }
-      if (!import.meta.env?.DEV) {
+      {
         const error = new Error(body.error || 'Could not place order.');
         error.code = body.error;
         throw error;
       }
-    } catch (error) {
-      if (!import.meta.env?.DEV) throw error;
     }
   }
 

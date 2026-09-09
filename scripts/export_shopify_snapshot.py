@@ -72,17 +72,30 @@ def graphql(shop: str, version: str, token: str, query: str, variables: dict) ->
     return payload["data"]
 
 
+def assert_complete_nested(value):
+    if isinstance(value, dict):
+        if value.get("pageInfo", {}).get("hasNextPage"):
+            raise RuntimeError("Nested Shopify connection needs pagination; export is incomplete and must not be imported")
+        for child in value.values():
+            assert_complete_nested(child)
+    elif isinstance(value, list):
+        for child in value:
+            assert_complete_nested(child)
+
+
 def fetch_connection(shop: str, version: str, token: str, name: str, query: str, out_dir: Path) -> dict:
     output = out_dir / f"{name}.jsonl"
     cursor = None
     count = 0
     pages = 0
+    seen_cursors = set()
     with output.open("w", encoding="utf-8") as handle:
         while True:
             data = graphql(shop, version, token, query, {"cursor": cursor})
             connection = data[name]
             nodes = connection.get("nodes", [])
             for node in nodes:
+                assert_complete_nested(node)
                 handle.write(json.dumps(node, ensure_ascii=False, separators=(",", ":")) + "\n")
             count += len(nodes)
             pages += 1
@@ -90,6 +103,9 @@ def fetch_connection(shop: str, version: str, token: str, name: str, query: str,
             if not page["hasNextPage"]:
                 break
             cursor = page["endCursor"]
+            if not cursor or cursor in seen_cursors:
+                raise RuntimeError("Shopify cursor did not advance")
+            seen_cursors.add(cursor)
             time.sleep(0.15)
     return {"records": count, "pages": pages, "path": output.name}
 
@@ -104,15 +120,15 @@ query Products($cursor: String) {
       seo { title description }
       options { id name position values }
       featuredMedia { preview { image { url altText } } }
-      media(first: 250) { nodes { alt mediaContentType preview { image { url altText width height } } } }
-      variants(first: 250) {
+      media(first: 250) { pageInfo { hasNextPage endCursor } nodes { alt mediaContentType preview { image { url altText width height } } } }
+      variants(first: 250) { pageInfo { hasNextPage endCursor }
         nodes {
           id legacyResourceId title sku barcode price compareAtPrice taxable requiresShipping
           inventoryPolicy weight weightUnit position selectedOptions { name value }
           image { url altText }
           inventoryItem {
             id tracked requiresShipping countryCodeOfOrigin provinceCodeOfOrigin
-            inventoryLevels(first: 100) { nodes { id quantities(names: ["available", "committed", "incoming", "on_hand", "reserved"]) { name quantity updatedAt } location { id legacyResourceId name address { address1 address2 city provinceCode zip countryCode } } } }
+            inventoryLevels(first: 100) { pageInfo { hasNextPage endCursor } nodes { id quantities(names: ["available", "committed", "incoming", "on_hand", "reserved"]) { name quantity updatedAt } location { id legacyResourceId name address { address1 address2 city provinceCode zip countryCode } } } }
           }
         }
       }
@@ -149,7 +165,7 @@ query Orders($cursor: String) {
       customer { id legacyResourceId displayName email phone }
       shippingAddress { firstName lastName company address1 address2 city provinceCode zip countryCode phone }
       billingAddress { firstName lastName company address1 address2 city provinceCode zip countryCode phone }
-      lineItems(first: 250) { nodes { id title sku quantity currentQuantity vendor variant { id legacyResourceId sku barcode title } originalUnitPriceSet { shopMoney { amount currencyCode } } } }
+      lineItems(first: 250) { pageInfo { hasNextPage endCursor } nodes { id title sku quantity currentQuantity vendor variant { id legacyResourceId sku barcode title } originalUnitPriceSet { shopMoney { amount currencyCode } } } }
       fulfillments(first: 50) { createdAt status trackingInfo { company number url } location { id legacyResourceId name } }
     }
   }

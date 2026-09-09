@@ -14,6 +14,7 @@ function taskId(eventId) {
 }
 
 export default async function handler(req, res) {
+  if(process.env.UNITE_ENVIRONMENT==='staging')return sendJson(res,200,{ok:true,skipped:'staging_no_webhook_processing'});
   res.setHeader('Cache-Control', 'no-store');
   if (!['GET', 'POST'].includes(req.method)) return sendJson(res, 405, { error: 'method_not_allowed' });
   if (!process.env.DATABASE_URL) return sendJson(res, 503, { error: 'not_configured' });

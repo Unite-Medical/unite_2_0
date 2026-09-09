@@ -23,6 +23,7 @@ export function AdminReceiving() {
   const canReceive = wmsCan('receive', session);
   const padX = isMobile ? 16 : 40;
   const pos = db.useTable('purchase_orders');
+  const products = db.useTable('products');
   // Subscribe to the ledger so the reconciliation panel re-renders on every receipt.
   const movements = db.useTable('stock_movements');
   const openPos = useMemo(() => pos.filter((p) => p.status === 'sent' || p.status === 'partial'), [pos]);
@@ -34,7 +35,7 @@ export function AdminReceiving() {
   const [manualLot, setManualLot] = useState('');
   const [manualExpiration, setManualExpiration] = useState('');
   const [notApplicableReason, setNotApplicableReason] = useState('');
-  const [warehouse, setWarehouse] = useState('wh_atl');
+  const [warehouse, setWarehouse] = useState('wh_unite');
   const [queue, setQueue] = useState([]); // staged, resolved receipts
   const [receiptKey, setReceiptKey] = useState(newReceiptKey);
   const [msg, setMsg] = useState(null);
@@ -51,31 +52,39 @@ export function AdminReceiving() {
   }, [poId, movements]);
 
   /** A scan landed (Enter from the wedge, or the Resolve button). */
-  function handleScan() {
+  async function handleScan() {
     if (!po) {
       setMsg({ kind: 'err', text: 'Select a valid open purchase order before scanning.' });
       return;
     }
     const raw = scanText.trim();
     if (!raw) return;
-    const r = receiving.resolveScan(raw);
-    if (!r.matched && r.capture_method !== 'sku') {
-      setMsg({ kind: 'err', text: `No product matches ${r.capture_method === 'upc' ? 'UPC' : 'barcode'} ${raw} (${r.reason}). Check the catalog UPC or use a blind SKU.` });
+    const parsed = receiving.resolveScan(raw);
+    const lookup = parsed.gtin || raw;
+    const response = await fetch(`/api/wms/barcodes/resolve?value=${encodeURIComponent(lookup)}`, { credentials: 'include' });
+    const resolved = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      const exceptionKey = `dock_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
+      await fetch('/api/wms/dock-exceptions', {
+        method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ref_id: po.id, warehouse_id: warehouse, raw_barcode: raw, reason: resolved.error || 'barcode_unknown', idempotency_key: exceptionKey }),
+      });
+      setMsg({ kind: 'err', text: `Barcode ${raw} is unresolved or conflicting. Carton is on dock hold. No stock was received.` });
       setPending(null);
       return;
     }
-    if (po && r.sku && !po.line_items?.some((l) => l.sku === r.sku)) {
-      setMsg({ kind: 'err', text: `${r.sku}${r.product ? ` (${r.product.name})` : ''} is not on PO ${po.id}. Stop receiving and route this carton to the dock-exception queue.` });
+    if (!po.line_items?.some((line) => line.sku === resolved.sku)) {
+      setMsg({ kind: 'err', text: `${resolved.sku} is not on PO ${po.id}. Carton must remain in the dock-exception queue.` });
       setPending(null);
       return;
     }
-    setPending(r);
-    setManualLot(r.lot_number || '');
-    setManualExpiration(r.expiration_date || '');
+    const product = products.find((row) => row.sku === resolved.sku || row.id === resolved.sku);
+    const result = { ...parsed, ...resolved, matched: true, raw, product, capture_method: parsed.capture_method || 'barcode' };
+    setPending(result);
+    setManualLot(parsed.lot_number || '');
+    setManualExpiration(parsed.expiration_date || '');
     setNotApplicableReason('');
-    setMsg(r.matched
-      ? { kind: 'ok', text: `Matched ${r.sku} · ${r.product?.name || ''}${r.lot_number ? ` · lot ${r.lot_number}` : ''}${r.expiration_date ? ` · exp ${r.expiration_date}` : ''} — set qty and add.` }
-      : { kind: 'warn', text: `Unknown code resolved as SKU "${r.sku}". It can continue only if that SKU exists on ${po.id}.` });
+    setMsg({ kind: 'ok', text: `Matched ${result.sku} · ${product?.name || ''}${parsed.lot_number ? ` · lot ${parsed.lot_number}` : ''}${parsed.expiration_date ? ` · exp ${parsed.expiration_date}` : ''} — set qty and add.` });
   }
 
   function addToQueue() {
@@ -155,8 +164,7 @@ export function AdminReceiving() {
             <div>
               <label style={LABEL}>WAREHOUSE</label>
               <select value={warehouse} onChange={(e) => setWarehouse(e.target.value)} style={INPUT}>
-                <option value="wh_atl">Atlanta (wh_atl)</option>
-                <option value="wh_reno">Reno (wh_reno)</option>
+                <option value="wh_unite">Unite Medical Warehouse (wh_unite)</option>
               </select>
             </div>
           </div>
