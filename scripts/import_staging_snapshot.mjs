@@ -8,7 +8,7 @@ const {run_id:run,sources}=prepared;
 const applying=process.argv.includes('--apply');
 const token=applying?(await fs.readFile(new URL('../migration-data/staging-setup-token.txt',import.meta.url),'utf8')).trim():'';
 const endpoint='https://staging.unitemedical.net/api/internal/staging-setup';
-async function request(body){const r=await fetch(endpoint,{method:body?'POST':'GET',headers:{'Content-Type':'application/json','x-staging-setup-token':token},...(body?{body:JSON.stringify(body)}:{})});const j=await r.json();if(!r.ok)throw new Error(JSON.stringify(j));return j;}
+async function request(body){const r=await fetch(endpoint,{method:body?'POST':'GET',signal:AbortSignal.timeout(45000),headers:{'Content-Type':'application/json','x-staging-setup-token':token},...(body?{body:JSON.stringify(body)}:{})});const j=await r.json();if(!r.ok)throw new Error(JSON.stringify(j));return j;}
 const before=applying?await request():{};
 if(applying&&(before.environment!=='staging'||before.origin!=='https://staging.unitemedical.net'||!before.profile_email_registry))throw new Error('staging identity or account registry unavailable');
 const registry=new Map((before.profile_email_registry||[]).map(r=>[r.email_sha256,r.id]));
@@ -57,7 +57,9 @@ await fs.writeFile(new URL('../migration-data/import-plan.json',import.meta.url)
 if(!applying)process.exit(0);
 await fs.writeFile(new URL('../migration-data/pre-import-counts.json',import.meta.url),JSON.stringify(before,null,2));
 console.log('Verified staging identity. Importing into database '+before.database);
-for(let i=0;i<rows.length;i+=100){const batch=rows.slice(i,i+100);const result=await request({run_id:run,rows:batch});if(result.applied!==batch.length)throw new Error('incomplete batch');if(i%1000===0)console.log(`${Math.min(i+100,rows.length)}/${rows.length} rows accepted`);}
+const start=Number(process.argv.find(arg=>arg.startsWith('--start='))?.slice(8)||0);
+if(!Number.isInteger(start)||start<0||start>=rows.length)throw new Error('invalid resume offset');
+for(let i=start;i<rows.length;i+=200){const batch=rows.slice(i,i+200);const result=await request({run_id:run,rows:batch});if(result.applied!==batch.length)throw new Error('incomplete batch');console.log(`${Math.min(i+200,rows.length)}/${rows.length} rows accepted`);}
 const after=await request();
 for(const [table,count] of Object.entries(tables)){const actual=after.imported_counts.find(r=>r.tbl===table)?.count;if(actual!==count)throw new Error(`Count mismatch ${table}: ${actual} vs ${count}`);}
 await fs.writeFile(new URL('../migration-data/post-import-counts.json',import.meta.url),JSON.stringify(after,null,2));
