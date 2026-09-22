@@ -1,3 +1,4 @@
+import { captureUniteEvent } from '../lib/analytics/posthog.js';
 /**
  * Cart store backed by the in-browser DB so the cart survives refreshes
  * and matches the schema in the brief (carts, cart_items).
@@ -78,6 +79,7 @@ export const cartStore = {
         name: lineName,
       });
     }
+    captureUniteEvent('add_to_cart', { product_id: product.id, quantity: qty, value_cents: Math.round(lineUnit * qty * 100) });
     notify();
   },
 

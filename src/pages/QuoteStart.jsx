@@ -1,3 +1,4 @@
+import { captureUniteEvent } from '../lib/analytics/posthog.js';
 // A5 quote router — PRD-28 §5.4. Replaces the single generic quote form with
 // a 3-path chooser. Each path asks only its relevant fields and tags the lead
 // type in HubSpot. Copy sells capability/outcome only — never the engine
@@ -85,6 +86,7 @@ function PathForm({ path, prefillSku, isMobile }) {
         gmail.send({ to: 'support@unitemedical.net', subject: `${path.tag} · ${form.org || form.name}`, body: notes }),
       ]);
       setDone(lead.id);
+      captureUniteEvent('quote_requested');
     } finally {
       setBusy(false);
     }

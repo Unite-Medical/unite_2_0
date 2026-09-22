@@ -1,3 +1,4 @@
+import { PostHogPageTracker } from './components/PostHogPageTracker.jsx';
 import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
@@ -102,6 +103,7 @@ const DistributorPortal = lazy(() => import('./pages/DistributorPortal.jsx').the
 export default function App() {
   return (
     <BrowserRouter>
+      <PostHogPageTracker />
       <a href="#main" className="um-skip-link">Skip to content</a>
       <ScrollToTop />
       <Bootstrap />
