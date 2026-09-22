@@ -1,4 +1,4 @@
-import { captureUniteEvent } from '../lib/analytics/posthog.js';
+import { captureUniteEvent } from '../lib/analytics/index.js';
 import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { D } from '../tokens.js';

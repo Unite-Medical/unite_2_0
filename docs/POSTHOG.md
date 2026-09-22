@@ -27,6 +27,8 @@ Session recordings, autocapture, heatmaps, exception capture, person profiles an
 
 ## Verification
 
-`npm test` passes all 54 tests, including six analytics isolation/transport tests. `npm run build` passes and prerenders 122 routes. Targeted lint passes. One diagnostic `analytics_setup_test` event with no customer information was accepted with HTTP 200.
+`npm test` passes all 62 tests, including six PostHog tests and eight GA4/Search Console tests. `npm run build` passes and prerenders 122 routes. Targeted lint passes. One diagnostic `analytics_setup_test` event with no customer information was accepted with HTTP 200.
 
 After deploying, verify navigation and commerce events in project 622766, and confirm no events from TJS or staging appear. Form submission tests should use a controlled test workflow because the existing forms send real email when their services are configured. No forms or purchases were submitted during this implementation.
+
+See [ANALYTICS-LAUNCH.md](ANALYTICS-LAUNCH.md) for Google Analytics configuration, Search Console verification, and the combined launch checks.

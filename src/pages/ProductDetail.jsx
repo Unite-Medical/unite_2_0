@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { captureUniteEvent } from '../lib/analytics/posthog.js';
+import { captureUniteEvent } from '../lib/analytics/index.js';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { D } from '../tokens.js';
 import { Nav } from '../components/layout/Nav.jsx';

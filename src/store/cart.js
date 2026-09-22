@@ -1,4 +1,4 @@
-import { captureUniteEvent } from '../lib/analytics/posthog.js';
+import { captureUniteEvent } from '../lib/analytics/index.js';
 /**
  * Cart store backed by the in-browser DB so the cart survives refreshes
  * and matches the schema in the brief (carts, cart_items).

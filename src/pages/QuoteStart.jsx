@@ -1,4 +1,4 @@
-import { captureUniteEvent } from '../lib/analytics/posthog.js';
+import { captureUniteEvent } from '../lib/analytics/index.js';
 // A5 quote router — PRD-28 §5.4. Replaces the single generic quote form with
 // a 3-path chooser. Each path asks only its relevant fields and tags the lead
 // type in HubSpot. Copy sells capability/outcome only — never the engine
