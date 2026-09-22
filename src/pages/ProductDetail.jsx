@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { captureUniteEvent } from '../lib/analytics/index.js';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { D } from '../tokens.js';
 import { Nav } from '../components/layout/Nav.jsx';
@@ -88,6 +89,14 @@ export function ProductDetail() {
     }
     return items;
   }, [id, product]);
+
+  const trackedProduct = useRef(null);
+  useEffect(() => {
+    if (product?.id && trackedProduct.current !== product.id) {
+      trackedProduct.current = product.id;
+      captureUniteEvent('product_view', { product_id: product.id });
+    }
+  }, [product?.id]);
 
   const description = useMemo(() => (product ? productDescription(product) : []), [product]);
 

@@ -1,3 +1,4 @@
+import { captureUniteEvent } from '../lib/analytics/index.js';
 import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { D } from '../tokens.js';
@@ -77,6 +78,7 @@ export function Contact() {
         gmail.send({ to: 'support@unitemedical.net', subject: `New lead · ${form.org || form.first}`, body: `${form.reason}\n\n${form.message}` }),
       ]);
       setSubmitted({ id: lead.id });
+      captureUniteEvent('contact_submitted');
     } finally {
       setSubmitting(false);
     }

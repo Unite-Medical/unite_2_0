@@ -1,4 +1,5 @@
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
+import { googleVerification } from './scripts/google-verification.mjs';
 import react from '@vitejs/plugin-react';
 
 // https://vite.dev/config/
@@ -11,8 +12,8 @@ import react from '@vitejs/plugin-react';
 // point it at a local `vercel dev` on :3000.
 const DEV_API_TARGET = process.env.VITE_DEV_API_TARGET || 'https://unite-2-0.vercel.app';
 
-export default defineConfig({
-  plugins: [react()],
+export default defineConfig(({ mode }) => ({
+  plugins: [react(), googleVerification(loadEnv(mode, process.cwd(), '').GOOGLE_SITE_VERIFICATION)],
   server: {
     proxy: {
       '/api': {
@@ -37,4 +38,4 @@ export default defineConfig({
       },
     },
   },
-});
+}));
