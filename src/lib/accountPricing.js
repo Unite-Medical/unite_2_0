@@ -7,7 +7,7 @@ import { resolveCustomerPrice } from './customerPricing.js';
 const STANDARD_QUANTITIES = [1, 10, 50, 250];
 
 export function clearAccountPrices() {
-  for (const row of db.list('account_prices')) db.remove('account_prices', row.id);
+  db.applyRemoteSnapshot({ account_prices: db.list('account_prices').map((row) => ({ id: row.id, __deleted: true })) });
 }
 
 export function accountPriceFor(sku, qty = 1) {
@@ -78,18 +78,22 @@ export function useAccountPricingBootstrap() {
       return () => { cancelled = true; };
     }
     const lines = pricingLinesForCatalog();
+    if (!lines.length) {
+      clearAccountPrices();
+      return () => { cancelled = true; };
+    }
     fetchAccountPricing(lines).then((result) => {
       if (cancelled || !result.ok) return;
       clearAccountPrices();
-      result.prices.forEach((price, index) => {
-        if (!price?.sku) return;
-        db.insert('account_prices', {
+      db.applyRemoteSnapshot({ account_prices: result.prices.map((price, index) => {
+        if (!price?.sku) return null;
+        return {
           id: `account_price_${price.sku}_${price.quantity || lines[index]?.qty || 1}`,
           ...price,
           org_id: session.org_id,
           fetched_at: new Date().toISOString(),
-        });
-      });
+        };
+      }).filter(Boolean) });
     });
     return () => { cancelled = true; };
   }, [access.can_view_prices, session?.org_id, session?.user_id]);

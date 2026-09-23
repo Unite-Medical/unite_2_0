@@ -27,6 +27,8 @@ const SYNC_URL = `${API_BASE}/db/sync`;
 const PUSH_DEBOUNCE_MS = 750;
 const PULL_INTERVAL_MS = 20000;
 const MAX_BATCH = 400;
+// Browser carts and fetched pricing are local caches, never raw database writes.
+const LOCAL_CACHE_TABLES = new Set(['carts', 'cart_items', 'account_prices']);
 
 const stateRef = {
   enabled: false,
@@ -120,6 +122,7 @@ function schedulePush() {
 }
 
 function onLocalMutation({ table, op, id, row }) {
+  if (LOCAL_CACHE_TABLES.has(table)) return;
   stateRef.queue.set(`${table}:${id}`, { table, op, id: String(id), row });
   schedulePush();
 }
@@ -164,7 +167,7 @@ export function stopRemoteDb({ purge = false } = {}) {
   if (purge) {
     stateRef.queue.clear();
     stateRef.latest = null;
-    db.clearPublic();
+    db.clear();
   }
 }
 

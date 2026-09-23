@@ -27,7 +27,8 @@ function ensureCartFor(user) {
 }
 
 function reseat() {
-  activeCartId = ensureCartFor(auth.current());
+  const userId = auth.current()?.user_id;
+  activeCartId = userId ? db.list('carts', { where: { customer_id: userId } })[0]?.id || null : null;
   notify();
 }
 
