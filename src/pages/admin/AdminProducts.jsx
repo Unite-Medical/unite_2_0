@@ -59,7 +59,7 @@ export function AdminProducts() {
 
   const counts = useMemo(() => {
     const map = new Map();
-    products.forEach((p) => map.set(p.category, (map.get(p.category) || 0) + 1));
+    products.forEach((p) => map.set(p.category || 'Uncategorized', (map.get(p.category || 'Uncategorized') || 0) + 1));
     return map;
   }, [products]);
 
@@ -282,7 +282,7 @@ export function AdminProducts() {
 function StatCard({ label, value, accent }) {
   return (
     <div style={{ padding: 14, background: accent ? D.plum : D.card, color: accent ? D.paper : D.ink, borderRadius: 10, border: `1px solid ${accent ? D.plum : D.line}` }}>
-      <div style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, color: accent ? 'rgba(255,255,255,.7)' : D.ink3 }}>{label.toUpperCase()}</div>
+      <div style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, color: accent ? 'rgba(255,255,255,.7)' : D.ink3 }}>{String(label || 'Uncategorized').toUpperCase()}</div>
       <div style={{ fontFamily: D.display, fontSize: 24, letterSpacing: -0.4, marginTop: 4 }}>{value}</div>
     </div>
   );

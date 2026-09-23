@@ -24,12 +24,14 @@ export function AdminConsignment() {
 
   db.useTable('inventory_lots');
   db.useTable('consignment_movements');
+  db.useTable('purchase_orders');
   const markupRows = db.useTable('shipping_markup_config');
   const globalMarkup = markupRows.find((r) => r.scope === 'global')?.markup_pct ?? 10;
 
   // useTable subscriptions above rerender this component on any relevant
   // table change, so recomputing inline stays fresh without memo deps.
   const inventory = active ? consignment.inventoryFor(active.id) : [];
+  const metrics = new Map((active ? consignment.metricsFor(active.id) : []).map((row) => [row.product_id, row]));
   const settlement = active ? consignment.settlementFor(active.id) : { movements: [], owed: 0, settled: 0, units: 0 };
   const scans = active ? db.list('scan_events').filter((s) => {
     const lot = s.inventory_lot_id ? db.get('inventory_lots', s.inventory_lot_id) : null;
@@ -88,19 +90,31 @@ export function AdminConsignment() {
             <div style={{ background: D.card, border: `1px solid ${D.line}`, borderRadius: 12, overflow: 'hidden' }}>
               <div style={{ padding: '12px 16px', fontFamily: D.display, fontSize: 18, borderBottom: `1px solid ${D.line}` }}>Inventory</div>
               <div className="um-scroll-x">
-                <table style={{ width: '100%', minWidth: 620, borderCollapse: 'collapse', fontSize: 13 }}>
-                  <thead><tr style={{ background: D.paperAlt, fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>{['SKU', 'NAME', 'VISIBILITY', 'ON HAND', 'RESERVED', 'NEAREST EXPIRY'].map((h) => <th key={h} style={{ padding: '10px 12px', textAlign: 'left' }}>{h}</th>)}</tr></thead>
+                <table style={{ width: '100%', minWidth: 980, borderCollapse: 'collapse', fontSize: 13 }}>
+                  <thead><tr style={{ background: D.paperAlt, fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>{['SKU', 'NAME', 'ON HAND', 'RUN RATE', 'AGREED COST', 'PRICE VALID UNTIL', 'LOW AT', 'NEAREST EXPIRY'].map((h) => <th key={h} style={{ padding: '10px 12px', textAlign: 'left' }}>{h}</th>)}</tr></thead>
                   <tbody>
-                    {inventory.map((p) => (
-                      <tr key={p.id} style={{ borderTop: `1px solid ${D.line}` }}>
-                        <td style={{ padding: '10px 12px', fontFamily: D.mono, color: D.plum }}>{p.distributor_sku}{p.mapped_unite_sku ? ` → ${p.mapped_unite_sku}` : ''}</td>
-                        <td style={{ padding: '10px 12px', color: D.ink2 }}>{p.name}</td>
-                        <td style={{ padding: '10px 12px' }}>{p.visibility === 'storefront' ? <Pill c={D.plum}>STOREFRONT{p.unite_sellable ? ' · SELLABLE' : ''}</Pill> : <Pill c={D.ink3}>WAREHOUSE-ONLY</Pill>}</td>
-                        <td style={{ padding: '10px 12px', fontFamily: D.mono }}>{p.on_hand}</td>
-                        <td style={{ padding: '10px 12px', fontFamily: D.mono, color: D.ink3 }}>{p.reserved}</td>
-                        <td style={{ padding: '10px 12px', color: soon(p.nearest_expiry) ? D.terra : D.ink2 }}>{p.nearest_expiry || '—'}{soon(p.nearest_expiry) ? ' ⚠' : ''}</td>
-                      </tr>
-                    ))}
+                    {inventory.map((product) => {
+                      const metric = metrics.get(product.id) || {};
+                      return (
+                        <tr key={product.id} style={{ borderTop: `1px solid ${D.line}` }}>
+                          <td style={{ padding: '10px 12px', fontFamily: D.mono, color: D.plum }}>{product.distributor_sku}{product.mapped_unite_sku ? ` → ${product.mapped_unite_sku}` : ''}</td>
+                          <td style={{ padding: '10px 12px', color: D.ink2 }}>{product.name}</td>
+                          <td style={{ padding: '10px 12px', fontFamily: D.mono }}>{product.on_hand}<div style={{ color: D.ink3, fontSize: 10 }}>{product.available} available</div></td>
+                          <td style={{ padding: '10px 12px', fontFamily: D.mono }}>{metric.run_rate ?? 0}/day<div style={{ color: D.ink3, fontSize: 10 }}>{metric.days_cover ?? '—'} days cover</div></td>
+                          <td style={{ padding: '10px 12px' }}>
+                            <input type="number" min="0" step="0.0001" defaultValue={product.settlement_unit_cost ?? ''} onBlur={(event) => db.update('distributor_products', product.id, {
+                              settlement_unit_cost: Number(event.target.value) || null,
+                              settlement_currency: product.settlement_currency || 'USD',
+                              settlement_effective_from: product.settlement_effective_from || new Date().toISOString(),
+                              settlement_updated_by: 'usr_admin', settlement_updated_at: new Date().toISOString(),
+                            })} style={{ ...inp, width: 95 }} />
+                          </td>
+                          <td style={{ padding: '10px 12px' }}><input type="date" defaultValue={product.settlement_effective_until?.slice(0, 10) || ''} onBlur={(event) => db.update('distributor_products', product.id, { settlement_effective_until: event.target.value ? `${event.target.value}T23:59:59.999Z` : null })} style={{ ...inp, width: 135 }} /></td>
+                          <td style={{ padding: '10px 12px' }}><input type="number" min="0" defaultValue={product.low_stock_threshold ?? ''} onBlur={(event) => db.update('distributor_products', product.id, { low_stock_threshold: Number(event.target.value) || 0 })} style={inp} /></td>
+                          <td style={{ padding: '10px 12px', color: soon(product.nearest_expiry) ? D.terra : D.ink2 }}>{product.nearest_expiry || '—'}{soon(product.nearest_expiry) ? ' ⚠' : ''}</td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
@@ -108,13 +122,11 @@ export function AdminConsignment() {
 
             <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 18 }}>
               <div style={{ background: D.card, border: `1px solid ${D.line}`, borderRadius: 12, padding: 16 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div style={{ fontFamily: D.display, fontSize: 18 }}>Settlement</div>
-                  <button onClick={() => active && consignment.settle(active.id)} disabled={!settlement.owed} style={{ background: settlement.owed ? D.plum : D.line, color: D.paper, border: 'none', padding: '7px 14px', borderRadius: 4, fontSize: 12, cursor: settlement.owed ? 'pointer' : 'default' }}>Mark settled</button>
-                </div>
-                <div style={{ marginTop: 12, fontSize: 13, color: D.ink2 }}>Owed <b style={{ color: D.ink }}>{fmt.money(settlement.owed)}</b> · settled {fmt.money(settlement.settled)}</div>
-                {settlement.movements.slice(-5).reverse().map((m) => (
-                  <div key={m.id} style={{ fontSize: 12, color: D.ink3, marginTop: 6, fontFamily: D.mono }}>{m.order_id} · {m.qty}u · {fmt.money((m.unit_cost || 0) * m.qty)} {m.settled ? '✓' : ''}</div>
+                <div style={{ fontFamily: D.display, fontSize: 18 }}>Settlement POs</div>
+                <div style={{ marginTop: 8, fontSize: 13, color: D.ink2 }}>Open <b style={{ color: D.ink }}>{fmt.money(settlement.owed)}</b> · settled {fmt.money(settlement.settled)}</div>
+                <div style={{ marginTop: 6, fontSize: 11, color: D.ink3 }}>Sell-through creates a draft supplier PO. Settlement closes only from approved QBO bill/payment evidence, never from a manual toggle.</div>
+                {settlement.movements.slice(-5).reverse().map((movement) => (
+                  <div key={movement.id} style={{ fontSize: 12, color: D.ink3, marginTop: 7, fontFamily: D.mono }}>{movement.settlement_po_id || 'PO pending'} · {movement.qty}u · {fmt.money((movement.unit_cost || 0) * movement.qty)} {movement.settled ? '✓' : 'open'}</div>
                 ))}
               </div>
               <div style={{ background: D.card, border: `1px solid ${D.line}`, borderRadius: 12, padding: 16 }}>
@@ -133,7 +145,4 @@ export function AdminConsignment() {
   );
 }
 
-function Pill({ c, children }) {
-  return <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 0.5, color: c, border: `1px solid ${c}`, borderRadius: 4, padding: '2px 8px' }}>{children}</span>;
-}
 const inp = { width: 70, padding: '7px 9px', border: `1px solid ${D.line}`, borderRadius: 6, fontFamily: 'inherit', fontSize: 13 };

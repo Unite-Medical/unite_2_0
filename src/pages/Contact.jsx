@@ -1,30 +1,16 @@
-import { useState } from 'react';
+import {CONTACT_REASONS as REASONS} from '../lib/contactReasons.js';
+import { useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { D } from '../tokens.js';
 import { Nav } from '../components/layout/Nav.jsx';
 import { Footer } from '../components/layout/Footer.jsx';
 import { PageHead } from '../components/layout/PageHead.jsx';
-import { Grad } from '../components/shared/Grad.jsx';
-import { db } from '../lib/db.js';
-import { hubspot, gmail } from '../lib/services.js';
-import { uid } from '../lib/format.js';
 import { useViewport } from '../lib/viewport.js';
 import { useSEO } from '../lib/seo.js';
 
 // Contact form reasons — aligned with the quote-router paths (PRD-28 §5.4)
 // and the 3 supply states (§5.1) so leads tag consistently in HubSpot.
-const REASONS = [
-  'New account',
-  'Quote · stocked item',
-  'Quote · source a product or brand',
-  'Quote · custom / made to spec',
-  'Shortage list',
-  'Government procurement',
-  'Distributor program',
-  'Document request',
-  'PDAC consulting',
-  'Support',
-];
+
 
 export function Contact() {
   const { isMobile } = useViewport();
@@ -40,46 +26,27 @@ export function Contact() {
   // avoid React 19's set-state-in-effect lint and the resulting render storm.
   const [params] = useSearchParams();
   const initialReason = params.get('reason') && REASONS.includes(params.get('reason')) ? params.get('reason') : 'New account';
-  const [form, setForm] = useState({ first: '', last: '', org: '', email: '', message: '', reason: initialReason, route_to_rep: true });
+  const [form, setForm] = useState({ first: '', last: '', org: '', email: '', message: params.get('document')?`Please send ${params.get('document').slice(0,300)}.`:'', reason: initialReason, route_to_rep: true });
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(null);
+  const [error,setError]=useState(''),requestRef=useRef(null),busyRef=useRef(false);
+  const [honeypot,setHoneypot]=useState('');
 
   function set(k, v) { setForm((f) => ({ ...f, [k]: v })); }
 
   async function handleSubmit(e) {
-    e.preventDefault();
-    setSubmitting(true);
-    try {
-      const lead = db.insert('leads', {
-        id: uid('lead'),
-        org_name: form.org || `${form.first} ${form.last}`,
-        contact_name: `${form.first} ${form.last}`.trim(),
-        contact_email: form.email,
-        segment: form.reason.toLowerCase().includes('gov') ? 'gov' : form.reason.toLowerCase().includes('distributor') ? 'distributors' : 'asc',
-        status: form.route_to_rep ? 'warm' : 'cold',
-        source: 'website',
-        owner: 'Unassigned',
-        next_action: 'First reply',
-        next_action_at: new Date(Date.now() + 86400000).toISOString(),
-        notes: form.message,
-        reason: form.reason,
-      });
-      await Promise.all([
-        hubspot.createContact({
-          email: form.email,
-          firstname: form.first,
-          lastname: form.last,
-          company: form.org,
-          phone: '',
-          lifecyclestage: 'lead',
-        }),
-        gmail.send({ to: form.email, subject: `Got it — Unite Medical (${form.reason})`, body: `Hi ${form.first || 'there'}, thanks for reaching out. ${form.route_to_rep ? 'A rep is being assigned and will reply within one business day.' : 'A team member will be in touch shortly.'}` }),
-        gmail.send({ to: 'support@unitemedical.net', subject: `New lead · ${form.org || form.first}`, body: `${form.reason}\n\n${form.message}` }),
-      ]);
-      setSubmitted({ id: lead.id });
-    } finally {
-      setSubmitting(false);
-    }
+    e.preventDefault();if(busyRef.current)return;
+    busyRef.current=true;setSubmitting(true);setError('');
+    const payload={kind:'contact',name:`${form.first} ${form.last}`.trim(),company:form.org,email:form.email,reason:form.reason,message:form.message,route_to_rep:form.route_to_rep,website_confirm:honeypot};
+    const canonical=JSON.stringify(payload);
+    if(requestRef.current?.canonical!==canonical)requestRef.current={canonical,key:crypto.randomUUID()};
+    try{
+      const response=await fetch('/api/public/inquiry',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...payload,idempotency_key:requestRef.current.key})});
+      const result=await response.json().catch(()=>({}));
+      if(!response.ok||!result.ok||!result.id)throw new Error(response.status===429?'Too many requests. Please try again later or call 833.868.6483.':result.error==='contact_reason_and_message_required'?'Choose a reason and add a message.':'We could not confirm your request was saved. Your details are still here; retry or call 833.868.6483.');
+      setSubmitted({id:result.id});
+    }catch(err){setError(err instanceof TypeError?'We could not reach the server. Your details are still here; retry or call 833.868.6483.':err.message||'We could not confirm your request was saved. Please retry or call us.');}
+    finally{busyRef.current=false;setSubmitting(false);}
   }
 
   return (
@@ -93,11 +60,11 @@ export function Contact() {
         />
         <div style={{ maxWidth: 1360, margin: '0 auto', padding: `24px ${padX}px ${isMobile ? 56 : 64}px`, display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: isMobile ? 28 : 40 }}>
           <form onSubmit={handleSubmit} style={{ background: D.card, borderRadius: 14, border: `1px solid ${D.line}`, padding: isMobile ? 22 : 32 }}>
-            <div style={{ fontFamily: D.display, fontSize: 26, marginBottom: 18 }}>Send us a line</div>
+            <div style={{ fontFamily: D.display, fontSize: 26, marginBottom: 18 }}>Send us a line</div>{error&&<p role="alert" style={{color:"#922e24"}}>{error}</p>}<label style={{position:"absolute",left:"-10000px"}} aria-hidden="true">Website<input tabIndex={-1} autoComplete="off" value={honeypot} onChange={e=>setHoneypot(e.target.value)}/></label>
             {submitted ? (
               <div style={{ padding: 24, background: D.paperAlt, borderRadius: 12 }}>
                 <div style={{ fontFamily: D.display, fontSize: 24, color: D.plum }}>Got it.</div>
-                <p style={{ color: D.ink2, marginTop: 8, marginBottom: 0 }}>Lead ID <code>{submitted.id}</code> created. We&apos;ll be in touch inside one business day.</p>
+                <p style={{ color: D.ink2, marginTop: 8, marginBottom: 0 }}>Your request was saved for our team to review. Reference: <code>{submitted.id}</code>.</p>
               </div>
             ) : (
               <>
@@ -155,6 +122,7 @@ function Field({ label, value, onChange, type = 'text', required }) {
         type={type}
         value={value}
         required={required}
+        maxLength={type==='email'?254:100}
         onChange={(e) => onChange(e.target.value)}
         style={{ marginTop: 6, padding: '12px 14px', background: D.paper, border: `1px solid ${D.line}`, borderRadius: 10, fontSize: 14, color: D.ink, width: '100%', outline: 'none', fontFamily: D.sans }}
       />
@@ -185,6 +153,8 @@ function TextAreaField({ label, value, onChange }) {
         value={value}
         onChange={(e) => onChange(e.target.value)}
         rows={4}
+        required
+        maxLength={4000}
         style={{ marginTop: 6, padding: '12px 14px', background: D.paper, border: `1px solid ${D.line}`, borderRadius: 10, fontSize: 14, color: D.ink, width: '100%', outline: 'none', fontFamily: D.sans, resize: 'vertical' }}
       />
     </label>

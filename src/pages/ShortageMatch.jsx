@@ -28,6 +28,8 @@ import { uid } from '../lib/format.js';
 import { cartStore } from '../store/cart.js';
 import { matchShortageList, captureCrossReferences } from '../lib/matching.js';
 import { captureShortageListMisses } from '../lib/quoteMisses.js';
+import { auth } from '../lib/auth.js';
+import { commerceAccessFor } from '../lib/accessPolicy.js';
 
 const SAMPLE = `12 x nitrile exam gloves, large
 Influenza A&B rapid test 25ct — 4 boxes
@@ -45,7 +47,7 @@ const STATUS_META = {
   sourcing:   { label: 'QUOTE',       color: D.plum,    bg: 'rgba(29,92,77,.08)' },
 };
 
-function MatchRow({ line, isMobile }) {
+function MatchRow({ line, isMobile, commerce, priceBySku }) {
   const meta = STATUS_META[line.status];
   const picks = (line.status === 'stocked' || line.status === 'source') ? [line.match] : line.alternates;
   return (
@@ -72,8 +74,12 @@ function MatchRow({ line, isMobile }) {
                   {p.sku} · {p.category}{p.pack_size ? ` · ${p.pack_size}` : ''}
                 </div>
               </div>
-              <div style={{ fontFamily: D.display, fontSize: 18, color: D.plum, flexShrink: 0 }}>{p.price == null ? 'Quote' : `$${Number(p.price).toFixed(2)}`}</div>
-              {line.status === 'stocked' ? (
+              <div style={{ fontFamily: D.display, fontSize: 18, color: D.plum, flexShrink: 0 }}>
+                {p.quote_only ? 'Quote' : commerce.can_view_prices
+                  ? (priceBySku.get(p.sku)?.unit_price != null ? `$${Number(priceBySku.get(p.sku).unit_price).toFixed(2)}` : 'Unavailable')
+                  : 'Sign in for pricing'}
+              </div>
+              {line.status === 'stocked' && commerce.can_use_cart && priceBySku.get(p.sku)?.unit_price > 0 ? (
                 <button
                   onClick={() => cartStore.add(p.sku, line.qty)}
                   aria-label={`Add ${p.name} to cart`}
@@ -81,6 +87,8 @@ function MatchRow({ line, isMobile }) {
                 >
                   <Icon.plus />
                 </button>
+              ) : line.status === 'stocked' ? (
+                <Link to={`/portal/quote?sku=${encodeURIComponent(p.sku)}&qty=${line.qty}`} style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 0.8, color: D.plum, flexShrink: 0 }}>QUICK QUOTE</Link>
               ) : (
                 <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 0.8, color: D.ink3, flexShrink: 0 }}>VIA SOURCING</span>
               )}
@@ -106,6 +114,13 @@ function MatchRow({ line, isMobile }) {
 export function ShortageMatch() {
   const { isMobile } = useViewport();
   const padX = isMobile ? 20 : 40;
+  const session = auth.use();
+  const organization = auth.org();
+  const commerce = commerceAccessFor(session, organization);
+  const accountPrices = db.useTable('account_prices');
+  const priceBySku = useMemo(() => new Map(accountPrices
+    .filter((row) => row.ok !== false && Number(row.quantity || 1) === 1)
+    .map((row) => [row.sku, row])), [accountPrices]);
 
   useSEO({
     title: 'Match your shortage list against our full supply chain — instantly',
@@ -243,7 +258,7 @@ export function ShortageMatch() {
 
               <div style={{ display: 'grid', gap: 12, marginTop: 20 }}>
                 {result.lines.map((line, i) => (
-                  <MatchRow key={`${i}-${line.raw}`} line={line} isMobile={isMobile} />
+                  <MatchRow key={`${i}-${line.raw}`} line={line} isMobile={isMobile} commerce={commerce} priceBySku={priceBySku} />
                 ))}
               </div>
 
@@ -258,8 +273,8 @@ export function ShortageMatch() {
                     Stocked lines ship same-day on orders before 2pm EST. We&apos;ll come back on the
                     sourcing lines with landed-cost pricing from our vetted manufacturer network.
                   </p>
-                  <Link to="/cart" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: D.paper, color: D.ink, padding: '12px 22px', borderRadius: 4, fontSize: 14, fontWeight: 600, marginTop: 8 }}>
-                    Review cart <Icon.arrow />
+                  <Link to={commerce.can_use_cart ? '/cart' : '/portal/quote'} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: D.paper, color: D.ink, padding: '12px 22px', borderRadius: 4, fontSize: 14, fontWeight: 600, marginTop: 8 }}>
+                    {commerce.can_use_cart ? 'Review cart' : 'Build Quick Quote'} <Icon.arrow />
                   </Link>
                 </div>
               ) : (

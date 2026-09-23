@@ -14,6 +14,7 @@
 import crypto from 'node:crypto';
 import { neon } from '@neondatabase/serverless';
 import { sendJson, safeEqual, readRawBody, logEvent } from './http.js';
+import { authorizeLiveRequest, sessionFromRequest } from './auth.js';
 
 const VALID_REASONS = new Set([
   'receipt', 'ship', 'adjust_damage', 'adjust_loss', 'found', 'transfer_out',
@@ -25,11 +26,12 @@ export function wmsClient() {
   return url ? neon(url) : null;
 }
 
-export function wmsAuthorized(req) {
+export function wmsAuthorized(req, { roles = ['admin', 'warehouse_manager', 'warehouse_operator'], allowSyncToken = false } = {}) {
   const token = process.env.DB_SYNC_TOKEN;
-  if (!token) return false;
   const given = req.headers['x-sync-token'];
-  return Boolean(given) && safeEqual(given, token);
+  if (allowSyncToken && token && given && safeEqual(given, token)) return true;
+  const session = sessionFromRequest(req);
+  return Boolean(session && roles.includes(session.role));
 }
 
 function rid(prefix) { return `${prefix}_${Date.now().toString(36)}_${crypto.randomBytes(4).toString('hex')}`; }
@@ -99,18 +101,29 @@ export async function postMovement(sql, m = {}) {
  * Standard guarded entrypoint for the api/wms/* POST routes.
  * Handles method + auth + config + body parsing, then calls `run(sql, body)`.
  */
-export async function handleWmsRoute(req, res, run) {
+export async function handleWmsRoute(req, res, run, options = {}) {
   if (req.method !== 'POST') return sendJson(res, 405, { error: 'method_not_allowed' });
   const sql = wmsClient();
-  if (!sql || !process.env.DB_SYNC_TOKEN) {
-    return sendJson(res, 503, { error: 'not_configured', hint: 'Set DATABASE_URL + DB_SYNC_TOKEN to enable server-authoritative WMS writes.' });
+  if (!sql) {
+    return sendJson(res, 503, { error: 'not_configured', hint: 'Set DATABASE_URL to enable server-authoritative WMS writes.' });
   }
-  if (!wmsAuthorized(req)) return sendJson(res, 401, { error: 'bad_sync_token' });
+  const hasToken = Boolean(options.allowSyncToken && process.env.DB_SYNC_TOKEN && req.headers['x-sync-token']
+    && safeEqual(req.headers['x-sync-token'], process.env.DB_SYNC_TOKEN));
+  let session = null;
+  if (!hasToken) {
+    try {
+      const live = await authorizeLiveRequest(req, sql, { roles: options.roles || ['admin', 'warehouse_manager', 'warehouse_operator'] });
+      if (!live.ok) return sendJson(res, live.reason === 'authentication_required' ? 401 : 403, { error: live.reason });
+      session = live.session;
+    } catch {
+      return sendJson(res, 503, { error: 'authorization_unavailable' });
+    }
+  }
   try {
     const raw = await readRawBody(req);
     const body = JSON.parse(raw.toString('utf8') || '{}');
     await sql`CREATE TABLE IF NOT EXISTS um_rows (tbl TEXT NOT NULL, id TEXT NOT NULL, data JSONB NOT NULL, updated_at TIMESTAMPTZ NOT NULL DEFAULT now(), deleted BOOLEAN NOT NULL DEFAULT false, PRIMARY KEY (tbl, id))`;
-    const result = await run(sql, body);
+    const result = await run(sql, body, session);
     return sendJson(res, result?.ok === false ? 400 : 200, result);
   } catch (err) {
     logEvent('wms', 'error', { route: req.url, error: err.message });

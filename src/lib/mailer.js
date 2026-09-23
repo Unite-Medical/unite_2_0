@@ -21,13 +21,23 @@
 import { db } from './db.js';
 import { uid, delay } from './format.js';
 import { API_BASE } from './external/_http.js';
+import { customerio } from './external/customerio.js';
 import { resend } from './external/resend.js';
 import { gmail } from './external/gmail.js';
 
 const PROVIDERS = [
+  { name: 'customerio', send: (m) => customerio.sendRaw(m) },
   { name: 'resend', send: (m) => resend.sendRaw(m) },
   { name: 'gmail', send: (m) => gmail.sendRaw(m) },
 ];
+
+export function providerMessageFields(provider, message_id) {
+  return {
+    provider_message_id: message_id || null,
+    gmail_message_id: provider === 'gmail' ? message_id || null : null,
+    customerio_message_id: provider === 'customerio' ? message_id || null : null,
+  };
+}
 
 function mirror({ to, from, subject, body, template_key, drafted_by, status, provider, message_id, error }) {
   return db.insert('gmail_outbox', {
@@ -41,7 +51,7 @@ function mirror({ to, from, subject, body, template_key, drafted_by, status, pro
     provider,
     drafted_by,
     template_key,
-    gmail_message_id: message_id || null,
+    ...providerMessageFields(provider, message_id),
     error: error || null,
     created_at: new Date().toISOString(),
   });
@@ -57,7 +67,7 @@ export const mailer = {
     if (API_BASE) {
       for (const p of PROVIDERS) {
         try {
-          const r = await p.send({ to, from, subject, body });
+          const r = await p.send({ to, from, subject, body, template_key });
           return mirror({ to, from, subject, body, template_key, drafted_by, status: 'sent', provider: p.name, message_id: r.id });
         } catch (err) {
           lastErr = err;

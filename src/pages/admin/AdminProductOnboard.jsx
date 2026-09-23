@@ -236,7 +236,7 @@ export function AdminProductOnboard() {
                 Open in AccessGUDID →
               </button>
               <div style={{ fontSize: 11, color: D.ink3, lineHeight: 1.55 }}>
-                FDA's AccessGUDID portal accepts only the registered labeler's account; pre-validation here prevents 100% of the "missing field" rejection cases.
+                FDA's AccessGUDID portal accepts only the registered labeler's account; pre-validation checks required fields but does not guarantee acceptance.
               </div>
             </div>
           </div>

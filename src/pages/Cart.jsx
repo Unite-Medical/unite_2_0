@@ -8,6 +8,8 @@ import { db } from '../lib/db.js';
 import { fmt } from '../lib/format.js';
 import { useViewport } from '../lib/viewport.js';
 import { useSEO } from '../lib/seo.js';
+import { auth } from '../lib/auth.js';
+import { commerceAccessFor } from '../lib/accessPolicy.js';
 
 function tierLabel(qty) {
   if (qty >= 250) return '250+';
@@ -18,6 +20,9 @@ function tierLabel(qty) {
 export function Cart() {
   const navigate = useNavigate();
   const cart = useCart();
+  const session = auth.use();
+  const organization = db.useRow('organizations', session?.org_id || '__anonymous__');
+  const commerce = commerceAccessFor(session, organization);
   const { isMobile } = useViewport();
   const padX = isMobile ? 20 : 40;
   useSEO({
@@ -32,6 +37,23 @@ export function Cart() {
   const total = +(subtotal + freight).toFixed(2);
   const totalQty = cart.count;
   const suggestions = db.useTable('products', { limit: 8 }).filter((p) => !items.find((i) => i.sku === p.sku)).slice(0, 3);
+
+  if (!commerce.can_use_cart) {
+    return (
+      <div style={{ background: D.paper, fontFamily: D.sans, color: D.ink, minHeight: '100vh' }}>
+        <Nav />
+        <main id="main" style={{ maxWidth: 680, margin: '0 auto', padding: '96px 24px', textAlign: 'center' }}>
+          <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.2, color: D.plum }}>APPROVED ACCOUNT REQUIRED</div>
+          <h1 style={{ fontFamily: D.display, fontSize: 48, fontWeight: 400, margin: '12px 0' }}>Sign in before ordering.</h1>
+          <p style={{ color: D.ink2 }}>Product information and Quick Quote remain available without an approved account. Prices and cart ordering do not.</p>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: 10, marginTop: 22 }}>
+            <button onClick={() => navigate('/login')} style={{ background: D.plum, color: D.paper, border: 'none', padding: '12px 20px', borderRadius: 4, cursor: 'pointer', fontWeight: 600 }}>Sign in</button>
+            <button onClick={() => navigate('/portal/quote')} style={{ background: 'transparent', color: D.ink, border: `1px solid ${D.ink}`, padding: '12px 20px', borderRadius: 4, cursor: 'pointer', fontWeight: 600 }}>Build Quick Quote</button>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div style={{ background: D.paper, fontFamily: D.sans, color: D.ink, minHeight: '100vh' }}>

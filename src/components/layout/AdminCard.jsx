@@ -1,11 +1,12 @@
+import { useId } from 'react';
 import { D } from '../../tokens.js';
 
 export function AdminCard({ title, children }) {
   return (
-    <div style={{ background: D.card, borderRadius: 14, border: `1px solid ${D.line}`, padding: 22 }}>
+    <div className="uw-admin-card">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-        <div style={{ fontFamily: D.display, fontSize: 20, letterSpacing: -0.3 }}>{title}</div>
-        <div style={{ fontFamily: D.mono, fontSize: 10, color: D.ink3, letterSpacing: 1 }}>LIVE</div>
+        <h2 className="uw-admin-card-title">{title}</h2>
+
       </div>
       {children}
     </div>
@@ -15,10 +16,10 @@ export function AdminCard({ title, children }) {
 export function Sparkline({ points, tall, dual }) {
   const h = tall ? 200 : 120;
   const w = 700;
-  const max = Math.max(...points);
-  const path = points.map((v, i) => `${i === 0 ? 'M' : 'L'} ${(i / (points.length - 1)) * w} ${h - (v / max) * h * 0.85}`).join(' ');
+  const max = Math.max(1, ...points.map(value => Number(value) || 0));
+  const path = points.map((v, i) => `${i === 0 ? 'M' : 'L'} ${(i / Math.max(1, points.length - 1)) * w} ${h - (v / max) * h * 0.85}`).join(' ');
   const area = `${path} L ${w} ${h} L 0 ${h} Z`;
-  const gradId = `spark-${tall ? 't' : dual ? 'd' : 's'}`;
+  const gradId = useId();
   return (
     <svg width="100%" viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none" style={{ display: 'block' }}>
       <defs>
@@ -31,7 +32,7 @@ export function Sparkline({ points, tall, dual }) {
       <path d={path} fill="none" stroke={D.plum} strokeWidth="2" />
       {dual && (
         <path
-          d={points.map((v, i) => `${i === 0 ? 'M' : 'L'} ${(i / (points.length - 1)) * w} ${h - (v * 0.7 / max) * h * 0.85}`).join(' ')}
+          d={points.map((v, i) => `${i === 0 ? 'M' : 'L'} ${(i / Math.max(1, points.length - 1)) * w} ${h - (v * 0.7 / max) * h * 0.85}`).join(' ')}
           fill="none" stroke={D.terra} strokeWidth="2" strokeDasharray="3,3"
         />
       )}

@@ -1,10 +1,15 @@
-/**
- * POST /api/wms/movement — server-authoritative ledger post (PRD-25 §4.3).
- * Body: { sku, warehouse_id, qty_delta, reason, ref_type?, ref_id?, lot_id?,
- *         unit_cost?, actor_id?, idempotency_key?, note? }
- */
-import { handleWmsRoute, postMovement } from '../_lib/wms.js';
+import { sendJson } from '../_lib/http.js';
 
+/**
+ * Generic ledger movement is intentionally retired. Inventory increases must
+ * flow through PO receipt or authoritative RMA restock. Order depletion must
+ * flow through custody handoff. Disposal and return-to-vendor require their
+ * evidence-specific quality transitions.
+ */
 export default function handler(req, res) {
-  return handleWmsRoute(req, res, (sql, body) => postMovement(sql, body));
+  res.setHeader('Cache-Control', 'no-store');
+  return sendJson(res, 410, {
+    error: 'authoritative_inventory_transition_required',
+    routes: ['/api/wms/receive', '/api/orders/handoff'],
+  });
 }

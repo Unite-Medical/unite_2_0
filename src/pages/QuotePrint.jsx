@@ -12,13 +12,15 @@
  *   - internal: full breakdown for the rep
  */
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useParams, useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { D } from '../tokens.js';
 import { db } from '../lib/db.js';
+import { auth } from '../lib/auth.js';
 import { fmt } from '../lib/format.js';
 import { useSEO } from '../lib/seo.js';
-import { generateDocument } from '../lib/documents.js';
+
+import { canViewCommercialCosts, projectCommercialRecord, resolveQuoteView } from '../lib/commercialPolicy.js';
 
 const PAGE_STYLE = `
   @media print {
@@ -51,10 +53,40 @@ export function QuotePrint() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [search] = useSearchParams();
-  const isInternal = search.get('view') === 'internal';
+  const session = auth.use();
+  const view = resolveQuoteView(search.get('view'), session);
+  const isInternal = view === 'internal';
+  const canViewCosts = canViewCommercialCosts(session);
 
-  const quote = db.useRow('quotes', id);
-  const items = db.useTable('quote_items', { where: { quote_id: id } });
+  const rawQuote = db.useRow('quotes', id);
+  const rawItems = db.useTable('quote_items', { where: { quote_id: id } });
+  const [bundle, setBundle] = useState(null);
+  const [loadState, setLoadState] = useState('loading');
+  useEffect(() => {
+    let active = true;
+    fetch(`/api/quotes/view?id=${encodeURIComponent(id)}&view=${encodeURIComponent(view)}`, { credentials: 'include' })
+      .then(async (response) => {
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        return response.json();
+      })
+      .then((next) => { if (active) { setBundle(next); setLoadState('ready'); } })
+      .catch(() => {
+        if (!active) return;
+        if (import.meta.env.DEV && rawQuote) {
+          setBundle({
+            quote: projectCommercialRecord(rawQuote, session),
+            items: rawItems.map((item) => projectCommercialRecord(item, session)),
+          });
+          setLoadState('ready');
+        } else {
+          setBundle(null);
+          setLoadState('not_found');
+        }
+      });
+    return () => { active = false; };
+  }, [id, view, rawQuote, rawItems, session]);
+  const quote = bundle?.quote || null;
+  const items = useMemo(() => bundle?.items || [], [bundle]);
 
   useSEO({
     title: `Quote ${id}`,
@@ -78,7 +110,11 @@ export function QuotePrint() {
   const eta = quote?.eta
     || new Date(mountedAt + 28 * 86400000).toISOString();
 
-  if (!quote) {
+  if (loadState === 'loading') {
+    return <div className="um-print-page"><style>{PAGE_STYLE}</style><div className="um-print-sheet">Loading authorized quote view…</div></div>;
+  }
+
+  if (!quote || loadState === 'not_found') {
     return (
       <div className="um-print-page">
         <style>{PAGE_STYLE}</style>
@@ -102,15 +138,17 @@ export function QuotePrint() {
       <div className="um-print-sheet">
         {/* Top toolbar (hidden in print) */}
         <div className="um-no-print" style={{ display: 'flex', gap: 10, marginBottom: 20, alignItems: 'center', flexWrap: 'wrap' }}>
-          <button type="button" className="um-print-cta" onClick={() => generateDocument({ type: 'quote', ref_id: id, view: isInternal ? 'internal' : 'customer', download: true })} style={{ background: D.plum, color: D.paper }}>
-            Download PDF
+          <button type="button" className="um-print-cta" onClick={() => window.print()} style={{ background: D.plum, color: D.paper }}>
+            Save as PDF
           </button>
           <button type="button" className="um-print-cta" onClick={() => window.print()} style={{ background: 'transparent', color: D.ink, border: `1.5px solid ${D.ink}` }}>
             Print
           </button>
-          <Link to={isInternal ? `/quotes/${id}/print` : `/quotes/${id}/print?view=internal`} style={{ padding: '10px 18px', borderRadius: 4, border: `1.5px solid ${D.ink}`, color: D.ink, textDecoration: 'none', fontSize: 14 }}>
-            {isInternal ? 'Switch to customer view' : 'Switch to internal view'}
-          </Link>
+          {canViewCosts && (
+            <Link to={isInternal ? `/quotes/${id}/print` : `/quotes/${id}/print?view=internal`} style={{ padding: '10px 18px', borderRadius: 4, border: `1.5px solid ${D.ink}`, color: D.ink, textDecoration: 'none', fontSize: 14 }}>
+              {isInternal ? 'Switch to customer view' : 'Switch to internal view'}
+            </Link>
+          )}
           <Link to="/quote" style={{ padding: '10px 18px', borderRadius: 4, border: `1px solid ${D.line}`, color: D.ink2, textDecoration: 'none', fontSize: 14 }}>
             ← back to quoting
           </Link>

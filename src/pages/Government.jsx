@@ -124,7 +124,7 @@ export function Government() {
             {/* Hosted Unite Group capability statement (PRD-28 §8.1) — the PDF
                 lives at public/documents/; verify NAICS/SIC vs SAM.gov before
                 external distribution. */}
-            <a href="/documents/Unite_Group_Capability_Statement_2026.pdf" target="_blank" rel="noreferrer" style={{ background: D.paper, color: D.plum, padding: '11px 18px', borderRadius: 4, fontSize: 14, fontWeight: 600 }}>Download capability statement</a>
+            <a href="/contact?reason=Document%20request&amp;document=Unite%20capability%20statement" style={{ background: D.paper, color: D.plum, padding: '11px 18px', borderRadius: 4, fontSize: 14, fontWeight: 600 }}>Request capability statement</a>
             <a href="/compliance#docs" style={{ background: 'transparent', color: D.paper, border: `1.5px solid ${D.paper}`, padding: '10px 18px', borderRadius: 4, fontSize: 14, fontWeight: 500 }}>Request documentation</a>
             <a href="/contact" style={{ background: 'transparent', color: D.paper, border: `1.5px solid ${D.paper}`, padding: '10px 18px', borderRadius: 4, fontSize: 14, fontWeight: 500 }}>Contact government sales</a>
           </div>

@@ -9,7 +9,7 @@
  */
 
 import { db } from './db.js';
-import { uid } from './format.js';
+import { lotSellable } from './wms/picking.js';
 
 const GS = String.fromCharCode(29); // FNC1 / group separator
 const FIXED = { '01': 14, '17': 6, '11': 6, '15': 6, '7003': 10 };
@@ -64,26 +64,9 @@ export function receiveScan({
   parsedOverride = null, station = 'RECV-1', by = null, sku = null, distributor_sku = null,
   warehouse_id = 'wh_atl', qty = 1, bin_location = null,
 }) {
-  let parsed = parsedOverride;
-  let capture_method = 'manual';
-  if (barcode) { parsed = parseGs1(barcode) || parsed; capture_method = parsed ? 'gs1_scan' : 'manual'; }
-  else if (photo_url) { capture_method = 'photo_ocr'; }
-  else if (parsedOverride) { capture_method = 'unite_barcode'; }
-
-  const scanId = uid('scan');
-  const lot = db.insert('inventory_lots', {
-    id: uid('ilot'), owner_type, owner_org_id, product_sku: sku, distributor_sku,
-    lot_number: parsed?.lot || null, expiration_date: parsed?.expiration || null,
-    qty_on_hand: qty, qty_reserved: 0, warehouse_id, bin_location,
-    attributes: parsed?.gtin ? { gtin: parsed.gtin } : null,
-    received_via_scan_id: scanId, created_at: new Date().toISOString(),
-  });
-  db.insert('scan_events', {
-    id: scanId, kind: 'receive', inventory_lot_id: lot.id, order_id: null,
-    raw_barcode: barcode, parsed: parsed || null, capture_method, photo_url,
-    scanned_by: by, station, scanned_at: new Date().toISOString(),
-  });
-  return { lot, scan_id: scanId, capture_method, parsed };
+  void owner_type; void owner_org_id; void barcode; void photo_url; void parsedOverride;
+  void station; void by; void sku; void distributor_sku; void warehouse_id; void qty; void bin_location;
+  throw new Error('server_authoritative_po_receipt_required');
 }
 
 /**
@@ -92,41 +75,20 @@ export function receiveScan({
  * picks (see suggestPick) send near-dated lots first.
  */
 export function pickScan({ order_id, barcode = null, lot_id = null, qty = 1, station = 'PICK-1', by = null }) {
-  let lot = lot_id ? db.get('inventory_lots', lot_id) : null;
-  let parsed = null;
-  if (!lot && barcode) {
-    parsed = parseGs1(barcode);
-    lot = db.list('inventory_lots')
-      .filter((l) => (parsed?.lot ? l.lot_number === parsed.lot : true) && (Number(l.qty_on_hand) - Number(l.qty_reserved)) > 0)[0] || null;
-  }
-  if (!lot) throw new Error('No matching lot for scan');
-  const take = Math.min(qty, Number(lot.qty_on_hand) || 0);
-  db.update('inventory_lots', lot.id, {
-    qty_on_hand: (Number(lot.qty_on_hand) || 0) - take,
-    qty_reserved: Math.max(0, (Number(lot.qty_reserved) || 0) - take),
-  });
-  const scanId = uid('scan');
-  db.insert('scan_events', {
-    id: scanId, kind: 'pick', inventory_lot_id: lot.id, order_id,
-    raw_barcode: barcode, parsed, capture_method: parsed ? 'gs1_scan' : 'manual',
-    scanned_by: by, station, scanned_at: new Date().toISOString(),
-  });
-  db.insert('lot_tracking', {
-    id: uid('lt'), lot_number: lot.lot_number, product_sku: lot.product_sku || lot.distributor_sku,
-    expiration_date: lot.expiration_date, warehouse_id: lot.warehouse_id, order_id, qty: take,
-    scanned_by: by, shipped_at: new Date().toISOString(),
-  });
-  return { lot_id: lot.id, picked: take, scan_id: scanId };
+  void order_id; void barcode; void lot_id; void qty; void station; void by;
+  throw new Error('server_authoritative_pick_required');
 }
 
 /** FEFO pick suggestion for an owner's stock of a SKU. */
 export function suggestPick({ owner_type = 'distributor', owner_org_id = null, sku = null, distributor_sku = null }) {
+  if (owner_type === 'distributor' && !owner_org_id) return [];
   return db.list('inventory_lots')
     .filter((l) => (!owner_type || l.owner_type === owner_type)
       && (owner_org_id == null || l.owner_org_id === owner_org_id)
       && (sku == null || l.product_sku === sku)
       && (distributor_sku == null || l.distributor_sku === distributor_sku)
-      && (Number(l.qty_on_hand) - Number(l.qty_reserved)) > 0)
+      && (Number(l.qty_on_hand) - Number(l.qty_reserved)) > 0
+      && lotSellable(l))
     .sort((a, b) => ((a.expiration_date || '9999-12-31') < (b.expiration_date || '9999-12-31') ? -1 : 1));
 }
 

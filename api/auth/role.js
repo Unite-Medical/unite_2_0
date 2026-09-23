@@ -1,0 +1,5 @@
+import {neon} from '@neondatabase/serverless';
+import {authorizeLiveRequest,createSessionToken,setSessionCookie} from '../_lib/auth.js';
+import {requiresMfa} from '../_lib/mfa.js';
+import {readRawBody,sendJson} from '../_lib/http.js';
+export default async function handler(req,res){res.setHeader('Cache-Control','no-store');if(req.method!=='POST')return sendJson(res,405,{error:'method_not_allowed'});if(!process.env.DATABASE_URL)return sendJson(res,503,{error:'not_configured'});const sql=neon(process.env.DATABASE_URL);try{const live=await authorizeLiveRequest(req,sql);if(!live.ok)return sendJson(res,403,{error:live.reason});const b=JSON.parse((await readRawBody(req)).toString('utf8'));const roles=[...new Set([live.profile.role,...(live.profile.roles||[])])];if(!roles.includes(b.role))return sendJson(res,403,{error:'role_not_granted'});if(requiresMfa(roles)&&!live.session.mfa_verified)return sendJson(res,403,{error:'mfa_required_sign_in_again'});const session={...live.session,role:b.role,roles};setSessionCookie(res,createSessionToken(session));return sendJson(res,200,{ok:true,session});}catch{return sendJson(res,500,{error:'role_switch_failed'});}}

@@ -12,7 +12,7 @@ export function AdminLots() {
   const { isMobile } = useViewport();
   const padX = isMobile ? 18 : 40;
   const lots = db.useTable('lots');
-  const [recallLot, setRecallLot] = useState('');
+  const [recallLotId, setRecallLotId] = useState('');
   const [recallResult, setRecallResult] = useState(null);
   const [recallMs, setRecallMs] = useState(null);
 
@@ -21,10 +21,13 @@ export function AdminLots() {
   const expiring = useMemo(() => lotsApi.expiringSoon(120), [lots]);
 
   function runRecall() {
-    const lot = recallLot.trim();
+    const lot = lots.find((row) => row.id === recallLotId);
     if (!lot) return;
     const t0 = (typeof performance !== 'undefined' ? performance.now() : Date.now());
-    const rows = lotsApi.genealogy(lot);
+    const rows = lotsApi.genealogy({
+      lot_id: lot.id, product_sku: lot.product_sku, lot_number: lot.lot_number,
+      expiration_date: lot.expiration_date || null, owner_org_id: lot.owner_org_id || null,
+    });
     const t1 = (typeof performance !== 'undefined' ? performance.now() : Date.now());
     setRecallMs(Math.max(0, t1 - t0));
     setRecallResult(rows);
@@ -38,10 +41,14 @@ export function AdminLots() {
         <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 12 }}>OPS · LOTS & RECALL</div>
         <h1 style={{ fontFamily: D.display, fontSize: 'clamp(34px, 5.6vw, 56px)', fontWeight: 400, letterSpacing: -1.3, margin: '0 0 22px' }}>Lots.</h1>
 
-        <AdminCard title="Recall lookup — every customer who received a lot">
+        <AdminCard title="Lot genealogy lookup — monitoring only">
+          <div style={{ color: D.ink2, fontSize: 13, marginBottom: 12 }}>Use this to trace exact shipments. Recall case ownership remains in Damon’s existing system and is assigned to Jacoby.</div>
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
-            <input value={recallLot} onChange={(e) => setRecallLot(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && runRecall()} placeholder="Lot number…" style={INPUT} />
-            <button onClick={runRecall} style={{ background: D.terra, color: D.paper, border: 'none', padding: '12px 20px', borderRadius: 4, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>Run recall</button>
+            <select value={recallLotId} onChange={(e) => setRecallLotId(e.target.value)} style={INPUT}>
+              <option value="">Select exact lot…</option>
+              {lots.map((lot) => <option key={lot.id} value={lot.id}>{lot.product_sku} · {lot.lot_number} · {lot.expiration_date || 'N/A'} · {lot.owner_org_id || 'Unite'}</option>)}
+            </select>
+            <button onClick={runRecall} style={{ background: D.terra, color: D.paper, border: 'none', padding: '12px 20px', borderRadius: 4, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>Trace genealogy</button>
             {recallMs != null && <span style={{ fontFamily: D.mono, fontSize: 12, color: recallMs < 1000 ? '#3b8760' : D.terra }}>{recallResult?.length || 0} customer(s) · {recallMs.toFixed(1)}ms {recallMs < 1000 ? '✓ < 1s SLA' : ''}</span>}
           </div>
           {recallResult && recallResult.length > 0 && (

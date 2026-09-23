@@ -48,12 +48,12 @@ export default async function handler(req, res) {
 
   const topic = req.headers['x-shopify-topic'] || 'unknown';
   const shop = req.headers['x-shopify-shop-domain'] || null;
-  const evt = pushEvent({
+  const evt = await pushEvent({
     source: 'shopify',
     type: topic,
     payload: { topic, shop, data },
     verified: true,
   });
-  logEvent('hooks.shopify', 'accepted', { topic, shop, seq: evt.seq });
-  sendJson(res, 200, { received: true, seq: evt.seq });
+  logEvent('hooks.shopify', 'accepted', { topic, shop, event_id: evt.id, duplicate: evt.duplicate });
+  sendJson(res, 200, { received: true, event_id: evt.id, duplicate: evt.duplicate });
 }

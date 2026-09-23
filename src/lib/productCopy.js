@@ -214,21 +214,15 @@ export function productCompliance(product) {
 }
 
 /**
- * Returns the documents available for download for this product.
- * Real PDFs would live behind these links; the demo shows the catalog only.
+ * Lists document requests without claiming unverified files are downloadable.
  */
 export function productDocuments(product) {
-  const docs = [
-    { label: 'Manufacturer specification sheet', kind: 'PDF', size: '218 KB' },
-    { label: 'Instructions for use (IFU)', kind: 'PDF', size: '142 KB' },
-  ];
-  // PDAC letters are real documents migrated from the old site — hosted at
-  // /documents/pdac/<SKU>.pdf (PRD-29 §6.4: wiring, not fabrication).
-  if (product.pdac_approved) docs.push({ label: 'PDAC determination letter', kind: 'PDF', size: '96 KB', href: `/documents/pdac/${product.sku}.pdf` });
-  if (product.taa_compliant) docs.push({ label: 'TAA / country-of-origin attestation', kind: 'PDF', size: '64 KB' });
-  if (product.mspv_listed) docs.push({ label: 'BPA pricing schedule', kind: 'PDF', size: '52 KB' });
-  if (product.category === 'Pharmaceuticals') docs.push({ label: 'Safety data sheet (SDS)', kind: 'PDF', size: '188 KB' });
-  if (product.category === 'Equipment') docs.push({ label: 'Service & maintenance manual', kind: 'PDF', size: '1.4 MB' });
+  const request=label=>({label,kind:'By request',href:`/contact?reason=Document%20request&document=${encodeURIComponent(label+' · '+product.sku)}`});
+  const docs=[request('Manufacturer specification sheet'),request('Instructions for use (IFU)')];
+  if(product.pdac_approved)docs.push(request('PDAC determination letter'));
+  if(product.taa_compliant)docs.push(request('TAA / country-of-origin attestation'));
+  if(product.category==='Pharmaceuticals')docs.push(request('Safety data sheet (SDS)'));
+  if(product.category==='Equipment')docs.push(request('Service & maintenance manual'));
   return docs;
 }
 

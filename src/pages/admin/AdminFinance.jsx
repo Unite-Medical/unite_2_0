@@ -1,192 +1,36 @@
-/**
- * Admin · Finance — the CFO's structured dashboard (CTO brief §5).
- *
- * Replaces "order notifications in an inbox" with a live AR view:
- * aging buckets, overdue list, one-click payment recording (synced to
- * the accounting system), and one-click reminder emails.
- */
-
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { D } from '../../tokens.js';
-import { AdminShell } from '../../components/layout/AdminShell.jsx';
-import { db } from '../../lib/db.js';
-import { fmt, uid } from '../../lib/format.js';
-import { useViewport } from '../../lib/viewport.js';
-import { qbo, gmail } from '../../lib/services.js';
-
-const BUCKETS = [
-  ['Current', 0, 0],
-  ['1–30', 1, 30],
-  ['31–60', 31, 60],
-  ['61–90', 61, 90],
-  ['90+', 91, Infinity],
-];
-
-function daysOverdue(inv) {
-  if (!inv.due_date) return 0;
-  return Math.floor((Date.now() - new Date(inv.due_date).getTime()) / 86400000);
+import {useDetailFocus} from '../../lib/useDetailFocus.js';
+import {useCallback,useEffect,useState} from 'react';
+import {Link,useSearchParams} from 'react-router-dom';
+import {AdminShell} from '../../components/layout/AdminShell.jsx';
+import {AccountsPayable} from '../../components/finance/AccountsPayable.jsx';
+import {WorkspaceIcon} from '../../components/workspace/WorkspaceIcon.jsx';
+import {workspaceRequest,postWorkspace} from '../../lib/workspaceRequest.js';
+import {useSEO} from '../../lib/seo.js';
+import '../../styles/workspace.css';
+const money=v=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(Number(v)||0);
+const balance=r=>Number(r.balance??Math.max(0,Number(r.amount??r.total??0)-Number(r.paid_amount||0)));
+const dateValue=value=>/^\d{4}-\d{2}-\d{2}$/.test(value||'')?new Date(`${value}T23:59:59`):new Date(value);
+const late=r=>balance(r)>0&&dateValue(r.due_date).getTime()<Date.now();
+function InvoiceReview({invoice,onRecorded,onStart,onDirtyChange}){
+ const detailHeading=useDetailFocus(invoice.id);
+ const [reference,setReference]=useState(''),[amount,setAmount]=useState(String(balance(invoice))),[method,setMethod]=useState('ach'),[busy,setBusy]=useState(false),[error,setError]=useState('');
+ const dirty=!!reference||amount!==String(balance(invoice))||method!=='ach';
+ useEffect(()=>{onDirtyChange(dirty);return()=>onDirtyChange(false);},[dirty,onDirtyChange]);
+ async function submit(e){e.preventDefault();onStart();setBusy(true);setError('');try{const result=await postWorkspace('/api/finance/record-payment',{invoice_id:invoice.id,provider:'off_platform',payment_reference:reference,amount:Number(amount),method});await onRecorded(result);setReference('');}catch(e){setError(e.message);}finally{setBusy(false);}}
+ return <section className="uw-detail"><span className="uw-eyebrow">Invoice review</span><h2 ref={detailHeading} tabIndex={-1} style={{scrollMarginTop:80}}>{invoice.id}</h2><p>{invoice.customer_name}</p><dl className="uw-facts">{[['Order',invoice.order_id],['Invoice total',money(invoice.amount??invoice.total)],['Recorded payments',money(invoice.paid_amount)],['Write-offs recorded',money(invoice.written_off_amount)],['Remaining balance',money(balance(invoice))],['Terms',invoice.terms],['Due',invoice.due_date?dateValue(invoice.due_date).toLocaleDateString():'Not recorded']].map(([k,v])=><div key={k}><dt>{k}</dt><dd>{v||'Not recorded'}</dd></div>)}</dl>
+ {invoice.status!=='paid'&&balance(invoice)>0&&<form className="uw-followup" onSubmit={submit}><h3>Record confirmed payment</h3><p>Use the bank or accounting reference for money already received. This records evidence; it does not charge the customer or send a reminder.</p><label>Payment method<select value={method} onChange={e=>setMethod(e.target.value)}><option value="ach">ACH / bank transfer</option><option value="wire">Wire</option><option value="check">Deposited check</option></select></label><label>Bank or accounting reference<input required value={reference} onChange={e=>setReference(e.target.value)} maxLength={200}/></label><label>Confirmed amount<input required type="number" min="0.01" max={balance(invoice)} step="0.01" value={amount} onChange={e=>setAmount(e.target.value)}/></label>{error&&<p role="alert" className="uw-error">{error}</p>}<button className="uw-button primary" disabled={busy||!reference.trim()}>{busy?'Recording…':'Record payment evidence'}</button>{dirty&&<button type="button" className="uw-button quiet" onClick={()=>{setReference('');setAmount(String(balance(invoice)));setMethod('ach');setError('');}}>Discard payment draft</button>}</form>}
+ <p className="uw-notice">Damon deposits checks. Ashley verifies payments and reconciles QuickBooks. Other release and approval requirements still apply.</p><Link className="uw-button" to={`/invoices/${encodeURIComponent(invoice.id)}/print`}>Open invoice document ↗</Link></section>;
 }
-
-export function AdminFinance() {
-  const { isMobile } = useViewport();
-  const padX = isMobile ? 18 : 40;
-  const invoices = db.useTable('invoices', { orderBy: 'due_date', dir: 'asc' });
-  const [tab, setTab] = useState('open');
-  const [busyId, setBusyId] = useState(null);
-  const [notice, setNotice] = useState(null);
-
-  const open = invoices.filter((i) => i.status === 'open');
-  const overdue = open.filter((i) => daysOverdue(i) > 0);
-  const paid = invoices.filter((i) => i.status === 'paid');
-
-  const aging = BUCKETS.map(([label, lo, hi]) => {
-    const rows = open.filter((i) => { const d = daysOverdue(i); return d >= lo && d <= hi; });
-    return { label, count: rows.length, total: rows.reduce((a, i) => a + (i.amount || 0), 0) };
-  });
-
-  const visible = tab === 'open' ? open : tab === 'overdue' ? overdue : tab === 'paid' ? paid : invoices;
-  const maxBucket = Math.max(1, ...aging.map((b) => b.total));
-
-  async function recordPayment(inv) {
-    setBusyId(inv.id); setNotice(null);
-    try {
-      await qbo.recordPayment({ qbo_invoice_id: inv.qbo_id, amount: inv.amount, method: 'ach' });
-      db.update('invoices', inv.id, { status: 'paid', paid_at: new Date().toISOString() });
-      db.insert('payments', { id: uid('pay'), invoice_id: inv.id, order_id: inv.order_id, amount: inv.amount, method: 'ach', received_at: new Date().toISOString() });
-      if (inv.order_id) {
-        const order = db.get('orders', inv.order_id);
-        if (order) db.update('orders', inv.order_id, { payment_status: 'paid' });
-      }
-      db.insert('audit_log', { id: uid('aud'), kind: 'finance.payment_recorded', ref_id: inv.id, payload: { amount: inv.amount } });
-      setNotice(`Payment of ${fmt.money(inv.amount)} recorded on ${inv.id} and synced to the books.`);
-    } finally { setBusyId(null); }
-  }
-
-  async function sendReminder(inv) {
-    setBusyId(inv.id); setNotice(null);
-    try {
-      const org = db.get('organizations', inv.customer_id);
-      const d = daysOverdue(inv);
-      await gmail.send({
-        to: org?.billing_email || `ap@${(org?.name || 'customer').toLowerCase().replace(/[^a-z]+/g, '')}.example.com`,
-        from: 'accounting@unitemedical.net',
-        subject: `Invoice ${inv.id} — ${d > 0 ? `${d} days past due` : 'payment reminder'}`,
-        body: `Hi —\n\nFriendly nudge on invoice ${inv.id} for ${fmt.money(inv.amount)} (terms ${inv.terms?.toUpperCase() || 'NET30'}, due ${fmt.date(inv.due_date, { year: true })}).\n\nRemit via ACH on file, or reply here if anything on the invoice needs correcting and we'll turn it around same day.\n\n— Unite Medical billing`,
-        template_key: 'ar_reminder',
-        drafted_by: 'finance-dashboard',
-      });
-      db.update('invoices', inv.id, { last_reminder_at: new Date().toISOString() });
-      db.insert('audit_log', { id: uid('aud'), kind: 'finance.reminder_sent', ref_id: inv.id, payload: { days_overdue: d } });
-      setNotice(`Reminder for ${inv.id} queued in the outbox.`);
-    } finally { setBusyId(null); }
-  }
-
-  const openAr = open.reduce((a, i) => a + (i.amount || 0), 0);
-  const overdueAr = overdue.reduce((a, i) => a + (i.amount || 0), 0);
-  const paidThisMonth = paid
-    .filter((i) => i.paid_at && new Date(i.paid_at).getMonth() === new Date().getMonth())
-    .reduce((a, i) => a + (i.amount || 0), 0);
-
-  return (
-    <AdminShell active="finance">
-      <div style={{ padding: `${isMobile ? 28 : 40}px ${padX}px ${isMobile ? 18 : 24}px`, borderBottom: `1px solid ${D.line}` }}>
-        <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 12 }}>FINANCE · ACCOUNTS RECEIVABLE</div>
-        <h1 style={{ fontFamily: D.display, fontSize: 'clamp(32px, 5vw, 52px)', fontWeight: 400, letterSpacing: -1.2, lineHeight: 1.02, margin: 0 }}>Finance</h1>
-        <div style={{ marginTop: 10, fontSize: 13, color: D.ink2, maxWidth: 620 }}>
-          Invoices auto-create when orders are placed — nothing arrives by inbox. This is the collect-and-reconcile view.
-        </div>
-      </div>
-
-      <div style={{ padding: isMobile ? 20 : 32 }}>
-        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(4, 1fr)', gap: 14 }}>
-          {[
-            ['OPEN AR', fmt.short(openAr), D.ink],
-            ['PAST DUE', fmt.short(overdueAr), overdueAr > 0 ? '#c3382d' : '#2d6a4f'],
-            ['OVERDUE INVOICES', overdue.length, overdue.length ? D.terra : '#2d6a4f'],
-            ['COLLECTED THIS MONTH', fmt.short(paidThisMonth), '#2d6a4f'],
-          ].map(([label, value, color]) => (
-            <div key={label} style={{ background: D.card, border: `1px solid ${D.line}`, borderRadius: 12, padding: 18 }}>
-              <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>{label}</div>
-              <div style={{ fontFamily: D.display, fontSize: 34, letterSpacing: -0.5, marginTop: 6, color }}>{value}</div>
-            </div>
-          ))}
-        </div>
-
-        <div style={{ marginTop: 20, background: D.card, border: `1px solid ${D.line}`, borderRadius: 12, padding: 20 }}>
-          <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3, marginBottom: 14 }}>AGING BUCKETS · OPEN AR</div>
-          <div style={{ display: 'grid', gridTemplateColumns: `repeat(${BUCKETS.length}, 1fr)`, gap: 10, alignItems: 'end', height: 120 }}>
-            {aging.map((b) => (
-              <div key={b.label} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', height: '100%' }}>
-                <div style={{ fontSize: 11, color: D.ink2, marginBottom: 4, textAlign: 'center' }}>{b.total > 0 ? fmt.short(b.total) : ''}</div>
-                <div style={{ height: `${Math.max(3, (b.total / maxBucket) * 80)}%`, background: b.label === 'Current' ? '#2d6a4f' : b.label === '90+' ? '#c3382d' : D.plum, borderRadius: '6px 6px 0 0', opacity: b.total > 0 ? 1 : 0.15 }} />
-                <div style={{ fontFamily: D.mono, fontSize: 10, color: D.ink3, textAlign: 'center', marginTop: 6 }}>{b.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div style={{ marginTop: 20, display: 'flex', gap: 8 }}>
-          {[['open', `Open (${open.length})`], ['overdue', `Overdue (${overdue.length})`], ['paid', `Paid (${paid.length})`]].map(([k, label]) => (
-            <button key={k} onClick={() => setTab(k)} style={{ padding: '8px 16px', borderRadius: 4, fontSize: 13, fontFamily: D.sans, cursor: 'pointer', border: `1px solid ${tab === k ? D.plum : D.line}`, background: tab === k ? D.plum : 'transparent', color: tab === k ? '#fff' : D.ink }}>
-              {label}
-            </button>
-          ))}
-        </div>
-
-        {notice && (
-          <div style={{ marginTop: 14, padding: '12px 16px', background: 'rgba(29,92,77,.07)', border: `1px solid ${D.line}`, borderRadius: 10, fontSize: 13 }}>{notice}</div>
-        )}
-
-        <div style={{ marginTop: 14, background: D.card, border: `1px solid ${D.line}`, borderRadius: 12, overflow: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13, minWidth: 720 }}>
-            <thead>
-              <tr style={{ textAlign: 'left', fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>
-                {['INVOICE', 'CUSTOMER', 'AMOUNT', 'TERMS', 'DUE', 'AGE', 'STATUS', 'ACTIONS'].map((h) => <th key={h} style={{ padding: 12 }}>{h}</th>)}
-              </tr>
-            </thead>
-            <tbody>
-              {visible.map((inv) => {
-                const org = db.get('organizations', inv.customer_id);
-                const d = daysOverdue(inv);
-                const isPaid = inv.status === 'paid';
-                return (
-                  <tr key={inv.id} style={{ borderTop: `1px solid ${D.line}` }}>
-                    <td style={{ padding: 12, fontFamily: D.mono, fontSize: 12 }}>{inv.id}</td>
-                    <td style={{ padding: 12, fontWeight: 500 }}>{org?.name || inv.customer_id}</td>
-                    <td style={{ padding: 12 }}>{fmt.money(inv.amount)}</td>
-                    <td style={{ padding: 12, fontFamily: D.mono, fontSize: 11 }}>{(inv.terms || 'net30').toUpperCase()}</td>
-                    <td style={{ padding: 12, color: D.ink2 }}>{fmt.date(inv.due_date)}</td>
-                    <td style={{ padding: 12, color: !isPaid && d > 0 ? '#c3382d' : D.ink2, fontWeight: !isPaid && d > 0 ? 600 : 400 }}>
-                      {isPaid ? '—' : d > 0 ? `${d}d late` : `due in ${-d}d`}
-                    </td>
-                    <td style={{ padding: 12 }}>
-                      <span style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, padding: '3px 8px', borderRadius: 4, background: isPaid ? '#2d6a4f20' : d > 0 ? '#c3382d20' : `${D.terra}20`, color: isPaid ? '#2d6a4f' : d > 0 ? '#c3382d' : D.terra }}>
-                        {isPaid ? 'PAID' : d > 0 ? 'OVERDUE' : 'OPEN'}
-                      </span>
-                    </td>
-                    <td style={{ padding: 12, whiteSpace: 'nowrap' }}>
-                      {!isPaid && (
-                        <>
-                          <button onClick={() => recordPayment(inv)} disabled={busyId === inv.id} style={{ padding: '6px 12px', borderRadius: 6, fontSize: 12, cursor: 'pointer', background: D.plum, color: '#fff', border: 'none', fontFamily: D.sans }}>
-                            {busyId === inv.id ? '…' : 'Record payment'}
-                          </button>
-                          <button onClick={() => sendReminder(inv)} disabled={busyId === inv.id} style={{ marginLeft: 8, padding: '6px 12px', borderRadius: 6, fontSize: 12, cursor: 'pointer', background: 'transparent', color: D.ink, border: `1px solid ${D.line}`, fontFamily: D.sans }}>
-                            {inv.last_reminder_at ? `Remind again (${fmt.ago(inv.last_reminder_at)})` : 'Send reminder'}
-                          </button>
-                        </>
-                      )}
-                      {isPaid && <span style={{ fontSize: 12, color: D.ink3 }}>{inv.paid_at ? `paid ${fmt.ago(inv.paid_at)}` : 'paid'}</span>}
-                      <Link to={`/invoices/${inv.id}/print`} style={{ marginLeft: 8, padding: '6px 12px', borderRadius: 6, fontSize: 12, background: 'transparent', color: D.plum, border: `1px solid ${D.line}`, textDecoration: 'none', fontFamily: D.sans }}>PDF</Link>
-                    </td>
-                  </tr>
-                );
-              })}
-              {visible.length === 0 && <tr><td colSpan={8} style={{ padding: 24, color: D.ink3 }}>Nothing here.</td></tr>}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </AdminShell>
-  );
+export function AdminFinance(){
+ const [params,setParams]=useSearchParams();
+ const [editing,setEditing]=useState(false);
+ const [rows,setRows]=useState([]),[loading,setLoading]=useState(true),[error,setError]=useState(''),[notice,setNotice]=useState(''),[section,setSection]=useState(params.get('section')==='ap'?'ap':'ar'),[filter,setFilter]=useState('open'),[search,setSearch]=useState(''),[selectedId,setSelectedId]=useState(params.get('invoice')||'');
+ useSEO({title:'Finance · Team workspace',noindex:true});
+ const load=useCallback(async signal=>{try{const b=await workspaceRequest('/api/finance/record-payment',{signal});setRows(b.invoices);setError('');}catch(e){if(!signal?.aborted)setError(e.message);}finally{if(!signal?.aborted)setLoading(false);}},[]);
+ useEffect(()=>{const c=new AbortController();Promise.resolve().then(()=>{if(!c.signal.aborted)load(c.signal);});return()=>c.abort();},[load]);
+ const open=rows.filter(r=>balance(r)>0&&!['paid','void','cancelled','refunded','written_off','settled'].includes(r.status)),overdue=open.filter(late),selected=rows.find(r=>r.id===selectedId);
+ const visible=rows.filter(r=>(filter==='all'||filter==='open'&&open.includes(r)||filter==='overdue'&&overdue.includes(r)||filter==='paid'&&['paid','settled','written_off'].includes(r.status))&&`${r.id} ${r.customer_name} ${r.order_id}`.toLowerCase().includes(search.toLowerCase()));
+ return <AdminShell active="finance" unsavedChanges={editing}><main id="main" className="uw-workday"><header className="uw-day-heading"><div><span className="uw-eyebrow">Finance</span><h1>Payments & billing.</h1><p>Review the balance, match the evidence, and keep the next step clear.</p></div><Link className="uw-button" to="/admin/refund-reviews">Refund reviews<WorkspaceIcon name="arrow" size={16}/></Link></header><nav className="uw-view-tabs" aria-label="Finance views">{[['ar','Customer invoices'],['ap','Supplier bills']].map(([id,label])=><button key={id} onClick={()=>{if(editing){setNotice('Save or discard your draft before changing finance views.');return;}setSection(id);setNotice('');}} aria-pressed={section===id}>{label}</button>)}</nav>{error&&<p role="alert" className="uw-error">Invoice data is unavailable. {error}<button onClick={()=>load()}>Retry</button></p>}{notice&&<p role="status" className="uw-notice">{notice}</p>}
+ {section==='ap'?<AccountsPayable onDirtyChange={setEditing}/>:<><div className="uw-finance-metrics">{[['Open balance',money(open.reduce((s,r)=>s+balance(r),0))],['Overdue balance',money(overdue.reduce((s,r)=>s+balance(r),0))],['Invoices to review',open.length]].map(([label,value])=><div key={label}><span>{label}</span><strong>{loading||error?'—':value}</strong></div>)}</div><div className={`uw-work-grid ${selected?'has-detail':''}`}><section className="uw-work-list"><div className="uw-queue-heading"><h2>Customer invoices</h2><label className="uw-search"><WorkspaceIcon name="search" size={16}/><input type="search" placeholder="Find customer or invoice" aria-label="Find an invoice" value={search} onChange={e=>setSearch(e.target.value)}/></label></div><div className="uw-queue-filters"><div>{[['open','Open'],['overdue','Overdue'],['paid','Settled'],['all','All']].map(([key,label])=><button key={key} aria-pressed={filter===key} onClick={()=>setFilter(key)}>{label}</button>)}</div><button className="uw-button quiet" disabled={editing} onClick={()=>load()}>Refresh</button></div>{loading?<p className="uw-empty" role="status">Loading invoices…</p>:!visible.length?<p className="uw-empty">{error?'Could not load invoices.':'No invoices match this view.'}</p>:<ul className="uw-queue">{visible.map(r=><li key={r.id}><button className={`uw-work-row ${selectedId===r.id?'is-selected':''}`} aria-pressed={selectedId===r.id} onClick={()=>{if(editing&&r.id!==selectedId){setNotice('Save or discard your payment draft before opening another invoice.');return;}setSelectedId(r.id);setParams({invoice:r.id},{replace:true});}}><span className="uw-type-icon"><WorkspaceIcon name="money" size={18}/></span><span className="uw-row-copy"><strong>{r.customer_name}</strong><span className="uw-row-next">{r.id} · {r.order_id||'Order not recorded'}</span></span><span className="uw-row-state"><strong>{money(balance(r))}</strong><span className={`uw-badge ${late(r)?'is-overdue':''}`}>{r.status==='written_off'?'Written off':r.status==='settled'?'Settled with write-off':r.status==='paid'?'Paid':late(r)?'Overdue':'Open'}</span></span><WorkspaceIcon name="arrow" size={16}/></button></li>)}</ul>}</section>{selected&&<InvoiceReview onDirtyChange={setEditing} key={`${selected.id}:${selected.paid_amount||0}`} invoice={selected} onStart={()=>setNotice('')} onRecorded={async result=>{setNotice(result.duplicate?'This payment reference was already recorded. No additional payment was added.':'Payment evidence saved. Review any remaining order holds before release.');await load();}}/>}</div></>}
+ </main></AdminShell>;
 }

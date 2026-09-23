@@ -12,6 +12,9 @@
  * receive the upstream JSON unchanged.
  */
 
+import { neon } from '@neondatabase/serverless';
+import { qboAccessContext } from './qboTokens.js';
+
 const env = (k) => process.env[k] || '';
 
 // ---------------------------------------------------------------------------
@@ -28,24 +31,9 @@ async function cachedToken(key, mint) {
   return token;
 }
 
-/** QBO: refresh-token grant → access token.
- *  Refresh token comes from the one-time /api/auth/qbo flow. */
-async function qboAccessToken() {
-  if (env('QBO_ACCESS_TOKEN')) return env('QBO_ACCESS_TOKEN');
-  return cachedToken('qbo', async () => {
-    const res = await fetch('https://oauth.platform.intuit.com/oauth2/v1/tokens/bearer', {
-      method: 'POST',
-      headers: {
-        Authorization: `Basic ${Buffer.from(`${env('QBO_CLIENT_ID')}:${env('QBO_CLIENT_SECRET')}`).toString('base64')}`,
-        'Content-Type': 'application/x-www-form-urlencoded',
-        Accept: 'application/json',
-      },
-      body: new URLSearchParams({ grant_type: 'refresh_token', refresh_token: env('QBO_REFRESH_TOKEN') }),
-    });
-    if (!res.ok) throw new Error(`QBO token refresh failed: ${res.status} ${await res.text()}`);
-    const json = await res.json();
-    return { token: json.access_token, expiresInSec: json.expires_in || 3600 };
-  });
+async function qboContext() {
+  if (!env('DATABASE_URL')) throw new Error('qbo_database_not_configured');
+  return qboAccessContext(neon(env('DATABASE_URL')));
 }
 
 /** Google: refresh-token grant (Gmail + Calendar share one identity).
@@ -140,16 +128,18 @@ export const SERVICES = {
   qbo: {
     label: 'QuickBooks Online',
     configured: () => Boolean(
-      env('QBO_REALM_ID') && (env('QBO_ACCESS_TOKEN') || (env('QBO_CLIENT_ID') && env('QBO_CLIENT_SECRET') && env('QBO_REFRESH_TOKEN'))),
+      env('DATABASE_URL') && env('QBO_CLIENT_ID') && env('QBO_CLIENT_SECRET') && env('QBO_TOKEN_ENCRYPTION_KEY'),
     ),
+    context: qboContext,
     // Client sends /proxy/qbo/<entity>?q=<query> — expand to the full
     // Intuit company path with minorversion pinning. `?q=` targets the
     // SQL-ish /query endpoint instead of an entity.
-    buildUrl: (path, query) => {
-      const root = env('QBO_ENVIRONMENT') === 'production'
+    buildUrl: (path, query, context) => {
+      const root = context?.environment === 'production'
         ? 'https://quickbooks.api.intuit.com/v3'
         : 'https://sandbox-quickbooks.api.intuit.com/v3';
-      const realm = env('QBO_REALM_ID');
+      const realm = context?.realmId;
+      if (!realm) throw new Error('qbo_realm_not_connected');
       const entity = path.replace(/^\//, '');
       const url = query.q
         ? new URL(`${root}/company/${realm}/query`)
@@ -158,7 +148,7 @@ export const SERVICES = {
       url.searchParams.set('minorversion', '75');
       return url.toString();
     },
-    headers: async () => ({ Authorization: `Bearer ${await qboAccessToken()}`, Accept: 'application/json', 'Content-Type': 'application/json' }),
+    headers: async (context) => ({ Authorization: `Bearer ${context?.accessToken}`, Accept: 'application/json', 'Content-Type': 'application/json' }),
   },
 
   flexport: {
@@ -207,6 +197,17 @@ export const SERVICES = {
     buildUrl: (path, query) => withQuery(`https://${env('SHOPIFY_STORE_DOMAIN')}${path}`, query),
     headers: async () => ({
       'X-Shopify-Access-Token': await shopifyAccessToken(),
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    }),
+  },
+
+  customerio: {
+    label: 'Customer.io transactional messaging',
+    configured: () => Boolean(env('CUSTOMERIO_APP_API_KEY')),
+    buildUrl: (path, query) => withQuery(`${env('CUSTOMERIO_REGION') === 'eu' ? 'https://api-eu.customer.io' : 'https://api.customer.io'}${path}`, query),
+    headers: async () => ({
+      Authorization: `Bearer ${env('CUSTOMERIO_APP_API_KEY')}`,
       'Content-Type': 'application/json',
       Accept: 'application/json',
     }),
@@ -335,6 +336,13 @@ export function configSnapshot() {
     fathom: Boolean(env('FATHOM_WEBHOOK_SECRET')),
     calendly: Boolean(env('CALENDLY_WEBHOOK_SECRET')),
     shopify: Boolean(env('SHOPIFY_WEBHOOK_SECRET') || env('SHOPIFY_CLIENT_SECRET') || env('SHOPIFY_API_SECRET')),
+    customerio: Boolean(env('CUSTOMERIO_WEBHOOK_SIGNING_SECRET')
+      || (env('CUSTOMERIO_WEBHOOK_USERNAME') && env('CUSTOMERIO_WEBHOOK_PASSWORD'))),
   };
+  out.mfa={label:'Authenticator sign-in',configured:/^[a-f0-9]{64}$/i.test(env('MFA_ENCRYPTION_KEY'))};
+  out.shipping_origin={label:'Verified shipping origin',configured:['UNITE_SHIP_FROM_STREET','UNITE_SHIP_FROM_CITY','UNITE_SHIP_FROM_STATE','UNITE_SHIP_FROM_ZIP'].every(k=>Boolean(env(k)))};
+  out.document_scanner={label:'Private document scanner',configured:env('DOCUMENT_SCAN_URL').startsWith('https://')&&Boolean(env('DOCUMENT_SCAN_TOKEN'))};
+  out.document_extraction={label:'Certificate extraction',configured:Boolean(env('ANTHROPIC_API_KEY')&&env('DOCUMENT_EXTRACTION_MODEL'))};
+  out.operations_digest={label:'Owner follow-up digest',configured:Boolean(env('CRON_SECRET')&&env('OPERATIONS_DIGEST_TEMPLATE_ID'))};
   return out;
 }

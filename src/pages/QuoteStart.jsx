@@ -9,9 +9,7 @@ import { Nav } from '../components/layout/Nav.jsx';
 import { Footer } from '../components/layout/Footer.jsx';
 import { PageHead } from '../components/layout/PageHead.jsx';
 import { Icon } from '../components/shared/Icon.jsx';
-import { db } from '../lib/db.js';
-import { hubspot, gmail } from '../lib/services.js';
-import { uid } from '../lib/format.js';
+
 import { useViewport } from '../lib/viewport.js';
 import { useSEO } from '../lib/seo.js';
 
@@ -56,35 +54,37 @@ function PathForm({ path, prefillSku, isMobile }) {
   });
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState(null);
+  const [error, setError] = useState(null);
+  const [idempotencyKey] = useState(() => globalThis.crypto?.randomUUID?.() || `source_${Date.now()}_${Math.random().toString(36).slice(2)}`);
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
 
   async function submit(e) {
     e.preventDefault();
     setBusy(true);
+    setError(null);
     try {
       const notes = path.id === 'source'
         ? `Item/brand: ${form.item}\nQty: ${form.qty}`
         : `Spec: ${form.spec}\nQty: ${form.qty}\nLabel: ${form.label_pref}`;
-      const lead = db.insert('leads', {
-        id: uid('lead'),
-        org_name: form.org || form.name,
-        contact_name: form.name,
-        contact_email: form.email,
-        segment: 'asc',
-        status: 'warm',
-        source: 'quote_router',
-        owner: 'Unassigned',
-        next_action: path.tag,
-        next_action_at: new Date(Date.now() + 86400000).toISOString(),
-        notes,
-        reason: path.tag,
+      const response = await fetch('/api/sourcing/request', {
+        method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          idempotency_key: idempotencyKey,
+          path: path.id,
+          organization_name: form.org || form.name,
+          contact_name: form.name,
+          contact_email: form.email,
+          product_description: path.id === 'source' ? form.item : form.spec,
+          quantity_text: form.qty,
+          label_preference: path.id === 'custom' ? form.label_pref : null,
+          notes,
+        }),
       });
-      const [first, ...rest] = form.name.split(' ');
-      await Promise.all([
-        hubspot.createContact({ email: form.email, firstname: first || '', lastname: rest.join(' '), company: form.org, phone: '', lifecyclestage: 'lead' }),
-        gmail.send({ to: 'support@unitemedical.net', subject: `${path.tag} · ${form.org || form.name}`, body: notes }),
-      ]);
-      setDone(lead.id);
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok || !payload.ok) throw new Error(payload.error || 'sourcing_request_failed');
+      setDone(payload.request.id);
+    } catch {
+      setError('We could not save this request. Please check your work email and try again.');
     } finally {
       setBusy(false);
     }
@@ -148,6 +148,7 @@ function PathForm({ path, prefillSku, isMobile }) {
       <button type="submit" disabled={busy} style={{ marginTop: 16, background: D.plum, color: D.paper, border: 'none', padding: '14px 24px', borderRadius: 4, fontSize: 14, fontWeight: 600, cursor: busy ? 'wait' : 'pointer', opacity: busy ? 0.7 : 1, fontFamily: D.sans }}>
         {busy ? 'Sending…' : 'Start a quote →'}
       </button>
+      {error && <div style={{ color: '#c3382d', fontSize: 12, marginTop: 8 }}>{error}</div>}
     </form>
   );
 }
@@ -225,8 +226,8 @@ export function QuoteStart() {
                     : 'Manufacturing, compliance, packaging, and fulfillment handled end to end — your brand stays on the front.'}
                 </p>
                 <p style={{ fontSize: 13, color: D.ink3, marginTop: 16 }}>
-                  Have a vendor product sheet instead?{' '}
-                  <Link to="/quote/new" style={{ color: D.plum, textDecoration: 'underline', textUnderlineOffset: 3 }}>Upload it here</Link>.
+                  Need several items?{' '}
+                  <Link to="/portal/quote" style={{ color: D.plum, textDecoration: 'underline', textUnderlineOffset: 3 }}>Build a Quick Quote</Link>.
                 </p>
               </div>
               <div style={{ background: D.card, border: `1px solid ${D.line}`, borderRadius: 16, padding: isMobile ? 20 : 28 }}>

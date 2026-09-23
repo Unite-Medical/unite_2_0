@@ -11,6 +11,11 @@ import { M6_CATEGORIES } from '../../lib/taxonomy.js';
 const CATEGORIES = ['Orthotics', 'Diagnostics', 'PPE', 'Surgical', 'Supplements', 'Wound Care', 'Pharmaceuticals', 'Equipment'];
 const TIERS = ['Bracing', 'POC', 'OTC', 'Consumable', 'Surgical', 'Wellness', 'Pharma', 'Equipment'];
 const COUNTRIES = ['US', 'CN', 'VN', 'TW', 'IN', 'MX', 'DE'];
+const TRACKING_LEVELS = [
+  ['not_tracked', 'Not tracked'],
+  ['optional', 'Optional'],
+  ['required', 'Required'],
+];
 
 function emptyProduct() {
   return {
@@ -44,6 +49,10 @@ function emptyProduct() {
     berry_compliant: false,
     mspv_listed: false,
     latex_free: false,
+    lot_tracking: 'optional',
+    expiration_tracking: 'optional',
+    serial_tracking: 'not_tracked',
+    udi_tracking: 'not_tracked',
     available: true,
   };
 }
@@ -376,6 +385,24 @@ export function AdminProductEdit() {
                 </div>
               ))}
             </div>
+          </Card>
+
+          <Card title="Warehouse tracking policy">
+            <div style={{ fontSize: 12.5, color: D.ink2, lineHeight: 1.5 }}>
+              Required fields block receiving and shipment until valid data is captured. Warehouse users cannot bypass the policy.
+            </div>
+            {[
+              ['lot_tracking', 'Lot number'],
+              ['expiration_tracking', 'Expiration date'],
+              ['serial_tracking', 'Serial number'],
+              ['udi_tracking', 'UDI'],
+            ].map(([key, label]) => (
+              <Field key={key} label={label}>
+                <select value={form[key] || 'not_tracked'} onChange={(e) => patch({ [key]: e.target.value })} style={inputStyle}>
+                  {TRACKING_LEVELS.map(([value, text]) => <option key={value} value={value}>{text}</option>)}
+                </select>
+              </Field>
+            ))}
           </Card>
 
           <Card title="Compliance flags">

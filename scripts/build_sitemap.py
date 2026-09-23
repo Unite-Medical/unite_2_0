@@ -33,6 +33,7 @@ STATIC_ROUTES = [
     ("/quote",                   "0.9",  "weekly"),
     ("/shortage-list",           "0.9",  "weekly"),
     ("/supply-risk",             "0.9",  "daily"),
+    ("/regenicool", "0.85", "monthly"),
     ("/surplus",                 "0.85", "monthly"),
     ("/surplus/market",          "0.85", "daily"),
     ("/segments/asc",            "0.9",  "monthly"),

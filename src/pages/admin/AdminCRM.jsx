@@ -1,10 +1,9 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { D } from '../../tokens.js';
 import { AdminShell } from '../../components/layout/AdminShell.jsx';
 import { AdminCard } from '../../components/layout/AdminCard.jsx';
 import { db } from '../../lib/db.js';
-import { fmt, uid } from '../../lib/format.js';
-import { fathom, gmail } from '../../lib/services.js';
+import { fmt } from '../../lib/format.js';
 import { useViewport } from '../../lib/viewport.js';
 
 const STAGES = ['cold', 'warm', 'qualified', 'hot'];
@@ -16,7 +15,6 @@ export function AdminCRM() {
   const leads = db.useTable('leads', { orderBy: 'created_at', dir: 'desc' });
   const orgs = db.useTable('organizations');
   const activities = db.useTable('activities', { orderBy: 'created_at', dir: 'desc', limit: 8 });
-  const [busyId, setBusyId] = useState(null);
 
   const grouped = useMemo(() => {
     const m = Object.fromEntries(STAGES.map((s) => [s, []]));
@@ -35,13 +33,6 @@ export function AdminCRM() {
     if (i > 0) db.update('leads', lead.id, { status: STAGES[i - 1] });
   }
 
-  async function logFathom(lead) {
-    setBusyId(lead.id);
-    await fathom.ingestCallSummary({ rep: lead.owner, organization: lead.org_name, transcript: 'Call covered formulary review. Send capability statement and book follow up next Tuesday.', duration_min: 22 });
-    await gmail.send({ to: lead.contact_email, subject: `Following up · ${lead.org_name}`, body: 'Per our call, here is the capability statement.' });
-    db.insert('activities', { id: uid('act'), kind: 'call', who: lead.owner, subject: `Call · ${lead.org_name}`, body: 'Auto-summary via Fathom', lead_id: lead.id });
-    setBusyId(null);
-  }
 
   return (
     <AdminShell active="customers">
@@ -49,14 +40,14 @@ export function AdminCRM() {
         <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 12 }}>SALES · CRM & PIPELINE</div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: isMobile ? 'flex-start' : 'end', marginBottom: 22, flexDirection: isMobile ? 'column' : 'row', gap: 8 }}>
           <h1 style={{ fontFamily: D.display, fontSize: 'clamp(34px, 5.6vw, 56px)', fontWeight: 400, letterSpacing: -1.3, lineHeight: 1.02, margin: 0 }}>CRM · pipeline.</h1>
-          <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1, color: D.ink3 }}>HUBSPOT + FATHOM (SIM)</div>
+          <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1, color: D.ink3 }}>Loaded CRM records</div>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(4,1fr)', gap: 12, marginBottom: 14 }}>
           {[
             [String(leads.length), 'Active leads', `${grouped.hot.length} hot`],
             [fmt.short(pipelineValue), 'Pipeline value', 'open opportunities'],
             [String(orgs.length), 'Organizations', `${orgs.filter((o) => o.tier === 'A').length} tier A`],
-            ['11 min', 'Avg rep reply', `across ${new Set(leads.map((l) => l.owner)).size} reps`],
+            ['Not measured', 'Avg rep reply', 'No response-time evidence connected'],
           ].map(([b, s, sub]) => (
             <div key={s} style={{ padding: isMobile ? 16 : 22, background: D.card, borderRadius: 14, border: `1px solid ${D.line}` }}>
               <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>{s.toUpperCase()}</div>
@@ -83,9 +74,7 @@ export function AdminCRM() {
                         <button onClick={() => regress(lead)} style={{ flex: 1, fontSize: 10, fontFamily: D.mono, letterSpacing: 0.8, padding: '4px 6px', background: 'transparent', border: `1px solid ${D.line}`, borderRadius: 6, cursor: 'pointer', color: D.ink2 }}>← BACK</button>
                         <button onClick={() => advance(lead)} disabled={lead.status === 'hot'} style={{ flex: 1, fontSize: 10, fontFamily: D.mono, letterSpacing: 0.8, padding: '4px 6px', background: D.plum, color: D.paper, border: 'none', borderRadius: 6, cursor: lead.status === 'hot' ? 'default' : 'pointer', opacity: lead.status === 'hot' ? 0.4 : 1 }}>NEXT →</button>
                       </div>
-                      <button onClick={() => logFathom(lead)} disabled={busyId === lead.id} style={{ width: '100%', marginTop: 6, fontSize: 10, fontFamily: D.mono, letterSpacing: 0.8, padding: '4px 6px', background: 'transparent', border: `1px solid ${D.plum}`, borderRadius: 6, cursor: 'pointer', color: D.plum }}>
-                        {busyId === lead.id ? 'LOGGING…' : '+ FATHOM CALL'}
-                      </button>
+                      <p style={{fontSize:11,color:D.ink3}}>Call notes require a recorded conversation. No automatic follow-up is sent from this view.</p>
                     </div>
                   ))}
                 </div>

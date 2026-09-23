@@ -24,7 +24,7 @@ export const D = {
   terra: '#b3592b',     // clay — signal/warning accent, used sparingly
   terraSoft: '#dcc0a8', // soft clay
   grad: 'linear-gradient(135deg, #2e7d5f 0%, #1d5c4d 55%, #123f35 100%)',
-  display: '"Instrument Serif", Georgia, "Times New Roman", serif',
+  display: '"Unite Manrope", "Helvetica Neue", Arial, sans-serif',
   sans: '"Archivo", -apple-system, "Helvetica Neue", sans-serif',
   mono: '"IBM Plex Mono", ui-monospace, monospace',
 };

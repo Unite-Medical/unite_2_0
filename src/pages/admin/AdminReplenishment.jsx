@@ -15,10 +15,10 @@ import { AdminShell } from '../../components/layout/AdminShell.jsx';
 import { db } from '../../lib/db.js';
 import { fmt } from '../../lib/format.js';
 import { useViewport } from '../../lib/viewport.js';
-import { computeReplenishment, draftPurchaseOrders, recalcReorderPoints, runReorderLoop, DEFAULTS } from '../../lib/replenishment.js';
+import { computeReplenishment, DEFAULTS } from '../../lib/replenishment.js';
 import { forecast } from '../../lib/external/forecast.js';
-import { simulateInboundShipment } from '../../lib/receiving.js';
-import { approvePurchaseOrder, sendPurchaseOrderToVendor, receivePurchaseOrder, cancelPurchaseOrder, threeWayMatch, outstandingLines } from '../../lib/purchaseOrders.js';
+import { threeWayMatch, outstandingLines } from '../../lib/purchaseOrders.js';
+import { draftServerPurchaseOrders, mutatePurchaseOrder } from '../../lib/serverPurchaseOrders.js';
 
 const PO_CHIP = {
   draft: [D.ink3, 'DRAFT'],
@@ -75,29 +75,8 @@ export function AdminReplenishment() {
   async function handleDraftPOs() {
     setBusy('po'); setNotice(null);
     try {
-      const created = await draftPurchaseOrders();
-      setNotice(created.length ? `${created.length} draft PO(s) created and pushed to the WMS.` : 'Nothing to reorder right now.');
-    } finally { setBusy(null); }
-  }
-
-  async function handleSimulate() {
-    setBusy('sim'); setNotice(null);
-    try {
-      const { result } = await simulateInboundShipment();
-      setNotice(`Inbound container received: ${result.received} units into inventory, landed-cost bill ${result.bill?.id || 'skipped'}, ${result.reorder_rows} reorder points recalculated.`);
-    } finally { setBusy(null); }
-  }
-
-  function handleRecalc() {
-    const n = recalcReorderPoints();
-    setNotice(`${n} warehouse reorder points recalculated from the trailing ${DEFAULTS.window_days}-day run rate.`);
-  }
-
-  async function handleReorderLoop() {
-    setBusy('loop'); setNotice(null);
-    try {
-      const r = await runReorderLoop();
-      setNotice(`Reorder loop closed — ${r.reorder_points_updated} reorder points refreshed (${r.prophet_skus} on Prophet) and ${r.pos_drafted} PO(s) auto-drafted.`);
+      const result = await draftServerPurchaseOrders('replenishment', { idempotency_key: `replenishment:${crypto.randomUUID()}` });
+      setNotice(result.purchase_orders?.length ? `${result.purchase_orders.length} server-backed draft PO(s) created.` : 'Nothing to reorder right now.');
     } finally { setBusy(null); }
   }
 
@@ -178,10 +157,7 @@ export function AdminReplenishment() {
 
         <div style={{ marginTop: 20, display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
           <button onClick={handleDraftPOs} disabled={busy} style={btn(true)}>{busy === 'po' ? 'Drafting…' : `Draft POs (${actionable.length} SKUs)`}</button>
-          <button onClick={handleRecalc} disabled={busy} style={btn(false)}>Recalculate reorder points</button>
-          <button onClick={handleSimulate} disabled={busy} style={btn(false)}>{busy === 'sim' ? 'Receiving…' : 'Simulate inbound container clearing'}</button>
           <button onClick={handleProphetRun} disabled={busy} style={btn(false)}>{busy === 'prophet' ? 'Queuing…' : 'Run Prophet forecast'}</button>
-          <button onClick={handleReorderLoop} disabled={busy} style={btn(true)}>{busy === 'loop' ? 'Closing loop…' : 'Close reorder loop (forecast → POs)'}</button>
           <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: D.ink2, marginLeft: 'auto', cursor: 'pointer' }}>
             <input type="checkbox" checked={onlyAction} onChange={(e) => setOnlyAction(e.target.checked)} />
             Needs attention only
@@ -243,7 +219,7 @@ export function AdminReplenishment() {
               const orderedUnits = out.reduce((a, l) => a + (l.qty || 0), 0);
               const receivedUnits = out.reduce((a, l) => a + (l.received_qty || 0), 0);
               const isBusy = poBusy === po.id;
-              const canReceive = status === 'sent' || status === 'approved' || status === 'partially_received';
+              const canReceive = po.po_type !== 'consignment_settlement' && (status === 'sent' || status === 'approved' || status === 'partially_received');
               const canCancel = status !== 'received' && status !== 'closed' && status !== 'cancelled';
               return (
                 <div key={po.id} style={{ background: D.card, border: `1px solid ${D.line}`, borderRadius: 12, padding: 18 }}>
@@ -275,20 +251,12 @@ export function AdminReplenishment() {
 
                   <div style={{ marginTop: 14, display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
                     {status === 'draft' && (
-                      <button disabled={isBusy} onClick={() => handlePo(po.id, () => approvePurchaseOrder(po.id, { approved_by: 'admin' }), 'approved + synced to QBO')} style={{ ...poBtn, background: D.plum, color: '#fff' }}>
+                      <button disabled={isBusy} onClick={() => handlePo(po.id, () => mutatePurchaseOrder(po, 'approve'), 'approved')} style={{ ...poBtn, background: D.plum, color: '#fff' }}>
                         {isBusy ? '…' : 'Approve'}
                       </button>
                     )}
-                    {(status === 'draft' || status === 'approved') && (
-                      <button disabled={isBusy} onClick={() => handlePo(po.id, () => sendPurchaseOrderToVendor(po.id, { sent_by: 'admin' }), 'sent to vendor')} style={{ ...poBtn, background: status === 'approved' ? D.plum : 'transparent', color: status === 'approved' ? '#fff' : D.ink, border: status === 'approved' ? 'none' : `1px solid ${D.line}` }}>
-                        {isBusy ? '…' : 'Send to vendor'}
-                      </button>
-                    )}
-                    {canReceive && (
-                      <button disabled={isBusy} onClick={() => handlePo(po.id, () => receivePurchaseOrder(po.id, { received_by: 'admin' }), 'received')} style={{ ...poBtn, background: '#2d6a4f', color: '#fff' }}>
-                        {isBusy ? '…' : 'Receive all'}
-                      </button>
-                    )}
+                    {status === 'approved' && <Link to="/admin/purchase-orders" style={{ ...poBtn, background: D.plum, color: '#fff', textDecoration: 'none' }}>Send from PO queue</Link>}
+                    {canReceive && <Link to="/admin/inventory/receive" style={{ ...poBtn, background: '#2d6a4f', color: '#fff', textDecoration: 'none' }}>Open receiving</Link>}
                     {(status === 'received' || status === 'partially_received' || status === 'closed') && (
                       <button disabled={isBusy} onClick={() => showMatch(po.id)} style={{ ...poBtn, background: 'transparent', color: D.ink, border: `1px solid ${D.line}` }}>
                         3-way match
@@ -298,7 +266,7 @@ export function AdminReplenishment() {
                       View / PDF
                     </Link>
                     {canCancel && (
-                      <button disabled={isBusy} onClick={() => { if (window.confirm(`Cancel PO ${po.id}?`)) handlePo(po.id, () => cancelPurchaseOrder(po.id, { cancelled_by: 'admin' }), 'cancelled'); }} style={{ ...poBtn, background: 'transparent', color: D.terra, border: `1px solid ${D.terra}`, marginLeft: 'auto' }}>
+                      <button disabled={isBusy} onClick={() => { if (window.confirm(`Cancel PO ${po.id}?`)) handlePo(po.id, () => mutatePurchaseOrder(po, 'cancel'), 'cancelled'); }} style={{ ...poBtn, background: 'transparent', color: D.terra, border: `1px solid ${D.terra}`, marginLeft: 'auto' }}>
                         Cancel
                       </button>
                     )}

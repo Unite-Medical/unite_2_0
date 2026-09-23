@@ -78,7 +78,7 @@ export function Terms() {
       sections={[
         { title: 'Accounts', body: 'You are responsible for keeping your credentials secure and for all activity that occurs under your account. Notify us immediately of unauthorized use.' },
         { title: 'Orders & Pricing', body: 'Prices and availability are subject to change without notice. Tax, freight, and special fees are calculated at checkout. Quoted prices are valid for the period shown on the quote.' },
-        { title: 'Payment Terms', body: 'Net-30 / Net-60 terms are extended at our discretion based on credit review. Past-due invoices accrue 1.5% interest per month.' },
+        { title: 'Payment Terms', body: 'Existing customer payment terms carry over. New customers prepay unless Damon approves credit terms. Contact Unite with questions about your account terms.' },
         { title: 'Cancellation', body: 'Orders may be cancelled before label creation at no charge. Once a label is generated, the order is committed to the carrier and our standard return process applies.' },
         { title: 'Warranty', body: 'Products carry the original manufacturer warranty. Unite Medical disclaims all other warranties to the maximum extent permitted by law.' },
         { title: 'Liability', body: 'Unite Medical\'s aggregate liability for any claim arising under these Terms shall not exceed the amount paid for the products giving rise to the claim.' },
@@ -91,7 +91,7 @@ export function Terms() {
 export function Returns() {
   useSEO({
     title: 'Returns policy',
-    description: 'Returns are accepted for manufacturer defects, and for unopened items within 30 days of the original purchase order. Sterile and single-use items are non-returnable once opened.',
+    description: 'Approved customer-requested returns of unopened, resalable stocked goods have a 15% restocking fee and customer-paid return freight.',
     canonical: '/returns',
   });
   // Policy per PRD-29 §7.4: no returns except manufacturer defect; unopened
@@ -102,15 +102,15 @@ export function Returns() {
       eyebrow="POLICIES · RETURNS"
       title={<>Returns <Grad>policy</Grad>.</>}
       sections={[
-        { title: 'Our policy', body: 'Returns are not accepted except in two cases: (1) manufacturer defect, and (2) unopened items in original packaging, returned within 30 days of the original purchase order.' },
+        { title: 'Our policy', body: 'Approved customer-requested returns of unopened, resalable stocked goods have a 15% restocking fee and customer-paid return freight. No restocking fee applies to defective goods or Unite shipping errors. Special-order restrictions follow the applicable supplier terms and are disclosed before purchase.' },
         { title: 'Sterile / single-use items', body: 'Sterile devices, lot-controlled diagnostics, and any item with a broken sterile seal are non-returnable for patient-safety reasons. Once opened, these products cannot re-enter patient care.' },
-        { title: 'Manufacturer defects', body: 'If a product arrives defective, damaged, or incorrect, email support@unitemedical.net within 72 hours of delivery with your PO number and photos. We\'ll arrange a replacement or credit — defective items are handled at no cost to you.' },
+        { title: 'Manufacturer defects', body: 'If a product arrives defective, damaged, or incorrect, email support@unitemedical.net with your PO number and photos. We\'ll arrange a replacement or credit — defective items are handled at no cost to you.' },
         { title: 'How to start a return', list: [
           'Email support@unitemedical.net with your PO number and the items you want to return.',
-          'Our team confirms eligibility (unopened, within 30 days of the original PO, or manufacturer defect) and issues a return authorization.',
+          'Our team reviews eligibility and issues a return authorization. Contact us about the terms applicable to your purchase.',
           'Ship the authorized return to our Lithia Springs, GA warehouse.',
         ] },
-        { title: 'Refunds', body: 'Approved refunds are issued to the original payment method (or as a credit memo on terms accounts) after the return is received and inspected at our warehouse.' },
+        { title: 'Refunds', body: 'Ashley reviews refunds for accuracy and Damon gives final approval. Approved refunds are issued to the original payment method (or as a credit memo on terms accounts) after the return is received and inspected.' },
       ]}
     />
   );
@@ -119,7 +119,7 @@ export function Returns() {
 export function Shipping() {
   useSEO({
     title: 'Shipping policy',
-    description: 'Same-day order processing and shipping on orders placed before 2pm EST, from our Lithia Springs, Georgia warehouse to all 50 states and territories.',
+    description: 'Unite parcel shipping is actual carrier cost plus 20% materials markup and a $15 handling fee. Separate distributor and LTL arrangements apply.',
     canonical: '/shipping',
   });
   // Per PRD-29 §7.5: no shipping prices, no transit-time claims, no
@@ -130,7 +130,9 @@ export function Shipping() {
       eyebrow="POLICIES · SHIPPING"
       title={<>Shipping <Grad>policy</Grad>.</>}
       sections={[
-        { title: 'Same-day processing', body: 'Orders placed before 2:00 PM EST, Monday–Friday, are picked, packed, and shipped the same day from our Lithia Springs, Georgia warehouse.' },
+        { title: 'Standard parcel shipping', body: 'Actual carrier cost plus a 20% materials markup and a $15 handling fee. There is no blanket free-shipping threshold. Separately agreed distributor arrangements are retained; LTL is priced separately. Approved adjustments are shown on your order.' },
+        { title: 'Split shipments', body: 'Your order may ship in parts based on availability. Item quantities, known timing and tracking are shown for each shipment. For later backorder shipments, the additional carrier cost plus 20% applies; the $15 handling fee is charged only once for Unite-caused splits. Unknown later freight is shown as pending. Jacobe obtains your approval of the amount before it is charged or the affected later shipment is released.' },
+        { title: 'Channel-specific arrangements', body: 'These terms apply to ordinary Unite orders. TJS retail terms are separate. Surplus buyers and sellers arrange shipping directly; Unite does not provide surplus logistics.' },
         { title: 'Coverage', body: 'We ship to all 50 states and US territories. Shipping charges are calculated at checkout or quoted on your order based on weight, destination, and service level.' },
         { title: 'Drop-ship', body: 'For distributors and pharmacies, we drop-ship to your patient or store with your packing slip and your branding.' },
         { title: 'International', body: 'Currently US-only. Talk to our distributor team about white-label arrangements for cross-border distribution.' },

@@ -1,130 +1,42 @@
-import { useEffect, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { D } from '../../tokens.js';
-import { UMLogo } from '../shared/Logo.jsx';
-import { Icon } from '../shared/Icon.jsx';
-import { auth } from '../../lib/auth.js';
-import { useViewport } from '../../lib/viewport.js';
-import { useWebhookBridge } from '../../lib/webhookBridge.js';
+import {Children,isValidElement,useEffect,useRef,useState} from 'react';
+import {Link,useLocation,useNavigate} from 'react-router-dom';
+import {auth} from '../../lib/auth.js';
+import {staffShortcuts,staffHome,teamForRole,STAFF_TEAMS} from '../../lib/staffWorkspace.js';
+import {useWebhookBridge} from '../../lib/webhookBridge.js';
+import {WorkspaceIcon} from '../workspace/WorkspaceIcon.jsx';
+import '../../styles/staff-workspace.css';
 
-const NAV = [
-  ['Overview',      'overview',   '/admin'],
-  ['Morning brief', 'digest',     '/admin/digest'],
-  ['Products',      'products',   '/admin/products'],
-  ['Orders',        'orders',     '/admin/orders'],
-  ['Fulfillment',   'fulfillment', '/admin/fulfillment'],
-  ['Quotes',        'quotes',     '/admin/quotes'],
-  ['Inventory',     'inventory',  '/admin/inventory'],
-  ['Receiving',     'receiving',  '/admin/inventory/receive'],
-  ['Lots & recall', 'lots',       '/admin/inventory/lots'],
-  ['Cycle count',   'count',      '/admin/inventory/count'],
-  ['Transfers',     'transfers',  '/admin/inventory/transfers'],
-  ['Consignment',   'consignment', '/admin/consignment'],
-  ['Purchase orders', 'purchase-orders', '/admin/purchase-orders'],
-  ['Replenishment', 'replenish',  '/admin/replenishment'],
-  ['Finance',       'finance',    '/admin/finance'],
-  ['Customers',     'customers',  '/admin/customers'],
-  ['CRM',           'crm',        '/admin/crm'],
-  ['HubSpot (live)', 'hubspot',   '/admin/crm/hubspot'],
-  ['Reps',          'reps',       '/admin/reps'],
-  ['Team & RBAC',   'team',       '/admin/team'],
-  ['Vendors',       'vendors',    '/admin/vendors'],
-  ['Discovery',     'discovery',  '/admin/discovery'],
-  ['Compliance',    'compliance', '/admin/compliance'],
-  ['UDI / GUDID',   'udi',        '/admin/udi'],
-  ['Webhooks',      'webhooks',   '/admin/webhooks'],
-  ['Surplus',       'surplus',    '/admin/surplus'],
-  ['CMS',           'cms',        '/admin/cms'],
-  ['Analytics',     'analytics',  '/admin/analytics'],
-  ['Settings',      'settings',   '/admin/settings'],
+const TOOLS=[
+ ['Orders & customers',[['Quotes','/admin/quotes','quotes'],['Sourcing','/admin/sourcing','sourcing'],['Customers','/admin/customers','customers'],['CRM','/admin/crm','crm'],['HubSpot','/admin/crm/hubspot','hubspot'],['Sales reps','/admin/reps','reps'],['Purchase orders','/admin/purchase-orders','purchase-orders']]],
+ ['Warehouse & buying',[['Receive a delivery','/admin/inventory/receive','receiving'],['Inventory','/admin/inventory','inventory'],['Pick & ship','/admin/fulfillment','fulfillment'],['Checkout reviews','/admin/packing','packing'],['Stock counts','/admin/inventory/count','count'],['Lots & recall','/admin/inventory/lots','lots'],['Transfers','/admin/inventory/transfers','transfers'],['Consignment','/admin/consignment','consignment'],['Barcodes','/admin/inventory/barcodes','barcodes'],['Replenishment','/admin/replenishment','replenish'],['Vendors','/admin/vendors','vendors']]],
+ ['Manage Unite',[['Refund approvals','/admin/refund-reviews','refund-reviews'],['Needs attention','/admin/desk','desk'],['Document review','/admin/documents','documents'],['Products','/admin/products','products'],['Morning brief','/admin/digest','digest'],['Analytics','/admin/analytics','analytics'],['Team & permissions','/admin/team','team'],['Integrations','/admin/integrations','integrations'],['Website content','/admin/cms','cms'],['Compliance','/admin/compliance','compliance'],['UDI / GUDID','/admin/udi','udi'],['Discovery','/admin/discovery','discovery'],['Webhooks','/admin/webhooks','webhooks'],['Shopify history','/admin/shopify-history','shopify-history'],['Launch preparation','/admin/launch','launch'],['Testing & feedback','/admin/testing','testing'],['Settings','/admin/settings','settings']]],
 ];
-
-export function AdminShell({ active, children }) {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const session = auth.use();
-  const { isMobile } = useViewport();
-  const [open, setOpen] = useState(false);
-
-  // Drain verified webhook events from /api/hooks/events into the
-  // local DB while an admin tab is open (PRD-01 interim bridge).
-  useWebhookBridge(session?.role === 'admin');
-
-  // eslint-disable-next-line react-hooks/set-state-in-effect
-  useEffect(() => { setOpen(false); }, [location.pathname]);
-  useEffect(() => {
-    if (!open) return undefined;
-    document.body.style.overflow = 'hidden';
-    return () => { document.body.style.overflow = ''; };
-  }, [open]);
-
-  const isActive = (id, path) => active === id || location.pathname === path;
-
-  const Sidebar = (
-    <>
-      <Link to="/" aria-label="Unite Medical home">
-        <UMLogo size={22} color={D.paper} weight={600} />
-      </Link>
-      <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1.2, color: D.plumSoft, marginTop: 6 }}>ADMIN CONSOLE</div>
-      <nav style={{ marginTop: 24 }}>
-        {NAV.map(([label, id, path]) => (
-          <Link key={id} to={path} style={{
-            display: 'block',
-            padding: '11px 12px', borderRadius: 6, fontSize: 13,
-            background: isActive(id, path) ? D.plum : 'transparent',
-            color: isActive(id, path) ? D.paper : '#a9b8ae',
-            marginBottom: 2,
-          }}>{label}</Link>
-        ))}
-      </nav>
-      <div style={{ marginTop: 40, padding: 14, background: 'rgba(255,255,255,.06)', borderRadius: 10 }}>
-        <div style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, color: D.plumSoft }}>LOGGED IN AS</div>
-        <div style={{ fontSize: 13, marginTop: 6 }}>{session?.name || 'Damon Reed'}</div>
-        <div style={{ fontSize: 11, color: '#8b9a90' }}>{session?.role === 'admin' ? 'Super admin' : session ? 'Customer' : 'Demo · sign in'}</div>
-        {session ? (
-          <button onClick={() => { auth.logout(); navigate('/'); }} style={{ marginTop: 10, fontSize: 11, fontFamily: D.mono, letterSpacing: 1, color: D.plumSoft, background: 'transparent', border: 'none', cursor: 'pointer', padding: 0 }}>SIGN OUT</button>
-        ) : (
-          <button onClick={() => navigate('/login')} style={{ marginTop: 10, fontSize: 11, fontFamily: D.mono, letterSpacing: 1, color: D.plumSoft, background: 'transparent', border: 'none', cursor: 'pointer', padding: 0 }}>SIGN IN</button>
-        )}
-      </div>
-    </>
-  );
-
-  if (isMobile) {
-    return (
-      <div style={{ minHeight: '100vh', background: D.paper, fontFamily: D.sans, color: D.ink }}>
-        <header style={{ background: D.ink, color: D.paper, padding: '12px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 30 }}>
-          <Link to="/" aria-label="Unite Medical home"><UMLogo size={22} color={D.paper} weight={600} /></Link>
-          <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1.2, color: D.plumSoft }}>ADMIN</div>
-          <button onClick={() => setOpen(true)} aria-label="Open admin menu" aria-expanded={open} style={{ background: 'transparent', color: D.paper, border: '1px solid rgba(255,255,255,.18)', borderRadius: 10, width: 40, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', padding: 0 }}>
-            <Icon.menu />
-          </button>
-        </header>
-        {open && (
-          <>
-            <div className="um-drawer-backdrop" onClick={() => setOpen(false)} aria-hidden="true" />
-            <aside className="um-drawer" role="dialog" aria-modal="true" aria-label="Admin navigation" style={{ background: D.ink, color: D.paper, padding: '22px 18px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-                <Link to="/"><UMLogo size={22} color={D.paper} weight={600} /></Link>
-                <button onClick={() => setOpen(false)} aria-label="Close menu" style={{ background: 'transparent', color: D.paper, border: '1px solid rgba(255,255,255,.18)', borderRadius: 10, width: 40, height: 40, cursor: 'pointer' }}>
-                  <Icon.close />
-                </button>
-              </div>
-              {Sidebar}
-            </aside>
-          </>
-        )}
-        <div>{children}</div>
-      </div>
-    );
-  }
-
-  return (
-    <div style={{ display: 'grid', gridTemplateColumns: '220px 1fr', minHeight: '100vh', background: D.paper, fontFamily: D.sans, color: D.ink }}>
-      <aside aria-label="Admin navigation" style={{ background: D.ink, color: D.paper, padding: '22px 18px', position: 'sticky', top: 0, height: '100vh', overflowY: 'auto' }}>
-        {Sidebar}
-      </aside>
-      <div style={{ overflowY: 'auto' }}>{children}</div>
-    </div>
-  );
+const iconFor=id=>({work:'grid',orders:'box',customers:'people',inquiries:'inbox',quotes:'list',finance:'money',fulfillment:'box',receiving:'box',rep:'people','refund-reviews':'money','new-quote':'list'}[id]||'list');
+export function AdminShell({active,children,unsavedChanges=false}){
+ const session=auth.use(),location=useLocation(),navigate=useNavigate();
+ const [open,setOpen]=useState(false),[error,setError]=useState(''),[switching,setSwitching]=useState(false),[toolSearch,setToolSearch]=useState('');
+ const drawer=useRef(null),menuButton=useRef(null);
+ useWebhookBridge(session?.role==='admin');
+ const nav=staffShortcuts(session?.role,{inquiries:String(session?.email||'').toLowerCase()==='jacobe@unitemedical.net'});
+ const matchingTools=TOOLS.map(([name,links])=>[name,links.filter(([label])=>label.toLowerCase().includes(toolSearch.toLowerCase().trim()))]).filter(([,links])=>links.length);
+ const pageLabel=active==='work'||active==='overview'?'Today':nav.find(n=>n.id===active)?.label||TOOLS.flatMap(([,links])=>links).find(([,path,id])=>id===active||path===location.pathname)?.[0]||'Operations';
+ const isActive=(id,path)=>active===id||location.pathname===path||(id==='work'&&location.pathname==='/admin');
+ useEffect(()=>{if(!open)return;const previous=document.activeElement;drawer.current?.querySelector('button')?.focus();const previousOverflow=document.body.style.overflow;document.body.style.overflow='hidden';function key(e){if(e.key==='Escape')setOpen(false);if(e.key==='Tab'){const els=[...drawer.current.querySelectorAll('a,button,input,select,summary')].filter(el=>el.getClientRects().length);if(e.shiftKey&&document.activeElement===els[0]){e.preventDefault();els.at(-1)?.focus();}else if(!e.shiftKey&&document.activeElement===els.at(-1)){e.preventDefault();els[0]?.focus();}}}document.addEventListener('keydown',key);return()=>{document.body.style.overflow=previousOverflow;document.removeEventListener('keydown',key);previous?.focus();};},[open]);
+ async function switchRole(role){if(unsavedChanges){setError('Save or discard your changes before changing roles.');return;}setSwitching(true);setError('');try{const next=await auth.switchRole(role);setOpen(false);navigate(staffHome(next.role));}catch(e){setError(e.message);}finally{setSwitching(false);}}
+ useEffect(()=>{if(!unsavedChanges)return;const guard=e=>{e.preventDefault();e.returnValue='';};window.addEventListener('beforeunload',guard);return()=>window.removeEventListener('beforeunload',guard);},[unsavedChanges]);
+ function guardNavigation(event){const link=event.target.closest('a[href]');if(unsavedChanges&&link&&!link.getAttribute('href').startsWith('#')){event.preventDefault();event.stopPropagation();setError('Save or discard your changes before leaving this page.');}}
+ const visibleError=error.startsWith('Save or discard')&&!unsavedChanges?'':error;
+ const go=()=>setOpen(false);
+ const hasMain=Children.toArray(children).some(child=>isValidElement(child)&&child.type==='main');
+ const sidebar=<>
+  <Link to="/work" className="uw-brand" onClick={go}><img src="/brand/unite-medical-logo.png" alt="Unite Medical" onError={e=>{e.currentTarget.style.display='none';}}/><span className="uw-brand-caption">TEAM WORKSPACE</span></Link>
+  <div className="uw-sidebar-scroll"><div className="uw-sidebar-label">YOUR WORKDAY</div>
+  <nav aria-label="Staff navigation">{nav.map(n=><Link className={`uw-nav-link ${isActive(n.id,n.path)?'is-active':''}`} key={n.id} to={n.path} onClick={go} aria-current={isActive(n.id,n.path)?'page':undefined}><WorkspaceIcon name={iconFor(n.id)} size={18}/>{n.label}</Link>)}</nav>
+  {session?.role==='admin'&&<div className="uw-more-tools"><span className="uw-sidebar-label">EXPLORE</span><label className="uw-tool-search"><WorkspaceIcon name="search" size={16}/><input aria-label="Find a workspace tool" type="search" placeholder="Find a tool…" value={toolSearch} onChange={e=>setToolSearch(e.target.value)}/></label>{!matchingTools.length&&<p className="uw-tool-empty">No tools match your search.</p>}{matchingTools.map(([name,links])=><details key={name} open={Boolean(toolSearch)||links.some(([,path,id])=>isActive(id,path))||undefined}><summary>{name}<WorkspaceIcon name="chevron" size={14}/></summary>{links.map(([label,path,id])=><Link key={id} to={path} onClick={go} className={`uw-tool-link ${isActive(id,path)?'is-active':''}`} aria-current={isActive(id,path)?'page':undefined}>{label}</Link>)}</details>)}</div>}
+  </div><div className="uw-sidebar-bottom"><div className="uw-person"><span className="uw-avatar">{(session?.name||session?.email||'U').slice(0,1).toUpperCase()}</span><div><strong>{session?.name||'Unite team'}</strong><span>{session?.role==='admin'?'Administrator':STAFF_TEAMS[teamForRole(session?.role)]?.label}</span></div></div>
+  {session?.roles?.length>1&&<label className="uw-role-label">Working role<select value={session.role} disabled={switching} onChange={e=>switchRole(e.target.value)}>{session.roles.map(r=><option key={r} value={r}>{r.replaceAll('_',' ')}</option>)}</select></label>}
+  <div className="uw-account-links"><Link to="/">View website ↗</Link><button onClick={async()=>{if(unsavedChanges){setError('Save or discard your changes before signing out.');return;}await auth.logout();navigate('/login');}}>Sign out</button></div></div>
+ </>;
+ return <div className="uw-shell" onClickCapture={guardNavigation} onChangeCapture={()=>{if(error.startsWith('Save or discard'))setError('');}}><aside className="uw-sidebar" aria-label="Workspace navigation">{sidebar}</aside><div className="uw-main"><header className="uw-topbar"><div className="uw-breadcrumb"><button ref={menuButton} className="uw-menu-button" onClick={()=>setOpen(true)} aria-label="Open workspace menu" aria-expanded={open}><WorkspaceIcon name="menu"/></button><span>Unite Medical</span><span>/</span><strong>{pageLabel}</strong></div><div className="uw-environment"><span/>{import.meta.env.DEV?'Local preview':import.meta.env.VITE_UNITE_ENVIRONMENT==='staging'?'Staging workspace':'Team workspace'}</div></header><div className="uw-content">{visibleError&&<p role="alert" className="uw-error" style={{margin:20}}>{visibleError}</p>}{hasMain?children:<main id="main">{children}</main>}</div></div>
+ {open&&<div className="uw-mobile-layer"><div className="uw-backdrop" onClick={()=>setOpen(false)}/><aside ref={drawer} className="uw-mobile-sidebar" role="dialog" aria-modal="true" aria-label="Workspace navigation"><button className="uw-close-menu" onClick={()=>setOpen(false)} aria-label="Close workspace menu"><WorkspaceIcon name="close"/></button>{sidebar}</aside></div>}</div>;
 }

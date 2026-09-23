@@ -1,5 +1,6 @@
 import { Navigate, useLocation } from 'react-router-dom';
 import { auth } from '../../lib/auth.js';
+import { staffHome } from '../../lib/staffWorkspace.js';
 import { D } from '../../tokens.js';
 
 /**
@@ -23,10 +24,9 @@ export function RequireAdmin({ children }) {
           <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.terra, marginBottom: 14 }}>403 · ADMIN ONLY</div>
           <div style={{ fontFamily: D.display, fontSize: 44, letterSpacing: -1.1, lineHeight: 1.05 }}>You don&apos;t have access to this console.</div>
           <p style={{ color: D.ink2, fontSize: 14.5, marginTop: 16, lineHeight: 1.6 }}>
-            Signed in as <strong>{session.name}</strong> ({session.role}). Switch to an admin
-            account on the sign-in page to continue.
+            Signed in as <strong>{session.name}</strong> ({session.role}). Your daily workspace shows the tools available to your working role.
           </p>
-          <a href="/login" style={{ display: 'inline-block', marginTop: 22, background: D.plum, color: D.paper, padding: '12px 22px', borderRadius: 4, fontSize: 14, fontWeight: 600 }}>Open sign-in</a>
+          <a href={staffHome(session.role)} style={{ display: 'inline-block', marginTop: 22, background: D.plum, color: D.paper, padding: '12px 22px', borderRadius: 4, fontSize: 14, fontWeight: 600 }}>Return to your workspace</a>
         </div>
       </div>
     );

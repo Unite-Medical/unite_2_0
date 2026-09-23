@@ -23,8 +23,8 @@ export function AdminAnalytics() {
     // eslint-disable-next-line react-hooks/purity
     const now = Date.now();
     orders.forEach((o) => {
-      const d = Math.floor((now - new Date(o.placed_at).getTime()) / 86400000);
-      if (d >= 0 && d < days) buckets[days - 1 - d] += o.total / 1000;
+      const d = Math.floor((now - new Date(o.placed_at || o.created_at).getTime()) / 86400000);
+      if (d >= 0 && d < days) buckets[days - 1 - d] += (Number(o.total) || 0) / 1000;
     });
     return buckets;
   }, [orders]);
@@ -34,7 +34,7 @@ export function AdminAnalytics() {
     orderItems.forEach((it) => {
       const p = products.find((pr) => pr.sku === it.sku);
       if (!p) return;
-      m.set(p.category, (m.get(p.category) || 0) + it.ext_price);
+      m.set(p.category || 'Uncategorized', (m.get(p.category || 'Uncategorized') || 0) + (Number(it.ext_price) || 0));
     });
     return Array.from(m.entries()).sort((a, b) => b[1] - a[1]);
   }, [orderItems, products]);
@@ -48,13 +48,12 @@ export function AdminAnalytics() {
 
   const segmentMix = useMemo(() => {
     const m = new Map();
-    orders.forEach((o) => m.set(o.segment, (m.get(o.segment) || 0) + o.total));
+    orders.forEach((o) => m.set(o.segment || 'Unclassified', (m.get(o.segment || 'Unclassified') || 0) + (Number(o.total) || 0)));
     const total = Array.from(m.values()).reduce((a, b) => a + b, 0);
     return Array.from(m.entries()).map(([k, v]) => [k, v / Math.max(1, total)]).sort((a, b) => b[1] - a[1]);
   }, [orders]);
 
-  const totalRev = orders.reduce((a, b) => a + b.total, 0);
-  const target = totalRev * 0.92;
+  const totalRev = trail.reduce((sum, value) => sum + value, 0) * 1000;
 
   const weekly = useMemo(() => {
     const weeks = 12;
@@ -62,7 +61,7 @@ export function AdminAnalytics() {
     // eslint-disable-next-line react-hooks/purity
     const now = Date.now();
     orders.forEach((o) => {
-      const d = Math.floor((now - new Date(o.placed_at).getTime()) / (7 * 86400000));
+      const d = Math.floor((now - new Date(o.placed_at || o.created_at).getTime()) / (7 * 86400000));
       if (d >= 0 && d < weeks) buckets[weeks - 1 - d] += 1;
     });
     return buckets;
@@ -74,15 +73,14 @@ export function AdminAnalytics() {
         <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 12 }}>ANALYTICS · REVENUE & PERFORMANCE</div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: isMobile ? 'flex-start' : 'end', marginBottom: 22, flexDirection: isMobile ? 'column' : 'row', gap: 8 }}>
           <h1 style={{ fontFamily: D.display, fontSize: 'clamp(34px, 5.6vw, 56px)', fontWeight: 400, letterSpacing: -1.3, lineHeight: 1.02, margin: 0 }}>Analytics.</h1>
-          <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1, color: D.ink3 }}>FY26 · our billing system LIVE</div>
+          <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1, color: D.ink3 }}>Loaded order records · not reconciled revenue</div>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.5fr 1fr', gap: 14, marginBottom: 14 }}>
-          <AdminCard title={`Revenue · trailing 30 days · actual ${fmt.short(totalRev)} · target ${fmt.short(target)}`}>
+          <AdminCard title={`Order value · trailing 30 days · ${fmt.short(totalRev)}`}>
             <Sparkline points={trail.length ? trail : [0]} tall />
             <div style={{ display: 'flex', gap: 20, marginTop: 18, fontSize: 12, color: D.ink2 }}>
-              <span><Icon.dot style={{ color: D.plum }} /> Actual · {fmt.short(totalRev)}</span>
-              <span><Icon.dot style={{ color: D.ink3 }} /> Target · {fmt.short(target)}</span>
-              <span style={{ color: '#3b8760' }}>{totalRev > target ? '+' : ''}{fmt.pct((totalRev - target) / target)} over plan</span>
+              <span><Icon.dot style={{ color: D.plum }} /> Recorded order value · {fmt.short(totalRev)}</span>
+<span>Targets have not been configured.</span>
             </div>
           </AdminCard>
           <AdminCard title="By category">
@@ -101,7 +99,7 @@ export function AdminAnalytics() {
           </AdminCard>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr 1fr', gap: 14 }}>
-          <AdminCard title="Top SKUs · 90 days">
+          <AdminCard title="Top SKUs · loaded order lines">
             {topSkus.map(([sku, val], i) => {
               const p = products.find((pr) => pr.sku === sku);
               return (
@@ -129,7 +127,7 @@ export function AdminAnalytics() {
               <span>WK-12</span><span>NOW</span>
             </div>
           </AdminCard>
-          <AdminCard title="Customer segments · share of wallet">
+          <AdminCard title="Customer segments · share of order value">
             {segmentMix.map(([seg, share], i) => (
               <div key={seg} style={{ padding: '10px 0', borderTop: i === 0 ? 'none' : `1px solid ${D.line}`, display: 'flex', alignItems: 'center', gap: 12 }}>
                 <div style={{ width: 10, height: 10, borderRadius: 5, background: SEGMENT_COLOR[seg] || D.ink3 }} />

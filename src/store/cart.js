@@ -11,15 +11,16 @@ import { db } from '../lib/db.js';
 import { auth } from '../lib/auth.js';
 import { uid } from '../lib/format.js';
 import { resolveCustomerPrice } from '../lib/customerPricing.js';
+import { commerceAccessFor } from '../lib/accessPolicy.js';
 
 const subs = new Set();
-let activeCartId = 'cart_demo';
+let activeCartId = null;
 
 function notify() { subs.forEach((fn) => fn()); }
 
 function ensureCartFor(user) {
   const userId = user?.user_id || null;
-  if (!userId) return 'cart_demo';
+  if (!userId) return null;
   let cart = db.list('carts', { where: { customer_id: userId } })[0];
   if (!cart) cart = db.insert('carts', { id: uid('cart'), customer_id: userId, org_id: user.org_id || null });
   return cart.id;
@@ -37,6 +38,7 @@ export const cartStore = {
   reseatForUser: () => reseat(),
 
   get items() {
+    if (!activeCartId) return [];
     return db.list('cart_items', { where: { cart_id: activeCartId } });
   },
 
@@ -47,21 +49,24 @@ export const cartStore = {
    * @param {object} [variant]    Optional selected variant
    * @param {string} variant.sku  Variant SKU (used as the cart line key)
    * @param {string} variant.title  Variant display title (e.g. "Case (450 Tests)")
-   * @param {number} variant.price  Variant unit price
+
    */
   add(productId, qty = 1, variant) {
+    const session = auth.current();
+    const organization = session?.org_id ? db.get('organizations', session.org_id) : null;
+    if (!commerceAccessFor(session, organization).can_use_cart) {
+      return { ok: false, reason: 'approved_account_required' };
+    }
+    if (!activeCartId) activeCartId = ensureCartFor(session);
     const product = db.get('products', productId);
-    if (!product) return;
+    if (!product) return { ok: false, reason: 'product_not_found' };
     const lineSku = variant?.sku || product.sku;
     const lineName = variant?.title ? `${product.name} · ${variant.title}` : product.name;
     const existing = db.list('cart_items', { where: { cart_id: activeCartId, sku: lineSku } })[0];
     const nextQty = (existing?.qty || 0) + qty;
-    // PRD-26: one resolver — contract → volume break → tier → list.
-    // Variants carry their own list price; tier/contract still applies.
-    const priced = resolveCustomerPrice({ sku: product.sku, qty: nextQty, basePrice: variant?.price ?? product.price });
-    const lineUnit = variant?.price != null
-      ? resolveCustomerPrice({ sku: '__variant__', qty: nextQty, basePrice: variant.price }).unit_price
-      : priced.unit_price;
+    const priced = resolveCustomerPrice({ sku: lineSku, qty: nextQty, basePrice: null });
+    const lineUnit = priced.unit_price;
+    if (!(lineUnit > 0)) return { ok: false, reason: 'account_pricing_required' };
     if (existing) {
       db.update('cart_items', existing.id, { qty: nextQty, unit_price: lineUnit, list_price: priced.list_price, pricing_tier: priced.tier });
     } else {
@@ -79,9 +84,11 @@ export const cartStore = {
       });
     }
     notify();
+    return { ok: true };
   },
 
   setQty(sku, qty) {
+    if (!activeCartId) return { ok: false, reason: 'approved_account_required' };
     const existing = db.list('cart_items', { where: { cart_id: activeCartId, sku } })[0];
     if (!existing) return;
     if (qty <= 0) { db.remove('cart_items', existing.id); notify(); return; }
@@ -89,20 +96,21 @@ export const cartStore = {
     // Re-tier the line: crossing a qty break (or signing in to a
     // tiered account) changes the unit price. Variant lines keep their
     // own list price (no parent qty breaks), tier discount still applies.
-    const priced = existing.variant_title
-      ? resolveCustomerPrice({ sku: '__variant__', qty: nextQty, basePrice: existing.list_price ?? existing.unit_price })
-      : resolveCustomerPrice({ sku: existing.product_id || sku, qty: nextQty, basePrice: existing.list_price ?? existing.unit_price });
+    const priced = resolveCustomerPrice({ sku, qty: nextQty, basePrice: null });
+    if (!(priced.unit_price > 0)) return { ok: false, reason: 'account_pricing_required' };
     db.update('cart_items', existing.id, { qty: nextQty, unit_price: priced.unit_price, list_price: priced.list_price, pricing_tier: priced.tier });
     notify();
   },
 
   remove(sku) {
+    if (!activeCartId) return;
     const existing = db.list('cart_items', { where: { cart_id: activeCartId, sku } })[0];
     if (existing) db.remove('cart_items', existing.id);
     notify();
   },
 
   clear() {
+    if (!activeCartId) return;
     db.list('cart_items', { where: { cart_id: activeCartId } }).forEach((ci) => db.remove('cart_items', ci.id));
     notify();
   },

@@ -27,6 +27,7 @@ const DEFAULT_OG_IMAGE = `${SITE_URL}/favicon-512.png`;
 
 // Mirrors src/lib/seo.js useSEO() titles/descriptions per public page.
 const STATIC_ROUTES = {
+  '/regenicool': { title: 'RegeniCool Pro', description: 'Explore the RegeniCool Pro ice-water circulation system and request dealer information from Unite Medical.' },
   '/catalog': {
     title: 'Catalog',
     description: 'Browse FDA-registered orthotics, diagnostics, PPE, wound care, pharmaceuticals, and equipment. No minimums on stocked items; same-day shipping before 2pm EST.',
@@ -45,11 +46,11 @@ const STATIC_ROUTES = {
   },
   '/surplus': {
     title: 'Move surplus inventory',
-    description: 'List excess, near-expiry, or expired medical inventory with your target price. Unite brokers it to buyers across medical, veterinary, research, and overseas channels for a transparent fee.',
+    description: 'Private intake for verified US businesses with unopened, unexpired medical supplies, including PPE.',
   },
   '/surplus/market': {
     title: 'Surplus marketplace',
-    description: 'Browse surplus medical inventory Unite is brokering — sealed, in-date lots plus vet/research/export-eligible stock, direct from the seller at well below list.',
+    description: 'Surplus marketplace intake pilot. Deal acceptance and fee collection are not yet available.',
   },
   '/services': {
     title: 'Services',
@@ -190,12 +191,12 @@ function renderRoute(baseHtml, route, { title, description, type = 'website', js
 }
 
 function productMeta(p) {
-  const quoteOnly = p.quote_only || p.price == null;
+  const quoteOnly = Boolean(p.quote_only);
   const desc = `${p.name} — ${p.category || 'medical supply'}, SKU ${p.sku}.`
     + (p.hcpcs && p.hcpcs !== '—' ? ` HCPCS ${p.hcpcs}.` : '')
     + (quoteOnly
       ? ' Quote-only — priced per order from Unite Medical.'
-      : ' Wholesale pricing, same-day shipping before 2pm EST, no minimums on stocked items.');
+      : ' Company pricing is available after account approval. Same-day shipping before 2pm EST on stocked items.');
   return {
     title: p.name,
     description: desc.slice(0, 300),
@@ -208,18 +209,6 @@ function productMeta(p) {
       category: p.category,
       brand: { '@type': 'Brand', name: SITE_NAME },
       image: DEFAULT_OG_IMAGE,
-      // Quote-only products have no public price — omit the Offer rather
-      // than emit a null price / false InStock signal.
-      ...(quoteOnly ? {} : {
-        offers: {
-          '@type': 'Offer',
-          priceCurrency: 'USD',
-          price: p.price,
-          availability: 'https://schema.org/InStock',
-          seller: { '@type': 'Organization', name: SITE_NAME },
-          url: `${SITE_URL}/products/${p.sku}`,
-        },
-      }),
     },
   };
 }

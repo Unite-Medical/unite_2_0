@@ -50,7 +50,7 @@ def load_from_file(path):
 
 def load_from_live():
     sync_url = os.environ.get("SYNC_URL") or os.environ.get("VITE_API_BASE", "").rstrip("/") + "/db/sync"
-    token = os.environ.get("DB_SYNC_TOKEN") or os.environ.get("VITE_DB_SYNC_TOKEN")
+    token = os.environ.get("DB_SYNC_TOKEN")
     if not sync_url or not token:
         raise SystemExit("--live requires SYNC_URL (or VITE_API_BASE) and DB_SYNC_TOKEN")
     req = urllib.request.Request(sync_url, headers={"x-sync-token": token})

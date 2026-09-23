@@ -1,0 +1,5 @@
+import crypto from 'node:crypto';
+export function quoteDeliveryFingerprint(quote,items){return crypto.createHash('sha256').update(JSON.stringify({customer_id:quote.customer_id,subtotal:quote.subtotal,total:quote.total,shipping_cost:quote.shipping_cost,tax:quote.tax,address:quote.delivery_review?.address,ship_from:quote.ship_from,package:quote.shipping_package,service:quote.ship_method,carrier:quote.carrier,payment:quote.payment_method,items:items.map(i=>[i.id,i.sku||i.gtin,Number(i.target_qty??i.qty??i.moq),Number(i.sell_per_unit??i.unit_price??i.sell_price),Number(i.ext_sell??i.ext_price)]).sort((a,b)=>String(a[0]).localeCompare(String(b[0])))})).digest('hex');}
+export function quoteDeliveryValid(quote,items,now=Date.now()){
+ return quote?.totals_verified===true&&!!quote.delivery_review?.actor_id&&Number.isFinite(Date.parse(quote.delivery_review?.expires_at))&&Date.parse(quote.delivery_review.expires_at)>now&&quote.delivery_review.fingerprint===quoteDeliveryFingerprint(quote,items);
+}
