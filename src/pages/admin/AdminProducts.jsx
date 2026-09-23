@@ -76,23 +76,6 @@ export function AdminProducts() {
     db.update('products', sku, { available: !(p.available !== false) });
   }
 
-  function deleteProduct(sku) {
-    if (!window.confirm(`Delete ${sku}? This removes it from the catalog only — re-running the importer will restore it.`)) return;
-    db.remove('products', sku);
-    db.list('inventory', { where: { sku } }).forEach((i) => db.remove('inventory', i.id));
-    db.list('pricing', { where: { sku } }).forEach((p) => db.remove('pricing', p.id));
-  }
-
-  function regenerateInfo(sku) {
-    window.alert(
-      `To regenerate the AI hero image for this product, run:\n\n` +
-      `OPENAI_API_KEY=sk-... python3 scripts/generate_catalog_images.py \\\n` +
-      `    --only ${db.get('products', sku)?.handle || sku} --quality medium\n\n` +
-      `Output lands in public/images/products-ai/. To make it the live hero image,\n` +
-      `swap the path in src/lib/imageMap.js or copy it over the original.`
-    );
-  }
-
   function sortBy(key) {
     if (key === sortKey) {
       setSortDir(sortDir === 'asc' ? 'desc' : 'asc');
@@ -114,17 +97,7 @@ export function AdminProducts() {
             <Link to="/admin/products/new" style={{ background: D.plum, color: D.paper, border: 'none', padding: '11px 18px', borderRadius: 4, fontSize: 13, textDecoration: 'none', fontWeight: 600 }}>
               + Add product
             </Link>
-            <button
-              onClick={() => window.alert(
-                `To re-import the catalog from the upstream Shopify CSVs, run:\n\n` +
-                `python3 scripts/import_catalog.py\n\n` +
-                `That re-reads ALL_PRODUCTS_MASTER.csv, copies updated images, and rewrites src/data/realCatalog.js. ` +
-                `Restart the dev server to pick up the new data.`
-              )}
-              style={{ background: 'transparent', color: D.ink, border: `1px solid ${D.line}`, padding: '10px 16px', borderRadius: 4, fontSize: 13, cursor: 'pointer' }}
-            >
-              Re-import from CSV
-            </button>
+
           </div>
         </div>
 
@@ -249,15 +222,11 @@ export function AdminProducts() {
                           <button onClick={() => navigate(`/admin/products/edit/${encodeURIComponent(p.sku)}`)} style={textBtn} title="Edit details">
                             EDIT
                           </button>
-                          <button onClick={() => regenerateInfo(p.sku)} style={textBtn} title="Regenerate AI hero">
-                            AI
-                          </button>
+
                           <button onClick={() => toggleAvailable(p.sku)} style={textBtn} title="Toggle available">
                             {p.available === false ? 'SHOW' : 'HIDE'}
                           </button>
-                          <button onClick={() => deleteProduct(p.sku)} style={{ ...textBtn, color: D.terra }} title="Delete">
-                            DEL
-                          </button>
+
                         </div>
                       </td>
                     </tr>
@@ -266,7 +235,7 @@ export function AdminProducts() {
                 {filtered.length === 0 && (
                   <tr>
                     <td colSpan={10} style={{ padding: 32, textAlign: 'center', color: D.ink3 }}>
-                      No products match these filters.
+                      {products.length ? 'No products match these filters.' : 'Your product catalog is empty. Add your first product to get started.'}
                     </td>
                   </tr>
                 )}
