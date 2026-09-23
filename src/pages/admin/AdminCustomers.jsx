@@ -21,7 +21,7 @@ const SEGMENTS = ['asc', 'pharmacy', 'gov', 'distributors', 'ems', 'hospital'];
 export function AdminCustomers() {
   const { isMobile } = useViewport();
   const padX = isMobile ? 18 : 40;
-  const orgs = db.useTable('organizations', { orderBy: 'total_spend', dir: 'desc' });
+  const orgs = db.useTable('organizations', { orderBy: 'total_spend', dir: 'desc' }).filter(org=>!org.workspace_internal);
   const reps = db.useTable('reps');
   const repNames = [...new Set([...reps.filter(rep => !['inactive','disabled','terminated'].includes(rep.status)).map(rep => rep.name), ...orgs.map(org => org.account_rep)].filter(Boolean))].sort();
   const [search, setSearch] = useState('');

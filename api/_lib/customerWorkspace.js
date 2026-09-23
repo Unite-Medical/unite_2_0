@@ -11,7 +11,7 @@ export function buildCustomerWorkspace(tables, session) {
   const names = new Set(roster.filter(rep => (tables.reps || []).filter(other => clean(other.name) === clean(rep.name)).length === 1).map(rep => clean(rep.name)).filter(Boolean));
   const ids = new Set(roster.map(rep => rep.id).filter(Boolean));
   const organizations = (tables.organizations || []).filter(org => {
-    if (org.status === 'merged') return false;
+    if (org.workspace_internal || org.status === 'merged') return false;
     if (session.role === 'admin') return true;
     const ownerEmail = clean(org.account_owner_email || org.owner_email);
     const ownerId = org.account_owner_id || org.owner_id;

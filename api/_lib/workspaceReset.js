@@ -14,5 +14,5 @@ export function planWorkspaceReset(rows){
  const blocked=targets.filter(r=>r.data.legal_hold===true||holds.some(h=>[r.tbl,'*'].includes(h.data.table)&&(!h.data.record_id||h.data.record_id===r.id)));
  const counts={};for(const r of targets)counts[r.tbl]=(counts[r.tbl]||0)+1;
  const version=crypto.createHash('sha256').update(JSON.stringify(active.map(r=>[r.tbl,r.id,r.updated_at]).sort((a,b)=>JSON.stringify(a).localeCompare(JSON.stringify(b))))).digest('hex');
- return {version,counts,total:targets.length,staff_preserved:staff.length,blocked:blocked.length,targets:targets.map(r=>({tbl:r.tbl,id:r.id}))};
+ return {internal_org_ids:active.filter(r=>r.tbl==='organizations'&&staffOrgs.has(r.id)&&r.data.workspace_internal!==true).map(r=>r.id),version,counts,total:targets.length,staff_preserved:staff.length,blocked:blocked.length,targets:targets.map(r=>({tbl:r.tbl,id:r.id}))};
 }

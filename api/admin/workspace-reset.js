@@ -27,6 +27,7 @@ export default async function handler(req,res){
     tx`LOCK TABLE um_rows IN SHARE ROW EXCLUSIVE MODE`,
     tx`SELECT 1/CASE WHEN (SELECT count(*) FROM um_rows WHERE deleted=true AND data->>'workspace_reset_id'=${run.id})=${run.total} THEN 1 ELSE 0 END AS intact`,
     tx`UPDATE um_rows SET deleted=false,data=data-'workspace_reset_id',updated_at=now() WHERE deleted=true AND data->>'workspace_reset_id'=${run.id} RETURNING tbl`,
+    tx`UPDATE um_rows SET data=data-'workspace_internal'-'workspace_internal_reset_id',updated_at=now() WHERE tbl='organizations' AND data->>'workspace_internal_reset_id'=${run.id}`,
     tx`UPDATE um_rows SET data=data||${JSON.stringify({status:'restored',restored_at:new Date().toISOString(),restored_by:live.session.user_id})}::jsonb,updated_at=now() WHERE tbl='workspace_resets' AND id=${run.id}`,
    ]);
    return sendJson(res,200,{ok:true,restored:results[2].length});
@@ -36,13 +37,14 @@ export default async function handler(req,res){
   if(plan.blocked)return sendJson(res,409,{error:'legal_hold_active'});
   if(!plan.total)return sendJson(res,400,{error:'workspace_already_empty'});
   const id=crypto.randomUUID(),created_at=new Date().toISOString();
-  const run={id,created_at,actor_id:live.session.user_id,status:'archived',counts:plan.counts,total:plan.total};
+  const run={id,created_at,actor_id:live.session.user_id,status:'archived',counts:plan.counts,total:plan.total,internal_org_ids:plan.internal_org_ids};
   const expected=JSON.stringify(rows.map(r=>({tbl:r.tbl,id:r.id,at:r.updated_at}))),targets=JSON.stringify(plan.targets);
   const results=await sql.transaction(tx=>[
    tx`LOCK TABLE um_rows IN SHARE ROW EXCLUSIVE MODE`,
    // Reject both changed rows and new arrivals between preview and commit.
    tx`SELECT 1/CASE WHEN (SELECT count(*) FROM um_rows WHERE deleted=false)=${rows.length} AND (SELECT count(*) FROM um_rows u JOIN jsonb_to_recordset(${expected}::jsonb) x(tbl text,id text,at text) ON u.tbl=x.tbl AND u.id=x.id WHERE u.deleted=false AND u.updated_at=x.at::timestamptz)=${rows.length} THEN 1 ELSE 0 END AS unchanged`,
    tx`UPDATE um_rows u SET deleted=true,data=u.data||jsonb_build_object('workspace_reset_id',${id}::text),updated_at=now() FROM jsonb_to_recordset(${targets}::jsonb) x(tbl text,id text) WHERE u.tbl=x.tbl AND u.id=x.id AND u.deleted=false RETURNING u.tbl`,
+   tx`UPDATE um_rows SET data=data||jsonb_build_object('workspace_internal',true,'workspace_internal_reset_id',${id}::text),updated_at=now() WHERE tbl='organizations' AND id=ANY(${plan.internal_org_ids})`,
    tx`INSERT INTO um_rows(tbl,id,data) VALUES('workspace_resets',${id},${JSON.stringify(run)}::jsonb)`,
   ]);
   return sendJson(res,200,{ok:true,archived:results[2].length,run_id:id,counts:plan.counts});
