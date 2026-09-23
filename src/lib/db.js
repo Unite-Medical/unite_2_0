@@ -206,7 +206,9 @@ export const db = {
   },
 
   get(table, id) {
-    return (state[table] || []).find((r) => r.id === id) || null;
+    const rows = state[table] || [];
+    // Imported products retain their source identity; storefront routes use the SKU.
+    return rows.find((r) => r.id === id) || (table === 'products' ? rows.find((r) => r.sku === id) : null) || null;
   },
 
   count(table, query) {

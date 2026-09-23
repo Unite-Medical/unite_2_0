@@ -2,6 +2,10 @@ import { useEffect } from 'react';
 import { auth } from './auth.js';
 import { db } from './db.js';
 
+export function needsWmsProjection(session) {
+  return ['warehouse_manager', 'warehouse_operator'].includes(session?.role);
+}
+
 export async function fetchWmsWorkstation({ fetchImpl = fetch } = {}) {
   try {
     const response = await fetchImpl('/api/wms/workstation', { credentials: 'include' });
@@ -18,7 +22,9 @@ export function useWmsWorkstationBootstrap() {
   const session = auth.use();
   useEffect(() => {
     let cancelled = false;
-    if (!session || !['admin', 'warehouse_manager', 'warehouse_operator'].includes(session.role)) return () => { cancelled = true; };
+    // Administrators already hydrate full records through remoteDb. Applying the
+    // restricted warehouse projection afterwards erases prices, images and variants.
+    if (!needsWmsProjection(session)) return () => { cancelled = true; };
     fetchWmsWorkstation().then((result) => {
       if (cancelled) return;
       if (result.ok && result.data) db.applyRemoteSnapshot(result.data);

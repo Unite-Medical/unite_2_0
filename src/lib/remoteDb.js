@@ -171,6 +171,13 @@ export function stopRemoteDb({ purge = false } = {}) {
   }
 }
 
+// Refresh immediately after a dedicated server mutation, without emitting local writes.
+export async function refreshRemoteDb() {
+  if (!stateRef.enabled) return false;
+  await pull();
+  return true;
+}
+
 export function remoteDbStatus() {
   return {
     enabled: stateRef.enabled,

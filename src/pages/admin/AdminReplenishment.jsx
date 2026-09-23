@@ -188,7 +188,7 @@ export function AdminReplenishment() {
                     <td style={{ padding: 12 }}>
                       {r.run_rate > 0 ? r.run_rate.toFixed(2) : '—'}
                       {r.model === 'prophet' && (
-                        <span title="Prophet seasonal forecast" style={{ marginLeft: 6, fontFamily: D.mono, fontSize: 8, letterSpacing: 1, padding: '2px 6px', borderRadius: 4, background: `${D.plum}18`, color: D.plum }}>PROPHET</span>
+                        <span title="Prophet seasonal forecast" style={{ marginLeft: 6, fontFamily: D.mono, fontSize: 8, letterSpacing: 1, padding: '2px 6px', borderRadius: 4, background: 'rgba(29,92,77,.09)', color: D.plum }}>PROPHET</span>
                       )}
                     </td>
                     <td style={{ padding: 12 }}>{fmt.number(r.on_hand)}</td>

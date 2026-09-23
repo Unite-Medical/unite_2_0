@@ -82,6 +82,7 @@ const AdminSourcing = lazy(() => import('./pages/admin/AdminSourcing.jsx').then(
 const AdminCustomers = lazy(() => import('./pages/admin/AdminCustomers.jsx').then((m) => ({ default: m.AdminCustomers })));
 const AdminProducts = lazy(() => import('./pages/admin/AdminProducts.jsx').then((m) => ({ default: m.AdminProducts })));
 const AdminProductEdit = lazy(() => import('./pages/admin/AdminProductEdit.jsx').then((m) => ({ default: m.AdminProductEdit })));
+const AdminTestData = lazy(() => import('./pages/admin/AdminTestData.jsx').then(m => ({default:m.AdminTestData})));
 const AdminWorkspaceReset = lazy(() => import('./pages/admin/AdminWorkspaceReset.jsx').then(m => ({default:m.AdminWorkspaceReset})));
 const AdminSettings = lazy(() => import('./pages/admin/AdminSettings.jsx').then((m) => ({ default: m.AdminSettings })));
 const AdminIntegrations = lazy(() => import('./pages/admin/AdminIntegrations.jsx').then((m) => ({ default: m.AdminIntegrations })));
@@ -250,6 +251,7 @@ export default function App() {
           <Route path="/admin/products"  element={<RequireAdmin><AdminProducts /></RequireAdmin>} />
           <Route path="/admin/products/new" element={<RequireAdmin><AdminProductEdit /></RequireAdmin>} />
           <Route path="/admin/products/edit/:sku" element={<RequireAdmin><AdminProductEdit /></RequireAdmin>} />
+          <Route path="/admin/test-data" element={<RequireAdmin><AdminTestData /></RequireAdmin>} />
           <Route path="/admin/workspace-reset" element={<RequireAdmin><AdminWorkspaceReset /></RequireAdmin>} />
           <Route path="/admin/settings"  element={<RequireAdmin><AdminSettings /></RequireAdmin>} />
           <Route path="/admin/integrations"     element={<RequireAdmin><AdminIntegrations /></RequireAdmin>} />

@@ -27,7 +27,7 @@ function emptyProduct() {
     category: 'Orthotics',
     m6_category: '', // required on new uploads (PRD-28 §5.6 / ties to A2)
     product_type: 'Orthopedic Devices',
-    tier: 'Bracing',
+    tier: '',
     pack_size: '1 ea',
     price: 0,
     price_min: 0,
@@ -42,8 +42,8 @@ function emptyProduct() {
     tags: [],
     collections: [],
     variants: [],
-    country_of_origin: 'CN',
-    fda_registered: true,
+    country_of_origin: '',
+    fda_registered: false,
     pdac_approved: false,
     taa_compliant: false,
     berry_compliant: false,
@@ -93,7 +93,7 @@ export function AdminProductEdit() {
     }
     const payload = {
       ...form,
-      id: form.sku,
+      id: existing?.id || form.sku,
       price: Number(form.price) || 0,
       price_min: Number(form.price_min || form.price) || 0,
       price_max: Number(form.price_max || form.price) || 0,
@@ -119,15 +119,6 @@ export function AdminProductEdit() {
     if (window.confirm('Discard unsaved changes?')) {
       navigate('/admin/products');
     }
-  }
-
-  function deleteProduct() {
-    if (!existing) return;
-    if (!window.confirm(`Delete ${existing.sku}? This is reversible only by re-running the importer.`)) return;
-    db.remove('products', existing.id);
-    db.list('inventory', { where: { sku: existing.sku } }).forEach((i) => db.remove('inventory', i.id));
-    db.list('pricing', { where: { sku: existing.sku } }).forEach((p) => db.remove('pricing', p.id));
-    navigate('/admin/products');
   }
 
   function moveImage(idx, dir) {
@@ -174,7 +165,7 @@ export function AdminProductEdit() {
 
   if (sku && !existing) {
     return (
-      <AdminShell active="products">
+      <AdminShell active="products" unsavedChanges={dirty}>
         <div style={{ padding: 40, textAlign: 'center' }}>
           <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.terra, marginBottom: 14 }}>404 · NOT FOUND</div>
           <h1 style={{ fontFamily: D.display, fontSize: 32, letterSpacing: -0.6 }}>Product {sku} not found.</h1>
@@ -185,7 +176,7 @@ export function AdminProductEdit() {
   }
 
   return (
-    <AdminShell active="products">
+    <AdminShell active="products" unsavedChanges={dirty}>
       <div style={{ padding: `${isMobile ? 24 : 32}px ${padX}px ${isMobile ? 16 : 20}px`, borderBottom: `1px solid ${D.line}`, display: 'flex', justifyContent: 'space-between', alignItems: isMobile ? 'flex-start' : 'center', gap: 16, flexDirection: isMobile ? 'column' : 'row', background: D.paperAlt }}>
         <div>
           <Link to="/admin/products" style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.2, color: D.plum, textDecoration: 'none' }}>← PRODUCTS</Link>
@@ -211,11 +202,7 @@ export function AdminProductEdit() {
             </Link>
           )}
           <button onClick={discard} style={ghostBtn}>{dirty ? 'Discard' : 'Close'}</button>
-          {existing && (
-            <button onClick={deleteProduct} style={{ ...ghostBtn, color: D.terra, borderColor: D.terra }}>
-              Delete
-            </button>
-          )}
+
           <button onClick={save} disabled={!dirty && !!existing} style={{ ...primaryBtn, opacity: !dirty && !!existing ? 0.5 : 1, cursor: !dirty && !!existing ? 'default' : 'pointer' }}>
             {existing ? 'Save changes' : 'Create product'}
           </button>
@@ -230,7 +217,7 @@ export function AdminProductEdit() {
             </Field>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
               <Field label="SKU">
-                <input value={form.sku || ''} onChange={(e) => patch({ sku: e.target.value, id: e.target.value })} style={inputStyle} />
+                <input readOnly={Boolean(existing)} title={existing?'SKU is preserved so inventory stays linked':undefined} value={form.sku || ''} onChange={(e) => patch({ sku: e.target.value, id: e.target.value })} style={inputStyle} />
               </Field>
               <Field label="URL handle">
                 <input value={form.handle || ''} onChange={(e) => patch({ handle: e.target.value })} placeholder="auto-from-title" style={inputStyle} />
@@ -241,13 +228,13 @@ export function AdminProductEdit() {
                 <input value={form.vendor || ''} onChange={(e) => patch({ vendor: e.target.value })} style={inputStyle} />
               </Field>
               <Field label="Category">
-                <select value={form.category || 'Orthotics'} onChange={(e) => patch({ category: e.target.value })} style={inputStyle}>
-                  {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+                <select value={form.category || ''} onChange={(e) => patch({ category: e.target.value })} style={inputStyle}>
+                  <option value="">Not specified</option>{CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
                 </select>
               </Field>
               <Field label="Tier">
-                <select value={form.tier || 'Bracing'} onChange={(e) => patch({ tier: e.target.value })} style={inputStyle}>
-                  {TIERS.map((t) => <option key={t} value={t}>{t}</option>)}
+                <select value={form.tier || ''} onChange={(e) => patch({ tier: e.target.value })} style={inputStyle}>
+                  <option value="">Not specified</option>{TIERS.map((t) => <option key={t} value={t}>{t}</option>)}
                 </select>
               </Field>
             </div>
@@ -281,8 +268,8 @@ export function AdminProductEdit() {
               <Field label="Pack size"><input value={form.pack_size || ''} onChange={(e) => patch({ pack_size: e.target.value })} style={inputStyle} /></Field>
               <Field label="HCPCS"><input value={form.hcpcs || ''} onChange={(e) => patch({ hcpcs: e.target.value })} style={inputStyle} /></Field>
               <Field label="Country of origin">
-                <select value={form.country_of_origin || 'CN'} onChange={(e) => patch({ country_of_origin: e.target.value })} style={inputStyle}>
-                  {COUNTRIES.map((c) => <option key={c} value={c}>{c}</option>)}
+                <select value={form.country_of_origin || ''} onChange={(e) => patch({ country_of_origin: e.target.value })} style={inputStyle}>
+                  <option value="">Not specified</option>{COUNTRIES.map((c) => <option key={c} value={c}>{c}</option>)}
                 </select>
               </Field>
             </div>
@@ -426,7 +413,7 @@ export function AdminProductEdit() {
             <Card title="Quick stats">
               <Stat label="Variants" value={String(existing.variants?.length || 1)} />
               <Stat label="Images" value={String(existing.images?.length || 0)} />
-              <Stat label="Stock (all DCs)" value={fmt.number(db.list('inventory', { where: { sku: existing.sku } }).reduce((a, b) => a + b.on_hand, 0))} />
+              <Stat label="Stock (all variants)" value={fmt.number(db.list('inventory').filter(r=>(existing.variants?.length?existing.variants:[existing]).some(v=>v.sku===r.sku)&&(r.inventory_owner_type||'unite')==='unite'&&!r.inventory_owner_org_id).reduce((a,b)=>a+Number(b.on_hand||0),0))} />
               <Stat label="Lifetime orders" value={String(db.list('order_items', { where: { sku: existing.sku } }).length)} />
             </Card>
           )}

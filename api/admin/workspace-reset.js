@@ -22,6 +22,7 @@ export default async function handler(req,res){
   if(body.action==='restore'){
    const run=history.find(r=>r.id===body.run_id&&r.status==='archived');
    if(!run)return sendJson(res,409,{error:'reset_not_restorable'});
+   if(plan.total)return sendJson(res,409,{error:'clear_new_data_before_restore'});
    // Restore only untouched archived rows. Never overwrite a newly imported record.
    const results=await sql.transaction(tx=>[
     tx`LOCK TABLE um_rows IN SHARE ROW EXCLUSIVE MODE`,

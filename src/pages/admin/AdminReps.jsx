@@ -127,7 +127,7 @@ export function AdminReps() {
                 <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.2fr 1fr 1fr auto', gap: 18, alignItems: 'start' }}>
                   <div>
                     <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
-                      <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, padding: '3px 10px', borderRadius: 4, background: rep.status === 'active' ? '#e8f5ed' : rep.status === 'ramping' ? '#fdf3e3' : `${D.plum}15`, color: rep.status === 'active' ? '#1d4731' : rep.status === 'ramping' ? '#7a5210' : D.plum }}>
+                      <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, padding: '3px 10px', borderRadius: 4, background: rep.status === 'active' ? '#e8f5ed' : rep.status === 'ramping' ? '#fdf3e3' : 'rgba(29,92,77,.08)', color: rep.status === 'active' ? '#1d4731' : rep.status === 'ramping' ? '#7a5210' : D.plum }}>
                         {rep.status.toUpperCase()}
                       </span>
                       <span style={{ fontSize: 12, color: D.ink3, fontFamily: D.mono }}>{rep.email}</span>

@@ -38,14 +38,10 @@ export function ProductDetail() {
   const { isMobile, isTablet } = useViewport();
   const padX = isMobile ? 20 : 40;
   const product = db.useRow('products', id);
-  const inv = db.useTable('inventory', { where: { sku: id } });
+  const inv = db.useTable('inventory');
   const session = auth.use();
   const organization = db.useRow('organizations', session?.org_id || '__anonymous__');
   const commerce = commerceAccessFor(session, organization);
-  // Available-to-promise (on_hand − reserved) gates buy actions (PRD-25 Phase 1).
-  // `inv` is the reactive trigger; the helper reads the same projection.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const stock = useMemo(() => availability.availableToPromise(id), [id, inv]);
   const accountPrices = db.useTable('account_prices');
   const basePriceBySku = useMemo(() => new Map(
     accountPrices.filter((row) => row.ok !== false && Number(row.quantity || 1) === 1)
@@ -56,6 +52,9 @@ export function ProductDetail() {
   const [variantIdx, setVariantIdx] = useState(0);
   const selectedVariant = hasMultiVariants ? variants[variantIdx] : null;
   const priceSku = selectedVariant?.sku || product?.sku || id;
+  // Inventory follows the selected variant, even when source IDs differ from SKUs.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const stock = useMemo(() => availability.availableToPromise(priceSku), [priceSku, inv]);
   const tiers = useMemo(() => accountPrices
     .filter((row) => row.ok !== false && row.sku === priceSku)
     .sort((a, b) => Number(a.quantity || 1) - Number(b.quantity || 1))

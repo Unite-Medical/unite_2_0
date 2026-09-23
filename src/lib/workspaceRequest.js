@@ -1,4 +1,5 @@
 const ERRORS = {
+  clear_new_data_before_restore:'New test data is active. Clear the current workspace before restoring an older data set.',
   welllink_invalid_due_date:'Choose a valid follow-up date.',
   welllink_access_required:'WellLink is available to authorized program staff. Ask Damon if you need access.',
   welllink_changed_refresh:'This step changed while you were editing. Copy your notes and reload before saving again.',
