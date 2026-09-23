@@ -10,15 +10,20 @@ export const STAFF_TEAMS = {
 };
 export function staffHome(role) { return STAFF_ROLES.includes(role) ? '/work' : role === 'distributor' ? '/distributor' : '/dashboard'; }
 export function staffShortcuts(role, {inquiries=false}={}) {
- const base=[{label:'Today',path:'/work',id:'work',group:'Your workspace'},...((role==='admin'||role==='finance'||role?.startsWith('warehouse_')||inquiries)?[{label:'WellLink',path:'/staff/welllink',id:'welllink',group:'Partner programs'}]:[]),...(['admin','finance','warehouse_operator','warehouse_manager'].includes(role)||inquiries?[{label:'Split shipments',path:'/staff/shipments',id:'shipments',group:'Daily work'}]:[])];
- if(role==='admin')return [...base,
-  {label:'Orders',path:'/admin/orders',id:'orders',group:'Daily work'},
-  {label:'Customers',path:'/admin/customers',id:'customers',group:'Daily work'},
-  {label:'Inquiries',path:'/staff/inquiries',id:'inquiries',group:'Daily work'},
-  {label:'Quotes',path:'/admin/quotes',id:'quotes',group:'Daily work'},
-  {label:'Warehouse',path:'/admin/fulfillment',id:'fulfillment',group:'Daily work'},
-  {label:'Approvals & release',path:'/admin/decisions',id:'decisions',group:'Daily work'},
-  {label:'Finance',path:'/admin/finance',id:'finance',group:'Daily work'}];
+ const base=[{label:'Home',path:'/work',id:'work',group:'Your workspace'},...((role==='admin'||role==='finance'||role?.startsWith('warehouse_')||inquiries)?[{label:'WellLink',path:'/staff/welllink',id:'welllink',group:'Partner programs'}]:[]),...(['admin','finance','warehouse_operator','warehouse_manager'].includes(role)||inquiries?[{label:'Split shipments',path:'/staff/shipments',id:'shipments',group:'Daily work'}]:[])];
+ if(role==='admin')return [base[0],
+  {label:'Orders',path:'/admin/orders',id:'orders',group:'Store'},
+  {label:'Products',path:'/admin/products',id:'products',group:'Store'},
+  {label:'Inventory',path:'/admin/inventory',id:'inventory',group:'Store'},
+  {label:'Customers',path:'/admin/customers',id:'customers',group:'Store'},
+  {label:'Quotes',path:'/admin/quotes',id:'quotes',group:'Store'},
+  {label:'Inquiries',path:'/staff/inquiries',id:'inquiries',group:'Store'},
+  {label:'Pick & ship',path:'/admin/fulfillment',id:'fulfillment',group:'Warehouse'},
+  {label:'Receiving',path:'/admin/inventory/receive',id:'receiving',group:'Warehouse'},
+  {label:'Split shipments',path:'/staff/shipments',id:'shipments',group:'Warehouse'},
+  {label:'Finance',path:'/admin/finance',id:'finance',group:'Business'},
+  {label:'Approvals',path:'/admin/decisions',id:'decisions',group:'Business'},
+  {label:'WellLink',path:'/staff/welllink',id:'welllink',group:'Business'}];
  if(role==='finance')return [...base,{label:'Approvals & release',path:'/admin/decisions',id:'decisions',group:'Daily work'},{label:'Invoices & payments',path:'/admin/finance',id:'finance',group:'Daily work'},{label:'Refund reviews',path:'/admin/refund-reviews',id:'refund-reviews',group:'Daily work'}];
  if(role?.startsWith('warehouse_'))return [...base,{label:'Receive a delivery',path:'/admin/inventory/receive',id:'receiving',group:'Daily work'}];
  if(['sales','sales_manager','customer_service'].includes(role))return [...base,...(inquiries?[{label:'New quote',path:'/quote/new',id:'new-quote',group:'Daily work'}]:[]),{label:'Customer workspace',path:'/rep',id:'rep',group:'Daily work'},...(inquiries?[{label:'Inquiries',path:'/staff/inquiries',id:'inquiries',group:'Daily work'}]:[])];
