@@ -4,6 +4,7 @@ import {auth} from '../../lib/auth.js';
 import {staffShortcuts,staffHome,teamForRole,STAFF_TEAMS} from '../../lib/staffWorkspace.js';
 import {useWebhookBridge} from '../../lib/webhookBridge.js';
 import {WorkspaceIcon} from '../workspace/WorkspaceIcon.jsx';
+import {UMLogoMark} from '../shared/Logo.jsx';
 import '../../styles/staff-workspace.css';
 import '../../styles/workspace-theme.css';
 
@@ -21,25 +22,59 @@ export function AdminShell({active,children,unsavedChanges=false}){
  useEffect(()=>{try{localStorage.setItem('um.workspace.theme',theme);}catch{/* Appearance still works when browser storage is unavailable. */}document.documentElement.dataset.workspaceTheme=theme;return()=>{delete document.documentElement.dataset.workspaceTheme;};},[theme]);
  useWebhookBridge(session?.role==='admin');
  const nav=staffShortcuts(session?.role,{inquiries:String(session?.email||'').toLowerCase()==='jacobe@unitemedical.net'});
- const matchingTools=TOOLS.map(([name,links])=>[name,links.filter(([label])=>label.toLowerCase().includes(toolSearch.toLowerCase().trim()))]).filter(([,links])=>links.length);
+ const primaryPaths=new Set(nav.map(n=>n.path));
+ const matchingTools=TOOLS.map(([name,links])=>[name,links.filter(([label,path,id])=>!primaryPaths.has(path)&&id!=='settings'&&label.toLowerCase().includes(toolSearch.toLowerCase().trim()))]).filter(([,links])=>links.length);
+ const toolIsActive=matchingTools.some(([,links])=>links.some(([,path,id])=>active===id||location.pathname===path));
  const pageLabel=active==='work'||active==='overview'?'Home':nav.find(n=>n.id===active)?.label||TOOLS.flatMap(([,links])=>links).find(([,path,id])=>id===active||path===location.pathname)?.[0]||'Operations';
  const isActive=(id,path)=>active===id||location.pathname===path||(id==='work'&&location.pathname==='/admin');
  useEffect(()=>{if(!open)return;const previous=document.activeElement;drawer.current?.querySelector('button')?.focus();const previousOverflow=document.body.style.overflow;document.body.style.overflow='hidden';function key(e){if(e.key==='Escape')setOpen(false);if(e.key==='Tab'){const els=[...drawer.current.querySelectorAll('a,button,input,select,summary')].filter(el=>el.getClientRects().length);if(e.shiftKey&&document.activeElement===els[0]){e.preventDefault();els.at(-1)?.focus();}else if(!e.shiftKey&&document.activeElement===els.at(-1)){e.preventDefault();els[0]?.focus();}}}document.addEventListener('keydown',key);return()=>{document.body.style.overflow=previousOverflow;document.removeEventListener('keydown',key);previous?.focus();};},[open]);
  async function switchRole(role){if(unsavedChanges){setError('Save or discard your changes before changing roles.');return;}setSwitching(true);setError('');try{const next=await auth.switchRole(role);setOpen(false);navigate(staffHome(next.role));}catch(e){setError(e.message);}finally{setSwitching(false);}}
  useEffect(()=>{if(!unsavedChanges)return;const guard=e=>{e.preventDefault();e.returnValue='';};window.addEventListener('beforeunload',guard);return()=>window.removeEventListener('beforeunload',guard);},[unsavedChanges]);
+ useEffect(()=>{
+  function closeAccount(event){
+   if(event.type==='keydown'&&event.key!=='Escape')return;
+   document.querySelectorAll('.uw-account-menu[open]').forEach(menu=>{
+    if(event.type==='keydown'||!menu.contains(event.target)){
+     menu.open=false;
+     if(event.type==='keydown')menu.querySelector('summary')?.focus();
+    }
+   });
+  }
+  document.addEventListener('pointerdown',closeAccount);
+  document.addEventListener('keydown',closeAccount);
+  return()=>{document.removeEventListener('pointerdown',closeAccount);document.removeEventListener('keydown',closeAccount);};
+ },[]);
  function guardNavigation(event){const link=event.target.closest('a[href]');if(unsavedChanges&&link&&!link.getAttribute('href').startsWith('#')){event.preventDefault();event.stopPropagation();setError('Save or discard your changes before leaving this page.');}}
  const visibleError=error.startsWith('Save or discard')&&!unsavedChanges?'':error;
- const go=()=>setOpen(false);
+ const go=()=>{setOpen(false);document.querySelectorAll('.uw-account-menu[open]').forEach(menu=>{menu.open=false;});};
  const hasMain=Children.toArray(children).some(child=>isValidElement(child)&&child.type==='main');
  const sidebar=<>
-  <Link to="/work" className="uw-brand" onClick={go}><span className="uw-brand-name">Unite Medical<WorkspaceIcon name="chevron" size={14}/></span><span className="uw-brand-caption">TEAM WORKSPACE</span></Link>
-  <div className="uw-sidebar-scroll"><div className="uw-sidebar-label">Daily work</div>
-  <nav aria-label="Staff navigation">{nav.map(n=><Link className={`uw-nav-link ${isActive(n.id,n.path)?'is-active':''}`} key={n.id} to={n.path} onClick={go} aria-current={isActive(n.id,n.path)?'page':undefined}><WorkspaceIcon name={iconFor(n.id)} size={18}/>{n.label}</Link>)}</nav>
-  {session?.role==='admin'&&<div className="uw-more-tools"><span className="uw-sidebar-label">Explore</span><label className="uw-tool-search"><WorkspaceIcon name="search" size={16}/><input aria-label="Find a workspace tool" type="search" placeholder="Find a tool…" value={toolSearch} onChange={e=>setToolSearch(e.target.value)}/></label>{!matchingTools.length&&<p className="uw-tool-empty">No tools match your search.</p>}{matchingTools.map(([name,links])=><details key={name} open={Boolean(toolSearch)||links.some(([,path,id])=>isActive(id,path))||undefined}><summary>{name}<WorkspaceIcon name="chevron" size={14}/></summary>{links.map(([label,path,id])=><Link key={id} to={path} onClick={go} className={`uw-tool-link ${isActive(id,path)?'is-active':''}`} aria-current={isActive(id,path)?'page':undefined}>{label}</Link>)}</details>)}</div>}
-  </div><div className="uw-sidebar-bottom"><div className="uw-person"><span className="uw-avatar">{(session?.name||session?.email||'U').slice(0,1).toUpperCase()}</span><div><strong>{session?.name||'Unite team'}</strong><span>{session?.role==='admin'?'Administrator':STAFF_TEAMS[teamForRole(session?.role)]?.label}</span></div></div>
-  {session?.roles?.length>1&&<label className="uw-role-label">Working role<select value={session.role} disabled={switching} onChange={e=>switchRole(e.target.value)}>{session.roles.map(r=><option key={r} value={r}>{r.replaceAll('_',' ')}</option>)}</select></label>}
-  <div className="uw-theme-switch" role="group" aria-label="Workspace appearance">{['light','dark'].map(mode=><button key={mode} aria-pressed={theme===mode} onClick={()=>setTheme(mode)}><WorkspaceIcon name={mode==='light'?'sun':'moon'} size={15}/>{mode==='light'?'Light':'Dark'}</button>)}</div><div className="uw-account-links"><Link to="/">View website ↗</Link><button onClick={async()=>{if(unsavedChanges){setError('Save or discard your changes before signing out.');return;}await auth.logout();navigate('/login');}}>Sign out</button></div></div>
+  <Link to="/work" className="uw-brand" onClick={go} aria-label="Unite Medical home"><UMLogoMark size={36}/><span className="uw-brand-name">Unite Medical</span></Link>
+  <div className="uw-sidebar-scroll">
+   <nav aria-label="Staff navigation">{nav.map((n,index)=><div key={n.id}>
+    {index>0&&n.group!==nav[index-1].group&&<div className="uw-sidebar-label">{n.group}</div>}
+    <Link className={`uw-nav-link ${isActive(n.id,n.path)?'is-active':''}`} to={n.path} onClick={go} aria-current={isActive(n.id,n.path)?'page':undefined}><WorkspaceIcon name={iconFor(n.id)} size={18}/>{n.label}</Link>
+   </div>)}</nav>
+   {session?.role==='admin'&&<details className="uw-more-tools" open={toolIsActive||undefined}>
+    <summary className="uw-more-toggle"><WorkspaceIcon name="grid" size={16}/><span>More tools</span><WorkspaceIcon name="chevron" size={13}/></summary>
+    <label className="uw-tool-search"><WorkspaceIcon name="search" size={16}/><input aria-label="Find an additional workspace tool" type="search" placeholder="Find a tool…" value={toolSearch} onChange={e=>setToolSearch(e.target.value)}/></label>
+    {!matchingTools.length&&<p className="uw-tool-empty">No tools match your search.</p>}
+    {matchingTools.map(([name,links])=><details key={name} open={Boolean(toolSearch)||links.some(([,path,id])=>isActive(id,path))||undefined}><summary>{name}<WorkspaceIcon name="chevron" size={14}/></summary>{links.map(([label,path,id])=><Link key={id} to={path} onClick={go} className={`uw-tool-link ${isActive(id,path)?'is-active':''}`} aria-current={isActive(id,path)?'page':undefined}>{label}</Link>)}</details>)}
+   </details>}
+  </div>
+  <div className="uw-sidebar-bottom">
+   <details className="uw-account-menu">
+    <summary className="uw-account-trigger" aria-label="Account options"><span className="uw-avatar">{(session?.name||session?.email||'U').slice(0,1).toUpperCase()}</span><span className="uw-account-copy"><strong>{session?.name||'Unite team'}</strong><small>{session?.role==='admin'?'Administrator':STAFF_TEAMS[teamForRole(session?.role)]?.label}</small></span><WorkspaceIcon name="chevron" size={12}/></summary>
+    <div className="uw-account-panel">
+     {session?.roles?.length>1&&<label className="uw-role-label">Working role<select value={session.role} disabled={switching} onChange={e=>switchRole(e.target.value)}>{session.roles.map(r=><option key={r} value={r}>{r.replaceAll('_',' ')}</option>)}</select></label>}
+     {session?.role==='admin'&&<Link to="/admin/settings" onClick={go}><WorkspaceIcon name="settings" size={16}/>Settings</Link>}
+     <Link to="/" onClick={go}><WorkspaceIcon name="external" size={16}/>View website</Link>
+     <button onClick={async()=>{if(unsavedChanges){setError('Save or discard your changes before signing out.');return;}await auth.logout();navigate('/login');}}><WorkspaceIcon name="logout" size={16}/>Sign out</button>
+    </div>
+   </details>
+   <button className="uw-theme-toggle" aria-label={`Switch to ${theme==='dark'?'light':'dark'} mode`} title={`Switch to ${theme==='dark'?'light':'dark'} mode`} onClick={()=>setTheme(theme==='dark'?'light':'dark')}><WorkspaceIcon name={theme==='dark'?'sun':'moon'} size={17}/></button>
+  </div>
  </>;
- return <div className="uw-shell" data-theme={theme} onClickCapture={guardNavigation} onChangeCapture={()=>{if(error.startsWith('Save or discard'))setError('');}}><nav className="uw-rail" aria-label="Quick navigation"><Link to="/work" className="uw-rail-brand" aria-label="Unite Medical home">u<span>m</span></Link>{nav.filter(n=>['work','inquiries','products','customers','inventory','finance'].includes(n.id)).map(n=><Link key={n.id} to={n.path} aria-label={n.label} title={n.label} className={isActive(n.id,n.path)?'is-active':''}><WorkspaceIcon name={iconFor(n.id)} size={20}/></Link>)}<div className="uw-rail-bottom">{session?.role==='admin'&&<Link to="/admin/settings" aria-label="Settings" title="Settings"><WorkspaceIcon name="settings"/></Link>}<span className="uw-rail-avatar" title={session?.name||'Unite team'}>{(session?.name||session?.email||'U').slice(0,1).toUpperCase()}</span></div></nav><aside className="uw-sidebar" aria-label="Workspace navigation">{sidebar}</aside><div className="uw-main"><header className="uw-topbar"><div className="uw-breadcrumb"><button ref={menuButton} className="uw-menu-button" onClick={()=>setOpen(true)} aria-label="Open workspace menu" aria-expanded={open}><WorkspaceIcon name="menu"/></button><WorkspaceIcon name={iconFor(active)} size={18}/><strong>{pageLabel}</strong></div><div className="uw-environment"><span/>{import.meta.env.DEV?'Local preview':import.meta.env.VITE_UNITE_ENVIRONMENT==='staging'?'Staging workspace':'Team workspace'}</div></header><div className="uw-content">{visibleError&&<p role="alert" className="uw-error" style={{margin:20}}>{visibleError}</p>}{hasMain?children:<main id="main">{children}</main>}</div></div>
+ return <div className="uw-shell" data-theme={theme} onClickCapture={guardNavigation} onChangeCapture={()=>{if(error.startsWith('Save or discard'))setError('');}}><aside className="uw-sidebar" aria-label="Workspace navigation">{sidebar}</aside><div className="uw-main"><header className="uw-topbar"><div className="uw-breadcrumb"><button ref={menuButton} className="uw-menu-button" onClick={()=>setOpen(true)} aria-label="Open workspace menu" aria-expanded={open}><WorkspaceIcon name="menu"/></button><WorkspaceIcon name={iconFor(active)} size={18}/><strong>{pageLabel}</strong></div><div className="uw-environment"><span/>{import.meta.env.DEV?'Local preview':import.meta.env.VITE_UNITE_ENVIRONMENT==='staging'?'Staging workspace':'Team workspace'}</div></header><div className="uw-content">{visibleError&&<p role="alert" className="uw-error" style={{margin:20}}>{visibleError}</p>}{hasMain?children:<main id="main">{children}</main>}</div></div>
  {open&&<div className="uw-mobile-layer"><div className="uw-backdrop" onClick={()=>setOpen(false)}/><aside ref={drawer} className="uw-mobile-sidebar" role="dialog" aria-modal="true" aria-label="Workspace navigation"><button className="uw-close-menu" onClick={()=>setOpen(false)} aria-label="Close workspace menu"><WorkspaceIcon name="close"/></button>{sidebar}</aside></div>}</div>;
 }

@@ -23,10 +23,12 @@ The server-only batch and its source hash are stored with the import audit. It i
 
 1. Open `/admin/products`; search a parent or variant SKU, inspect its details and variants.
 2. Open `/admin/inventory`; compare on hand, held/committed and available for the SKU. Unknown stock is distinct from zero.
-3. Switch Light / Dark in the lower navigation. The choice persists through navigation and reload.
+3. Use the small sun/moon button beside the account name. The choice persists through navigation and reload.
 4. Have Damon identify one actual customer and confirm their email, delivery address and agreed pricing before customer activation or checkout testing.
 
 The staff shell, home, catalog, inventory and test-data screen use the Intercom-inspired inset-panel design. Shared theme tokens also cover existing administrative pages. The reference review used the authenticated Intercom workspace and the live public Shopify catalog/product flow; Shopify admin in the in-app browser required sign-in.
+
+The September 23 sidebar refinement uses the official transparent colored mark, one navigation column, grouped primary destinations, and a deduplicated More tools disclosure. The single account row opens Settings, View website and Sign out. The appearance control is a compact icon button. Build and targeted lint passed; authenticated browser checks verified the mark against both themes, the account menu and additional tool navigation.
 
 ## Verification
 

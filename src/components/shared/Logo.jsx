@@ -1,19 +1,14 @@
+import {useId} from 'react';
+
 /** Official Unite Medical artwork, sourced from unitemedical.net. */
 export function UMLogoMark({ size = 28 }) {
+  const clipId = useId();
   return (
-    <img
-      src="/brand/unite-medical-icon.png"
-      alt="Unite Medical"
-      width="180"
-      height="180"
-      style={{
-        display: "block",
-        width: size,
-        height: size,
-        objectFit: "contain",
-        flexShrink: 0,
-      }}
-    />
+    <svg width={size} height={size} viewBox="0 0 860 523" role="img" aria-label="Unite Medical" style={{display:'block',flexShrink:0}}>
+      {/* Isolate the original mark from the transparent wordmark; preserve its exact artwork. */}
+      <defs><clipPath id={clipId}><path d="M0 0H860V320H365V523H0Z"/></clipPath></defs>
+      <image href="/brand/unite-medical-logo.png" width="2000" height="523" clipPath={`url(#${clipId})`}/>
+    </svg>
   );
 }
 
