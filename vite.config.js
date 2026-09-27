@@ -43,6 +43,7 @@ export default defineConfig(({ command, mode }) => ({
           if (!id.includes('node_modules')) return undefined;
           if (id.includes('/@zxing/')) return 'barcode-scanner';
           if (id.includes('/three/')) return 'warehouse-3d';
+          if (id.includes('/pdfjs-dist/')) return 'pdf-import';
           if (id.includes('react-router')) return 'router';
           if (id.includes('react-dom') || id.includes('/react/')) return 'react';
           return 'vendor';
