@@ -8,6 +8,7 @@ import { fmt } from '../../lib/format.js';
 import { useViewport } from '../../lib/viewport.js';
 import { purchaseOrders } from '../../lib/wms/purchaseOrders.js';
 import { draftServerPurchaseOrders, mutatePurchaseOrder } from '../../lib/serverPurchaseOrders.js';
+import { PurchaseOrderTransfer } from '../../components/PurchaseOrderTransfer.jsx';
 
 const STATUS_COLOR = {
   draft: D.ink3, approved: '#b8a04a', sent: '#4a78b8', partial: '#b8a04a',
@@ -93,6 +94,7 @@ export function AdminPurchaseOrders() {
 
         {notice && <div style={{ marginBottom: 14, padding: '11px 14px', background: D.paperAlt, border: `1px solid ${D.line}`, borderRadius: 8, fontSize: 13 }}>{notice}</div>}
 
+        <PurchaseOrderTransfer localOrders={pos} />
         <AdminCard title={`${filtered.length} purchase order(s)`}>
           <div className="um-scroll-x">
             <table style={{ width: '100%', minWidth: 760, borderCollapse: 'collapse', fontSize: 13 }}>
