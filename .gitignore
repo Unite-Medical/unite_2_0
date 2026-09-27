@@ -67,3 +67,18 @@ docs/operational-completion-*/
 src/data/shopifyInventoryOpening.generated.json
 src/data/damonLegacyOrderDecisions.generated.json
 src/data/barcodeReadiness.generated.json
+
+# Private commerce migration source (server deployment only)
+api/_data/commerce-snapshot.json
+
+# Synthetic local BI visual review
+output/bi-review/
+
+# Local warehouse UI review fixtures
+output/warehouse-review/
+
+# Private release notes contain customer-specific pricing and operational evidence
+docs/commerce-upgrade-worklog.md
+
+# Generated image review originals; optimized shipping assets live under public/
+output/imagegen/

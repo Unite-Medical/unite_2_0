@@ -109,8 +109,9 @@ export async function ensureOrderPayment(sql, order, orderItems) {
   };
   const saved=await sql`UPDATE um_rows SET data=${JSON.stringify(updatedOrder)}::jsonb,updated_at=now() WHERE tbl='orders' AND id=${order.id} AND deleted=false AND data=${JSON.stringify(order)}::jsonb RETURNING id`;
   if(!saved.length)return {order,payment:{ok:false,reason:'order_changed_payment_reconciliation_required'}};
+  const priorInvoice=(await sql`SELECT data FROM um_rows WHERE tbl='invoices' AND id=${'INV-'+order.id} AND deleted=false`)[0]?.data||{};
   await upsertRow(sql, 'invoices', {
-    id: `INV-${order.id}`, order_id: order.id, customer_id: order.customer_id,
+    ...priorInvoice, id: `INV-${order.id}`, order_id: order.id, customer_id: order.customer_id,
     amount: order.total, terms: order.payment_terms, status: 'open',
     stripe_invoice_id: payment.provider_invoice_id,
     payment_url: payment.payment_url, created_at: now,

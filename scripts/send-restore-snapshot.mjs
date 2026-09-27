@@ -1,0 +1,14 @@
+import { readFile } from 'node:fs/promises';
+import { createHmac } from 'node:crypto';
+import { validateRestoreSnapshot } from '../api/_lib/restoreSavings.js';
+const secret=process.env.RESTORE_WEBHOOK_SECRET;
+if(!secret||!process.argv[2])throw new Error('Set RESTORE_WEBHOOK_SECRET securely and pass the path to a real snapshot JSON file.');
+const body=await readFile(process.argv[2]);
+const checked=validateRestoreSnapshot(JSON.parse(body));
+if(!checked.ok)throw new Error(checked.error);
+const endpoint=process.env.RESTORE_ENDPOINT||'https://staging.unitemedical.net/api/hooks/restore';
+const parsed=new URL(endpoint);
+if(parsed.protocol!=='https:'||!['staging.unitemedical.net','unitemedical.net'].includes(parsed.hostname)||parsed.pathname!=='/api/hooks/restore')throw new Error('Use the Unite HTTPS Restore webhook endpoint.');
+const result=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json','X-Restore-Signature':createHmac('sha256',secret).update(body).digest('hex')},body,signal:AbortSignal.timeout(30000)});
+console.log(JSON.stringify({status:result.status,result:await result.json()}));
+if(!result.ok)process.exitCode=1;

@@ -193,3 +193,14 @@ test('handoff notification respects customer and blind-shipment recipient bounda
   assert.doesNotMatch(JSON.stringify(blind), /end-customer@example\.test/);
   assert.doesNotMatch(JSON.stringify(blind), /other@end-customer\.test/);
 });
+
+test('handoff follows the physically scanned lot instead of substituting an earlier-expiring lot', () => {
+  const released=planPaidOrderRelease({order:{...order,payment_status:'paid'},items,inventory});
+  const actualLots=[{...lots[0],expiration_date:'2027-01-31'},{...lots[0],id:'lot_physically_picked',expiration_date:'2028-01-31'}];
+  const input={order:reviewed({...released.order,status:'ready_to_ship'}),shipment:{id:'physical_shipment',status:'label_created'},reservations:released.reservations,inventory:released.inventory,lots:actualLots,actorId:'warehouse_user',handoffReference:'PHYSICAL',pickScans:[{order_id:order.id,order_item_id:'line_1',sku:'SKU-A',warehouse_id:'wh_atl',lot_id:'lot_physically_picked',status:'verified',units_verified:2}]};
+  const result=planOrderHandoff(input);
+  assert.equal(result.movements[0].lot_id,'lot_physically_picked');
+  assert.equal(result.lots.find(l=>l.id==='lot_a').qty_remaining,5);
+  assert.equal(result.inventory[0].on_hand,3);
+  assert.throws(()=>planOrderHandoff({...input,pickScans:[{...input.pickScans[0],units_verified:1}]}),/physical_pick_incomplete/);
+});

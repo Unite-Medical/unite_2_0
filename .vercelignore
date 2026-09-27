@@ -17,3 +17,12 @@ artifacts
 .fin-validation-key
 
 server-assets
+
+# Local synthetic BI visual test harness
+output/bi-review/
+
+# Local warehouse UI review fixtures
+output/warehouse-review/
+
+# Generated image review originals
+output/imagegen/

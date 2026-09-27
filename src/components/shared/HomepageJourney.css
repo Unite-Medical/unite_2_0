@@ -92,6 +92,7 @@
   color: #536457;
 }
 .uf-recovery-intro {
+  scroll-margin-top: 120px;
   max-width: 730px;
   padding: 0 28px;
   margin: 44px auto 0;
@@ -175,6 +176,7 @@
   margin-top: 15px;
   max-width: 340px;
 }
+/* Full-bleed procurement scene; keep the original centered composition. */
 .uf-mission {
   position: relative;
   isolation: isolate;
@@ -187,84 +189,21 @@
   background: #d7ded0;
   color: #163c2f;
 }
-.uf-mission-landscape {
-  position: absolute;
-  inset: 0;
-  z-index: -2;
-  overflow: hidden;
-}
-.uf-mission-landscape img {
-  width: 100%;
-  height: 110%;
-  object-fit: cover;
-  object-position: center;
-  position: absolute;
-  left: 0;
-  top: -5%;
-}
+.uf-mission-landscape { position: absolute; inset: 0; z-index: -2; overflow: hidden; }
+.uf-mission-landscape img { width: 100%; height: 110%; object-fit: cover; object-position: center; position: absolute; left: 0; top: -5%; }
 .uf-mission::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background: linear-gradient(
-    180deg,
-    #d7ded0 0%,
-    #d7ded0f5 9%,
-    #d7ded094 30%,
-    transparent 48%,
-    #0d292220 68%,
-    #0d2922 100%
-  );
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: linear-gradient(180deg, #d7ded0 0%, #d7ded0f5 9%, #d7ded094 30%, transparent 48%, #0d292220 68%, #0d2922 100%);
 }
-.uf-mission-copy {
-  text-align: center;
-  max-width: 850px;
-}
-.uf-mission .uf-kicker {
-  color: #365744;
-  margin-bottom: 28px;
-}
-.uf-home .uf-mission h2 {
-  font-size: clamp(46px, 6.6vw, 88px);
-  line-height: 1.03;
-  letter-spacing: -0.045em;
-  font-weight: 500;
-}
-.uf-home .uf-mission-copy > p:not(.uf-kicker) {
-  max-width: 440px;
-  margin: 25px auto 0;
-  font-size: 16px;
-  line-height: 1.7;
-  text-wrap: balance;
-}
-.uf-mission-copy .uf-text-link {
-  margin-top: 23px;
-}
-.uf-mission-credentials {
-  width: min(940px, 100%);
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 36px;
-  padding-top: 30px;
-  margin: 60px 0 0;
-  border-top: 1px solid #d9e7d654;
-  color: #edf2e9;
-}
-.uf-mission-credentials div {
-  text-align: center;
-}
-.uf-mission-credentials dt {
-  font-size: 11px;
-  color: #bbcec1;
-  margin-bottom: 12px;
-}
-.uf-mission-credentials dd {
-  margin: 0;
-  font-size: clamp(19px, 2.6vw, 31px);
-  letter-spacing: -0.025em;
-}
+.uf-mission-copy { text-align: center; max-width: 850px; }
+.uf-mission .uf-kicker { color: #365744; margin-bottom: 28px; }
+.uf-home .uf-mission h2 { font-size: clamp(46px, 6.6vw, 88px); line-height: 1.03; letter-spacing: -0.045em; font-weight: 500; }
+.uf-home .uf-mission-copy > p:not(.uf-kicker) { max-width: 440px; margin: 25px auto 0; font-size: 16px; line-height: 1.7; text-wrap: balance; }
+.uf-mission-copy .uf-text-link { margin-top: 23px; }
+.uf-mission-credentials { width: min(940px, 100%); display: grid; grid-template-columns: repeat(3, 1fr); gap: 36px; padding-top: 30px; margin: 60px 0 0; border-top: 1px solid #d9e7d654; color: #edf2e9; }
+.uf-mission-credentials div { text-align: center; }
+.uf-mission-credentials dt { font-size: 11px; color: #bbcec1; margin-bottom: 12px; }
+.uf-mission-credentials dd { margin: 0; font-size: clamp(19px, 2.6vw, 31px); letter-spacing: -0.025em; }
 .uf-journey-contact {
   position: relative;
   display: grid;
@@ -383,13 +322,8 @@
     max-width: none;
     margin-top: 10px;
   }
-  .uf-mission {
-    min-height: 970px;
-    padding: 70px 24px 40px;
-  }
-  .uf-mission-landscape img {
-    object-position: 45% center;
-  }
+  .uf-mission { min-height: 970px; padding: 70px 24px 40px; }
+  .uf-mission-landscape img { object-position: 45% center; }
   .uf-home .uf-mission h2 {
     font-size: 12vw;
   }

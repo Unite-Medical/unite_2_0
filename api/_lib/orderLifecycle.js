@@ -162,6 +162,7 @@ export function planOrderHandoff({
   inventory = [],
   lots = [],
   ownerLots = [],
+  pickScans = [],
   actorId,
   handoffReference,
   now = new Date(),
@@ -260,6 +261,14 @@ export function planOrderHandoff({
     }
     let needed = number(reservation.qty);
     const allocations = [];
+    const confirmedPicks = pickScans.filter(scan => scan.order_id === order.id && scan.status === 'verified'
+      && scan.sku === inventorySku && scan.warehouse_id === reservation.warehouse_id
+      && (!reservation.order_item_id || scan.order_item_id === reservation.order_item_id) && scan.lot_id);
+    const pickedByLot = new Map();
+    for (const scan of confirmedPicks) pickedByLot.set(scan.lot_id, (pickedByLot.get(scan.lot_id) || 0) + number(scan.units_verified));
+    if (confirmedPicks.length && [...pickedByLot.values()].reduce((a,b)=>a+b,0) !== needed) {
+      throw new Error(`physical_pick_incomplete:${reservation.id}`);
+    }
     const eligibleLots = workingLots
       .filter((lot) => lot.product_sku === inventorySku && lot.warehouse_id === reservation.warehouse_id && number(lot.qty_remaining) > 0)
       .filter((lot) => (lot.inventory_owner_type || lot.owner_type || 'unite') === 'unite'
@@ -273,7 +282,7 @@ export function planOrderHandoff({
       });
     for (const lot of eligibleLots) {
       if (needed <= 0) break;
-      const take = Math.min(needed, number(lot.qty_remaining));
+      const take = Math.min(needed, number(lot.qty_remaining), confirmedPicks.length ? (pickedByLot.get(lot.id) || 0) : Infinity);
       if (take <= 0) continue;
       lot.qty_remaining = number(lot.qty_remaining) - take;
       allocations.push({ lot_id: lot.id, lot_number: lot.lot_number, expiration_date: lot.expiration_date || null, qty: take, inventory_sku: inventorySku, ordered_sku: reservation.sku });
@@ -417,7 +426,7 @@ export async function persistOrderHandoff(sql, orderId, {
   handoffReference,
   now = new Date(),
 } = {}) {
-  const [orders, shipments, reservations, inventory, lots, ownerLots, agreements, organizations, notificationRecipients] = await Promise.all([
+  const [orders, shipments, reservations, inventory, lots, ownerLots, agreements, organizations, notificationRecipients, pickScans] = await Promise.all([
     rowsFor(sql, 'orders', { id: orderId }),
     rowsFor(sql, 'shipments', { order_id: orderId }),
     rowsFor(sql, 'reservations', { order_id: orderId }),
@@ -427,11 +436,12 @@ export async function persistOrderHandoff(sql, orderId, {
     rowsFor(sql, 'distributor_products'),
     rowsFor(sql, 'organizations'),
     rowsFor(sql, 'account_notification_recipients'),
+    rowsFor(sql, 'scan_events', { order_id: orderId }),
   ]);
   let plan;
   try {
     plan = planOrderHandoff({
-      order: orders[0], shipment: shipments[0], reservations, inventory, lots, ownerLots,
+      order: orders[0], shipment: shipments[0], reservations, inventory, lots, ownerLots, pickScans,
       actorId, handoffReference, now,
     });
   } catch (error) {

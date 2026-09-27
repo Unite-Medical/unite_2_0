@@ -157,7 +157,7 @@ export const SERVICES = {
     buildUrl: (path, query) => withQuery(`https://api.flexport.com${path}`, query),
     headers: async () => ({
       Authorization: `Bearer ${await flexportToken()}`,
-      'Flexport-Version': '2',
+      'Flexport-Version': '3',
       'Content-Type': 'application/json',
       Accept: 'application/json',
     }),

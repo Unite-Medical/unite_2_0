@@ -1001,3 +1001,9 @@ body:has(.uf-home) {
     transform: none !important;
   }
 }
+
+
+/* Shared navigation overlays the film; reserve room for it inside the hero. */
+.uf-home .uf-hero{height:100svh;min-height:740px}
+.uf-home .uf-hero-content{padding-top:140px}
+@media(max-width:760px){.uf-home .uf-hero{min-height:750px}.uf-home .uf-hero-content{padding-top:120px}}

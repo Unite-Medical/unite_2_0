@@ -27,7 +27,7 @@ const DEFAULT_OG_IMAGE = `${SITE_URL}/favicon-512.png`;
 
 // Mirrors src/lib/seo.js useSEO() titles/descriptions per public page.
 const STATIC_ROUTES = {
-  '/regenicool': { title: 'RegeniCool Pro', description: 'Explore the RegeniCool Pro ice-water circulation system and request dealer information from Unite Medical.' },
+  '/regenicool': { title: 'RegeniCool™ Pro', description: 'Explore the RegeniCool™ Pro ice-water circulation system and request dealer information from Unite Medical.' },
   '/catalog': {
     title: 'Catalog',
     description: 'Browse FDA-registered orthotics, diagnostics, PPE, wound care, pharmaceuticals, and equipment. No minimums on stocked items; same-day shipping before 2pm EST.',

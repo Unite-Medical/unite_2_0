@@ -5,7 +5,7 @@
  *   Header: X-Restore-Signature: <hmac-sha256 of raw body, hex or base64>
  *
  * Brad's side pushes a snapshot whenever the number moves (or on a
- * schedule — either works; the endpoint is idempotent and last-write-
+ * schedule — either works; the endpoint is idempotent and newest-source-timestamp
  * wins). Site visitors NEVER touch Restore's servers: the snapshot is
  * persisted in our Postgres and served from the CDN-cached
  * GET /api/metrics/savings.
@@ -17,6 +17,10 @@
  *
  * Env: RESTORE_WEBHOOK_SECRET (shared with Brad out-of-band).
  */
+
+import { validateRestoreSnapshot } from '../_lib/restoreSavings.js';
+// Preserve the exact bytes Brad signs, including JSON whitespace.
+export const config = { api: { bodyParser: false } };
 
 import { neon } from '@neondatabase/serverless';
 import { readRawBody, sendJson, verifyHmacSignature, logEvent } from '../_lib/http.js';
@@ -41,6 +45,7 @@ export default async function handler(req, res) {
   if (!secret) return sendJson(res, 503, { error: 'not_configured' });
 
   const raw = await readRawBody(req);
+  if (raw.length > 64000) return sendJson(res, 413, { error: 'snapshot_too_large' });
   const payload = raw.toString('utf8');
   const check = verifyHmacSignature({
     header: req.headers['x-restore-signature'] || req.headers['x-signature'],
@@ -59,30 +64,22 @@ export default async function handler(req, res) {
     return sendJson(res, 400, { error: 'invalid_json' });
   }
 
-  const total = Number(body.total_savings_usd);
-  if (!Number.isFinite(total) || total < 0) {
-    return sendJson(res, 422, { error: 'total_savings_usd_required' });
-  }
+  const validation = validateRestoreSnapshot(body);
+  if (!validation.ok) return sendJson(res, 422, { error: validation.error });
+  const snapshot = validation.snapshot;
 
   const url = process.env.DATABASE_URL;
   if (!url) return sendJson(res, 503, { error: 'no_database' });
   const sql = neon(url);
   await ensureSchema(sql);
 
-  const snapshot = {
-    total_savings_usd: total,
-    as_of: body.as_of || new Date().toISOString(),
-    ...(body.instrument_count != null ? { instrument_count: Number(body.instrument_count) } : {}),
-    ...(body.hospital_count != null ? { hospital_count: Number(body.hospital_count) } : {}),
-    ...(body.breakdown ? { breakdown: body.breakdown } : {}),
-    received_at: new Date().toISOString(),
-  };
-
-  await sql`
+  const changed = await sql`
     INSERT INTO um_metrics (key, data, updated_at)
     VALUES ('restore_savings', ${JSON.stringify(snapshot)}::jsonb, now())
-    ON CONFLICT (key) DO UPDATE SET data = EXCLUDED.data, updated_at = now()`;
+    ON CONFLICT (key) DO UPDATE SET data = EXCLUDED.data, updated_at = now()
+    WHERE COALESCE(um_metrics.data->>'checked_at', um_metrics.data->>'as_of')::timestamptz < (EXCLUDED.data->>'as_of')::timestamptz
+    RETURNING key`;
 
-  logEvent('hooks.restore', 'accepted', { total, as_of: snapshot.as_of });
-  sendJson(res, 200, { received: true, total_savings_usd: total });
+  logEvent('hooks.restore', 'accepted', { updated: changed.length > 0, as_of: snapshot.as_of });
+  sendJson(res, 200, { received: true, updated: changed.length > 0, ...(changed.length ? {} : { reason: 'duplicate_or_older_snapshot' }) });
 }

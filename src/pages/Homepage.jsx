@@ -2,15 +2,13 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { UMLogo } from "../components/shared/Logo.jsx";
+import { Nav } from "../components/layout/Nav.jsx";
 import { Icon } from "../components/shared/Icon.jsx";
 import { HomepageFooter } from "../components/layout/HomepageFooter.jsx";
 import { PartnerMarquee } from "../components/shared/PartnerMarquee.jsx";
 import { CustomerSectors } from "../components/shared/CustomerSectors.jsx";
+import { HomepageRobotics } from "../components/shared/HomepageRobotics.jsx";
 import { HomepageJourney } from "../components/shared/HomepageJourney.jsx";
-import { auth } from "../lib/auth.js";
-import { commerceAccessFor } from "../lib/accessPolicy.js";
-import { useCart } from "../store/cart.js";
 import { useSEO, organizationSchema, websiteSchema } from "../lib/seo.js";
 import "./homepage.css";
 
@@ -35,127 +33,6 @@ const HOME_PARTNERS = [
   { slug: "surgery-partners", name: "Surgery Partners" },
   { slug: "ascoa", name: "ASCOA", wordmark: true },
 ];
-const NAV_LINKS = [
-  ["/catalog", "Products"],
-  ["/quote", "Source & Quote"],
-  ["/regenicool", "RegeniCool Pro"],
-  ["/services", "Services"],
-  ["/government", "Government"],
-  ["/about", "About"],
-];
-function accountPath(session) {
-  if (!session) return "/login";
-  if (session.role === "admin") return "/admin";
-  if (["warehouse_manager", "warehouse_operator"].includes(session.role))
-    return "/admin/inventory/receive";
-  if (session.role === "distributor") return "/distributor";
-  return session.role === "customer" ? "/dashboard" : "/work";
-}
-function HomepageNav() {
-  const session = auth.use();
-  const commerce = commerceAccessFor(session, auth.org());
-  const cart = useCart();
-  const cartCount = cart.items.reduce((count, item) => count + item.qty, 0);
-  const [open, setOpen] = useState(false);
-  const menuButton = useRef(null);
-  useEffect(() => {
-    if (!open) return undefined;
-    const close = (event) => {
-      if (event.key === "Escape") {
-        setOpen(false);
-        menuButton.current?.focus();
-      }
-    };
-    document.addEventListener("keydown", close);
-    return () => document.removeEventListener("keydown", close);
-  }, [open]);
-  return (
-    <header className="uf-header">
-      <div className="uf-utility">
-        <span>Veteran-owned. People-first.</span>
-        <div>
-          <a href="tel:+18338686483">833.868.6483</a>
-          <Link to="/contact">Contact us</Link>
-          <Link to={accountPath(session)}>
-            {session ? "My account" : "Sign in"}{" "}
-            <span aria-hidden="true">↗</span>
-          </Link>
-        </div>
-      </div>
-      <div className="uf-nav">
-        <Link to="/" aria-label="Unite Medical home" className="uf-logo">
-          <UMLogo size={38} color="#1d5c4d" />
-        </Link>
-        <nav className="uf-desktop-nav" aria-label="Primary">
-          {NAV_LINKS.map(([to, label]) => (
-            <Link key={to} to={to}>
-              {label}
-            </Link>
-          ))}
-        </nav>
-        <div className="uf-nav-actions">
-          {commerce.can_use_cart ? (
-            <Link
-              className="uf-nav-quote"
-              to="/cart"
-              aria-label={`Cart, ${cartCount} items`}
-            >
-              <Icon.cart />
-              <span>Cart{cartCount ? ` (${cartCount})` : ""}</span>
-            </Link>
-          ) : (
-            <Link className="uf-nav-quote" to="/portal/quote">
-              Quick quote <span aria-hidden="true">↗</span>
-            </Link>
-          )}
-          <Link
-            className="uf-search"
-            to="/catalog"
-            aria-label="Search products"
-          >
-            <Icon.search />
-          </Link>
-          <button
-            ref={menuButton}
-            className="uf-menu-toggle"
-            aria-label={open ? "Close menu" : "Open menu"}
-            aria-expanded={open}
-            aria-controls="homepage-menu"
-            onClick={() => setOpen(!open)}
-          >
-            {open ? <Icon.close /> : <Icon.menu />}
-          </button>
-        </div>
-      </div>
-      {open && (
-        <nav
-          id="homepage-menu"
-          className="uf-mobile-nav"
-          aria-label="Primary mobile"
-        >
-          {NAV_LINKS.map(([to, label]) => (
-            <Link key={to} to={to} onClick={() => setOpen(false)}>
-              {label}
-              <Icon.arrow />
-            </Link>
-          ))}
-          <Link to={accountPath(session)}>
-            {session ? "My account" : "Sign in"}
-            <Icon.arrow />
-          </Link>
-          <Link to="/portal/quote">
-            Quick quote
-            <Icon.arrow />
-          </Link>
-          <Link to="/contact">
-            Contact us
-            <Icon.arrow />
-          </Link>
-        </nav>
-      )}
-    </header>
-  );
-}
 function Hero() {
   const videoRef = useRef(null);
   const heroRef = useRef(null);
@@ -401,6 +278,7 @@ function HomepageContent() {
           ))}
         </div>
       </section>
+      <HomepageRobotics />
       <CustomerSectors />
       <HomepageJourney />
     </>
@@ -507,22 +385,6 @@ export function Homepage() {
     media.add("(prefers-reduced-motion: no-preference)", () => {
       const context = gsap.context(() => {
         gsap.fromTo(
-          ".uf-recovery-device",
-          { y: 75, scale: 0.93 },
-          {
-            y: -18,
-            scale: 1,
-            ease: "none",
-            scrollTrigger: {
-              trigger: ".uf-recovery-stage",
-              start: "top bottom",
-              end: "bottom 35%",
-              scrub: 0.7,
-              invalidateOnRefresh: true,
-            },
-          },
-        );
-        gsap.fromTo(
           ".uf-mission-landscape img",
           { yPercent: -5 },
           {
@@ -576,7 +438,7 @@ export function Homepage() {
   }, []);
   return (
     <div ref={rootRef} className="uf-home">
-      <HomepageNav />
+      <Nav overlay heroSelector=".uf-hero" />
       <main id="main">
         <Hero />
         <PartnerMarquee items={HOME_PARTNERS} />

@@ -4,7 +4,12 @@ import crypto from 'node:crypto';
 // source or conflicting insert aborts the transaction, including its audit rows.
 export async function atomicTransition(sql, { checks = [], writes = [] }) {
   const nonce = crypto.randomUUID();
-  const keys = [...new Set([...checks, ...writes].map(r => `${r.table}:${r.id || r.data.id}`))].sort();
+  const keys = [...new Set([...checks, ...writes].flatMap(r => {
+    const id = r.id || r.data.id;
+    // Existing order handoff locks use the raw inventory/lot ID. Share those
+    // locks as well as the table-qualified lock to serialize stock changes.
+    return ['inventory','lots','inventory_lots'].includes(r.table) ? [String(id), `${r.table}:${id}`] : [`${r.table}:${id}`];
+  }))].sort();
   const prepared = writes.map(r => ({ ...r, id: r.id || r.data.id, data: { ...r.data, operation_nonce: nonce } }));
   try {
     await sql.transaction(tx => [

@@ -115,6 +115,10 @@
   ],
   "crons": [
     {
+      "path": "/api/internal/restore-savings-refresh",
+      "schedule": "0 11 * * *"
+    },
+    {
       "path": "/api/customerio/outbox",
       "schedule": "*/5 * * * *"
     },
@@ -125,6 +129,35 @@
     {
       "path": "/api/internal/operations-refresh",
       "schedule": "0 * * * *"
+    },
+    {
+      "path": "/api/qbo/order-outbox",
+      "schedule": "*/5 * * * *"
     }
-  ]
+  ],
+  "functions": {
+    "api/admin/commerce-workspace.js": {
+      "includeFiles": "api/_data/*.json",
+      "maxDuration": 60
+    },
+    "api/admin/commerce-assistant.js": {
+      "maxDuration": 60,
+      "includeFiles": "{public/brand/**,node_modules/pdfkit/js/data/*}"
+    },
+    "api/admin/order-drafts.js": {
+      "maxDuration": 60
+    },
+    "api/qbo/order-outbox.js": {
+      "maxDuration": 60
+    },
+    "api/public/inquiry.js": {
+      "maxDuration": 60
+    },
+    "api/admin/robotics-sync.js": {
+      "maxDuration": 60
+    },
+    "api/admin/business-intelligence.js": {
+      "maxDuration": 60
+    }
+  }
 }

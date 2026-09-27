@@ -23,7 +23,7 @@ export default defineConfig(({ command }) => ({
       : [],
   },
   server: {
-    fs: { deny: ['**/.git/**', '**/.env*', '**/server-assets/**', '**/*.{crt,pem}'] },
+    fs: { deny: ['**/.git/**', '**/.env*', '**/server-assets/**', '**/api/_data/**', '**/*.{crt,pem}'] },
     proxy: {
       '/api': {
         target: DEV_API_TARGET,
@@ -40,6 +40,8 @@ export default defineConfig(({ command }) => ({
       output: {
         manualChunks: (id) => {
           if (!id.includes('node_modules')) return undefined;
+          if (id.includes('/@zxing/')) return 'barcode-scanner';
+          if (id.includes('/three/')) return 'warehouse-3d';
           if (id.includes('react-router')) return 'router';
           if (id.includes('react-dom') || id.includes('/react/')) return 'react';
           return 'vendor';

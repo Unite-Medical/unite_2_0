@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Icon } from "./Icon.jsx";
+import { RegeniCoolFilms } from "./RegeniCoolFilms.jsx";
 import "./HomepageJourney.css";
 
 export function HomepageJourney() {
@@ -17,22 +18,8 @@ export function HomepageJourney() {
           </h2>
           <p className="uf-recovery-model">Pro.</p>
         </header>
-        <div className="uf-recovery-stage">
-          <div className="uf-recovery-halo" aria-hidden="true" />
-          <img
-            className="uf-recovery-device"
-            src="/media/regenicool/red-device.webp"
-            width="1620"
-            height="1620"
-            alt="The red Unite RegeniCool Pro ice-water circulation unit"
-            loading="lazy"
-            decoding="async"
-          />
-          <span className="uf-recovery-stage-label" aria-hidden="true">
-            Cold therapy. Water-based compression.
-          </span>
-        </div>
-        <div className="uf-recovery-intro" data-reveal>
+        <RegeniCoolFilms />
+        <div id="regenicool-details" className="uf-recovery-intro" data-reveal>
           <h3>One system. A choice of wraps.</h3>
           <p>
             Explore an ice-water circulation system with knee and hip
@@ -40,7 +27,7 @@ export function HomepageJourney() {
           </p>
           <div className="uf-journey-actions">
             <Link className="uf-button uf-button-green" to="/regenicool">
-              Explore RegeniCool Pro <Icon.arrow />
+              Explore RegeniCool™ Pro <Icon.arrow />
             </Link>
             <Link className="uf-text-link" to="/regenicool#dealer-information">
               Request dealer information <Icon.arrow />
@@ -55,7 +42,7 @@ export function HomepageJourney() {
             <div
               className="uf-recovery-detail-image uf-recovery-detail-controls"
               role="img"
-              aria-label="Close-up of the actual RegeniCool Pro control panel"
+              aria-label="Close-up of the actual RegeniCool™ Pro control panel"
             />
             <p className="uf-recovery-detail-index">01 / The system</p>
             <h3>Cold, in circulation.</h3>
@@ -68,7 +55,7 @@ export function HomepageJourney() {
             <div
               className="uf-recovery-detail-image uf-recovery-detail-knee"
               role="img"
-              aria-label="Actual red-trimmed RegeniCool 360-degree knee wrap"
+              aria-label="Actual red-trimmed RegeniCool™ 360-degree knee wrap"
             />
             <p className="uf-recovery-detail-index">
               02 / The knee configuration
@@ -83,7 +70,7 @@ export function HomepageJourney() {
             <div
               className="uf-recovery-detail-image uf-recovery-detail-hip"
               role="img"
-              aria-label="Actual red-trimmed RegeniCool hip wrap"
+              aria-label="Actual red-trimmed RegeniCool™ hip wrap"
             />
             <p className="uf-recovery-detail-index">
               03 / The hip configuration
@@ -100,10 +87,10 @@ export function HomepageJourney() {
       <section className="uf-mission" aria-labelledby="government-heading">
         <div className="uf-mission-landscape" aria-hidden="true">
           <img
-            src="/media/regenicool/woodland-dawn.webp"
+            src="/images/homepage-2026/medical-campus-dawn.webp"
             alt=""
-            width="1536"
-            height="1024"
+            width="2560"
+            height="964"
             loading="lazy"
             decoding="async"
           />
@@ -111,7 +98,7 @@ export function HomepageJourney() {
         <div className="uf-mission-copy" data-reveal>
           <p className="uf-kicker">Veteran-owned. Georgia-based.</p>
           <h2 id="government-heading">
-            Ready for the way
+            Ready for the way{" "}
             <br />
             you procure.
           </h2>

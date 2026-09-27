@@ -3,13 +3,15 @@
  *
  *   GET /api/metrics/savings
  *
- * Serves the latest snapshot pushed by Restore (api/hooks/restore.js)
+ * Serves the latest snapshot fetched daily by internal/restore-savings-refresh.js
+ * (or delivered through the optional hooks/restore.js webhook)
  * from our own Postgres, with CDN caching (s-maxage + SWR) so site
  * traffic hits Vercel's edge cache — not our function, and never
  * Restore's servers. Returns { ok:false } when no snapshot exists yet;
- * the page then falls back to the static "$900K+ to date" figure.
+ * the page then falls back to the static "$1.4M to date" figure.
  */
 
+import { publicRestoreSnapshot } from '../_lib/restoreSavings.js';
 import { neon } from '@neondatabase/serverless';
 import { sendJson } from '../_lib/http.js';
 
@@ -26,9 +28,9 @@ export default async function handler(req, res) {
     const sql = neon(url);
     const rows = await sql`SELECT data, updated_at FROM um_metrics WHERE key = 'restore_savings'`;
     if (!rows.length) return sendJson(res, 200, { ok: false, reason: 'no_snapshot' });
-    return sendJson(res, 200, { ok: true, ...rows[0].data, updated_at: rows[0].updated_at });
+    return sendJson(res, 200, publicRestoreSnapshot(rows[0].data, rows[0].updated_at));
   } catch {
-    // Table may not exist until the first push arrives.
+    // Table may not exist until the first successful sync.
     return sendJson(res, 200, { ok: false, reason: 'no_snapshot' });
   }
 }

@@ -16,3 +16,19 @@ test('pick scan blocks wrong sku, wrong bin, overpick, and changed replay',()=>{
  const scans=[{order_item_id:'item_1',units_verified:9,status:'verified'}];
  assert.equal(planPickScan({order,item,reservations:[reservation],existingScans:scans,barcodeResolution:{ok:true,sku:'UNIT-A',units_per_scan:5},body:{idempotency_key:'scan-key-12345',warehouse_id:'wh_unite'},actorId:'worker'}).reason,'pick_quantity_exceeded');
 });
+
+test('completed pick replay is idempotent and a changed source case is rejected',()=>{
+ const body={idempotency_key:'complete-pick-123',warehouse_id:'wh_unite',scan_count:10,container_id:'CASE-A'};
+ const input={order,item,reservations:[reservation],barcodeResolution:{ok:true,sku:'UNIT-A',units_per_scan:1},body,actorId:'worker'};
+ const first=planPickScan(input);assert.equal(first.complete,true);
+ assert.equal(planPickScan({...input,existingScans:[first.event]}).idempotent,true);
+ assert.equal(planPickScan({...input,existingScans:[first.event],body:{...body,container_id:'CASE-B'}}).reason,'pick_scan_intent_changed');
+});
+test('mobile picks bind actual lot and location even when the reservation is SKU-level',()=>{
+ const body={action:'pick',idempotency_key:'physical-pick-123',warehouse_id:'wh_unite',scan_count:2,lot_id:'lot_real',bin_id:'A1'};
+ const lot={id:'lot_real',product_sku:'UNIT-A',warehouse_id:'wh_unite',bin_id:'A1',qty_remaining:10};
+ const input={order,item,reservations:[reservation],lots:[lot],barcodeResolution:{ok:true,sku:'UNIT-A',units_per_scan:1},body,actorId:'worker'};
+ assert.equal(planPickScan(input).event.lot_id,'lot_real');
+ assert.equal(planPickScan({...input,body:{...body,lot_id:null}}).reason,'physical_lot_required');
+ assert.equal(planPickScan({...input,body:{...body,bin_id:'B1'}}).reason,'wrong_lot_or_location');
+});

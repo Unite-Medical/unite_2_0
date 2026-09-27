@@ -9,6 +9,7 @@
  */
 
 import { useMemo, useState } from 'react';
+import {useSearchParams} from 'react-router-dom';
 import { D } from '../../tokens.js';
 import { AdminShell } from '../../components/layout/AdminShell.jsx';
 import { db } from '../../lib/db.js';
@@ -26,6 +27,7 @@ const STEP_CHIP = {
 };
 
 export function AdminFulfillment() {
+  const [orderParams]=useSearchParams();
   const { isMobile } = useViewport();
   const padX = isMobile ? 18 : 40;
   const orders = db.useTable('orders', { orderBy: 'placed_at', dir: 'desc' });
@@ -40,7 +42,7 @@ export function AdminFulfillment() {
   const backorders = db.useTable('backorders', { orderBy: 'created_at', dir: 'desc' });
   const rmas = db.useTable('rmas', { orderBy: 'requested_at', dir: 'desc' });
   const [busy, setBusy] = useState(null);
-  const [selected, setSelected] = useState(null);
+  const [selected, setSelected] = useState(orderParams.get('order')||null);
   const [log, setLog] = useState([]);
   const [freightByBackorder, setFreightByBackorder] = useState({});
   const [handoffReference, setHandoffReference] = useState('');

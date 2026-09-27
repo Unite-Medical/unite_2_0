@@ -1,0 +1,59 @@
+import { useMemo, useState } from 'react';
+import { WorkspaceIcon } from '../workspace/WorkspaceIcon.jsx';
+import { filterWarehouseRows, locationLabel, warehouseRows } from '../../lib/warehouseBrowse.js';
+const number = n => Number(n).toLocaleString();
+const statusLabel = {uncounted:'To count',review:'In review',counted:'Posted'};
+export function WarehouseBrowser({data, disabled, onCount, onContainer, onScan, onLayout}) {
+  const [view,setView] = useState('map'), [query,setQuery] = useState(''), [warehouse,setWarehouse] = useState(''), [status,setStatus] = useState('all'), [selection,setSelection] = useState(''), [area,setArea] = useState(''), [binId,setBinId] = useState('');
+  const all = useMemo(()=>warehouseRows(data),[data]);
+  const rows = filterWarehouseRows(all,{warehouse,query,status});
+  const scope = all.filter(r=>!warehouse || r.warehouse_id === warehouse);
+  const selected = rows.find(r=>r.id === selection);
+  const maps = data.maps.filter(m=>!warehouse || m.warehouse_id === warehouse);
+  const map = maps.find(m=>m.id === area) || maps[0];
+  const bins = data.bins.filter(b=>b.map_id === map?.id && Number.isFinite(b.x) && Number.isFinite(b.z));
+  const selectedBin = bins.find(b=>b.id === binId);
+  const visibleRows = view === 'map' && selectedBin ? rows.filter(r=>r.bin?.id === binId) : rows;
+  const selectRow = row => {setSelection(row.id); if (row.bin) {setBinId(row.bin.id); if(row.bin.map_id) setArea(row.bin.map_id);} };
+  const reviewed = scope.filter(r=>r.status !== 'uncounted').length;
+  return <section className="wb" data-warehouse-browser>
+    <div className="wb-stats">
+      <div><span>Stock lines</span><strong>{scope.length}</strong><small>One line per lot or opening balance</small></div>
+      <div><span>Count progress</span><strong>{reviewed}<em> / {scope.length}</em></strong><div className="wb-progress" role="progressbar" aria-label="Stock lines with a recorded count" aria-valuenow={reviewed} aria-valuemin={0} aria-valuemax={Math.max(scope.length,1)}><i style={{width:`${scope.length ? reviewed/scope.length*100 : 0}%`}}/></div></div>
+      <div><span>Awaiting review</span><strong>{scope.filter(r=>r.status === 'review').length}</strong><small>Recorded counts · stock unchanged</small></div>
+      <div><span>Registered pallets</span><strong>{data.containers.filter(c=>c.kind==='pallet'&&(!warehouse||c.warehouse_id===warehouse)).length}</strong><small>{data.bins.filter(b=>!warehouse||b.warehouse_id===warehouse).length} labeled locations</small></div>
+    </div>
+    <div className="wb-toolbar">
+      <label className="wb-search"><WorkspaceIcon name="search" size={19}/><input type="search" placeholder="Find a product, pallet, lot or location…" aria-label="Search warehouse inventory" value={query} onChange={e=>setQuery(e.target.value)} onKeyDown={e=>{if(e.key==='Enter' && rows.length===1)selectRow(rows[0]);}}/></label>
+      <select aria-label="Filter warehouse" value={warehouse} onChange={e=>{setWarehouse(e.target.value);setSelection('');setBinId('');setArea('');}}><option value="">All warehouses</option>{data.warehouses.map(w=><option key={w.id} value={w.id}>{w.name}</option>)}</select>
+      <div className="wb-view" aria-label="Inventory view"><button aria-pressed={view==='map'} onClick={()=>setView('map')}><WorkspaceIcon name="grid" size={17}/>Map</button><button aria-pressed={view==='table'} onClick={()=>setView('table')}><WorkspaceIcon name="list" size={17}/>Table</button></div>
+    </div>
+    <div className="wb-filters" aria-label="Filter count status">{[['all','All stock'],['uncounted','To count'],['review','In review'],['counted','Posted'],['attention','Needs attention']].map(([key,name])=><button key={key} aria-pressed={status===key} onClick={()=>setStatus(key)}>{name}<span>{filterWarehouseRows(all,{warehouse,status:key}).length}</span></button>)}<small>{rows.length} matching lines</small></div>
+    <div className={`wb-body ${selected ? 'has-selection' : ''}`}>
+      <div className="wb-content">
+        {view==='map' && <section className="wb-map-card">
+          <header><div><p className="wm-eyebrow">FLOOR OVERVIEW</p><h2>{map?.name || 'Build your warehouse map'}</h2></div>{maps.length>0 && <select aria-label="Warehouse map area" value={map?.id||''} onChange={e=>{setArea(e.target.value);setBinId('');setSelection('');}}>{maps.map(m=><option key={m.id} value={m.id}>{m.name}</option>)}</select>}<button onClick={onLayout}>{map ? 'Edit / view 3D' : 'Set up map'}<WorkspaceIcon name="arrow" size={16}/></button></header>
+          {map ? <FloorMap map={map} bins={bins} rows={rows} selected={binId} onSelect={id=>{setBinId(id===binId?'':id);setSelection('');}}/> : <div className="wb-map-empty"><WorkspaceIcon name="grid" size={42}/><h3>A place for every pallet.</h3><p>Create a simple area layout in your browser, or capture the space with LiDAR in the iPad app. Add location labels, then connect your stock.</p><button onClick={onLayout}>Create your first area</button><button onClick={()=>setView('table')}>Start from the inventory table</button></div>}
+          <div className="wb-map-key"><span><i/>To count</span><span><i className="review"/>In review</span><span><i className="counted"/>Posted</span><span><i className="empty"/>No matching stock</span><small>{map?.source === 'manual_layout' ? 'Manual layout · approximate dimensions' : 'Registered locations · schematic view'}</small></div>
+        </section>}
+        <section className="wb-table-card">
+          <header><div><h2>{view==='map' && selectedBin ? locationLabel(selectedBin) : 'Inventory register'}</h2><p>{view==='map' && selectedBin ? 'Stock recorded at this location' : 'Choose a stock line to count, inspect a pallet or find it on the map.'}</p></div>{selectedBin && view==='map' && <button onClick={()=>setBinId('')}>Show all locations</button>}</header>
+          <div className="wb-table-scroll" tabIndex={0} role="region" aria-label="Inventory table"><table><thead><tr><th>Product / lot</th><th>Location</th><th>Pallets / cases</th><th className="wb-number">Eaches</th><th>Count status</th><th><span className="wb-sr">Open details</span></th></tr></thead><tbody>{visibleRows.map(row=><tr key={row.id} className={selection===row.id?'is-selected':''}><td><button className="wb-product" onClick={()=>selectRow(row)}><span className="wb-product-icon"><WorkspaceIcon name="box" size={20}/></span><span><strong>{row.name}</strong><small>{row.sku} · {row.lot?.lot_number || 'Opening balance'}</small></span></button></td><td><strong>{locationLabel(row.bin)}</strong><small>{data.warehouses.find(w=>w.id===row.warehouse_id)?.name}</small></td><td>{row.containers.length ? <><strong>{row.containers[0].id}</strong><small>{row.containers.length>1?`+${row.containers.length-1} more containers`:row.containers[0].state}</small></> : <span className="wb-muted">Not registered</span>}</td><td className="wb-number">{number(row.units)}</td><td><span className={`wb-pill ${row.status}`}>{statusLabel[row.status]}</span></td><td><button className="wb-open" aria-label={`Open ${row.sku} ${row.lot?.lot_number||'opening balance'}`} onClick={()=>selectRow(row)}><WorkspaceIcon name="chevron" size={16}/></button></td></tr>)}</tbody></table></div>
+          {!visibleRows.length && <div className="wb-no-results"><WorkspaceIcon name="search" size={24}/><h3>{scope.length ? 'No stock matches this view' : 'No stock balances in this warehouse'}</h3><p>{scope.length ? 'Try another product, label or status. Unmapped inventory is still available in the table.' : 'Scan or select a catalog product to start an opening inventory count.'}</p>{scope.length ? <button onClick={()=>{setQuery('');setStatus('all');setBinId('');}}>Clear filters</button> : <button disabled={disabled} onClick={onScan}>Scan a product</button>}</div>}
+        </section>
+      </div>
+      {selected && <aside className="wb-inspector" aria-label="Selected stock details"><header><span className="wm-eyebrow">STOCK DETAILS</span><button aria-label="Close stock details" onClick={()=>setSelection('')}><WorkspaceIcon name="close" size={17}/></button></header><span className="wb-detail-icon"><WorkspaceIcon name="box" size={32}/></span><h2>{selected.name}</h2><p>{selected.sku}</p><span className={`wb-pill ${selected.status}`}>{statusLabel[selected.status]}</span><dl><div><dt>Location</dt><dd>{locationLabel(selected.bin)}</dd></div><div><dt>Recorded eaches</dt><dd>{number(selected.units)}</dd></div><div><dt>Lot / batch</dt><dd>{selected.lot?.lot_number||'Not captured'}</dd></div><div><dt>Expiration</dt><dd>{selected.lot?.expiration_date||(selected.lot?.expiration_not_applicable?'Not applicable':'Not captured')}</dd></div></dl>
+      <button className="wm-scan-primary" disabled={disabled || selected.status==='review' || (selected.inventory.owner_type||'unite')!=='unite'} onClick={()=>onCount(selected)}><WorkspaceIcon name="check" size={18}/>{selected.status==='counted'?'Count again':'Start physical count'}</button><p className="wm-hint">{selected.status==='review'?'This count is awaiting manager review. Review it in Counts & tasks before counting again.':selected.lot?'Count the entire lot at this location, including every pallet and loose unit.':'Capture the complete opening balance, with its lot and location.'}</p>
+      {selected.bin?.map_id && <button onClick={()=>{setArea(selected.bin.map_id);setBinId(selected.bin.id);setView('map');}}>Locate on map<WorkspaceIcon name="arrow" size={16}/></button>}
+      <h3>Cases & pallets <span>{selected.containers.length}</span></h3>{selected.containers.map(c=><article key={c.id}><strong>{c.id}</strong><p>{c.kind} · {c.state} · {number(c.units_remaining)} eaches</p>{c.issues.map(issue=><p className="wm-missing" key={issue}>{issue}</p>)}<button disabled={disabled} onClick={()=>onContainer(c)}>Check / edit container</button></article>)}{!selected.containers.length && <p>No individual containers registered for this balance.</p>}
+      </aside>}
+    </div>
+  </section>;
+}
+function FloorMap({map,bins,rows,selected,onSelect}) {
+  const coords = [...bins.map(b=>[b.x,b.z]),...map.surfaces.flatMap(s=>[[s.x-Math.cos(s.angle)*s.width/2,s.z-Math.sin(s.angle)*s.width/2],[s.x+Math.cos(s.angle)*s.width/2,s.z+Math.sin(s.angle)*s.width/2]])];
+  const xs=coords.map(c=>c[0]),zs=coords.map(c=>c[1]);
+  const minX=Math.min(-2,...xs)-2,minZ=Math.min(-2,...zs)-2, width=Math.max(2,...xs)+2-minX,depth=Math.max(2,...zs)+2-minZ;
+  const x=v=>5+(v-minX)/width*90, y=v=>8+(v-minZ)/depth*84;
+  return <div className="wb-floor" aria-label="Warehouse floor map"><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">{map.surfaces.map((s,i)=><line key={i} x1={x(s.x-Math.cos(s.angle)*s.width/2)} y1={y(s.z-Math.sin(s.angle)*s.width/2)} x2={x(s.x+Math.cos(s.angle)*s.width/2)} y2={y(s.z+Math.sin(s.angle)*s.width/2)} stroke={s.kind==='wall'?'#bac8c0':'#6e9986'} strokeWidth={s.kind==='wall'?'.7':'.35'}/>)}</svg><span className="wb-floor-label">{map.source==='manual_layout'?'AREA LAYOUT':'SCANNED AREA'}</span>{bins.map(b=>{const stock=rows.filter(r=>r.bin?.id===b.id);const state=!stock.length?'empty':stock.some(r=>r.status==='uncounted')?'uncounted':stock.some(r=>r.status==='review')?'review':'counted';return <button key={b.id} className={`wb-pin ${state}`} style={{left:`${x(b.x)}%`,top:`${y(b.z)}%`}} aria-pressed={b.id===selected} aria-label={`${locationLabel(b)}, ${stock.length} stock lines, ${statusLabel[state]||'no matching stock'}`} onClick={()=>onSelect(b.id)}><WorkspaceIcon name="box" size={23}/><strong>{locationLabel(b)}</strong><small>{stock.length ? `${stock.length} stock ${stock.length===1?'line':'lines'}` : 'No match'}</small></button>})}{!bins.length && <div className="wb-floor-unmapped"><h3>Your area is ready for locations</h3><p>Choose Edit / view 3D, place a location and label its physical position.</p></div>}</div>;
+}

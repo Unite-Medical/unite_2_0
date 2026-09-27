@@ -1,21 +1,25 @@
+import { syncRoboticsInquiry } from '../_lib/roboticsHubspot.js';
 import { deliverInquiryNotification } from '../_lib/inquiryDelivery.js';
 import crypto from 'node:crypto';
 import { neon } from '@neondatabase/serverless';
 import { readRawBody, sendJson } from '../_lib/http.js';
 import { planPublicInquiry } from '../_lib/publicInquiry.js';
-export default async function handler(req, res) {
+export function createInquiryHandler({ connect = neon, notify = deliverInquiryNotification, sync = syncRoboticsInquiry, environment = process.env } = {}) {
+return async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
   if (req.method !== 'POST') return sendJson(res, 405, { error: 'method_not_allowed' });
-  if (!process.env.DATABASE_URL) return sendJson(res, 503, { error: 'inquiry_storage_unavailable' });
+  if (!environment.DATABASE_URL) return sendJson(res, 503, { error: 'inquiry_storage_unavailable' });
   try {
     const raw = await readRawBody(req);
     if (raw.length > 256000) return sendJson(res, 413, { error: 'submission_too_large' });
-    const input = JSON.parse(raw.toString('utf8'));
-    const sql = neon(process.env.DATABASE_URL);
+    let input;
+    try { input = JSON.parse(raw.toString('utf8')); } catch { return sendJson(res, 400, { error: 'invalid_json' }); }
+    if (!input || typeof input !== 'object' || Array.isArray(input)) return sendJson(res, 400, { error: 'invalid_submission' });
+    const sql = connect(environment.DATABASE_URL);
     const ip = String(req.headers['x-forwarded-for'] || req.socket?.remoteAddress || '').split(',')[0];
     const ipHash = crypto.createHash('sha256').update(ip).digest('hex');
-    const ownerEmail = input.kind==='contact'&&input.route_to_rep!==true?'support@unitemedical.net':process.env.UNITE_JACOBE_EMAIL || 'jacobe@unitemedical.net';
-    const plan = planPublicInquiry(input, { ownerEmail, sourceIpHash: ipHash });
+    const ownerEmail = input.kind==='contact'&&input.route_to_rep!==true?'support@unitemedical.net':environment.UNITE_JACOBE_EMAIL || 'jacobe@unitemedical.net';
+    const plan = planPublicInquiry(input, { ownerEmail, notificationEmail: input.kind === 'robotics' ? 'support@unitemedical.net' : ownerEmail, sourceIpHash: ipHash });
     if (!plan.ok) return sendJson(res, 400, { error: plan.reason });
     // Lock on source IP serializes rate-limit checks. Save request and notification
     // in one transaction; repeat submits cannot duplicate either record.
@@ -35,7 +39,12 @@ export default async function handler(req, res) {
     const existing = results.at(-1)[0];
     if (!existing) return sendJson(res, 429, { error: 'inquiry_rate_limited' });
     if (existing.request_hash !== plan.inquiry.request_hash) return sendJson(res, 409, { error: 'request_reference_conflict' });
-    const notification = await deliverInquiryNotification(sql, plan.inquiry.id);
+    // External delivery cannot turn a committed inquiry into a failed submission.
+    const notification = await notify(sql, plan.inquiry.id).catch(() => ({ status: 'delivery_unknown' }));
+    if (input.kind === 'robotics') await sync(sql, plan.inquiry.id).catch(() => {});
     return sendJson(res, results[1].length ? 201 : 200, { ok: true, id: plan.inquiry.id, status: 'pending_review', notification_status: notification.status });
   } catch { return sendJson(res, 500, { error: 'inquiry_save_failed' }); }
 }
+
+}
+export default createInquiryHandler();

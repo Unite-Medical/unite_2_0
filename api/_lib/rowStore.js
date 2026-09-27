@@ -89,6 +89,8 @@ const SERVICE_ROLES = {
 
 export function canUseServiceProxy(session, service, path = '/', method = 'GET') {
   if (!session) return false;
+  // The staging Flexport connection is for visibility, not freight bookings or edits.
+  if (service === 'flexport' && !['GET', 'HEAD'].includes(String(method).toUpperCase())) return false;
   if (service === 'qbo' && !['GET', 'HEAD'].includes(String(method).toUpperCase())) return false;
   if (service === 'customerio' && !['GET', 'HEAD'].includes(String(method).toUpperCase())) return false;
   if (service === 'qbo' && !String(path || '').startsWith('/')) return false;

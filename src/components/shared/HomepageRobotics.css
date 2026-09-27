@@ -1,0 +1,48 @@
+.uf-robotics-feature {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 780px;
+  min-height: clamp(780px, 92svh, 1100px);
+  padding: 30px 40px 26px;
+  background: #08110d;
+  color: #f3f2eb;
+}
+.uf-robotics-media, .uf-robotics-feature::after { position: absolute; inset: 0; pointer-events: none; }
+.uf-robotics-media { z-index: -2; }
+.uf-robotics-media img, .uf-robotics-media video { width: 100%; height: 100%; position: absolute; inset: 0; object-fit: cover; object-position: center; }
+.uf-robotics-feature::after { content: ""; z-index: -1; background: linear-gradient(180deg, #04100bd9, #04100b66 25%, #04100b88 62%, #04100bed); }
+.uf-robotics-topline, .uf-robotics-bottomline { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+.uf-robotics-topline { padding-bottom: 19px; border-bottom: 1px solid #ecf0e92b; font: 10px/1.5 monospace; letter-spacing: .1em; text-transform: uppercase; color: #d1d9d1; }
+.uf-robotics-editorial { text-align: center; padding: 90px 0 80px; }
+.uf-home .uf-robotics-eyebrow { font: 10px/1.6 monospace; letter-spacing: .13em; text-transform: uppercase; margin: 0 0 28px; color: #e1e6de; }
+.uf-home .uf-robotics-editorial h2 { font-family: 'Unite Manrope', sans-serif; font-size: clamp(64px, 7.2vw, 116px); font-weight: 400; line-height: 1.02; letter-spacing: -.055em; margin: 0; color: #f3f2eb; text-shadow: 0 2px 28px #0003; }
+.uf-home .uf-robotics-description { font-size: 16px; line-height: 1.7; color: #e2e6df; margin: 30px auto 0; }
+.uf-home .uf-robotics-explore { display: inline-flex; justify-content: space-between; align-items: center; gap: 46px; min-height: 54px; padding: 15px 22px; margin-top: 32px; color: #142219; background: #f3f2eb; font-size: 14px; text-decoration: none; transition: background .2s; }
+.uf-robotics-explore > span { font-size: 23px; line-height: 1; transition: transform .2s; }
+.uf-robotics-explore:hover { background: #fff; }
+.uf-robotics-explore:hover > span { transform: translate(3px,-3px); }
+.uf-robotics-bottomline { border-top: 1px solid #ecf0e92b; padding-top: 20px; font-size: 11px; color: #c0cdc2; }
+.uf-robotics-bottomline > div { display: flex; align-items: center; gap: 20px; }
+.uf-robotics-bottomline small { font-size: 9px; }
+.uf-robotics-film-toggle { display: inline-flex; align-items: center; gap: 10px; min-width: 87px; min-height: 42px; padding: 10px 14px; border: 1px solid #e7eee561; color: #f3f2eb; background: #08110d66; cursor: pointer; font: inherit; }
+.uf-robotics-feature :is(a,button):focus-visible { outline: 2px solid #f0b69f; outline-offset: 5px; }
+@media(max-width:760px) {
+  .uf-robotics-feature { min-height: 780px; padding: 25px 24px; }
+  .uf-robotics-topline > span:last-child { display: none; }
+  .uf-robotics-topline { font-size: 9px; }
+  .uf-robotics-editorial { padding: 65px 0; }
+  .uf-home .uf-robotics-editorial h2 { font-size: clamp(43px, 9vw, 66px); letter-spacing: -.05em; }
+  .uf-home .uf-robotics-eyebrow { font-size: 9px; margin-bottom: 24px; }
+  .uf-home .uf-robotics-description { font-size: 14px; margin-top: 26px; }
+  .uf-home .uf-robotics-explore { gap: 28px; font-size: 13px; margin-top: 28px; }
+  .uf-robotics-bottomline { flex-direction: column; align-items: stretch; gap: 16px; font-size: 10px; }
+  .uf-robotics-bottomline > div { justify-content: space-between; gap: 12px; }
+  .uf-robotics-bottomline small { max-width: 190px; line-height: 1.5; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .uf-robotics-explore, .uf-robotics-explore > span { transition: none; }
+}

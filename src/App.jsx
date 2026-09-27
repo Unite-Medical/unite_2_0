@@ -1,3 +1,4 @@
+const WarehouseMobile = lazy(() => import('./pages/WarehouseMobile.jsx').then(m=>({default:m.WarehouseMobile})));
 import {StaffShipments} from './pages/admin/StaffShipments.jsx';
 import {AdminDecisions} from './pages/admin/AdminDecisions.jsx';
 import { AdminRefundReviews } from './pages/admin/AdminRefundReviews.jsx';
@@ -69,8 +70,10 @@ const Invoices = lazy(() => import('./pages/Invoices.jsx').then((m) => ({ defaul
 const InvoicePrint = lazy(() => import('./pages/InvoicePrint.jsx').then((m) => ({ default: m.InvoicePrint })));
 const PurchaseOrderPrint = lazy(() => import('./pages/admin/PurchaseOrderPrint.jsx').then((m) => ({ default: m.PurchaseOrderPrint })));
 const AdminOverview = lazy(() => import('./pages/admin/AdminOverview.jsx').then((m) => ({ default: m.AdminOverview })));
+const AdvancedBI = lazy(() => import('./pages/admin/AdvancedBI.jsx').then(m => ({ default: m.AdvancedBI })));
 const AdminAnalytics = lazy(() => import('./pages/admin/AdminAnalytics.jsx').then((m) => ({ default: m.AdminAnalytics })));
 const AdminInventory = lazy(() => import('./pages/admin/AdminInventory.jsx').then((m) => ({ default: m.AdminInventory })));
+const CommerceProspects = lazy(() => import('./pages/admin/CommerceProspects.jsx').then(m=>({default:m.CommerceProspects})));
 const AdminCRM = lazy(() => import('./pages/admin/AdminCRM.jsx').then((m) => ({ default: m.AdminCRM })));
 const AdminHubSpot = lazy(() => import('./pages/admin/AdminHubSpot.jsx').then((m) => ({ default: m.AdminHubSpot })));
 const AdminReps = lazy(() => import('./pages/admin/AdminReps.jsx').then((m) => ({ default: m.AdminReps })));
@@ -79,7 +82,14 @@ const AdminCMS = lazy(() => import('./pages/admin/AdminCMS.jsx').then((m) => ({ 
 const AdminVendorApproval = lazy(() => import('./pages/admin/AdminVendorApproval.jsx').then((m) => ({ default: m.AdminVendorApproval })));
 const AdminQuotes = lazy(() => import('./pages/admin/AdminQuotes.jsx').then((m) => ({ default: m.AdminQuotes })));
 const AdminSourcing = lazy(() => import('./pages/admin/AdminSourcing.jsx').then((m) => ({ default: m.AdminSourcing })));
-const AdminCustomers = lazy(() => import('./pages/admin/AdminCustomers.jsx').then((m) => ({ default: m.AdminCustomers })));
+const AdminCustomers = lazy(() => import('./pages/admin/CommerceCustomers.jsx').then((m) => ({ default: m.CommerceCustomers })));
+const CommerceChat = lazy(() => import('./pages/admin/CommerceChat.jsx').then(m=>({default:m.CommerceChat})));
+const CommerceOrderCreate = lazy(() => import('./pages/admin/CommerceOrderCreate.jsx').then(m=>({default:m.CommerceOrderCreate})));
+const CommerceOrders = lazy(() => import('./pages/admin/CommerceOrders.jsx').then(m=>({default:m.CommerceOrders})));
+const CommercePricing = lazy(() => import('./pages/admin/CommercePricing.jsx').then(m=>({default:m.CommercePricing})));
+const CommerceDataReview = lazy(() => import('./pages/admin/CommercePricing.jsx').then(m=>({default:m.CommerceDataReview})));
+const CommerceCatalogReview = lazy(() => import('./pages/admin/CommercePricing.jsx').then(m=>({default:m.CommerceCatalogReview})));
+const LegacyAdminCustomers = lazy(() => import('./pages/admin/AdminCustomers.jsx').then(m=>({default:m.AdminCustomers})));
 const AdminProducts = lazy(() => import('./pages/admin/AdminProducts.jsx').then((m) => ({ default: m.AdminProducts })));
 const AdminProductEdit = lazy(() => import('./pages/admin/AdminProductEdit.jsx').then((m) => ({ default: m.AdminProductEdit })));
 const AdminTestData = lazy(() => import('./pages/admin/AdminTestData.jsx').then(m => ({default:m.AdminTestData})));
@@ -204,6 +214,7 @@ export default function App() {
           <Route path="/activate" element={<ActivateAccount />} />
           <Route path="/account/documents" element={<RequireSession roles={['customer','distributor']}><AccountDocuments /></RequireSession>} />
           <Route path="/staff/welllink" element={<RequireSession roles={['admin','sales','sales_manager','finance','warehouse_operator','warehouse_manager']}><AdminWellLink /></RequireSession>} />
+          <Route path="/warehouse" element={<RequireSession roles={['admin','warehouse_manager','warehouse_operator']}><WarehouseMobile /></RequireSession>} />
           <Route path="/work" element={<RequireSession roles={['admin','sales','sales_manager','customer_service','warehouse_operator','warehouse_manager','finance','sourcing','sourcing_manager']}><StaffWork /></RequireSession>} />
           <Route path="/admin/packing" element={<RequireAdmin><AdminPacking /></RequireAdmin>} />
           <Route path="/admin/documents" element={<RequireAdmin><AdminDocuments /></RequireAdmin>} />
@@ -233,22 +244,36 @@ export default function App() {
           <Route path="/rep" element={<RequireSession roles={['sales', 'sales_manager', 'customer_service', 'admin']}><RepPortal /></RequireSession>} />
 
           <Route path="/admin"           element={<RequireAdmin><AdminOverview /></RequireAdmin>} />
+          <Route path="/admin/advanced-bi" element={<RequireAdmin><AdvancedBI /></RequireAdmin>} />
           <Route path="/admin/analytics" element={<RequireAdmin><AdminAnalytics /></RequireAdmin>} />
           <Route path="/admin/inventory" element={<RequireAdmin><AdminInventory /></RequireAdmin>} />
-          <Route path="/admin/crm"       element={<RequireAdmin><AdminCRM /></RequireAdmin>} />
+          <Route path="/admin/crm" element={<RequireAdmin><CommerceProspects crm /></RequireAdmin>} />
+          <Route path="/admin/crm/legacy" element={<RequireAdmin><AdminCRM /></RequireAdmin>} />
+          <Route path="/admin/leads" element={<RequireAdmin><CommerceProspects /></RequireAdmin>} />
           <Route path="/admin/crm/hubspot" element={<RequireAdmin><AdminHubSpot /></RequireAdmin>} />
           <Route path="/admin/reps"      element={<RequireAdmin><AdminReps /></RequireAdmin>} />
           <Route path="/admin/customers" element={<RequireAdmin><AdminCustomers /></RequireAdmin>} />
+          <Route path="/admin/customers/:id" element={<RequireAdmin><AdminCustomers /></RequireAdmin>} />
+          <Route path="/admin/customer-operations" element={<RequireAdmin><LegacyAdminCustomers /></RequireAdmin>} />
+          <Route path="/admin/pricing" element={<RequireAdmin><CommercePricing /></RequireAdmin>} />
+          <Route path="/admin/pricing/:id" element={<RequireAdmin><CommercePricing /></RequireAdmin>} />
+          <Route path="/admin/data-review" element={<RequireAdmin><CommerceDataReview /></RequireAdmin>} />
+          <Route path="/admin/catalog-review" element={<RequireAdmin><CommerceCatalogReview /></RequireAdmin>} />
           <Route path="/admin/team"      element={<RequireAdmin><AdminTeam /></RequireAdmin>} />
           <Route path="/admin/consignment" element={<RequireAdmin><AdminConsignment /></RequireAdmin>} />
           <Route path="/admin/shopify-history" element={<RequireAdmin><AdminShopifyHistory /></RequireAdmin>} />
           <Route path="/admin/inventory/barcodes" element={<RequireAdmin><AdminBarcodes /></RequireAdmin>} />
           <Route path="/admin/quotes"    element={<RequireSession roles={['admin','sales','sales_manager']}><AdminQuotes /></RequireSession>} />
           <Route path="/admin/sourcing"  element={<RequireAdmin><AdminSourcing /></RequireAdmin>} />
-          <Route path="/admin/orders"    element={<RequireAdmin><AdminOrders /></RequireAdmin>} />
+          <Route path="/admin/orders" element={<RequireAdmin><CommerceOrders /></RequireAdmin>} />
+          <Route path="/admin/chat" element={<RequireAdmin><CommerceChat /></RequireAdmin>} />
+          <Route path="/admin/orders/new" element={<RequireAdmin><CommerceOrderCreate /></RequireAdmin>} />
+          <Route path="/admin/orders/:id" element={<RequireAdmin><CommerceOrders /></RequireAdmin>} />
+          <Route path="/admin/order-operations" element={<RequireAdmin><AdminOrders /></RequireAdmin>} />
           <Route path="/admin/cms"       element={<RequireAdmin><AdminCMS /></RequireAdmin>} />
           <Route path="/admin/vendors"   element={<RequireAdmin><AdminVendorApproval /></RequireAdmin>} />
-          <Route path="/admin/products"  element={<RequireAdmin><AdminProducts /></RequireAdmin>} />
+          <Route path="/admin/products" element={<RequireAdmin><CommerceCatalogReview /></RequireAdmin>} />
+          <Route path="/admin/product-operations" element={<RequireAdmin><AdminProducts /></RequireAdmin>} />
           <Route path="/admin/products/new" element={<RequireAdmin><AdminProductEdit /></RequireAdmin>} />
           <Route path="/admin/products/edit/:sku" element={<RequireAdmin><AdminProductEdit /></RequireAdmin>} />
           <Route path="/admin/test-data" element={<RequireAdmin><AdminTestData /></RequireAdmin>} />

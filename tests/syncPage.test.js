@@ -13,3 +13,8 @@ test('sync never sends credential before-images or activation tokens to admin br
  const rows=['profiles','activation_tokens','staging_before_images'].map(tbl=>({tbl,id:tbl,data:{id:tbl,password_hash:'secret',password_salt:'secret'},updated_at:cutoff,cursor_at:cutoff}));
  const result=projectSyncPage(rows,{cutoff});assert.deepEqual(result.tables,{profiles:[{id:'profiles'}]});
 });
+test('financial BI snapshots stay out of browser raw-sync caches',()=>{
+ const rows=[{tbl:'business_reports',id:'r',data:{id:'r',private_accounting:true},updated_at:cutoff,cursor_at:cutoff}];
+ assert.deepEqual(projectSyncPage(rows,{cutoff}).tables,{});
+ assert.equal(projectSyncPage(rows,{cutoff,serviceAccess:true}).tables.business_reports.length,1);
+});
