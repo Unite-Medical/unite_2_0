@@ -1,3 +1,4 @@
+import { AnalyticsPageTracker } from './components/AnalyticsPageTracker.jsx';
 const WarehouseMobile = lazy(() => import('./pages/WarehouseMobile.jsx').then(m=>({default:m.WarehouseMobile})));
 import {StaffShipments} from './pages/admin/StaffShipments.jsx';
 import {AdminDecisions} from './pages/admin/AdminDecisions.jsx';
@@ -132,6 +133,7 @@ const AccountDocuments = lazy(() => import('./pages/AccountDocuments.jsx').then(
 export default function App() {
   return (
     <BrowserRouter>
+      <AnalyticsPageTracker />
       <IntercomMessenger />
       {import.meta.env.VITE_UNITE_ENVIRONMENT==='staging'&&<div className="um-staging-banner">Staging environment <span aria-hidden="true">·</span> <a href="/admin/testing">Damon’s checklist and feedback</a></div>}
       <a href="#main" className="um-skip-link">Skip to content</a>

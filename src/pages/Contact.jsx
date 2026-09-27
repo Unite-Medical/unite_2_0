@@ -1,3 +1,4 @@
+import { captureUniteEvent } from '../lib/analytics/index.js';
 import {CONTACT_REASONS as REASONS} from '../lib/contactReasons.js';
 import { useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
@@ -45,6 +46,7 @@ export function Contact() {
       const result=await response.json().catch(()=>({}));
       if(!response.ok||!result.ok||!result.id)throw new Error(response.status===429?'Too many requests. Please try again later or call 833.868.6483.':result.error==='contact_reason_and_message_required'?'Choose a reason and add a message.':'We could not confirm your request was saved. Your details are still here; retry or call 833.868.6483.');
       setSubmitted({id:result.id});
+      captureUniteEvent('contact_submitted');
     }catch(err){setError(err instanceof TypeError?'We could not reach the server. Your details are still here; retry or call 833.868.6483.':err.message||'We could not confirm your request was saved. Please retry or call us.');}
     finally{busyRef.current=false;setSubmitting(false);}
   }

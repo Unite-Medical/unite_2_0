@@ -1,3 +1,4 @@
+import { captureUniteEvent } from '../lib/analytics/index.js';
 // A5 quote router — PRD-28 §5.4. Replaces the single generic quote form with
 // a 3-path chooser. Each path asks only its relevant fields and tags the lead
 // type in HubSpot. Copy sells capability/outcome only — never the engine
@@ -83,6 +84,7 @@ function PathForm({ path, prefillSku, isMobile }) {
       const payload = await response.json().catch(() => ({}));
       if (!response.ok || !payload.ok) throw new Error(payload.error || 'sourcing_request_failed');
       setDone(payload.request.id);
+      captureUniteEvent('quote_requested');
     } catch {
       setError('We could not save this request. Please check your work email and try again.');
     } finally {
