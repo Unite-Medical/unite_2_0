@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" preserveAspectRatio="none">
+  <!-- A shallow asymmetric sweep: flat across most of the frame, with a tangent-continuous lift at the right. -->
+  <path fill="white" d="M0 0H1000V945C970 958 940 972 910 984C886 994 868 1000 832 1000H0Z"/>
+</svg>

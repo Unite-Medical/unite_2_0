@@ -18,7 +18,7 @@
 
 import { db } from './db.js';
 import { uid } from './format.js';
-import { qbo } from './services.js';
+
 import { lowStockAlerts, recalcReorderPoints } from './replenishment.js';
 import { lots } from './wms/lots.js';
 import { ledger } from './wms/ledger.js';
@@ -72,20 +72,23 @@ export async function receiveClearedShipment(shipment, { line_items = null } = {
   }
   log('receiving.inventory_received', shipment.id, { warehouse: warehouseId, units: result.received, lines: lines.length, lots: result.lots.length });
 
-  // 2) Landed-cost bill → QBO ----------------------------------------------
-  try {
-    const freight = Number(shipment.freight_total_usd) || 0;
-    const customs = Number(shipment.customs_total_usd) || 0;
-    if (freight + customs > 0) {
-      const bill = await qbo.createBillFromFlexport({ shipment, vendor_qbo_id: shipment.vendor_qbo_id });
-      result.bill = bill;
-      log('receiving.qbo_bill_posted', shipment.id, { bill_id: bill?.id, amount: freight + customs });
-    } else {
-      log('receiving.qbo_bill_skipped', shipment.id, { reason: 'no_landed_cost_on_shipment' });
-    }
-  } catch (err) {
-    result.bill_error = err.message;
-    log('receiving.qbo_bill_failed', shipment.id, { error: err.message });
+  // 2) Landed-cost evidence → AP intake. The actual supplier invoice must be
+  // matched and approved before any QBO bill is created.
+  const freight = Number(shipment.freight_total_usd) || 0;
+  const customs = Number(shipment.customs_total_usd) || 0;
+  if (freight + customs > 0) {
+    const intakeId = `ap_intake_flexport_${shipment.id}`;
+    result.ap_intake = db.get('ap_intake_queue', intakeId) || db.insert('ap_intake_queue', {
+      id: intakeId, kind: 'landed_cost', status: 'awaiting_vendor_invoice',
+      provider: 'flexport', shipment_id: shipment.id,
+      expected_freight: freight, expected_customs: customs,
+      expected_total: +(freight + customs).toFixed(2),
+      vendor_qbo_id: shipment.vendor_qbo_id || null,
+      created_at: new Date().toISOString(),
+    });
+    log('receiving.ap_intake_created', shipment.id, { intake_id: intakeId, amount: freight + customs });
+  } else {
+    log('receiving.ap_intake_skipped', shipment.id, { reason: 'no_landed_cost_on_shipment' });
   }
 
   // 3) Run-rate model recalc -----------------------------------------------

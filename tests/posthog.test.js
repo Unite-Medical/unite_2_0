@@ -14,8 +14,8 @@ test('Unite analytics rejects TJS, previews, staging, localhost and disabled env
 });
 
 test('private account, admin, order and quote-token routes are excluded', () => {
-  for (const path of ['/admin', '/admin/customers', '/account/orders', '/orders/123/confirmed', '/q/private-token', '/quotes/123/print', '/login', '/register', '/rep-portal', '/distributor-portal']) assert.equal(isPublicPath(path), false, path);
-  for (const path of ['/', '/catalog', '/products/P123', '/contact', '/quote', '/checkout', '/case-studies/tjs']) assert.equal(isPublicPath(path), true, path);
+  for (const path of ['/warehouse', '/staff/welllink', '/admin', '/admin/customers', '/account/orders', '/orders/123/confirmed', '/q/private-token', '/quotes/123/print', '/login', '/register', '/rep-portal', '/distributor-portal']) assert.equal(isPublicPath(path), false, path);
+  for (const path of ['/', '/regenicool', '/catalog', '/products/P123', '/contact', '/quote', '/checkout', '/case-studies/tjs']) assert.equal(isPublicPath(path), true, path);
 });
 
 test('URL queries, named profiles and customer fields are excluded', () => {

@@ -184,7 +184,7 @@ export function Quote() {
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, fontSize: 12 }}>
                   <div>
                     <div style={{ color: D.plumSoft, fontFamily: D.mono }}>CUSTOMER</div>
-                    <div style={{ marginTop: 4 }}>{result?.quote.customer_name || 'Atlanta Surgical Center'}<br />{result?.quote.contact_name || 'Mariah Patel'}</div>
+                    <div style={{ marginTop: 4 }}>{result?.quote.customer_name || 'Customer organization'}<br />{result?.quote.contact_name || 'Primary contact'}</div>
                   </div>
                   <div>
                     <div style={{ color: D.plumSoft, fontFamily: D.mono }}>DELIVERS</div>

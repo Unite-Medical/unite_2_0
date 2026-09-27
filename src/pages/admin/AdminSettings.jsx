@@ -36,7 +36,7 @@ const DEFAULTS = {
   sales_email: 'support@unitemedical.net',
   default_margin: 0.6,
   freight_per_unit: 0.42,
-  free_freight_threshold: 500,
+  free_freight_threshold: null,
   median_ship_label: 'Same-day',
   feature_quote_engine: true,
   feature_telehealth: false,
@@ -100,11 +100,11 @@ export function AdminSettings() {
       <div style={{ padding: `${isMobile ? 28 : 40}px ${padX}px ${isMobile ? 18 : 24}px`, borderBottom: `1px solid ${D.line}`, display: 'flex', justifyContent: 'space-between', alignItems: isMobile ? 'flex-start' : 'end', flexDirection: isMobile ? 'column' : 'row', gap: 14 }}>
         <div>
           <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 12 }}>SYSTEM · SETTINGS</div>
-          <h1 style={{ fontFamily: D.display, fontSize: 'clamp(34px, 5.6vw, 56px)', fontWeight: 400, letterSpacing: -1.3, lineHeight: 1.02, margin: 0 }}>Settings.</h1>
+          <h1 style={{ fontFamily: D.display, fontSize: 'clamp(34px, 5.6vw, 56px)', fontWeight: 400, letterSpacing: -1.3, lineHeight: 1.02, margin: 0 }}>Browser preferences.</h1><p>These preferences save only in this browser. They do not update shared company settings, pricing policy or the live website.</p>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
-          {saved && <span style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1, color: '#3b8760', alignSelf: 'center' }}>SAVED</span>}
-          <button onClick={commit} style={primaryBtn}>Save settings</button>
+          {saved && <span style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1, color: '#3b8760', alignSelf: 'center' }}>SAVED IN THIS BROWSER</span>}
+          <button onClick={commit} style={primaryBtn}>Save browser preferences</button>
         </div>
       </div>
 
@@ -133,7 +133,7 @@ export function AdminSettings() {
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12 }}>
               <Field label="Target margin (0–1)"><input type="number" step="0.05" min="0" max="0.95" value={settings.default_margin} onChange={(e) => patch({ default_margin: parseFloat(e.target.value) || 0 })} style={inputStyle} /></Field>
               <Field label="Freight per unit USD"><input type="number" step="0.01" value={settings.freight_per_unit} onChange={(e) => patch({ freight_per_unit: parseFloat(e.target.value) || 0 })} style={inputStyle} /></Field>
-              <Field label="Free freight threshold"><input type="number" step="10" value={settings.free_freight_threshold} onChange={(e) => patch({ free_freight_threshold: parseFloat(e.target.value) || 0 })} style={inputStyle} /></Field>
+              <p style={{fontSize:14}}>Standard parcel: carrier cost + 20% materials + $15 handling. No blanket free freight threshold.</p>
             </div>
           </Card>
 
@@ -158,7 +158,7 @@ export function AdminSettings() {
             ))}
           </Card>
 
-          <Card title="Danger zone">
+          {import.meta.env.DEV&&<Card title="Local development tools">
             <p style={{ fontSize: 13, color: D.ink2, marginTop: 0, lineHeight: 1.55 }}>
               These actions affect the in-browser demo database (localStorage). Re-running the
               importer (<code style={mono}>python3 scripts/import_catalog.py</code>) and reloading
@@ -169,7 +169,7 @@ export function AdminSettings() {
               <button onClick={reseedAll} style={{ ...ghostBtn, color: D.terra, borderColor: D.terra }}>Reset & reseed DB</button>
               <button onClick={clearLocalData} style={{ ...ghostBtn, color: D.terra, borderColor: D.terra }}>Wipe all local data</button>
             </div>
-          </Card>
+          </Card>}
         </div>
 
         <div style={{ display: 'grid', gap: 18, alignContent: 'start' }}>
@@ -191,7 +191,7 @@ export function AdminSettings() {
             ))}
           </Card>
 
-          <Card title="Workflow">
+          {import.meta.env.DEV&&<Card title="Development workflow">
             <ol style={{ paddingLeft: 18, margin: 0, fontSize: 13, color: D.ink2, lineHeight: 1.7 }}>
               <li>Edit catalog spreadsheet (upstream CSV)</li>
               <li>Run <code style={mono}>python3 scripts/import_catalog.py</code></li>
@@ -199,7 +199,7 @@ export function AdminSettings() {
               <li>Restart dev server</li>
               <li>Reset local DB from this page</li>
             </ol>
-          </Card>
+          </Card>}
         </div>
       </div>
     </AdminShell>

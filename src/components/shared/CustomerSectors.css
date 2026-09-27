@@ -1,0 +1,334 @@
+/* Composition adapted from Rivian's Technology / Performance / Design section. */
+.uf-sectors {
+  --sector-slide-width: min(72vw, 1040px);
+  --sector-slide-gap: clamp(24px, 4vw, 64px);
+  padding: 86px 0 70px;
+  background: linear-gradient(180deg, #153d32 0%, #1d5c4d 58%, #133b31 100%);
+  color: var(--uf-paper);
+  overflow: hidden;
+  scroll-margin-top: 90px;
+}
+.uf-sectors-heading {
+  max-width: 940px;
+  margin: 0 auto;
+  padding: 0 28px;
+  text-align: center;
+}
+.uf-sectors-heading .uf-kicker {
+  color: #bfd6c8;
+  margin-bottom: 24px;
+}
+.uf-home .uf-sectors h2 {
+  font-size: clamp(40px, 5.3vw, 72px);
+  line-height: 1.06;
+  font-weight: 500;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
+}
+.uf-home .uf-sectors-intro {
+  max-width: 560px;
+  margin: 24px auto 0;
+  color: #d3e2d8;
+  font-size: 15px;
+  line-height: 1.75;
+  text-wrap: balance;
+}
+.uf-sectors-tabs {
+  display: flex;
+  align-items: stretch;
+  width: fit-content;
+  max-width: calc(100% - 48px);
+  margin: 32px auto 38px;
+  padding: 6px;
+  border: 1px solid #dce9df38;
+  border-radius: 999px;
+  background: #e5eee41a;
+}
+.uf-sectors-tabs button {
+  border: 0;
+  border-radius: 999px;
+  padding: 13px 23px;
+  min-height: 46px;
+  color: #eef3ed;
+  background: transparent;
+  font-size: 13px;
+  line-height: 1.4;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background 280ms ease,
+    color 280ms ease;
+}
+.uf-sectors-tabs button:hover {
+  background: #e5eee414;
+}
+.uf-sectors-tabs button[aria-selected="true"] {
+  color: #123e30;
+  background: #f3f2eb;
+}
+.uf-home .uf-sectors :is(button, a):focus-visible {
+  outline: 2px solid #d3e6b8;
+  outline-offset: 4px;
+}
+.uf-sector-panel {
+  position: relative;
+}
+.uf-sector-panel:focus-visible {
+  outline: 2px solid #d3e6b8;
+  outline-offset: -3px;
+}
+.uf-sector-viewport {
+  width: 100%;
+  overflow: hidden;
+  touch-action: pan-y pinch-zoom;
+}
+.uf-sector-track {
+  display: flex;
+  gap: var(--sector-slide-gap);
+  transform: translate3d(
+    calc(
+      (100% - var(--sector-slide-width)) / 2 - var(--sector-index) *
+        (var(--sector-slide-width) + var(--sector-slide-gap))
+    ),
+    0,
+    0
+  );
+  transition: transform 850ms cubic-bezier(0.22, 0.7, 0.18, 1);
+}
+.uf-sector-slide {
+  flex: 0 0 var(--sector-slide-width);
+  width: var(--sector-slide-width);
+  aspect-ratio: 16 / 9;
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  background: #102e26;
+  opacity: 0.42;
+  transform: scale(0.965);
+  transition:
+    opacity 650ms ease,
+    transform 850ms cubic-bezier(0.22, 0.7, 0.18, 1);
+}
+.uf-sector-slide.is-active {
+  opacity: 1;
+  transform: scale(1);
+}
+.uf-sector-slide img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.035);
+  transition: transform 1.2s cubic-bezier(0.22, 0.7, 0.18, 1);
+}
+.uf-sector-slide.is-active img {
+  transform: scale(1);
+}
+.uf-sector-image-shade {
+  position: absolute;
+  inset: 40% 0 0;
+  background: linear-gradient(transparent, #061d159e);
+  pointer-events: none;
+}
+.uf-sector-image-label {
+  position: absolute;
+  left: 32px;
+  bottom: 27px;
+  color: #fff;
+  font-size: clamp(20px, 2.8vw, 38px);
+  font-weight: 500;
+  line-height: 1.12;
+  letter-spacing: -0.035em;
+  max-width: 80%;
+}
+.uf-sector-image-count {
+  position: absolute;
+  right: 28px;
+  bottom: 29px;
+  color: #fff;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.06em;
+}
+.uf-sector-caption {
+  max-width: 700px;
+  margin: 32px auto 0;
+  padding: 0 28px;
+  text-align: center;
+  min-height: 169px;
+  animation: ufSectorCaptionIn 650ms cubic-bezier(0.22, 0.7, 0.18, 1) both;
+}
+.uf-home .uf-sector-caption h3 {
+  font-size: clamp(23px, 2.15vw, 29px);
+  line-height: 1.2;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+.uf-home .uf-sector-caption p {
+  max-width: 585px;
+  margin: 14px auto 0;
+  color: #d3e2d8;
+  font-size: 14px;
+  line-height: 1.7;
+  text-wrap: balance;
+}
+.uf-sector-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding: 11px 0;
+  margin-top: 16px;
+  min-height: 44px;
+  border-bottom: 1px solid #d7e6dc80;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+}
+.uf-sector-action svg {
+  width: 18px;
+  height: 18px;
+  transition: transform 250ms ease;
+}
+.uf-sector-action:hover svg {
+  transform: translateX(4px);
+}
+.uf-sector-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 25px;
+  margin-top: 25px;
+}
+.uf-sector-navigation > span {
+  color: #d3e2d8;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.08em;
+  display: flex;
+  gap: 12px;
+}
+.uf-sector-navigation button {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid #d7e6dc66;
+  border-radius: 50%;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+  transition:
+    background 220ms ease,
+    color 220ms ease;
+}
+.uf-sector-navigation button svg {
+  width: 18px;
+  height: 18px;
+}
+.uf-sector-navigation button:first-child svg {
+  transform: rotate(180deg);
+}
+.uf-sector-navigation button:hover:not(:disabled) {
+  background: #f3f2eb;
+  color: #153d32;
+}
+.uf-sector-navigation button:disabled {
+  opacity: 0.25;
+  cursor: default;
+}
+@keyframes ufSectorCaptionIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (max-width: 900px) {
+  .uf-sectors-tabs button {
+    font-size: 12px;
+    padding-inline: 16px;
+  }
+  .uf-sectors {
+    --sector-slide-width: 82vw;
+    --sector-slide-gap: 24px;
+  }
+}
+@media (max-width: 600px) {
+  .uf-sectors {
+    --sector-slide-width: calc(100vw - 48px);
+    --sector-slide-gap: 14px;
+    padding: 64px 0 54px;
+  }
+  .uf-home .uf-sectors h2 {
+    font-size: clamp(32px, 8.2vw, 44px);
+    line-height: 1.1;
+  }
+  .uf-sectors-heading {
+    padding-inline: 24px;
+  }
+  .uf-sectors-heading .uf-kicker {
+    margin-bottom: 19px;
+  }
+  .uf-home .uf-sectors-intro {
+    font-size: 14px;
+    margin-top: 20px;
+  }
+  .uf-sectors-tabs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: calc(100% - 48px);
+    border-radius: 16px;
+    margin-block: 26px 28px;
+    gap: 4px;
+  }
+  .uf-sectors-tabs button {
+    border-radius: 10px;
+    padding: 10px;
+    min-height: 51px;
+    font-size: 12px;
+  }
+  .uf-sector-slide {
+    aspect-ratio: 4 / 3;
+    border-radius: 12px;
+  }
+  .uf-sector-image-label {
+    left: 20px;
+    bottom: 20px;
+    max-width: 72%;
+    font-size: 25px;
+  }
+  .uf-sector-image-count {
+    right: 17px;
+    bottom: 21px;
+    font-size: 9px;
+  }
+  .uf-sector-caption {
+    margin-top: 27px;
+    padding-inline: 24px;
+    min-height: 218px;
+  }
+  .uf-home .uf-sector-caption h3 {
+    font-size: 23px;
+  }
+  .uf-home .uf-sector-caption p {
+    font-size: 13px;
+  }
+  .uf-sector-navigation {
+    margin-top: 18px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .uf-sector-track,
+  .uf-sector-slide,
+  .uf-sector-slide img {
+    transition: none;
+  }
+  .uf-sector-caption {
+    animation: none;
+  }
+}

@@ -1,4 +1,4 @@
-const PUBLIC_PAGES = new Set(['/', '/catalog', '/cart', '/checkout', '/quote', '/quote/engine', '/surplus', '/surplus/market', '/shortage-list', '/supply-risk', '/about', '/compliance', '/careers', '/portfolio', '/procurement', '/government', '/contact', '/support', '/locations', '/blog', '/resources', '/privacy', '/terms', '/returns', '/shipping', '/services', '/robotics', '/diagnostics']);
+const PUBLIC_PAGES = new Set(['/', '/regenicool', '/catalog', '/cart', '/checkout', '/quote', '/quote/engine', '/surplus', '/surplus/market', '/shortage-list', '/supply-risk', '/about', '/compliance', '/careers', '/portfolio', '/procurement', '/government', '/contact', '/support', '/locations', '/blog', '/resources', '/privacy', '/terms', '/returns', '/shipping', '/services', '/robotics', '/diagnostics']);
 const HOSTS = new Set(['unite-2-0.vercel.app', 'unitemedical.net', 'www.unitemedical.net']);
 const EVENTS = new Set(['$pageview', 'product_view', 'add_to_cart', 'begin_checkout', 'contact_submitted', 'quote_requested']);
 const PROPERTIES = new Set(['product_id', 'quantity', 'value_cents', 'form_type']);

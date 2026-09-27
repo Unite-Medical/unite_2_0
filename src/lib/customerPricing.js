@@ -23,6 +23,7 @@ function contractPrice(orgId, sku, qty) {
   if (!orgId || !sku) return null;
   const today = todayIso();
   const rows = db.list('customer_contract_prices', { where: { org_id: orgId, product_sku: sku } })
+    .filter((r) => !r.status || r.status === 'active')
     .filter((r) => qty >= (r.min_qty || 1))
     .filter((r) => (!r.effective_from || r.effective_from <= today) && (!r.effective_to || r.effective_to >= today))
     .sort((a, b) => (b.min_qty || 1) - (a.min_qty || 1));
@@ -50,6 +51,24 @@ function volumeBreakPrice(sku, qty, list) {
  */
 export function resolveCustomerPrice({ org, sku, qty = 1, basePrice = null }) {
   const resolvedOrg = org === undefined ? auth.org() : org;
+  const scoped = db.list('account_prices', { where: { sku } })
+    .filter((row) => row.ok !== false && (!resolvedOrg?.id || !row.org_id || row.org_id === resolvedOrg.id))
+    .filter((row) => Number(row.quantity || 1) <= Number(qty || 1))
+    .sort((a, b) => Number(b.quantity || 1) - Number(a.quantity || 1))[0];
+  if (scoped?.unit_price != null) {
+    return {
+      unit_price: +Number(scoped.unit_price).toFixed(2),
+      list_price: scoped.list_price == null ? null : +Number(scoped.list_price).toFixed(2),
+      basis: scoped.basis || 'account',
+      tier: scoped.tier || resolvedOrg?.tier || 'C',
+      contract_id: scoped.contract_id || null,
+      break_min_qty: scoped.break_min_qty || null,
+      changed_pct: scoped.list_price > 0 ? +((1 - scoped.unit_price / scoped.list_price) * 100).toFixed(1) : 0,
+    };
+  }
+  if (basePrice == null) {
+    return { unit_price: null, list_price: null, basis: 'unavailable', tier: resolvedOrg?.tier || 'C', changed_pct: 0 };
+  }
   // priceFor handles tier multiplier + tier contracts + qty-break list price.
   const tierPriced = priceFor({ sku, qty, basePrice, org: resolvedOrg });
   const list = tierPriced.list_price;

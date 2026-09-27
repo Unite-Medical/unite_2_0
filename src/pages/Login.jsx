@@ -1,26 +1,39 @@
 import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { D } from '../tokens.js';
-import { UMLogo } from '../components/shared/Logo.jsx';
-import { Grad } from '../components/shared/Grad.jsx';
+import { WorkspaceIcon } from '../components/workspace/WorkspaceIcon.jsx';
 import { auth } from '../lib/auth.js';
-import { useViewport } from '../lib/viewport.js';
+import { staffHome } from '../lib/staffWorkspace.js';
+import '../styles/workspace.css';
+import '../styles/login.css';
 import { useSEO } from '../lib/seo.js';
+
+function SignInLayout({children,step}) {
+  return <main id="main" className="um-signin">
+    <aside className="um-signin-story" aria-label="Unite Medical">
+      <Link to="/" className="um-signin-brand" aria-label="Unite Medical home"><img src="/brand/unite-medical-logo.png" alt="Unite Medical"/></Link>
+      <div className="um-signin-intro"><span className="um-signin-eyebrow">CONNECTED CARE STARTS HERE</span><p className="um-signin-headline">Good work.<br/>All in one place.</p><p>Your people, your orders, your next step.<br/>A clearer way to work with Unite Medical.</p>
+      <div className="um-signin-features">{[['box','Orders & delivery','Stay close to every detail.'],['people','Your team, connected','Keep the next handoff clear.'],['shield','Access that fits your role','The right tools for your work.']].map(([icon,title,detail])=><div key={title}><span><WorkspaceIcon name={icon} size={19}/></span><div><strong>{title}</strong><p>{detail}</p></div></div>)}</div></div>
+      <div className="um-signin-story-footer"><span>UNITE MEDICAL</span><span>Built around people.</span></div>
+    </aside>
+    <div className="um-signin-main"><header><Link to="/">← Back to website</Link><span>{step||'YOUR UNITE ACCOUNT'}</span></header><section className="um-signin-form um-workspace">{children}</section><footer><WorkspaceIcon name="shield" size={14}/><span>Your workspace. Your access.</span><Link to="/privacy">Privacy</Link></footer></div>
+  </main>;
+}
 
 export function Login() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const next = searchParams.get('next');
-  const { isMobile } = useViewport();
   useSEO({ title: 'Sign in', description: 'Sign in to your Unite Medical B2B account.', canonical: '/login', noindex: true });
-  const [email, setEmail] = useState('sarah@atlanta-surgical.com');
-  const [password, setPassword] = useState('demo');
+  const [email, setEmail] = useState(() => import.meta.env.DEV ? 'sarah@atlanta-surgical.com' : '');
+  const [password, setPassword] = useState(() => import.meta.env.DEV ? 'demo' : '');
+  const [showPassword,setShowPassword]=useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
+  const [mfa,setMfa]=useState(null);const [code,setCode]=useState('');const [recovery,setRecovery]=useState(false);const [recoveryCodes,setRecoveryCodes]=useState(null);const [verifiedSession,setVerifiedSession]=useState(null);
 
   function destinationFor(session) {
-    if (next && next.startsWith('/')) return next;
-    return session.role === 'admin' ? '/admin' : '/dashboard';
+    if (next && /^\/(?!\/)/.test(next) && !next.includes('\\')) return next;
+    return staffHome(session.role);
   }
 
   async function handleSubmit(e) {
@@ -28,6 +41,7 @@ export function Login() {
     setError(null); setSubmitting(true);
     try {
       const session = await auth.login(email, password);
+      if(session.mfa_required){setMfa(session);setPassword('');return;}
       navigate(destinationFor(session));
     } catch (err) {
       setError(err.message);
@@ -42,7 +56,7 @@ export function Login() {
     setPassword('admin');
     try {
       const session = await auth.login('damon@unitemedical.net', 'admin');
-      navigate(next && next.startsWith('/') ? next : '/admin');
+      navigate(next && /^\/(?!\/)/.test(next) && !next.includes('\\') ? next : '/admin');
       void session;
     } catch (err) {
       setError(err.message);
@@ -51,83 +65,19 @@ export function Login() {
     }
   }
 
-  return (
-    <div style={{ background: D.paper, fontFamily: D.sans, color: D.ink, minHeight: '100vh', display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr' }}>
-      <div style={{ padding: isMobile ? '32px 22px 56px' : '64px 72px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: isMobile ? 28 : 0 }}>
-        <Link to="/"><UMLogo size={isMobile ? 26 : 32} color={D.ink} weight={600} /></Link>
-        <form onSubmit={handleSubmit} style={{ maxWidth: 420, width: '100%' }}>
-          <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 18 }}>SIGN IN · B2B PORTAL</div>
-          <h1 style={{ fontFamily: D.display, fontSize: 'clamp(40px, 8vw, 68px)', fontWeight: 400, letterSpacing: -1.6, lineHeight: 1.0, margin: 0 }}>
-            Welcome <Grad>back</Grad>.
-          </h1>
-          <p style={{ fontSize: 15, color: D.ink2, marginTop: 18, lineHeight: 1.55 }}>
-            Your saved lists, order history, and dedicated rep — all behind one login.
-          </p>
-          <div style={{ marginTop: 32 }}>
-            <label style={{ display: 'block', marginBottom: 14 }}>
-              <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>WORK EMAIL</div>
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                style={{ width: '100%', marginTop: 6, padding: '14px 16px', background: D.card, border: `1px solid ${D.line}`, borderRadius: 10, fontSize: 14, color: D.ink, outline: 'none' }}
-              />
-            </label>
-            <label style={{ display: 'block' }}>
-              <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>PASSWORD</div>
-              <input
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                style={{ width: '100%', marginTop: 6, padding: '14px 16px', background: D.card, border: `1px solid ${D.line}`, borderRadius: 10, fontSize: 14, color: D.ink, outline: 'none' }}
-              />
-            </label>
-            {error && <div style={{ marginTop: 12, padding: 10, borderRadius: 8, background: '#fbe9e1', color: '#7a2d10', fontSize: 13 }}>{error}</div>}
-            <button type="submit" disabled={submitting} style={{ marginTop: 18, width: '100%', background: D.plum, color: D.paper, border: 'none', padding: 14, borderRadius: 4, fontSize: 14, fontWeight: 600, cursor: submitting ? 'wait' : 'pointer', opacity: submitting ? 0.7 : 1 }}>
-              {submitting ? 'Signing in…' : 'Sign in'}
-            </button>
-            <button
-              type="button"
-              onClick={handleDemoAdmin}
-              disabled={submitting}
-              style={{ marginTop: 10, width: '100%', background: D.ink, color: D.paper, border: 'none', padding: 13, borderRadius: 4, fontSize: 13, fontWeight: 600, cursor: submitting ? 'wait' : 'pointer', opacity: submitting ? 0.7 : 1, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
-            >
-              Open admin console <span aria-hidden="true">→</span>
-            </button>
-            <div style={{ marginTop: 14, padding: 12, background: D.paperAlt, border: `1px dashed ${D.line}`, borderRadius: 10, fontSize: 12, color: D.ink2, lineHeight: 1.6 }}>
-              <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.plum }}>DEMO ACCOUNTS</div>
-              <div>Customer · sarah@atlanta-surgical.com / <code>demo</code></div>
-              <div>Pharmacy · kareem@holloway.com / <code>demo</code></div>
-              <div>Admin · damon@unitemedical.net / <code>admin</code></div>
-            </div>
-            <div style={{ marginTop: 20, fontSize: 13, color: D.ink2, textAlign: 'center' }}>
-              New to Unite? <Link to="/register" style={{ color: D.plum, textDecoration: 'underline' }}>Request an account</Link>
-            </div>
-          </div>
-        </form>
-        {!isMobile && <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>FDA 3015727296 · Veteran-owned · CAGE 8MK70</div>}
-      </div>
-      {isMobile ? null : (
-      <div style={{ background: D.plum, color: D.paper, padding: 72, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', position: 'relative', overflow: 'hidden' }}>
-        <div />
-        <div>
-          <div style={{ fontFamily: D.display, fontSize: 56, fontWeight: 400, letterSpacing: -1.2, lineHeight: 1, fontStyle: 'italic' }}>
-            &ldquo;No trees, no queues — just the rep assigned to our segment.&rdquo;
-          </div>
-          <div style={{ marginTop: 24, fontSize: 14, color: D.plumSoft }}>Jessica Garcia · Sunrise ASC · 4 years on Unite</div>
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 32 }}>
-          {[['99%+', 'Fill rate'], ['Same-day', 'Median ship'], ['4 yr', 'Avg tenure']].map(([b, s], i) => (
-            <div key={i}>
-              <div style={{ fontFamily: D.display, fontSize: 40, letterSpacing: -0.7, lineHeight: 1 }}>{b}</div>
-              <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.plumSoft, marginTop: 8 }}>{s.toUpperCase()}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-      )}
-    </div>
-  );
+  async function verifyMfa(e){e.preventDefault();setSubmitting(true);setError(null);try{const result=await auth.completeMfa(mfa.challenge,recovery?'':code,recovery?code:undefined);setCode('');if(result.recovery_codes){setRecoveryCodes(result.recovery_codes);setVerifiedSession(result.session);setMfa(null);}else navigate(destinationFor(result.session));}catch(err){setError(err.message);}finally{setSubmitting(false);}}
+  if(recoveryCodes)return <SignInLayout step="ACCOUNT SECURITY"><div className="um-signin-kicker"><WorkspaceIcon name="shield" size={18}/> Recovery access</div><h1>Keep a way back in.</h1><p className="um-signin-subtitle">Save these recovery codes in your password manager. Each works once if you lose your authenticator, and they will not be shown again.</p><pre className="um-recovery-codes">{recoveryCodes.join('\n')}</pre><button className="ws-button primary um-signin-submit" onClick={()=>{setRecoveryCodes(null);navigate(destinationFor(verifiedSession));}}>I saved my codes. Continue <WorkspaceIcon name="arrow" size={16}/></button></SignInLayout>;
+  if(mfa)return <SignInLayout step="TWO-STEP SIGN-IN"><div className="um-signin-kicker"><WorkspaceIcon name="shield" size={18}/> One more step</div><h1>{mfa.enrollment?'Secure your account.':'Verify it’s you.'}</h1>{mfa.enrollment?<><p className="um-signin-subtitle">Add this account in your authenticator using the setup key below. Choose time-based codes.</p><div className="um-enrollment"><label>Account<input readOnly value={mfa.account}/></label><label>Setup key<input readOnly value={mfa.setup_key} onFocus={e=>e.target.select()}/></label></div></>:<p className="um-signin-subtitle">{recovery?'Enter one of the recovery codes you saved.':'Enter the six-digit code from your authenticator.'}</p>}<form onSubmit={verifyMfa}><label>{recovery?'Recovery code':'Verification code'}<input className="um-code-input" autoComplete="one-time-code" inputMode={recovery?'text':'numeric'} value={code} onChange={e=>setCode(e.target.value)} required pattern={recovery?undefined:'[0-9]{6}'} placeholder={recovery?'Recovery code':'000000'}/></label>{error&&<p className="ws-error" role="alert">{error}</p>}<button type="submit" className="ws-button primary um-signin-submit" disabled={submitting}>{submitting?'Verifying…':'Verify and continue'}<WorkspaceIcon name="arrow" size={16}/></button></form><div className="um-signin-secondary">{!mfa.enrollment&&<button onClick={()=>{setRecovery(v=>!v);setCode('');setError(null);}}>{recovery?'Use authenticator instead':'Use a recovery code'}</button>}<button onClick={()=>{setMfa(null);setCode('');setError(null);}}>Back to sign in</button></div></SignInLayout>;
+  return <SignInLayout>
+    <div className="um-signin-kicker"><span/> Welcome to Unite</div><h1>Welcome back.</h1><p className="um-signin-subtitle">Sign in to pick up where you left off.</p>
+    <form onSubmit={handleSubmit}>
+      <label>Work email<input type="email" autoComplete="username" placeholder="you@company.com" required value={email} onChange={e=>setEmail(e.target.value)}/></label>
+      <label>Password<div className="um-password-field"><input aria-label="Password" type={showPassword?'text':'password'} autoComplete="current-password" placeholder="Enter your password" required value={password} onChange={e=>setPassword(e.target.value)}/><button type="button" aria-label={showPassword?'Hide password':'Show password'} aria-pressed={showPassword} onClick={()=>setShowPassword(v=>!v)}>{showPassword?'Hide':'Show'}</button></div></label>
+      <div className="um-signin-help"><Link to="/contact">Need help signing in?</Link></div>
+      {error&&<div className="ws-error" role="alert">{error}</div>}
+      <button className="ws-button primary um-signin-submit" type="submit" disabled={submitting}>{submitting?'Signing in…':'Sign in'}<WorkspaceIcon name="arrow" size={17}/></button>
+    </form>
+    <div className="um-signin-register">New to Unite? <Link to="/register">Request an account <span aria-hidden="true">↗</span></Link></div>
+    {import.meta.env.DEV&&<details className="ws-details um-demo-access"><summary>Local demo access</summary><p>Sample accounts for development.</p><button type="button" className="ws-button" onClick={handleDemoAdmin} disabled={submitting}>Open admin console</button><p>Customer: sarah@atlanta-surgical.com / demo</p></details>}
+  </SignInLayout>;
 }

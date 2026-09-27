@@ -1,0 +1,6 @@
+import {isAshley,isDamon} from '../_lib/launchPolicy.js';
+import {refundFingerprint} from '../_lib/refundApproval.js';
+import {neon} from '@neondatabase/serverless';
+import {authorizeLiveRequest} from '../_lib/auth.js';
+import {sendJson} from '../_lib/http.js';
+export default async function handler(req,res){res.setHeader('Cache-Control','no-store');if(req.method!=='GET')return sendJson(res,405,{error:'method_not_allowed'});if(!process.env.DATABASE_URL)return sendJson(res,503,{error:'not_configured'});try{const sql=neon(process.env.DATABASE_URL),live=await authorizeLiveRequest(req,sql,{roles:['admin','finance']});if(!live.ok)return sendJson(res,403,{error:live.reason});const rows=await sql`SELECT data FROM um_rows WHERE tbl='rmas' AND deleted=false AND data->>'status'='refund_pending' ORDER BY updated_at LIMIT 200`;return sendJson(res,200,{ok:true,permissions:{review:isAshley(live.session),approve:isDamon(live.session),ashley_configured:!!process.env.UNITE_ASHLEY_EMAIL},rmas:rows.map(({data:r})=>({...r,accuracy_current:r.refund_accuracy_review?.fingerprint===refundFingerprint(r),approval_current:r.refund_final_approval?.fingerprint===refundFingerprint(r)}))});}catch{return sendJson(res,500,{error:'refund_reviews_unavailable'});}}

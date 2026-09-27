@@ -1,131 +1,19 @@
-import { useMemo } from 'react';
-import { D } from '../../tokens.js';
-import { AdminShell } from '../../components/layout/AdminShell.jsx';
-import { AdminCard, Sparkline } from '../../components/layout/AdminCard.jsx';
-import { Icon } from '../../components/shared/Icon.jsx';
-import { db } from '../../lib/db.js';
-import { fmt } from '../../lib/format.js';
-import { useViewport } from '../../lib/viewport.js';
-import { availability } from '../../lib/wms/availability.js';
-import { ledger } from '../../lib/wms/ledger.js';
-
-export function AdminInventory() {
-  const { isMobile } = useViewport();
-  const padX = isMobile ? 18 : 40;
-  const products = db.useTable('products');
-  const inventory = db.useTable('inventory');
-  const warehouses = db.useTable('warehouses');
-
-  // Reads go through availability.js (the WMS read layer). `inventory` from
-  // useTable is the reactive trigger; the helpers read the same projection.
-  const stockBySku = useMemo(() => {
-    const bySku = availability.stockBySku();
-    return new Map([...bySku].map(([sku, v]) => [sku, v.on_hand]));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [inventory]);
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const totals = useMemo(() => availability.summary(), [inventory]);
-  const totalUnits = totals.total_on_hand;
-  const totalValue = products.reduce((a, p) => a + (stockBySku.get(p.sku) || 0) * (p.cogs || 0), 0);
-  const low = totals.low;
-  const out = totals.out;
-
-  function reorder(sku) {
-    const inv = inventory.find((i) => i.sku === sku && i.warehouse_id === 'wh_atl');
-    if (!inv) return;
-    // Stock only ever changes through the ledger (PRD §4.1) — never a direct
-    // on_hand write. This posts a receipt movement; the projection follows.
-    ledger.post({
-      sku,
-      warehouse_id: 'wh_atl',
-      qty_delta: inv.reorder_qty || 100,
-      reason: ledger.REASONS.RECEIPT,
-      ref_type: 'manual',
-      ref_id: `reorder_${sku}`,
-      actor_id: 'admin_inventory',
-      note: 'Manual reorder from /admin/inventory',
-    });
-  }
-
-  return (
-    <AdminShell active="inventory">
-      <div style={{ padding: `${isMobile ? 28 : 40}px ${padX}px ${isMobile ? 48 : 64}px` }}>
-        <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 12 }}>OPS · INVENTORY</div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: isMobile ? 'flex-start' : 'end', marginBottom: 22, flexDirection: isMobile ? 'column' : 'row', gap: 8 }}>
-          <h1 style={{ fontFamily: D.display, fontSize: 'clamp(34px, 5.6vw, 56px)', fontWeight: 400, letterSpacing: -1.3, lineHeight: 1.02, margin: 0 }}>Inventory.</h1>
-          <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1, color: D.ink3 }}>SOURCE · CIN7 (SIM)</div>
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(4,1fr)', gap: 12, marginBottom: 14 }}>
-          {[
-            [fmt.number(products.length), 'Total SKUs', `${fmt.number(totalUnits)} units on hand`],
-            [fmt.short(totalValue), 'Inventory value', 'at COGS'],
-            [String(low), 'Low stock', 'needs reorder'],
-            [String(out), 'Out of stock', 'critical'],
-          ].map(([b, s, sub]) => (
-            <div key={s} style={{ padding: isMobile ? 16 : 22, background: D.card, borderRadius: 14, border: `1px solid ${D.line}` }}>
-              <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>{s.toUpperCase()}</div>
-              <div style={{ fontFamily: D.display, fontSize: isMobile ? 24 : 36, color: D.ink, letterSpacing: -0.6, marginTop: 8 }}>{b}</div>
-              <div style={{ fontSize: 12, color: D.ink2, marginTop: 4 }}>{sub}</div>
-            </div>
-          ))}
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.4fr 1fr', gap: 14, marginBottom: 14 }}>
-          <AdminCard title="Movement · 30 days">
-            <Sparkline points={[40,48,42,55,58,52,62,68,61,70,72,65,78,82,76,88,85,80,92,96,88,95,102,98,105,110,104,115,120,118]} dual />
-            <div style={{ display: 'flex', gap: 20, marginTop: 18, fontSize: 12, color: D.ink2 }}>
-              <span><Icon.dot style={{ color: D.plum }} /> Inbound · our freight forwarder ASNs</span>
-              <span><Icon.dot style={{ color: D.terra }} /> Outbound · our WMS labels</span>
-            </div>
-          </AdminCard>
-          <AdminCard title="Warehouse utilization">
-            {warehouses.map((w, i) => (
-              <div key={w.id} style={{ padding: '12px 0', borderTop: i === 0 ? 'none' : `1px solid ${D.line}` }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13 }}>
-                  <span>{w.name}</span>
-                  <span style={{ fontFamily: D.display, color: D.plum }}>{Math.round(w.utilization * 100)}%</span>
-                </div>
-                <div style={{ height: 6, background: D.paperAlt, borderRadius: 3, marginTop: 6 }}>
-                  <div style={{ height: 6, background: D.plum, borderRadius: 3, width: `${Math.round(w.utilization * 100)}%` }} />
-                </div>
-              </div>
-            ))}
-          </AdminCard>
-        </div>
-        <AdminCard title={`Inventory table · ${products.length} SKUs`}>
-          <div className="um-scroll-x">
-          <table style={{ width: '100%', minWidth: 720, borderCollapse: 'collapse', fontSize: 13 }}>
-            <thead>
-              <tr style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>
-                {['SKU', 'PRODUCT', 'CATEGORY', 'ON HAND', 'REORDER AT', 'STATUS', 'ACTIONS'].map((h) => <th key={h} style={{ padding: '10px 12px', textAlign: 'left', borderBottom: `1px solid ${D.line}` }}>{h}</th>)}
-              </tr>
-            </thead>
-            <tbody>
-              {products.slice(0, 20).map((p, i) => {
-                const stock = stockBySku.get(p.sku) || 0;
-                const reorderAt = inventory.find((inv) => inv.sku === p.sku)?.reorder_at || 0;
-                const [label, color] = stock <= reorderAt ? ['Low', D.terra] : stock < reorderAt * 1.4 ? ['Watch', '#b8a04a'] : ['In stock', '#3b8760'];
-                return (
-                  <tr key={p.sku} style={{ borderTop: i === 0 ? 'none' : `1px solid ${D.line}` }}>
-                    <td style={{ padding: '12px', fontFamily: D.mono, fontSize: 12 }}>{p.sku}</td>
-                    <td style={{ padding: '12px', fontWeight: 500 }}>{p.name.split('·')[0].trim()}</td>
-                    <td style={{ padding: '12px', color: D.ink2 }}>{p.category}</td>
-                    <td style={{ padding: '12px', fontFamily: D.mono }}>{stock.toLocaleString()}</td>
-                    <td style={{ padding: '12px', fontFamily: D.mono, color: D.ink3 }}>{reorderAt}</td>
-                    <td style={{ padding: '12px' }}>
-                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12, color }}><Icon.dot /> {label}</span>
-                    </td>
-                    <td style={{ padding: '12px' }}>
-                      <button onClick={() => reorder(p.sku)} style={{ background: 'transparent', color: D.plum, border: 'none', cursor: 'pointer', fontFamily: D.mono, fontSize: 11, letterSpacing: 1, padding: 0 }}>REORDER</button>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-          </div>
-        </AdminCard>
-      </div>
-    </AdminShell>
-  );
+import {useMemo,useState} from 'react';
+import {Link} from 'react-router-dom';
+import {AdminShell} from '../../components/layout/AdminShell.jsx';
+import {WorkspaceIcon} from '../../components/workspace/WorkspaceIcon.jsx';
+import {useSEO} from '../../lib/seo.js';
+import {db} from '../../lib/db.js';
+import {availability} from '../../lib/wms/availability.js';
+export function AdminInventory(){
+ useSEO({title:'Inventory · Unite workspace',noindex:true});
+ const products=db.useTable('products'),inventory=db.useTable('inventory'),warehouses=db.useTable('warehouses');
+ const lots=db.useTable('lots');
+ const [search,setSearch]=useState(''),[location,setLocation]=useState(''),[filter,setFilter]=useState('all');
+ const rows=useMemo(()=>products.flatMap(p=>(p.variants?.length?p.variants:[p]).map(v=>({product:{...p,...v,id:v.id,product_id:p.id,name:p.variants?.length>1?`${p.name} · ${v.title}`:p.name},loaded:inventory.some(i=>i.sku===v.sku&&(!location||i.warehouse_id===location)),onHand:availability.onHand(v.sku,location||null),reserved:availability.reserved(v.sku,location||null),available:availability.availableToPromise(v.sku,location||null)}))),[products,inventory,lots,location]); // eslint-disable-line react-hooks/exhaustive-deps
+ const shown=rows.filter(r=>(filter!=='out'||r.loaded&&r.available<=0)&&`${r.product.name} ${r.product.sku}`.toLowerCase().includes(search.toLowerCase()));
+ return <AdminShell active="inventory"><main id="main" className="uw-workday"><header className="uw-day-heading"><div><h1>Inventory</h1><p>Track available, committed and on-hand stock by location.</p></div><div className="uw-inventory-actions"><Link className="uw-button" to="/admin/inventory/count">Stock count</Link><Link className="uw-button primary" to="/admin/inventory/receive">Receive inventory</Link></div></header>
+ <>{inventory.some(i=>i.test_batch)&&<p className="uw-notice">Provisional stock · September 8 Shopify export at Unite Medical Warehouse. A physical count is pending. “Not loaded” means the source stock needs review.</p>}</><section className="uw-home-metrics" aria-label="Inventory totals">{[['Variants',rows.length],['On hand',rows.reduce((n,r)=>n+r.onHand,0)],['Available',rows.reduce((n,r)=>n+r.available,0)]].map(([label,value])=><div className="uw-inventory-metric" key={label}><span>{label}</span><strong>{value.toLocaleString()}</strong><small>{location?warehouses.find(w=>w.id===location)?.name:'All Unite-owned locations'}</small></div>)}</section>
+ <section className="uw-work-list"><div className="uw-queue-heading"><div role="group" className="uw-type-filters" aria-label="Inventory views"><button aria-pressed={filter==='all'} onClick={()=>setFilter('all')}>All</button><button aria-pressed={filter==='out'} onClick={()=>setFilter('out')}>Out of stock</button></div><select aria-label="Inventory location" value={location} onChange={e=>setLocation(e.target.value)}><option value="">All locations</option>{warehouses.filter(w=>w.active!==false).map(w=><option key={w.id} value={w.id}>{w.name}</option>)}</select></div><div className="uw-inventory-search"><label className="uw-search"><WorkspaceIcon name="search" size={16}/><input aria-label="Search inventory" placeholder="Search products or SKU" value={search} onChange={e=>setSearch(e.target.value)}/></label><span>{shown.length} variants</span></div>
+ {!rows.length?<div className="uw-empty"><WorkspaceIcon name="box" size={36}/><h3>Your inventory starts here</h3><p>Add products first, then receive or count stock to record your opening inventory.</p><Link className="uw-button primary" to="/admin/products">Go to products</Link></div>:<div className="um-scroll-x"><table className="uw-inventory-table"><thead><tr><th>Product</th><th>SKU</th><th>Available</th><th>Held / committed</th><th>On hand</th></tr></thead><tbody>{shown.map(r=><tr key={r.product.id}><td><Link to={`/admin/products/edit/${encodeURIComponent(r.product.product_id)}`}>{r.product.name}</Link></td><td>{r.product.sku}</td><td><span className={`uw-badge ${r.loaded&&r.available<=0?'is-waiting':''}`}>{r.loaded?r.available.toLocaleString():'Not loaded'}</span></td><td>{r.loaded?r.reserved.toLocaleString():'—'}</td><td>{r.loaded?r.onHand.toLocaleString():'—'}</td></tr>)}</tbody></table>{!shown.length&&<div className="uw-empty">No products match your search or filters.</div>}</div>}</section></main></AdminShell>;
 }

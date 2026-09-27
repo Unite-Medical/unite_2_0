@@ -1,0 +1,1 @@
+export async function draftRequest(action,draft,revision=0){const r=await fetch('/api/admin/order-drafts',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,id:draft.id,draft,revision})});const data=await r.json();if(!r.ok)throw new Error(data.error||'Unable to save this order.');return data;}

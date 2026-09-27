@@ -18,7 +18,7 @@ export function AccountOrder() {
   const session = auth.use();
   const { isMobile } = useViewport();
   useSEO({ title: 'Order', canonical: '/account/order', noindex: true });
-  const orgId = session?.org_id || 'org_atlsurgical';
+  const orgId = session.org_id;
   const org = useMemo(() => db.get('organizations', orgId) || { id: orgId }, [orgId]);
   const [tab, setTab] = useState('quick');
 
@@ -86,6 +86,7 @@ function QuickOrder({ org, onAdd, navigate }) {
 function Reorder({ org, onAdd, navigate }) {
   const orders = db.useTable('orders', { where: { customer_id: org.id }, orderBy: 'placed_at', dir: 'desc' }).slice(0, 12);
   const [preview, setPreview] = useState(null);
+  const [returnOrder, setReturnOrder] = useState(null);
   return (
     <div style={{ display: 'grid', gap: 16 }}>
       {orders.length === 0 && <div style={{ color: D.ink3 }}>No past orders yet.</div>}
@@ -95,10 +96,64 @@ function Reorder({ org, onAdd, navigate }) {
             <div style={{ fontFamily: D.mono, color: D.plum }}>{o.id}</div>
             <div style={{ fontSize: 12, color: D.ink2 }}>{fmt.date(o.placed_at)} · {fmt.money(o.total)} · {o.status?.replace('_', ' ')}</div>
           </div>
-          <button onClick={() => setPreview({ id: o.id, lines: buildReorder(o.id, org) })} style={outlineBtn}>Reorder</button>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button onClick={() => setPreview({ id: o.id, lines: buildReorder(o.id, org) })} style={outlineBtn}>Reorder</button>
+            {['shipped', 'delivered', 'partially_shipped'].includes(o.status) && <button onClick={() => setReturnOrder(o)} style={outlineBtn}>Request return</button>}
+          </div>
         </div>
       ))}
+      {returnOrder && <ReturnRequest order={returnOrder} onClose={() => setReturnOrder(null)} />}
       {preview && <ReorderPreview title={`Reorder of ${preview.id}`} lines={preview.lines} onAdd={onAdd} navigate={navigate} onClose={() => setPreview(null)} />}
+    </div>
+  );
+}
+
+function ReturnRequest({ order, onClose }) {
+  const items = db.useTable('order_items', { where: { order_id: order.id } });
+  const [quantities, setQuantities] = useState({});
+  const [opened, setOpened] = useState({});
+  const [reason, setReason] = useState('customer_request');
+  const [busy, setBusy] = useState(false);
+  const [notice, setNotice] = useState(null);
+  const [idempotencyKey] = useState(() => `return:${order.id}:${crypto.randomUUID()}`);
+  async function submit() {
+    const selected = items.map((item) => ({
+      order_item_id: item.id, qty: Number(quantities[item.id] || 0),
+      opened: opened[item.id] === true, sterile: item.sterile === true,
+    })).filter((item) => item.qty > 0);
+    if (!selected.length) { setNotice('Choose at least one quantity.'); return; }
+    setBusy(true); setNotice(null);
+    const response = await fetch('/api/returns/request', {
+      method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ order_id: order.id, items: selected, reason, idempotency_key: idempotencyKey }),
+    });
+    const body = await response.json().catch(() => ({}));
+    if (response.ok && body.rma) {
+      db.applyRemoteSnapshot({ rmas: [body.rma] });
+      setNotice(`Return ${body.rma.id} submitted for review.`);
+    } else setNotice(`Return blocked: ${(body.error || 'request failed').replace(/_/g, ' ')}.`);
+    setBusy(false);
+  }
+  return (
+    <div style={{ background: D.card, border: `1.5px solid ${D.plum}`, borderRadius: 12, padding: 16 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12 }}>
+        <div><div style={{ fontFamily: D.display, fontSize: 20 }}>Return request</div><div style={{ fontFamily: D.mono, fontSize: 11, color: D.ink3 }}>{order.id}</div></div>
+        <button onClick={onClose} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: D.ink3 }}>Close</button>
+      </div>
+      <select value={reason} onChange={(event) => setReason(event.target.value)} style={{ marginTop: 12, padding: '8px 10px', border: `1px solid ${D.line}`, borderRadius: 4 }}>
+        <option value="customer_request">Customer request</option><option value="damaged">Damaged</option><option value="wrong_item">Wrong item</option><option value="discretionary">Discretionary return</option>
+      </select>
+      <div style={{ display: 'grid', gap: 8, marginTop: 12 }}>
+        {items.map((item) => (
+          <div key={item.id} style={{ display: 'grid', gridTemplateColumns: '1fr 90px 110px', gap: 8, alignItems: 'center', fontSize: 13 }}>
+            <span><span style={{ fontFamily: D.mono }}>{item.sku}</span> · {item.name}</span>
+            <input type="number" min="0" max={item.shipped_qty || item.qty} value={quantities[item.id] || ''} onChange={(event) => setQuantities((current) => ({ ...current, [item.id]: event.target.value }))} placeholder="Qty" style={{ padding: '7px 9px', border: `1px solid ${D.line}`, borderRadius: 4 }} />
+            <label><input type="checkbox" checked={opened[item.id] || false} onChange={(event) => setOpened((current) => ({ ...current, [item.id]: event.target.checked }))} /> Opened</label>
+          </div>
+        ))}
+      </div>
+      {notice && <div style={{ marginTop: 10, fontSize: 12, color: D.ink2 }}>{notice}</div>}
+      <button onClick={submit} disabled={busy} style={{ ...primaryBtn(true), marginTop: 12 }}>{busy ? 'Submitting…' : 'Submit return request'}</button>
     </div>
   );
 }

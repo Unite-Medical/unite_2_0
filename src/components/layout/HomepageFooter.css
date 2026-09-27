@@ -1,0 +1,324 @@
+@font-face {
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url(/fonts/poppins-300-latin.woff2) format("woff2");
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212,
+    U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/poppins-400-latin.woff2) format("woff2");
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212,
+    U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(/fonts/poppins-500-latin.woff2) format("woff2");
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212,
+    U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(/fonts/poppins-600-latin.woff2) format("woff2");
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212,
+    U+2215, U+FEFF, U+FFFD;
+}
+.um-art-footer {
+  --footer-ink: #1d5c4d;
+  --footer-paper: #f3f2eb;
+  position: relative;
+  isolation: isolate;
+  scroll-margin-top: 90px;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  background: var(--footer-paper);
+  color: var(--footer-ink);
+  font-family: "Poppins", "Helvetica Neue", Arial, sans-serif;
+  font-weight: 300;
+  border-top: 1px solid #1d5c4d20;
+}
+.um-art-footer a {
+  color: inherit;
+}
+.um-art-footer button {
+  font-family: inherit;
+}
+.um-art-footer :is(a, button):focus-visible {
+  outline: 2px solid var(--footer-ink);
+  outline-offset: 5px;
+}
+.um-art-inner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  min-height: clamp(420px, 36vw, 620px);
+  padding: 44px max(24px, 4vw) 26px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: clamp(80px, 10vw, 150px);
+}
+.um-art-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) repeat(2, minmax(130px, 0.65fr));
+  gap: clamp(28px, 5vw, 80px);
+  align-items: start;
+}
+.um-art-grid > * {
+  min-width: 0;
+}
+.um-art-lockup {
+  display: inline-block;
+}
+.uf-home .um-art-blurb {
+  max-width: 36ch;
+  margin: 16px 0 0;
+  font-size: 14px;
+  line-height: 1.7;
+}
+.um-art-contacts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  list-style: none;
+  padding: 0;
+  margin: 18px 0 0;
+}
+.um-art-contacts li {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 13px;
+  line-height: 1.7;
+}
+.um-art-contacts svg {
+  width: 17px;
+  height: 17px;
+  flex: 0 0 17px;
+}
+.um-art-contacts a {
+  overflow-wrap: anywhere;
+  padding-block: 5px;
+}
+.um-art-contacts a:hover,
+.um-art-legal a:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.uf-home .um-art-footer .um-art-title {
+  font-family: inherit;
+  font-size: 12px;
+  line-height: 1.5;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin: 3px 0 12px;
+}
+.um-art-links {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.um-art-links a {
+  display: inline-block;
+  padding: 8px 0;
+  font-size: 14px;
+  line-height: 1.7;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+.um-art-links a:hover {
+  opacity: 0.65;
+  transform: translateX(2px);
+}
+.um-art-bottom {
+  padding-top: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  border-top: 1px solid #1d5c4d24;
+}
+.uf-home .um-art-copyright {
+  font-size: 10px;
+  line-height: 1.7;
+  margin: 0;
+}
+.um-art-copyright span {
+  display: block;
+}
+.um-art-legal {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  margin-left: auto;
+  font-size: 11px;
+  line-height: 1.7;
+}
+.um-art-legal a {
+  padding-block: 8px;
+}
+.um-art-motion {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  color: inherit;
+  border: 0;
+  background: transparent;
+  padding: 8px 0;
+  min-height: 36px;
+  font-size: 10px;
+  cursor: pointer;
+}
+.um-art-motion svg {
+  width: 14px;
+  height: 14px;
+}
+.um-art-media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background: #ccc6b1;
+}
+.um-art-film,
+.um-art-poster {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  transform: translateX(-50%);
+  mask-image: linear-gradient(to bottom, transparent, #000 18%);
+  display: block;
+  pointer-events: none;
+  /* Keep the original landscape and both trees behind the footer content. */
+}
+.um-art-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    #f3f2eb88,
+    #f3f2eb24 38%,
+    #f3f2eb00 64%,
+    #f3f2ebbf 100%
+  );
+  pointer-events: none;
+}
+@keyframes umFooterRise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+.um-art-footer[data-entered="true"] .um-art-rise {
+  animation: umFooterRise 0.65s cubic-bezier(0.22, 1, 0.36, 1)
+    var(--rise-delay, 0.2s) both;
+}
+@media (max-width: 760px) {
+  .um-art-inner {
+    padding: 36px 24px 20px;
+    gap: 80px;
+  }
+  .um-art-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 26px 24px;
+  }
+  .um-art-brand {
+    grid-column: 1 / -1;
+  }
+  .um-art-contacts {
+    flex-direction: column;
+    gap: 0;
+    margin-top: 14px;
+  }
+  .um-art-contacts a {
+    padding-block: 8px;
+  }
+  .uf-home .um-art-blurb {
+    max-width: 40ch;
+  }
+  .um-art-links a {
+    padding-block: 10px;
+  }
+  .um-art-bottom {
+    gap: 12px 20px;
+  }
+  .um-art-media::after {
+    background: linear-gradient(
+      to bottom,
+      #f3f2eb88,
+      #f3f2eb24 50%,
+      #f3f2eb00 72%,
+      #f3f2ebdf 100%
+    );
+  }
+  .um-art-copyright {
+    flex-basis: 100%;
+  }
+  .um-art-legal {
+    margin-left: 0;
+    gap: 8px 18px;
+  }
+  .um-art-legal a,
+  .um-art-motion {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+}
+@media (max-width: 380px) {
+  .um-art-inner {
+    padding-inline: 20px;
+  }
+  .um-art-legal {
+    font-size: 10px;
+    gap: 14px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .um-art-film,
+  .um-art-motion {
+    display: none;
+  }
+  .um-art-footer .um-art-rise {
+    animation: none;
+  }
+  .um-art-links a:hover {
+    transform: none;
+  }
+}

@@ -10,7 +10,7 @@ Configured on the existing Vercel project **unite-2-0**, Production only:
 - `VITE_UNITE_POSTHOG_HOST=https://us.i.posthog.com`
 - `VITE_UNITE_ANALYTICS_ENABLED=true`
 
-The code must be merged and built/deployed before visitor tracking becomes active. Vite embeds these public settings at build time. Tracking is restricted to the stable production alias `unite-2-0.vercel.app` and the future production domains `unitemedical.net` / `www.unitemedical.net`. Local development, branch previews, `staging.unitemedical.net`, TJS and internal routes are excluded. No production deployment or merge is included in this PR.
+The code must be built/deployed to the configured production project before visitor tracking becomes active. Vite embeds these public settings at build time. Tracking is restricted to the stable production alias `unite-2-0.vercel.app` and the future production domains `unitemedical.net` / `www.unitemedical.net`. Local development, branch previews, `staging.unitemedical.net`, TJS and internal routes are excluded. Merging the integration does not activate tracking on staging or configure Google Analytics.
 
 ## Events
 
@@ -27,7 +27,9 @@ Session recordings, autocapture, heatmaps, exception capture, person profiles an
 
 ## Verification
 
-`npm test` passes all 62 tests, including six PostHog tests and eight GA4/Search Console tests. `npm run build` passes and prerenders 122 routes. Targeted lint passes. One diagnostic `analytics_setup_test` event with no customer information was accepted with HTTP 200.
+Integration validation against the September 27 main release: 558 tests passed, with three private migration-snapshot tests skipped because that fixture is absent in this checkout. Targeted lint and the production build passed. All 124 sitemap URLs have generated pages and matching canonical URLs; the public build confidentiality scan passed. Existing server-confirmed contact/quote submissions, warehouse routes, and public-build aliases are preserved.
+
+A prior diagnostic `analytics_setup_test` event with no customer information was accepted with HTTP 200. Live visitor collection still requires the configured production deployment; no forms or purchases were submitted during integration validation.
 
 After deploying, verify navigation and commerce events in project 622766, and confirm no events from TJS or staging appear. Form submission tests should use a controlled test workflow because the existing forms send real email when their services are configured. No forms or purchases were submitted during this implementation.
 

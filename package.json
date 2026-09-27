@@ -5,24 +5,37 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && node scripts/prerender.mjs",
+    "build": "vite build && node scripts/prerender.mjs && node scripts/verify_assistant_connections.mjs",
     "lint": "eslint .",
     "test": "node --test 'tests/**/*.test.js'",
     "preview": "vite preview",
     "db:migrate": "node scripts/migrate.mjs",
     "prerender": "node scripts/prerender.mjs",
     "wms:seed": "node scripts/wms_seed_movements.mjs",
-    "wms:check": "node scripts/wms_seed_movements.mjs && python3 scripts/wms_check.py"
+    "wms:check": "node scripts/wms_seed_movements.mjs && python3 scripts/wms_check.py",
+    "prebuild": "node scripts/prepare_private_build_inputs.mjs",
+    "pretest": "node scripts/prepare_private_build_inputs.mjs",
+    "predev": "node scripts/prepare_private_build_inputs.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",
     "@react-email/components": "^1.0.12",
     "@react-email/render": "^2.0.9",
-    "posthog-js": "^1.434.8",
+    "@vercel/blob": "^2.8.0",
+    "@zxing/browser": "^0.2.1",
+    "docx": "^9.7.2",
+    "exceljs": "^4.4.0",
+    "gsap": "^3.15.0",
+    "pdfkit": "^0.20.2",
+    "pptxgenjs": "^4.0.1",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
+    "react-markdown": "^10.1.0",
     "react-router-dom": "^7.14.1",
-    "resend": "^6.14.0"
+    "remark-gfm": "^4.0.1",
+    "resend": "^6.14.0",
+    "three": "^0.185.1",
+    "posthog-js": "^1.434.8"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",

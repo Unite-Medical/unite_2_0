@@ -46,12 +46,12 @@ export default async function handler(req, res) {
     }
   }
 
-  const evt = pushEvent({
+  const evt = await pushEvent({
     source: 'shipstation',
     type: notice.resource_type || 'UNKNOWN',
     payload: { notice, resource },
     verified: true,
   });
-  logEvent('hooks.shipstation', 'accepted', { type: notice.resource_type, seq: evt.seq });
-  sendJson(res, 200, { received: true, seq: evt.seq });
+  logEvent('hooks.shipstation', 'accepted', { type: notice.resource_type, event_id: evt.id, duplicate: evt.duplicate });
+  sendJson(res, 200, { received: true, event_id: evt.id, duplicate: evt.duplicate });
 }

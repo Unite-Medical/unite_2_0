@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { D } from '../tokens.js';
 import { Nav } from '../components/layout/Nav.jsx';
@@ -6,7 +6,7 @@ import { Footer } from '../components/layout/Footer.jsx';
 import { PageHead } from '../components/layout/PageHead.jsx';
 import { auth } from '../lib/auth.js';
 import { db } from '../lib/db.js';
-import { qbo } from '../lib/services.js';
+
 import { fmt } from '../lib/format.js';
 import { useViewport } from '../lib/viewport.js';
 import { useSEO } from '../lib/seo.js';
@@ -16,8 +16,10 @@ export function Invoices() {
   const session = auth.use();
   const { isMobile } = useViewport();
   const padX = isMobile ? 20 : 40;
+  const [paying, setPaying] = useState(null);
+  const [paymentError, setPaymentError] = useState(null);
   useSEO({ title: 'Invoices', noindex: true });
-  const orgId = session?.org_id || 'org_atlsurgical';
+  const orgId = session.org_id;
   const invoices = db.useTable('invoices', { where: { customer_id: orgId }, orderBy: 'due_date', dir: 'desc' });
 
   const stats = useMemo(() => {
@@ -32,10 +34,17 @@ export function Invoices() {
     };
   }, [invoices]);
 
-  async function handlePayAll() {
-    for (const inv of invoices.filter((i) => i.status === 'open')) {
-      await qbo.recordPayment({ invoice_id: inv.qbo_id || inv.id, amount: inv.amount, method: 'ach' });
-      db.update('invoices', inv.id, { status: 'paid' });
+  async function handlePay(inv) {
+    setPaying(inv.id);
+    setPaymentError(null);
+    try {
+      const response = await fetch(`/api/finance/payment-link?invoice_id=${encodeURIComponent(inv.id)}`, { credentials: 'include' });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok || !payload.payment_url) throw new Error(payload.error || 'payment_link_failed');
+      window.location.assign(payload.payment_url);
+    } catch {
+      setPaymentError('Online payment is not ready for this invoice. Contact accounting@unitemedical.net.');
+      setPaying(null);
     }
   }
 
@@ -73,11 +82,9 @@ export function Invoices() {
               <div style={{ fontFamily: D.display, fontSize: 22, letterSpacing: -0.3 }}>Invoice history · {invoices.length} records</div>
               <div style={{ display: 'flex', gap: 8 }}>
                 <button onClick={exportCsv} style={{ background: 'transparent', color: D.ink2, border: `1px solid ${D.line}`, padding: '8px 14px', borderRadius: 4, fontSize: 12, cursor: 'pointer' }}>Export CSV</button>
-                <button onClick={handlePayAll} disabled={stats.ar === 0} style={{ background: D.plum, color: D.paper, border: 'none', padding: '8px 16px', borderRadius: 4, fontSize: 12, cursor: stats.ar === 0 ? 'not-allowed' : 'pointer', opacity: stats.ar === 0 ? 0.5 : 1 }}>
-                  Pay all outstanding
-                </button>
               </div>
             </div>
+            {paymentError && <div style={{ padding: '10px 24px', color: '#c3382d', fontSize: 12, borderBottom: `1px solid ${D.line}` }}>{paymentError}</div>}
             {invoices.length === 0 && <div style={{ padding: 32, textAlign: 'center', color: D.ink3 }}>No invoices yet.</div>}
             {invoices.length > 0 && (
               <div className={isMobile ? 'um-scroll-x' : ''}>
@@ -103,6 +110,11 @@ export function Invoices() {
                           <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, padding: '4px 10px', borderRadius: 4, background: isPaid ? 'rgba(29,92,77,.1)' : D.terraSoft, color: isPaid ? D.ink2 : D.terra }}>{(inv.status || 'OPEN').toUpperCase()}</span>
                         </td>
                         <td style={{ padding: '14px 18px', textAlign: 'right' }}>
+                          {!isPaid && (
+                            <button type="button" onClick={() => handlePay(inv)} disabled={paying === inv.id} style={{ background: D.plum, color: D.paper, border: 'none', fontFamily: D.mono, fontSize: 11, borderRadius: 4, padding: '7px 10px', cursor: paying === inv.id ? 'wait' : 'pointer', marginRight: 12 }}>
+                              {paying === inv.id ? 'Opening…' : 'Pay online'}
+                            </button>
+                          )}
                           <button onClick={() => navigate(`/invoices/${inv.id}/print`)} style={{ background: 'none', border: 'none', fontFamily: D.mono, fontSize: 11, color: D.plum, cursor: 'pointer', padding: 0 }}>PDF →</button>
                         </td>
                       </tr>

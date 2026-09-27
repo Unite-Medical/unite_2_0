@@ -2,7 +2,7 @@
 
 ## Current status
 
-- PostHog is implemented in this PR for Unite project **622766**, separate from TJS project **622798**. Its production Vercel variables were configured previously. Tracking requires this code to be merged and deployed; it is not installed on the existing Shopify site. See [POSTHOG.md](POSTHOG.md).
+- PostHog is implemented for Unite project **622766**, separate from TJS project **622798**. Its production Vercel variables were configured previously. Tracking requires this code to be deployed to the configured production project; it is not installed on the existing Shopify site. See [POSTHOG.md](POSTHOG.md).
 - Google Analytics 4 (GA4) is the current Google Analytics integration. The code is ready but **disabled by default**, pending Unite's real web-stream Measurement ID and account configuration. No Google Tag Manager container or duplicate Google Analytics installation is needed.
 - Search Console launch plumbing is ready: canonical sitemap generated on every build, existing robots sitemap declaration, prerendered canonical metadata, and optional verification meta tag. This does **not** mean Google ownership is verified, a sitemap is submitted, or pages are indexed.
 - The current Shopify production site and DNS are unchanged. Do not submit the new sitemap until Unite 2.0 is serving the production domain.

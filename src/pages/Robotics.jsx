@@ -1,323 +1,189 @@
-// Restore Robotics program — flagship /robotics build (PRD-28 §5.3).
-// Structure modeled on rocuvexmed.com (a Unite sub-distributor's program
-// site); Unite sits ABOVE Rocuvex in the chain, so this page presents the
-// program at least as strongly. All program facts verified & approved:
-//   · FDA 510(k)-cleared remanufactured da Vinci Xi & DV5 + certified pre-owned
-//   · Restore Robotics = manufacturer of record (only FDA 510(k) clearance)
-//   · Encore Medical = master distributor · Unite = authorized distributor/rep
-//   · ~20% savings remanufactured / ~25% certified pre-owned · MOR warranty
-// Conversion paths → HubSpot: hospitals (savings analysis / consultation,
-// capturing facility, contact, da Vinci model, instrument volume) and
-// sub-distributors (rep the program under Unite).
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { D } from '../tokens.js';
 import { Nav } from '../components/layout/Nav.jsx';
 import { Footer } from '../components/layout/Footer.jsx';
-import { Grad } from '../components/shared/Grad.jsx';
-import { Eyebrow } from '../components/shared/Eyebrow.jsx';
-import { Icon } from '../components/shared/Icon.jsx';
-import { Reveal } from '../components/shared/Reveal.jsx';
-import { db } from '../lib/db.js';
-import { hubspot, gmail } from '../lib/services.js';
-import { uid } from '../lib/format.js';
-import { useViewport } from '../lib/viewport.js';
 import { useSEO } from '../lib/seo.js';
+import { savingsDisplay } from '../lib/roboticsSavings.js';
+import './robotics.css';
 
-const STEPS = [
-  ['Collection & recycling', 'Used robotic instruments go into collection trays provided at no cost, with reusable shipping containers and free return shipping.'],
-  ['Secure transport', 'Sealed containers protect instruments in transit back to the Restore Robotics remanufacturing facility.'],
-  ['Remanufacture & QC', 'Eligible instruments run a multi-step process — cleaning, visual inspection, functional performance testing, electrical verification, and quality-control validation — under the FDA 510(k) clearance.'],
-  ['Certified instruments back', 'Your program gains access to remanufactured and certified pre-owned instruments at 20–25% savings, under a manufacturer-of-record warranty.'],
-];
-
-const FAQS = [
-  ['What is a remanufactured robotic instrument?', 'A used da Vinci instrument restored through an FDA 510(k)-cleared process, tested for performance, and made available for reuse at significantly lower cost.'],
-  ['Is the remanufacturing process FDA-cleared?', 'Yes. Restore Robotics holds the industry\u2019s only FDA 510(k) clearance for remanufacturing da Vinci Xi and DV5 instruments.'],
-  ['Which robotic systems are compatible?', 'da Vinci Xi and DV5 surgical systems, plus certified pre-owned inventory with remaining uses.'],
-  ['Who provides the warranty?', 'Restore Robotics is the manufacturer of record and provides full warranty coverage on remanufactured instruments.'],
-  ['How much can our hospital save?', 'Approximately 20% on remanufactured instruments and about 25% on certified pre-owned inventory versus new OEM instruments. Unite has generated over $900K in savings for hospital systems to date.'],
-  ['Does the program disrupt our surgical workflow?', 'No. Collection trays and containers slot into existing processes with minimal disruption, and return shipping is free.'],
-];
-
+const TYPES = { savings: 'Savings analysis', consult: 'Consultation', collections: 'Collections', distributor: 'Represent the program' };
 const MODELS = ['da Vinci Xi', 'da Vinci 5 (DV5)', 'Both', 'Not sure'];
 const VOLUMES = ['< 100 instruments / yr', '100–500 / yr', '500–1,000 / yr', '1,000+ / yr', 'Not sure'];
+const STEPS = [
+  ['Collect', 'Start with the instruments you already use.', 'Unite helps your team establish a collection program with trays and return materials from Encore.'],
+  ['Return', 'A place for every instrument.', 'Follow the program’s cleaning and packing instructions. Purpose-built trays and reusable containers protect the return journey.'],
+  ['Restore', 'Put eligible instruments back to work.', 'Restore Robotics evaluates eligible instruments and remanufactures cleared models with inspection, testing and quality controls.'],
+  ['Replenish', 'Keep your program moving.', 'Unite coordinates access to remanufactured and certified pre-owned inventory, with availability and pricing confirmed for your needs.'],
+];
+const FAQS = [
+  ['Can we just collect and return expired instruments?', 'Yes. Choose Collections in the inquiry form. Unite will help coordinate the collection setup, materials and return instructions for your hospital.'],
+  ['What can our facility purchase?', 'The program offers eligible remanufactured da Vinci Xi instruments and certified pre-owned inventory. We confirm the specific instrument, system compatibility, remaining uses and availability before quoting.'],
+  ['How do the savings work?', 'The program targets approximately 20% savings on remanufactured instruments and 25% on certified pre-owned inventory compared with new instruments. Your savings analysis uses your product mix, usage and current pricing; actual savings vary.'],
+  ['Are the instruments FDA-cleared?', 'Restore Robotics holds FDA 510(k) clearances for specific remanufactured da Vinci Xi instruments. Clearance and compatibility are instrument-specific. Ask us for the documentation for each item in your quote.'],
+  ['Can we participate with a da Vinci 5 system?', 'Tell us that your facility uses da Vinci 5. The team will confirm eligible instruments and their labeling for your system before an order is placed.'],
+  ['Who provides the warranty?', 'Restore Robotics is the manufacturer of record for its remanufactured instruments. We provide the applicable manufacturer warranty terms with your quote.'],
+  ['How do collection and shipping work?', 'The program provides collection trays, reusable containers and return shipping. Unite will coordinate onboarding and the current handling instructions with Encore.'],
+  ['Can our company represent the program?', 'Yes—choose “Represent the program” below. Tell us about the facilities or territory you serve, and Unite will follow up about the sub-distributor program.'],
+];
 
-function LeadForm({ isMobile }) {
-  const [form, setForm] = useState({ kind: 'savings', facility: '', name: '', email: '', model: MODELS[0], volume: VOLUMES[0], message: '' });
-  const [busy, setBusy] = useState(false);
-  const [done, setDone] = useState(null);
-  const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
-
-  async function submit(e) {
-    e.preventDefault();
-    setBusy(true);
+function LeadForm({ kind, setKind }) {
+  const [form, setForm] = useState({ company:'',name:'',email:'',phone:'',instrument_model:'',instrument_volume:'',message:'',website_confirm:'' });
+  const [busy,setBusy] = useState(false), [saved,setSaved] = useState(null), [error,setError] = useState('');
+  const lock = useRef(false), request = useRef(null), confirmation = useRef(null);
+  useEffect(() => { if(saved) confirmation.current?.focus(); },[saved]);
+  const set=(key,value)=>setForm(previous=>({...previous,[key]:value}));
+  async function submit(event) {
+    event.preventDefault();
+    if(lock.current)return;
+    lock.current=true;setBusy(true);setError('');
+    const payload={kind:'robotics',...form,inquiry_type:kind};
+    const canonical=JSON.stringify(payload);
+    if(request.current?.canonical!==canonical)request.current={canonical,key:crypto.randomUUID()};
     try {
-      const kindLabel = form.kind === 'savings' ? 'Savings analysis' : form.kind === 'consult' ? 'Consultation' : 'Sub-distributor inquiry';
-      const lead = db.insert('leads', {
-        id: uid('lead'),
-        org_name: form.facility || form.name,
-        contact_name: form.name,
-        contact_email: form.email,
-        segment: form.kind === 'distributor' ? 'distributors' : 'asc',
-        status: 'warm',
-        source: 'robotics_page',
-        owner: 'Unassigned',
-        next_action: `Robotics · ${kindLabel}`,
-        next_action_at: new Date(Date.now() + 86400000).toISOString(),
-        notes: `da Vinci model: ${form.model} · Instrument volume: ${form.volume}\n${form.message}`,
-        reason: `Robotics · ${kindLabel}`,
-      });
-      const [first, ...rest] = form.name.split(' ');
-      await Promise.all([
-        hubspot.createContact({ email: form.email, firstname: first || '', lastname: rest.join(' '), company: form.facility, phone: '', lifecyclestage: 'lead' }),
-        gmail.send({ to: 'support@unitemedical.net', subject: `Robotics lead · ${kindLabel} · ${form.facility || form.name}`, body: `Model: ${form.model}\nVolume: ${form.volume}\n\n${form.message}` }),
-      ]);
-      setDone(lead.id);
-    } finally {
-      setBusy(false);
-    }
+      const response=await fetch('/api/public/inquiry',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...payload,idempotency_key:request.current.key}),signal:AbortSignal.timeout(55000)});
+      const result=await response.json().catch(()=>({}));
+      if(!response.ok||!result.ok||!result.id)throw new Error(response.status===429?'You have sent several requests. Please try again later or call 833.868.6483.':'We could not confirm your request was saved. Your details are still here. Please retry or call 833.868.6483.');
+      setSaved({id:result.id,kind});
+    }catch(err){setError(err.name==='TimeoutError'?'We have not received confirmation yet. Retry with the same details; this will not create a duplicate request.':err instanceof TypeError?'Could not reach Unite. Your details are still here—please try again.':err.message);}
+    finally{lock.current=false;setBusy(false);}
   }
-
-  const input = { marginTop: 6, padding: '12px 14px', background: D.paper, border: `1px solid ${D.line}`, borderRadius: 10, fontSize: 14, color: D.ink, width: '100%', outline: 'none', fontFamily: D.sans, boxSizing: 'border-box' };
-  const label = { fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 };
-
-  if (done) {
-    return (
-      <div style={{ padding: 28, background: D.paperAlt, borderRadius: 14 }}>
-        <div style={{ fontFamily: D.display, fontSize: 26, color: D.plum }}>Got it.</div>
-        <p style={{ color: D.ink2, marginTop: 8, marginBottom: 0, fontSize: 14.5, lineHeight: 1.6 }}>
-          Our robotics team will reach out within one business day with next steps
-          {form.kind === 'savings' ? ' on your savings analysis' : ''}.
-        </p>
+  if(saved)return <div className="ur-confirm" role="status" tabIndex={-1} ref={confirmation}><span className="ur-check" aria-hidden="true">✓</span><h3>Your request is saved.</h3><p>The Unite robotics team can now review your {saved.kind==='distributor'?'distributor inquiry':TYPES[saved.kind].toLowerCase()+' request'}. We’ll follow up using the contact details you provided.</p><p className="ur-reference">Reference: {saved.id}</p><a href="tel:+18338686483">Need to speak with us? 833.868.6483 ↗</a></div>;
+  return <form className="ur-form" onSubmit={submit} aria-label="Robotics inquiry">
+    <fieldset disabled={busy}><legend id="robotics-inquiry-title" tabIndex={-1}>How can we help?</legend><div className="ur-type-switch">{Object.entries(TYPES).map(([value,label])=><button key={value} type="button" aria-pressed={kind===value} onClick={()=>setKind(value)}>{label}</button>)}</div>
+      {kind==='collections'&&<p className="ur-collection-note">For hospitals that want to collect and return expired robotic instruments to Restore. We’ll help you set up the collection and return process.</p>}
+      <div className="ur-fields">
+        <label className="ur-wide">{kind==='distributor'?'Company':'Facility / health system'}<input autoComplete="organization" required maxLength={200} value={form.company} onChange={e=>set('company',e.target.value)}/></label>
+        <label>Your name<input autoComplete="name" required maxLength={200} value={form.name} onChange={e=>set('name',e.target.value)}/></label>
+        <label>Work email<input autoComplete="email" type="email" required maxLength={254} value={form.email} onChange={e=>set('email',e.target.value)}/></label>
+        <label className="ur-wide">Phone <span>(optional)</span><input autoComplete="tel" type="tel" maxLength={100} value={form.phone} onChange={e=>set('phone',e.target.value)}/></label>
+        {(kind==='savings'||kind==='consult')&&<><label>Robotic system<select required value={form.instrument_model} onChange={e=>set('instrument_model',e.target.value)}><option value="" disabled>Select a system</option>{MODELS.map(model=><option key={model}>{model}</option>)}</select></label><label>Annual instrument volume<select required value={form.instrument_volume} onChange={e=>set('instrument_volume',e.target.value)}><option value="" disabled>Select a range</option>{VOLUMES.map(volume=><option key={volume}>{volume}</option>)}</select></label></>}
+        <label className="ur-wide">{kind==='distributor'?'Tell us about your company and territory':kind==='collections'?'Tell us about the instruments you’d like to return':'Anything else we should know?'} <span>(optional)</span><textarea rows={3} maxLength={4000} value={form.message} onChange={e=>set('message',e.target.value)}/></label>
+        <label className="ur-trap" aria-hidden="true">Leave this empty<input tabIndex={-1} autoComplete="off" value={form.website_confirm} onChange={e=>set('website_confirm',e.target.value)}/></label>
       </div>
-    );
-  }
-  return (
-    <form onSubmit={submit}>
-      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-        {[['savings', 'Request a savings analysis'], ['consult', 'Schedule a consultation'], ['distributor', 'Rep the program']].map(([k, l]) => (
-          <button key={k} type="button" onClick={() => set('kind', k)} style={{
-            background: form.kind === k ? D.plum : 'transparent', color: form.kind === k ? D.paper : D.ink2,
-            border: `1px solid ${form.kind === k ? D.plum : D.line}`, padding: '9px 14px', borderRadius: 4,
-            fontSize: 12.5, cursor: 'pointer', fontFamily: D.sans,
-          }}>{l}</button>
-        ))}
-      </div>
-      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 12, marginTop: 14 }}>
-        <label><div style={label}>{form.kind === 'distributor' ? 'COMPANY' : 'FACILITY / HEALTH SYSTEM'}</div><input required value={form.facility} onChange={(e) => set('facility', e.target.value)} style={input} /></label>
-        <label><div style={label}>YOUR NAME</div><input required value={form.name} onChange={(e) => set('name', e.target.value)} style={input} /></label>
-        <label><div style={label}>WORK EMAIL</div><input required type="email" value={form.email} onChange={(e) => set('email', e.target.value)} style={input} /></label>
-        <label><div style={label}>DA VINCI MODEL</div>
-          <select value={form.model} onChange={(e) => set('model', e.target.value)} style={input}>{MODELS.map((m) => <option key={m}>{m}</option>)}</select>
-        </label>
-        {form.kind !== 'distributor' && (
-          <label style={{ gridColumn: isMobile ? 'auto' : '1 / -1' }}><div style={label}>ANNUAL INSTRUMENT VOLUME</div>
-            <select value={form.volume} onChange={(e) => set('volume', e.target.value)} style={input}>{VOLUMES.map((v) => <option key={v}>{v}</option>)}</select>
-          </label>
-        )}
-        <label style={{ gridColumn: isMobile ? 'auto' : '1 / -1' }}><div style={label}>ANYTHING ELSE?</div>
-          <textarea rows={3} value={form.message} onChange={(e) => set('message', e.target.value)} style={{ ...input, resize: 'vertical' }} />
-        </label>
-      </div>
-      <button type="submit" disabled={busy} style={{ marginTop: 16, background: D.plum, color: D.paper, border: 'none', padding: '14px 24px', borderRadius: 4, fontSize: 14, fontWeight: 600, cursor: busy ? 'wait' : 'pointer', opacity: busy ? 0.7 : 1, fontFamily: D.sans }}>
-        {busy ? 'Sending…' : form.kind === 'savings' ? 'Request savings analysis →' : form.kind === 'consult' ? 'Schedule consultation →' : 'Talk to our program team →'}
-      </button>
-    </form>
-  );
+      {error&&<p role="alert" className="ur-error">{error}</p>}
+      <button className="ur-button ur-submit" type="submit" disabled={busy}>{busy?'Saving your request…':kind==='savings'?'Request my savings analysis':kind==='consult'?'Request a consultation':kind==='collections'?'Request collections setup':'Talk to the program team'} <span aria-hidden="true">↗</span></button>
+      <p className="ur-form-note">For business inquiries only. Please do not include patient information. <Link to="/privacy">Privacy policy</Link></p>
+    </fieldset>
+  </form>;
 }
-
-/**
- * Live savings figure (PRD-28): reads the CDN-cached snapshot pushed by
- * Restore via /api/hooks/restore. Until the bridge is live (or if the
- * fetch fails) we show the static, Damon-approved "$900K+" — never a
- * fabricated live number.
- */
-function useLiveSavings() {
-  const [live, setLive] = useState(null);
+function HeroFilm() {
+  const frame = useRef(null), video = useRef(null), userPaused = useRef(false);
+  const [enabled,setEnabled] = useState(false), [playing,setPlaying] = useState(false), [failed,setFailed] = useState(false);
   useEffect(() => {
-    let on = true;
-    fetch('/api/metrics/savings')
-      .then((r) => (r.ok ? r.json() : null))
-      .then((d) => {
-        if (on && d?.ok && Number.isFinite(Number(d.total_savings_usd))) setLive(Number(d.total_savings_usd));
-      })
-      .catch(() => {});
-    return () => { on = false; };
-  }, []);
-  if (live == null) return '$900K+';
-  return live >= 1e6 ? `$${(live / 1e6).toFixed(2)}M` : `$${Math.round(live / 1e3)}K+`;
+    const reduced=matchMedia('(prefers-reduced-motion: reduce)'), desktop=matchMedia('(min-width: 600px)');
+    let observer;
+    const configure=()=>{
+      observer?.disconnect();
+      if(reduced.matches || !desktop.matches || navigator.connection?.saveData){video.current?.pause();setEnabled(false);return;}
+      observer=new IntersectionObserver(([entry])=>{
+        if(entry.isIntersecting){setEnabled(true);if(!userPaused.current&&!document.hidden)video.current?.play().catch(()=>{});}
+        else video.current?.pause();
+      },{threshold:.15});
+      if(frame.current)observer.observe(frame.current);
+    };
+    const visibility=()=>{if(document.hidden)video.current?.pause();else if(frame.current?.getBoundingClientRect().bottom>0&&!userPaused.current)video.current?.play().catch(()=>{});};
+    configure();reduced.addEventListener('change',configure);desktop.addEventListener('change',configure);document.addEventListener('visibilitychange',visibility);
+    return()=>{observer?.disconnect();reduced.removeEventListener('change',configure);desktop.removeEventListener('change',configure);document.removeEventListener('visibilitychange',visibility);};
+  },[]);
+  const toggle=()=>{if(!video.current)return;if(video.current.paused){userPaused.current=false;video.current.play().catch(()=>{});}else{userPaused.current=true;video.current.pause();}};
+  return <div className="ur-hero-film" ref={frame}><img src="/images/robotics/da-vinci-xi-system.jpg" alt="da Vinci Xi robotic surgical system" width="1728" height="1117" fetchPriority="high"/>{enabled&&!failed&&<><video ref={video} src="/images/robotics/robotics-hero-short.mp4" poster="/images/robotics/da-vinci-xi-system.jpg" autoPlay loop muted playsInline preload="metadata" aria-hidden="true" onPlay={()=>setPlaying(true)} onPause={()=>setPlaying(false)} onError={()=>setFailed(true)}/><button className="ur-film-control" onClick={toggle} aria-label={playing?'Pause background film':'Play background film'}>{playing?'Ⅱ':'▷'} <span>{playing?'Pause':'Play'}</span></button></>}</div>;
 }
+
+// The scroll position is the timeline. This never cancels wheel/touch events.
+function ScrollFilm({ children }) {
+  const section = useRef(null), video = useRef(null), syncVideo = useRef(null);
+  const [enabled, setEnabled] = useState(false), [failed, setFailed] = useState(false), [staticMode, setStaticMode] = useState(false);
+  useEffect(() => {
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const desktop = window.matchMedia('(min-width: 900px)');
+    let observer, raf = 0, allowed = false, displayedProgress = null, lastFrame = 0;
+    const update = (now) => {
+      raf = 0;
+      if (!allowed || !section.current) return;
+      const bounds = section.current.getBoundingClientRect();
+      const distance = Math.max(1, bounds.height - window.innerHeight);
+      const targetProgress = Math.min(1, Math.max(0, -bounds.top / distance));
+      const elapsed = lastFrame ? Math.min(64, now - lastFrame) : 16;
+      lastFrame = now;
+      // A short, time-based settle smooths trackpad/wheel jumps without autoplay.
+      if (displayedProgress === null) displayedProgress = targetProgress;
+      else displayedProgress += (targetProgress - displayedProgress) * (1 - Math.exp(-elapsed / 150));
+      const settling = Math.abs(targetProgress - displayedProgress) > .00015;
+      if (!settling) displayedProgress = targetProgress;
+      const progress = displayedProgress;
+      section.current.style.setProperty('--ur-progress', progress.toFixed(4));
+      const element = video.current;
+      if (element?.readyState >= 2 && Number.isFinite(element.duration) && !element.seeking) {
+        const target = progress * Math.max(0, element.duration - .05);
+        if (Math.abs(element.currentTime - target) > .025) element.currentTime = target;
+      }
+      if (settling) raf = requestAnimationFrame(update);
+    };
+    const schedule = () => { if (!raf) raf = requestAnimationFrame(update); };
+    syncVideo.current = schedule;
+    const configure = () => {
+      observer?.disconnect();
+      allowed = !reduced.matches && desktop.matches && !navigator.connection?.saveData;
+      setStaticMode(!allowed);
+      if (!allowed) { cancelAnimationFrame(raf); raf = 0; displayedProgress = null; lastFrame = 0; setEnabled(false); section.current?.style.removeProperty('--ur-progress'); return; }
+      observer = new IntersectionObserver(([entry]) => { if (entry.isIntersecting) { setEnabled(true); schedule(); } }, { rootMargin: '250px 0px' });
+      if (section.current) observer.observe(section.current);
+      schedule();
+    };
+    configure();
+    window.addEventListener('scroll', schedule, { passive: true }); window.addEventListener('resize', schedule);
+    reduced.addEventListener('change', configure); desktop.addEventListener('change', configure);
+    return () => { observer?.disconnect(); cancelAnimationFrame(raf); syncVideo.current = null; window.removeEventListener('scroll', schedule); window.removeEventListener('resize', schedule); reduced.removeEventListener('change', configure); desktop.removeEventListener('change', configure); };
+  }, []);
+  return <section id="robotics-system" ref={section} className={`ur-system${failed || staticMode ? ' is-static' : ''}`} aria-labelledby="robotics-system-title">
+    <div className="ur-system-stage">
+      <div className="ur-film ur-system-media"><img src="/images/robotics/robotics-orbit-poster.jpg" alt="Conceptual da Vinci Xi orbit visualization derived from Intuitive’s reference photograph" width="1920" height="1080" loading="lazy"/>{enabled && !failed && <video ref={video} src="/images/robotics/robotics-scroll-orbit.mp4" poster="/images/robotics/robotics-orbit-poster.jpg" muted playsInline preload="auto" aria-hidden="true" onLoadedData={() => syncVideo.current?.()} onSeeked={() => syncVideo.current?.()} onError={() => setFailed(true)}/>}</div>
+      <div className="ur-system-shade" aria-hidden="true"/>
+      <div className="ur-scroll-ui"><span>SCROLL TO EXPLORE ↓</span><div className="ur-scroll-track" aria-hidden="true"><i/></div><a href="#robotics-process">Continue to the workflow ↓</a></div>
+      {children}
+    </div>
+  </section>;
+}
+
+const PATHWAYS = [
+  { number: '01', image: 'hover-instrument-inspection.jpg', position: 'center 52%', title: 'Remanufactured instruments', tag: 'Instrument supply', copy: 'Explore eligible instruments remanufactured by Restore Robotics, with model-specific clearance and manufacturer warranty terms.', action: 'Review potential savings', kind: 'savings' },
+  { number: '02', image: 'hover-instrument-tip.jpg', position: 'center 62%', title: 'Certified pre-owned inventory', tag: 'Additional sourcing options', copy: 'Find inventory that fits your program. Confirm system compatibility, condition, remaining uses and availability with Unite.', action: 'Discuss available inventory', kind: 'consult' },
+  { number: '03', image: 'hover-collection-shipping.jpg', position: 'center 58%', title: 'Collections & returns', tag: 'For hospitals returning instruments', copy: 'Just looking to return expired instruments? Start with collections support. We’ll coordinate the setup, materials and return instructions.', action: 'Set up collections', kind: 'collections' },
+];
+
+const FEATURES = [
+  {name:'Instrument supply',title:'More life. More possibility.',copy:'Explore eligible remanufactured and certified pre-owned robotic instruments for your facility.',image:'xi-instruments.jpg',action:'Explore instrument options',kind:'savings'},
+  {name:'Collections & returns',title:'A new beginning starts here.',copy:'Start a collection program for expired instruments. Unite helps coordinate materials and the return process.',image:'xi-instruments.jpg',action:'Set up collections',kind:'collections'},
+  {name:'Your program partner',title:'One conversation. A connected program.',copy:'From the first savings analysis to sourcing and returns, Unite helps your team take the next step.',image:'da-vinci-xi-system.jpg',action:'Talk to Unite',kind:'consult'},
+];
 
 export function Robotics() {
-  const { isMobile } = useViewport();
-  const padX = isMobile ? 20 : 40;
-  const savings = useLiveSavings();
-  useSEO({
-    title: 'Robotic Surgery Instruments — FDA 510(k) remanufactured da Vinci · Unite Medical',
-    description:
-      'Reduce the cost of robotic surgery: FDA 510(k)-cleared remanufactured da Vinci Xi & DV5 instruments and certified pre-owned inventory, 20–25% savings, manufacturer-of-record warranty. $900K+ saved for hospital systems to date.',
-    canonical: '/robotics',
-  });
-  return (
-    <div style={{ background: D.paper, fontFamily: D.sans, color: D.ink, minHeight: '100vh' }}>
-      <Nav />
-      <main id="main">
-        {/* HERO */}
-        <div style={{ background: D.inkDeep, color: D.paper, padding: `${isMobile ? 72 : 130}px ${padX}px ${isMobile ? 56 : 96}px` }}>
-          <div style={{ maxWidth: 1360, margin: '0 auto' }}>
-            <Eyebrow dark pulse style={{ marginBottom: isMobile ? 16 : 24 }}>RESTORE ROBOTICS PROGRAM · AUTHORIZED DISTRIBUTOR</Eyebrow>
-            <h1 style={{ fontFamily: D.display, fontWeight: 400, fontSize: 'clamp(40px, 8.5vw, 104px)', lineHeight: 0.96, letterSpacing: '-0.035em', margin: 0, maxWidth: '11em' }}>
-              Reduce the cost of <Grad>robotic surgery</Grad>.
-            </h1>
-            <p style={{ fontSize: isMobile ? 15.5 : 18, lineHeight: 1.6, color: 'rgba(243,242,235,.8)', marginTop: 24, maxWidth: 640 }}>
-              FDA 510(k)-cleared remanufactured da Vinci Xi &amp; DV5 instruments and certified
-              pre-owned inventory — 20–25% savings per instrument, full manufacturer-of-record
-              warranty, zero compromise on clinical performance.
-            </p>
-            <div style={{ display: 'flex', gap: 10, marginTop: 32, flexWrap: 'wrap' }}>
-              <a href="#robotics-lead" style={{ background: D.paper, color: D.ink, padding: isMobile ? '14px 22px' : '16px 28px', borderRadius: 4, fontSize: 15, fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 10 }}>
-                Request a savings analysis <Icon.arrow />
-              </a>
-              <a href="#robotics-lead" className="um-glass-btn" style={{ color: D.paper, padding: isMobile ? '14px 22px' : '16px 28px', borderRadius: 4, fontSize: 15, fontWeight: 500 }}>
-                Schedule a consultation
-              </a>
-            </div>
-            {/* Program stat band */}
-            <div style={{ marginTop: isMobile ? 40 : 64, display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(4, 1fr)', gap: isMobile ? '0 20px' : '0 40px' }}>
-              {[
-                [savings, 'Saved for hospital systems to date'],
-                ['20%', 'Savings · remanufactured'],
-                ['25%', 'Savings · certified pre-owned'],
-                ['510(k)', 'The only FDA clearance · Restore Robotics'],
-              ].map(([big, small]) => (
-                <div key={small} style={{ borderTop: '1px solid rgba(243,242,235,.22)', padding: `${isMobile ? 16 : 24}px 0` }}>
-                  <div style={{ fontFamily: D.display, fontSize: isMobile ? 30 : 44, letterSpacing: -1 }}>{big}</div>
-                  <div style={{ fontFamily: D.mono, fontSize: isMobile ? 9 : 10.5, letterSpacing: 1, color: 'rgba(243,242,235,.6)', marginTop: 8, lineHeight: 1.5 }}>{small.toUpperCase()}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+  const [kind,setKind]=useState('savings'),[metric,setMetric]=useState(null),[feature,setFeature]=useState(0);
+  useSEO({title:'Restore Robotics · Robotic instrument program',description:'Explore remanufactured and certified pre-owned robotic instruments, collection support and a savings analysis for your facility.',canonical:'/robotics'});
+  useEffect(()=>{const controller=new AbortController();fetch('/api/metrics/savings',{signal:controller.signal}).then(r=>r.ok?r.json():null).then(setMetric).catch(()=>{});return()=>controller.abort();},[]);
+  const savings=savingsDisplay(metric);
+  const start=type=>()=>{setKind(type);requestAnimationFrame(()=>document.getElementById('robotics-inquiry-title')?.focus({preventScroll:true}));};
+  const current=FEATURES[feature];
+  return <div className="ur-page"><Nav overlay heroSelector=".ur-hero"/><main id="main">
+    <section className="ur-hero" aria-labelledby="robotics-title"><HeroFilm/><div className="ur-hero-shade" aria-hidden="true"/><div className="ur-hero-title"><p>UNITE MEDICAL / RESTORE ROBOTICS</p><h1 id="robotics-title">A new life for<br/>robotic instruments.</h1></div><a className="ur-explore" href="#robotics-featured"><span aria-hidden="true">↓</span>Scroll to explore</a><span className="ur-hero-credit">AI motion · robot & instrument references</span></section>
 
-        {/* THE CHAIN — who stands behind it */}
-        <div style={{ padding: `${isMobile ? 56 : 100}px ${padX}px`, borderBottom: `1px solid ${D.line}` }}>
-          <div style={{ maxWidth: 1360, margin: '0 auto' }}>
-            <Reveal>
-              <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 16 }}>THE PROGRAM</div>
-              <h2 style={{ fontFamily: D.display, fontSize: 'clamp(30px, 5.4vw, 60px)', fontWeight: 400, letterSpacing: '-0.03em', lineHeight: 1.02, margin: 0 }}>
-                The only FDA 510(k)-cleared path to <Grad>remanufactured da Vinci</Grad> instruments.
-              </h2>
-            </Reveal>
-            <div style={{ marginTop: isMobile ? 28 : 44, display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: isMobile ? 12 : 20 }}>
-              {[
-                ['Restore Robotics', 'Manufacturer of record', 'Holds the industry\u2019s only FDA 510(k) clearance for remanufacturing da Vinci Xi & DV5 instruments, and provides full warranty coverage.'],
-                ['Encore Medical', 'Master distributor', 'Runs the collection loop — free trays, reusable shipping containers, and free return shipping from your facility.'],
-                ['Unite Medical', 'Authorized distributor & representative', 'Your program partner: savings analysis, onboarding, supply, and support — backed by Unite\u2019s full medical supply chain.'],
-              ].map(([name, role, desc]) => (
-                <div key={name} style={{ padding: isMobile ? 20 : 28, background: D.card, borderRadius: 18, border: `1px solid ${D.line}` }}>
-                  <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1.2, color: D.plum }}>{role.toUpperCase()}</div>
-                  <div style={{ fontFamily: D.display, fontSize: isMobile ? 24 : 28, letterSpacing: -0.5, marginTop: 8 }}>{name}</div>
-                  <p style={{ fontSize: 14, color: D.ink2, lineHeight: 1.6, margin: '10px 0 0' }}>{desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+    <section className="ur-featured ur-container" id="robotics-featured" aria-label="Explore the robotics program"><div className="ur-feature-tabs" role="group" aria-label="Program highlights">{FEATURES.map((item,i)=><button key={item.name} aria-pressed={feature===i} onClick={()=>setFeature(i)}>{item.name}</button>)}<a href="#robotics-pathways">View program <span aria-hidden="true">↗</span></a></div><article className="ur-feature-card"><img key={current.image} src={`/images/robotics/${current.image}`} alt={feature===2?'da Vinci Xi system reference photograph':'Robotic instrument detail from Encore Medical program photography'} width="1536" height="1024" loading="lazy"/><div className="ur-feature-body"><p className="ur-eyebrow">{current.name}</p><h2>{current.title}</h2><p>{current.copy}</p><a href="#robotics-lead" onClick={start(current.kind)}>{current.action}<span aria-hidden="true">↗</span></a></div><div className="ur-feature-bottom"><span>0{feature+1} / 03</span><p>{feature===2?'System shown for context. Reference: Intuitive.':'Instrument photography: Encore Medical.'}</p><button aria-label="Previous program highlight" onClick={()=>setFeature((feature+2)%3)}>←</button><button aria-label="Next program highlight" onClick={()=>setFeature((feature+1)%3)}>→</button></div></article></section>
 
-        {/* HOW IT WORKS — collection → remanufacture loop */}
-        <div style={{ padding: `${isMobile ? 56 : 100}px ${padX}px`, background: D.paperAlt, borderBottom: `1px solid ${D.line}` }}>
-          <div style={{ maxWidth: 1360, margin: '0 auto' }}>
-            <Reveal>
-              <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 16 }}>HOW IT WORKS</div>
-              <h2 style={{ fontFamily: D.display, fontSize: 'clamp(30px, 5vw, 54px)', fontWeight: 400, letterSpacing: '-0.03em', lineHeight: 1.04, margin: 0 }}>
-                A closed loop that fits your <Grad>existing workflow</Grad>.
-              </h2>
-            </Reveal>
-            <div style={{ marginTop: isMobile ? 28 : 48, display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(4, 1fr)', gap: isMobile ? 12 : 20 }}>
-              {STEPS.map(([h, s], i) => (
-                <Reveal key={h} delay={i * 90}>
-                  <div style={{ borderTop: `2px solid ${D.plum}`, paddingTop: 18 }}>
-                    <div style={{ fontFamily: D.display, fontSize: 40, color: D.plum, letterSpacing: -1, lineHeight: 1 }}>{String(i + 1).padStart(2, '0')}</div>
-                    <div style={{ fontFamily: D.display, fontSize: 21, letterSpacing: -0.3, marginTop: 12 }}>{h}</div>
-                    <p style={{ fontSize: 13.5, color: D.ink2, lineHeight: 1.6, margin: '8px 0 0' }}>{s}</p>
-                  </div>
-                </Reveal>
-              ))}
-            </div>
-          </div>
-        </div>
+    <section className="ur-statement ur-container" id="robotics-overview" aria-labelledby="robotics-overview-title"><h2 id="robotics-overview-title">We help hospitals get more from their robotic instrument programs.</h2><p>From sourcing and savings<br/>to collections and returns.</p></section>
 
-        {/* SUSTAINABILITY */}
-        <div style={{ padding: `${isMobile ? 56 : 100}px ${padX}px`, background: D.plum, color: D.paper }}>
-          <div style={{ maxWidth: 1360, margin: '0 auto', display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.2fr 1fr', gap: isMobile ? 24 : 64, alignItems: 'center' }}>
-            <div>
-              <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plumSoft, marginBottom: 16 }}>SUSTAINABILITY</div>
-              <h2 style={{ fontFamily: D.display, fontSize: 'clamp(28px, 4.8vw, 52px)', fontWeight: 400, letterSpacing: '-0.03em', lineHeight: 1.06, margin: 0 }}>
-                Less surgical waste. Longer instrument life.
-              </h2>
-              <p style={{ fontSize: isMobile ? 14.5 : 16, lineHeight: 1.65, color: '#cfe0d7', marginTop: 18, maxWidth: 560 }}>
-                Robotic instruments are programmed for a limited number of uses and then discarded.
-                Remanufacturing extends their useful life, reduces surgical waste, and cuts the
-                carbon footprint of your robotics program — while your budget captures the savings.
-              </p>
-            </div>
-            <div style={{ display: 'grid', gap: 10 }}>
-              {['Reduce discarded-instrument waste', 'Extend the lifecycle of advanced surgical technology', 'Lower the environmental footprint of your OR'].map((t) => (
-                <div key={t} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '14px 18px', background: 'rgba(243,242,235,.08)', borderRadius: 12, border: '1px solid rgba(243,242,235,.18)', fontSize: 14.5 }}>
-                  <span style={{ color: D.terraSoft }}><Icon.check /></span> {t}
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+    <section className="ur-offerings ur-container" id="robotics-pathways"><div className="ur-section-label"><h2>Our program</h2><span>THREE WAYS TO START</span></div>{PATHWAYS.map(path=><a className={`ur-offering ur-offering-${path.kind}`} key={path.kind} href="#robotics-lead" onClick={start(path.kind)}><img className="ur-offering-image" src={`/images/robotics/${path.image}`} style={{objectPosition:path.position}} alt="" aria-hidden="true" loading="lazy" decoding="async"/><div className="ur-offering-copy"><h3>{path.title}</h3><p>{path.copy}</p></div><span className="ur-offering-number">/0.{path.number.slice(-1)}</span><span className="ur-offering-arrow" aria-hidden="true">↗</span></a>)}</section>
 
-        {/* FAQ */}
-        <div style={{ padding: `${isMobile ? 56 : 100}px ${padX}px`, borderBottom: `1px solid ${D.line}` }}>
-          <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-            <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 16 }}>FAQ</div>
-            <h2 style={{ fontFamily: D.display, fontSize: 'clamp(28px, 4.6vw, 48px)', fontWeight: 400, letterSpacing: -0.8, lineHeight: 1.06, margin: 0 }}>
-              Common questions.
-            </h2>
-            <div style={{ marginTop: 28 }}>
-              {FAQS.map(([q, a]) => (
-                <details key={q} style={{ borderTop: `1px solid ${D.line}`, padding: '16px 0' }}>
-                  <summary style={{ fontSize: 15.5, fontWeight: 600, cursor: 'pointer', color: D.ink }}>{q}</summary>
-                  <p style={{ fontSize: 14.5, color: D.ink2, lineHeight: 1.65, margin: '10px 0 0', maxWidth: 760 }}>{a}</p>
-                </details>
-              ))}
-            </div>
-          </div>
-        </div>
+    <section className="ur-impact ur-container" aria-label="Savings and program benchmarks"><div><p className="ur-eyebrow">THE OPPORTUNITY</p><h2>Better economics.<br/>Same attention to detail.</h2></div><div className="ur-metric-grid"><div><strong>{savings.value}</strong><h3>Saved by Unite Medical accounts</h3><p>Accounts introduced through Unite’s marketing and outreach.</p><small>{savings.detail}</small></div><div><strong>~20%</strong><h3>Remanufactured instrument savings</h3><p>Compared with new instruments.</p></div><div><strong>~25%</strong><h3>Certified pre-owned savings</h3><p>Compared with new instruments. Actual savings vary by product and usage.</p></div></div></section>
 
-        {/* CONVERSION — hospitals + sub-distributors */}
-        <div id="robotics-lead" style={{ padding: `${isMobile ? 56 : 100}px ${padX}px` }}>
-          <div style={{ maxWidth: 1360, margin: '0 auto', display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1.2fr', gap: isMobile ? 28 : 64, alignItems: 'start' }}>
-            <div>
-              <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 16 }}>GET STARTED</div>
-              <h2 style={{ fontFamily: D.display, fontSize: 'clamp(30px, 5vw, 52px)', fontWeight: 400, letterSpacing: '-0.03em', lineHeight: 1.04, margin: 0 }}>
-                Discover how much your hospital can <Grad>save</Grad>.
-              </h2>
-              <p style={{ fontSize: 15.5, color: D.ink2, lineHeight: 1.65, marginTop: 16, maxWidth: 480 }}>
-                Every robotic surgery program is different. Tell us your da Vinci model and
-                instrument volume and we&apos;ll estimate your potential savings — or, if you&apos;re a
-                distributor, ask about representing the program under Unite.
-              </p>
-              <p style={{ fontSize: 12, color: D.ink3, lineHeight: 1.6, marginTop: 24 }}>
-                da Vinci®, da Vinci Xi® and Intuitive® are registered trademarks of Intuitive
-                Corporation. Restore Robotics is not affiliated with Intuitive®.
-              </p>
-              <Link to="/portfolio" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginTop: 8, color: D.plum, fontSize: 14, fontWeight: 600 }}>
-                See the program results in our portfolio <Icon.arrow />
-              </Link>
-            </div>
-            <div style={{ background: D.card, border: `1px solid ${D.line}`, borderRadius: 18, padding: isMobile ? 20 : 32 }}>
-              <LeadForm isMobile={isMobile} />
-            </div>
-          </div>
-        </div>
-      </main>
-      <Footer />
-    </div>
-  );
+    <ScrollFilm><div className="ur-container ur-system-content"><p className="ur-eyebrow">A CLOSER LOOK</p><h2 id="robotics-system-title">Precision deserves<br/>a longer story.</h2><p className="ur-system-copy">See the system in perspective.<br/>Then build the instrument program around it.</p><a className="ur-link" href="#robotics-lead" onClick={start('consult')}>Talk through your program <span aria-hidden="true">↗</span></a><small>da Vinci Xi shown for context. AI motion from <a href="https://www.intuitive.com/en-us/products-and-services/da-vinci/xi" target="_blank" rel="noreferrer">Intuitive’s reference photography ↗</a>.<br/>Instrument eligibility is confirmed individually.</small></div></ScrollFilm>
+
+    <section className="ur-process ur-container" id="robotics-process"><div className="ur-section-label"><p>FROM COLLECTION TO SUPPLY</p><span>01 — 04</span></div><h2>A clear path.<br/>At every step.</h2><div className="ur-steps">{STEPS.map(([label,title,copy],i)=><article key={label}><p className="ur-eyebrow">0{i+1} / {label}</p><h3>{title}</h3><p>{copy}</p></article>)}</div><a className="ur-collection-cta" href="#robotics-lead" onClick={start('collections')}><span className="ur-eyebrow">COLLECTIONS ONLY? START HERE.</span><span className="ur-collection-title">Your instruments.<br/>Their next chapter.</span><span className="ur-collection-action">Set up a collection program <span aria-hidden="true">↗</span></span></a></section>
+
+    <section className="ur-partners" id="robotics-partners"><div className="ur-container"><p className="ur-eyebrow">BUILT AROUND YOUR TEAM</p><h2>Three partners.<br/>One connected program.</h2>{[['Restore Robotics','Manufacturer of record','Remanufactures eligible instruments under its applicable FDA clearances and provides manufacturer warranty coverage.'],['Encore Medical','Master distributor','Coordinates collection materials and the return path to Restore Robotics.'],['Unite Medical','Your program partner','Helps assess savings, onboard your facility and coordinate instrument supply.']].map(([name,role,copy])=><article key={name}><h3>{name}</h3><div><p className="ur-eyebrow">{role}</p><p>{copy}</p></div></article>)}<a className="ur-partner-cta" href="#robotics-lead" onClick={start('distributor')}>Represent the program <span aria-hidden="true">↗</span></a></div></section>
+
+    <section className="ur-faq ur-container" id="robotics-faq"><div><p className="ur-eyebrow">COMMON QUESTIONS</p><h2>Questions,<br/>answered.</h2><a href="https://www.restorerobotics.com/mar-31--2026" target="_blank" rel="noreferrer">Restore’s clearance announcement ↗</a></div><div>{FAQS.map(([question,answer],i)=><details key={question}><summary><span>{String(i+1).padStart(2,'0')}</span>{question}<b aria-hidden="true">+</b></summary><p>{answer}</p></details>)}</div></section>
+
+    <section className="ur-contact" id="robotics-lead"><div className="ur-container"><div className="ur-contact-heading"><p className="ur-eyebrow">YOUR NEXT STEP</p><h2>{kind==='collections'?<>Start your<br/>collection program.</>:kind==='distributor'?<>Build the program.<br/>With us.</>:<>There is more<br/>possibility ahead.</>}</h2></div><div className="ur-contact-grid"><div><p>{kind==='collections'?'Tell us about your facility. We’ll help arrange collection and return of expired robotic instruments.':kind==='distributor'?'Tell us about your company and the facilities you serve. Let’s discuss representing the program.':'Tell us about your facility. We’ll help you understand your options, pricing and next steps.'}</p><a href="tel:+18338686483">833.868.6483 ↗</a><a href="mailto:support@unitemedical.net">support@unitemedical.net ↗</a></div><LeadForm kind={kind} setKind={setKind}/></div></div></section>
+    <div className="ur-disclaimer ur-container">da Vinci®, da Vinci Xi® and Intuitive® are registered trademarks of Intuitive Corporation. Restore Robotics is not affiliated with Intuitive®. Instrument eligibility, compatibility, availability and warranty terms are confirmed with each quote. Film includes AI motion from Intuitive and Encore reference photography. Instrument photographs are shown for program context; availability is confirmed with each quote.</div>
+  </main><Footer/></div>;
 }

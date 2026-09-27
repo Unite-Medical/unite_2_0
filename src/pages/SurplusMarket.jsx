@@ -21,12 +21,16 @@ import { fmt } from '../lib/format.js';
 import { placeOffer, BUYER_CHANNELS } from '../lib/marketplace.js';
 import { useViewport } from '../lib/viewport.js';
 import { useSEO } from '../lib/seo.js';
+import { auth } from '../lib/auth.js';
+import { commerceAccessFor } from '../lib/accessPolicy.js';
 
 const EMPTY_OFFER = { buyer_name: '', buyer_email: '', buyer_org: '', buyer_channel: 'medical', qty: '', offer_usd_per_unit: '', message: '' };
 
 export function SurplusMarket() {
   const { isMobile } = useViewport();
   const padX = isMobile ? 20 : 40;
+  const session = auth.use();
+  const commerce = commerceAccessFor(session, auth.org());
 
   useSEO({
     title: 'Surplus marketplace — brokered medical inventory',
@@ -134,8 +138,10 @@ export function SurplusMarket() {
                     </div>
                   )}
                   <div style={{ marginTop: 14, display: 'flex', alignItems: 'baseline', gap: 8 }}>
-                    <div style={{ fontFamily: D.display, fontSize: 30, color: D.plum }}>${Number(lot.ask_usd_per_unit || 0).toFixed(2)}</div>
-                    <div style={{ fontSize: 12, color: D.ink3 }}>/unit seller ask{lot.est_retail_usd ? ` · retail ~$${Number(lot.est_retail_usd).toFixed(2)}` : ''}</div>
+                    <div style={{ fontFamily: D.display, fontSize: 30, color: D.plum }}>
+                      {commerce.can_view_prices ? `$${Number(lot.ask_usd_per_unit || 0).toFixed(2)}` : 'Sign in for pricing'}
+                    </div>
+                    {commerce.can_view_prices && <div style={{ fontSize: 12, color: D.ink3 }}>/unit seller ask</div>}
                   </div>
 
                   {doneId === lot.id && (
@@ -145,7 +151,11 @@ export function SurplusMarket() {
                     </div>
                   )}
 
-                  {openId === lot.id ? (
+                  {!commerce.can_order ? (
+                    <Link to="/login?next=%2Fsurplus%2Fmarket" style={{ marginTop: 16, background: D.ink, color: D.paper, padding: '12px 0', borderRadius: 4, fontSize: 13, fontWeight: 600, textAlign: 'center' }}>
+                      Sign in with an approved account →
+                    </Link>
+                  ) : openId === lot.id ? (
                     <form onSubmit={(e) => submitOffer(e, lot)} style={{ marginTop: 14, display: 'grid', gap: 8 }}>
                       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
                         {input('buyer_name', { placeholder: 'Your name', required: true })}

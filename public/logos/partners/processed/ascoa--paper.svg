@@ -1,9 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
-  <g fill="#f7f2ea">
-    <text x="50%" y="50%" text-anchor="middle" dominant-baseline="central" 
-          font-family="Arial, sans-serif" font-size="25.6" font-weight="bold">
-      Ascoa
-    </text>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 48" width="90" height="48">
+  <text x="50%" y="50%" text-anchor="middle" dominant-baseline="central" font-family="Helvetica, Arial, sans-serif" font-size="22" font-weight="700" letter-spacing="-0.3" fill="#f7f2ea">ASCOA</text>
 </svg>

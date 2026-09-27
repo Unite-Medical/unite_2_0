@@ -1,0 +1,18 @@
+# Robotics studio imagery — September 24, 2026
+
+Built-in imagegen was used for both new illustrations. Original PNGs are in `output/imagegen/robotics/`; optimized JPEGs consumed by the page are in `public/images/robotics/`. These illustrations were rejected during review and are no longer used on the page. Retained here only for provenance.
+
+## Collection studio image
+Use case: product-mockup. Asset: wide 3:2 editorial image for Unite Medical robotic instrument collections webpage. Generate from scratch a premium photorealistic studio still life: four long slender surgical robotic instruments with ivory rectangular proximal housings, tiny circular drive interfaces and slender steel shafts, arranged precisely parallel in a clear molded rectangular return tray. Three-quarter overhead camera angle; full tray centered with generous margins on a seamless almost-black charcoal and deep forest-green background. Restrained luxury industrial photography, exacting material realism, silver edge highlights, translucent smoked-clear tray with beautiful rim lighting, soft falloff, polished but credible. No people, hands, room, office furniture, labels, lettering, logos, watermarks, decorative graphics, sci-fi parts or operating scene. This is a conceptual marketing illustration, not a technical diagram. High definition detail, minimal composition, visually confident.
+
+## Return studio image
+Use case: product-mockup. Asset: wide 3:2 editorial image for Unite Medical robotic instrument returns webpage, companion to a dark studio instrument-tray photograph. Generate from scratch a premium photorealistic studio still life: three clear smoked-polymer molded instrument return trays stacked precisely, with a single tray slightly raised above the others to show the organized layered geometry. Long thin silver instrument shafts and ivory rectangular proximal housings visible neatly nested inside the top tray. Low three-quarter angle; full stack centered with generous margins on a seamless almost-black charcoal and deep forest-green background. Precise industrial materials, translucent tray edges traced with soft ivory light, faint green reflected fill, restrained architectural photography, clean soft contact shadow. No people, hands, furniture, text, labels, logos, watermarks, sci-fi elements or exaggerated glow. A conceptual marketing illustration, not an actual shipping instruction. High definition detail, minimal composition.
+
+## Lower scroll-driven film
+Higgsfield Grok Video 1.5 job: `cda5b885-3074-4b26-881b-047be95c3c2b`. Twelve seconds, derived from the existing Intuitive reference image. The prompt requested unchanged hardware, stationary arms, a slow 7% camera dolly and subtle lighting, with no people or surgery. Optimized to 1280px, 24fps, H.264, silent, faststart and keyframes every six frames for reversible scroll seeking. Served as `public/images/robotics/robotics-hero-film.mp4` (~2 MB).
+
+
+## Final hero recut
+After review, the 20-second montage was replaced with an 8-second, three-shot cut. Higgsedit native v0.14.0 / release f39e3bc5882b. Shots: robot wide (2.5s), Encore instrument close-up (3s), robot detail (2.5s). The unrelated generated hospital corridor was removed. H.264 1280×720, 24fps, silent, faststart; 1,772,212 bytes. Final asset: `public/images/robotics/robotics-hero-short.mp4`. Confirmed Higgsfield media ID: `3bd2c96b-63c5-4b6d-aa85-9077364eb514`.
+
+No generated tray images remain in the page. Feature panels now use original Encore instrument and Intuitive system photography. The paired image block is replaced with a typographic collections callout. The readiness checklist was removed because it repeated the FAQ, leaving one FAQ section. All four inquiry paths remain supported.

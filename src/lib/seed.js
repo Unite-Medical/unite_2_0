@@ -2,7 +2,14 @@
    Designed to match the brief's table shapes (Section 7) closely enough
    that a future migration to Supabase is mostly mechanical.            */
 
-import { REAL_PRODUCTS, REAL_CATEGORIES, REAL_COLLECTIONS } from '../data/realCatalog.js';
+import { REAL_CATEGORIES, REAL_COLLECTIONS } from '../data/realCatalog.js';
+import { EXTRA_PRODUCTS } from '../data/extraProducts.js';
+import shopifyLaunchCatalog from '../data/shopifyLaunchCatalog.generated.json' with { type: 'json' };
+import shopifyInventoryOpening from '../data/shopifyInventoryOpening.generated.json' with { type: 'json' };
+import { buildDamonInventoryOpening } from './inventoryOpeningPolicy.js';
+
+const LAUNCH_PRODUCTS = [...shopifyLaunchCatalog.products, ...EXTRA_PRODUCTS];
+const INVENTORY_OPENING = buildDamonInventoryOpening(shopifyInventoryOpening.rows);
 
 const isoDaysAgo = (d) => new Date(Date.now() - d * 86400000).toISOString();
 
@@ -48,7 +55,7 @@ function legacyTier(category) {
   }
 }
 
-const STATIC_PRODUCTS = REAL_PRODUCTS.map((p) => {
+const STATIC_PRODUCTS = LAUNCH_PRODUCTS.map((p) => {
   // Quote-only products (e.g. RegeniCool™ Pro) have no public price and no
   // warehoused stock — they route to the quote flow, never "in stock".
   const stock = p.quote_only ? 0 : deterministicStock(p.sku);
@@ -79,6 +86,11 @@ const STATIC_PRODUCTS = REAL_PRODUCTS.map((p) => {
     product_type: p.product_type,
     m6_category: p.m6_category,
     quote_only: p.quote_only ?? false,
+    launch_decision: p.launch_decision,
+    launch_visibility: p.launch_visibility,
+    status: p.status,
+    available: p.available,
+    published: p.published,
     fda_registered:    p.fda_registered,
     pdac_approved:     p.pdac_approved,
     taa_compliant:     p.taa_compliant,
@@ -97,9 +109,8 @@ const STATIC_CATEGORIES = REAL_CATEGORIES.map((c) => ({
 }));
 
 const STATIC_WAREHOUSES = [
-  { id: 'wh_atl', code: 'ATL', name: 'Atlanta, GA · main', city: 'Atlanta', state: 'GA', utilization: 0.74, capacity_units: 1_400_000, lat: 33.749, lng: -84.388 },
-  { id: 'wh_reno', code: 'RNO', name: 'Reno, NV', city: 'Reno', state: 'NV', utilization: 0.52, capacity_units: 820_000, lat: 39.529, lng: -119.813 },
-  { id: 'wh_lit', code: 'LIT', name: 'Lithia Springs · overflow', city: 'Lithia Springs', state: 'GA', utilization: 0.88, capacity_units: 280_000, lat: 33.794, lng: -84.665 },
+  { id: 'wh_unite', code: 'UNITE', name: 'Unite Medical Warehouse', city: 'Lithia Springs', state: 'GA', active: true, provisional_opening: true },
+  { id: 'wh_cato', code: 'CATO', name: 'CATO Warehouse', active: true, sellable: false, opening_balance_zeroed: true },
 ];
 
 const STATIC_ORGS = [
@@ -108,16 +119,17 @@ const STATIC_ORGS = [
   { id: 'org_va_dublin',  name: 'VA Medical Center · Dublin', segment: 'gov', tier: 'A', terms: 'mspv', credit_limit: 250000, total_spend: 942100, account_rep: 'Damon Reed' },
   { id: 'org_holloway',   name: 'Holloway Apothecary', segment: 'pharmacy', tier: 'B', terms: 'card', credit_limit: 12000, total_spend: 84200, account_rep: 'Aidan Park' },
   { id: 'org_cobbems',    name: 'Cobb County EMS', segment: 'ems', tier: 'B', terms: 'net30', credit_limit: 25000, total_spend: 142800, account_rep: 'Terrell Jenkins' },
-  { id: 'org_medone',     name: 'MedOne Distributors', segment: 'distributors', tier: 'A', terms: 'net60', credit_limit: 200000, total_spend: 1402900, account_rep: 'Damon Reed' },
+  { id: 'org_medone',     name: 'MedOne Distributors', segment: 'distributors', tier: 'A', terms: 'net60', credit_limit: 200000, total_spend: 1402900, account_rep: 'Damon Reed', contact_email: 'ops@medone.example' },
   { id: 'org_walgreens',  name: 'Walgreens #2184', segment: 'pharmacy', tier: 'B', terms: 'card', credit_limit: 8000, total_spend: 24800, account_rep: 'Aidan Park' },
   { id: 'org_lonestar',   name: 'Lone Star DME', segment: 'distributors', tier: 'B', terms: 'net30', credit_limit: 60000, total_spend: 312800, account_rep: 'Aidan Park' },
-];
+].map((organization) => ({ ...organization, approval_status: 'approved' }));
 
 const STATIC_PROFILES = [
-  { id: 'usr_demo',     email: 'sarah@atlanta-surgical.com', password: 'demo', name: 'Sarah Chen', role: 'customer', org_id: 'org_atlsurgical', title: 'Materials Director' },
-  { id: 'usr_kareem',   email: 'kareem@holloway.com', password: 'demo', name: 'Kareem Holloway', role: 'customer', org_id: 'org_holloway', title: 'Owner, PharmD' },
-  { id: 'usr_admin',    email: 'damon@unitemedical.net', password: 'admin', name: 'Damon Reed', role: 'admin', org_id: null, title: 'Founder & CEO' },
-  { id: 'usr_ops',      email: 'ops@unitemedical.net', password: 'admin', name: 'Miguel Vasquez', role: 'admin', org_id: null, title: 'Ops Lead' },
+  { id: 'usr_demo',     email: 'sarah@atlanta-surgical.com', password: 'demo', name: 'Sarah Chen', role: 'customer', org_id: 'org_atlsurgical', title: 'Materials Director', status: 'active', session_revision: 0 },
+  { id: 'usr_kareem',   email: 'kareem@holloway.com', password: 'demo', name: 'Kareem Holloway', role: 'customer', org_id: 'org_holloway', title: 'Owner, PharmD', status: 'active', session_revision: 0 },
+  { id: 'usr_admin',    email: 'damon@unitemedical.net', password: 'admin', name: 'Damon Reed', role: 'admin', org_id: null, title: 'Founder & CEO', status: 'active', session_revision: 0 },
+  { id: 'usr_ops',      email: 'ops@unitemedical.net', password: 'admin', name: 'Miguel Vasquez', role: 'admin', org_id: null, title: 'Ops Lead', status: 'active', session_revision: 0 },
+  { id: 'usr_medone',   email: 'ops@medone.example', password: 'demo', name: 'Morgan Lee', role: 'distributor', org_id: 'org_medone', title: 'Distribution Operations', status: 'active', session_revision: 0 },
 ];
 
 const STATIC_ADDRESSES = [
@@ -245,6 +257,14 @@ function buildSampleOrders() {
 export function seed(db) {
   STATIC_PROFILES.forEach((p) => db.profiles.push({ ...p, created_at: isoDaysAgo(180) }));
   STATIC_ORGS.forEach((o) => db.organizations.push({ ...o, created_at: isoDaysAgo(380) }));
+  STATIC_PROFILES.filter((profile) => profile.org_id).forEach((profile) => db.organization_users.push({
+    id: `orguser_${profile.org_id}_${profile.id}`,
+    org_id: profile.org_id,
+    user_id: profile.id,
+    role: 'owner',
+    status: 'active',
+    created_at: isoDaysAgo(180),
+  }));
   STATIC_ADDRESSES.forEach((a) => db.addresses.push(a));
   STATIC_WAREHOUSES.forEach((w) => db.warehouses.push(w));
   STATIC_CATEGORIES.forEach((c) => db.categories.push({ id: c.slug, ...c }));
@@ -280,6 +300,11 @@ export function seed(db) {
       variants: p.variants,
       m6_category: p.m6_category,
       quote_only: p.quote_only ?? false,
+      launch_decision: p.launch_decision,
+      launch_visibility: p.launch_visibility,
+      status: p.status,
+      available: p.available,
+      published: p.published,
       country_of_origin: p.country_of_origin || 'CN',
       fda_registered: p.fda_registered ?? true,
       taa_compliant: p.taa_compliant ?? false,
@@ -290,9 +315,6 @@ export function seed(db) {
       fda_product_code: ['FRO', 'IMI', 'NHM', 'KGN'][Math.abs(charCodes.charCodeAt(8)) % 4],
       hts_code: ['9021.10', '3822.19', '4015.19', '3005.10', '3004.90'][Math.abs(charCodes.charCodeAt(7)) % 5],
     });
-
-    db.inventory.push({ id: `inv_atl_${p.sku}`, sku: p.sku, warehouse_id: 'wh_atl', on_hand: p.stock, reorder_at: Math.floor(p.stock * 0.2), reorder_qty: Math.floor(p.stock * 0.5) });
-    db.inventory.push({ id: `inv_reno_${p.sku}`, sku: p.sku, warehouse_id: 'wh_reno', on_hand: Math.floor(p.stock * 0.3), reorder_at: Math.floor(p.stock * 0.06), reorder_qty: Math.floor(p.stock * 0.15) });
 
     if (p.price != null) {
       db.pricing.push({ id: `prc_${p.sku}_1`, sku: p.sku, tier: 1, min_qty: 1, unit_price: p.price });
@@ -309,10 +331,32 @@ export function seed(db) {
         price:     v.price,
         compare_at_price: v.compare_at_price ?? null,
         available: v.available,
-        weight_grams: v.weight_grams,
+        weight_grams: v.grams ?? v.weight_grams,
+        shipping_weight_lb: v.shipping_weight_lb,
+        barcode: v.barcode ?? null,
+        requires_shipping: v.requires_shipping,
+        taxable: v.taxable,
         options:   v.options || {},
         image:     v.image || '',
       });
+    });
+  });
+
+  INVENTORY_OPENING.opening.forEach((row, index) => {
+    db.inventory.push({
+      id: `inv_opening_${row.warehouse_id}_${row.sku}_${index}`,
+      ...row,
+      source: 'shopify_snapshot_2026_08_24',
+      reconciliation_status: 'physical_count_required',
+    });
+  });
+  INVENTORY_OPENING.audit_only.forEach((row, index) => {
+    db.audit_log.push({
+      id: `aud_inventory_opening_${index}`,
+      kind: 'inventory.opening_exception',
+      ref_id: row.SKU || row.Title || `source-row-${index}`,
+      payload: row,
+      created_at: new Date().toISOString(),
     });
   });
 
@@ -453,13 +497,13 @@ export function seed(db) {
   const expIso = (days) => new Date(today.getTime() + days * 86400000).toISOString().slice(0, 10);
   if (dp[0]) {
     // A storefront, Unite-sellable consignment SKU (mapped to a Unite product).
-    db.distributor_products.push({ id: 'dprod_medone_1', owner_org_id: 'org_medone', distributor_sku: 'MED-STERI-9000', name: `${dp[0].name} (MedOne label)`, mapped_unite_sku: dp[0].sku, visibility: 'storefront', unite_sellable: true, created_at: nowIso2 });
+    db.distributor_products.push({ id: 'dprod_medone_1', owner_org_id: 'org_medone', distributor_sku: 'MED-STERI-9000', name: `${dp[0].name} (MedOne label)`, mapped_unite_sku: dp[0].sku, visibility: 'storefront', unite_sellable: true, settlement_unit_cost: Number(dp[0].cogs || 0), settlement_currency: 'USD', settlement_effective_from: nowIso2, settlement_effective_until: null, low_stock_threshold: 250, created_at: nowIso2 });
     db.inventory_lots.push({ id: 'ilot_medone_1a', owner_type: 'distributor', owner_org_id: 'org_medone', product_sku: dp[0].sku, distributor_sku: 'MED-STERI-9000', lot_number: 'LOT-A23', expiration_date: expIso(120), qty_on_hand: 800, qty_reserved: 0, warehouse_id: 'wh_atl', bin_location: 'C-12-3', received_via_scan_id: 'scan_seed_1', created_at: nowIso2 });
     db.inventory_lots.push({ id: 'ilot_medone_1b', owner_type: 'distributor', owner_org_id: 'org_medone', product_sku: dp[0].sku, distributor_sku: 'MED-STERI-9000', lot_number: 'LOT-A24', expiration_date: expIso(40), qty_on_hand: 240, qty_reserved: 0, warehouse_id: 'wh_atl', bin_location: 'C-12-4', received_via_scan_id: 'scan_seed_2', created_at: nowIso2 });
   }
   if (dp[1]) {
     // A warehouse-only consignment SKU (never public; orderable by MedOne).
-    db.distributor_products.push({ id: 'dprod_medone_2', owner_org_id: 'org_medone', distributor_sku: 'MED-PRIVATE-22', name: 'MedOne Private Kit 22', mapped_unite_sku: null, visibility: 'warehouse_only', unite_sellable: false, created_at: nowIso2 });
+    db.distributor_products.push({ id: 'dprod_medone_2', owner_org_id: 'org_medone', distributor_sku: 'MED-PRIVATE-22', name: 'MedOne Private Kit 22', mapped_unite_sku: null, visibility: 'warehouse_only', unite_sellable: false, settlement_unit_cost: null, settlement_currency: 'USD', settlement_effective_from: null, settlement_effective_until: null, low_stock_threshold: 40, created_at: nowIso2 });
     db.inventory_lots.push({ id: 'ilot_medone_2a', owner_type: 'distributor', owner_org_id: 'org_medone', product_sku: null, distributor_sku: 'MED-PRIVATE-22', lot_number: 'LOT-PK1', expiration_date: expIso(300), qty_on_hand: 150, qty_reserved: 0, warehouse_id: 'wh_atl', bin_location: 'D-04-1', received_via_scan_id: 'scan_seed_3', created_at: nowIso2 });
   }
   db.distributor_ship_identities.push({ id: 'dsi_medone', owner_org_id: 'org_medone', brand_name: 'MedOne Distributors', return_address: { street1: '1487 Trae Lane', city: 'Lithia Springs', state: 'GA', postalCode: '30122', country: 'US' }, is_default: true, approved_by: 'usr_admin', created_at: nowIso2 });

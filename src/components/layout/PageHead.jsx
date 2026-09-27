@@ -4,7 +4,7 @@ import { useViewport } from '../../lib/viewport.js';
 
 /**
  * Masthead — a flat evergreen band that merges with the nav chrome above.
- * Rule + eyebrow, oversized serif headline, then a hairline and the
+ * Rule + eyebrow, upright sans-serif headline, then a hairline and the
  * standfirst row. Print-like: no blooms, no orbs, no texture. The type
  * IS the design.
  */
@@ -27,10 +27,10 @@ export function PageHead({ eyebrow, title, sub, right }) {
           className="um-fade-up um-d1"
           style={{
             fontFamily: D.display,
-            fontSize: 'clamp(44px, 9.5vw, 112px)',
-            fontWeight: 400,
-            lineHeight: 0.98,
-            letterSpacing: '-0.02em',
+            fontSize: 'clamp(36px, 7vw, 88px)',
+            fontWeight: 500,
+            lineHeight: 1.08,
+            letterSpacing: '-0.04em',
             margin: 0,
             paddingBottom: '0.05em',
             color: D.paper,

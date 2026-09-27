@@ -15,6 +15,40 @@
 
 import { db } from './db.js';
 import { uid } from './format.js';
+import { mailer } from './mailer.js';
+
+const LOCAL_ACCEPTANCE_ALLOWED = typeof window === 'undefined'
+  || Boolean(import.meta.env?.DEV)
+  || import.meta.env?.VITE_ALLOW_LOCAL_AUTH === 'true';
+
+async function serverAcceptance(body) {
+  if (typeof window === 'undefined') return null;
+  try {
+    const response = await fetch('/api/quotes/acceptance', {
+      method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    const payload = await response.json().catch(() => ({}));
+    if (response.ok) return { handled: true, ...payload };
+    if (!LOCAL_ACCEPTANCE_ALLOWED || ![404, 503].includes(response.status)) {
+      return { handled: true, ok: false, reason: payload.error || 'acceptance_failed' };
+    }
+  } catch {
+    if (!LOCAL_ACCEPTANCE_ALLOWED) return { handled: true, ok: false, reason: 'acceptance_unavailable' };
+  }
+  return null;
+}
+
+async function sha256(value) {
+  const bytes = new TextEncoder().encode(String(value));
+  const digest = await crypto.subtle.digest('SHA-256', bytes);
+  return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, '0')).join('');
+}
+
+function randomCode() {
+  const values = crypto.getRandomValues(new Uint32Array(1));
+  return String(values[0] % 1000000).padStart(6, '0');
+}
 
 export function findQuoteByToken(token) {
   if (!token) return null;
@@ -26,11 +60,76 @@ export function quoteIsExpired(quote) {
   return new Date(quote.valid_until).getTime() < Date.now();
 }
 
+export async function requestSignerVerification(token, email, { code = null, now = new Date() } = {}) {
+  const server = await serverAcceptance({ action: 'request_verification', token, email });
+  if (server?.handled) return server;
+  const quote = findQuoteByToken(token);
+  if (!quote) return { ok: false, reason: 'not_found' };
+  const normalizedEmail = String(email || '').trim().toLowerCase();
+  const allowed = new Set([
+    String(quote.contact_email || '').trim().toLowerCase(),
+    ...(quote.authorized_signer_emails || []).map((value) => String(value).trim().toLowerCase()),
+  ].filter(Boolean));
+  if (!allowed.has(normalizedEmail)) return { ok: false, reason: 'unauthorized_signer_email' };
+
+  const plainCode = typeof window === 'undefined' && code ? code : randomCode();
+  const challenge = db.insert('quote_signer_challenges', {
+    id: uid('qsc'), quote_id: quote.id, quote_revision: Number(quote.revision || 1), signer_email: normalizedEmail,
+    code_hash: await sha256(plainCode), attempts: 0, verified_at: null,
+    consumed_at: null,
+    expires_at: new Date(now.getTime() + 10 * 60 * 1000).toISOString(),
+    created_at: now.toISOString(),
+  });
+  await mailer.send({
+    to: normalizedEmail,
+    subject: `Verification code for quote ${quote.id}`,
+    body: `Your Unite Medical quote acceptance code is ${plainCode}. It expires in 10 minutes.`,
+    template_key: 'quote/signer_verification', drafted_by: 'quote-system',
+  });
+  return { ok: true, challenge_id: challenge.id, expires_at: challenge.expires_at };
+}
+
+export async function verifySignerCode(challengeId, code, { now = new Date(), token = null, email = null } = {}) {
+  if (token && email) {
+    const server = await serverAcceptance({ action: 'confirm_verification', token, challenge_id: challengeId, code, email });
+    if (server?.handled) return server;
+  }
+  const challenge = db.get('quote_signer_challenges', challengeId);
+  if (!challenge) return { ok: false, reason: 'challenge_not_found' };
+  if (challenge.verified_at) return { ok: true, challenge };
+  if (new Date(challenge.expires_at).getTime() <= now.getTime()) return { ok: false, reason: 'challenge_expired' };
+  if (Number(challenge.attempts || 0) >= 5) return { ok: false, reason: 'challenge_locked' };
+  const matches = (await sha256(code)) === challenge.code_hash;
+  if (!matches) {
+    db.update('quote_signer_challenges', challenge.id, { attempts: Number(challenge.attempts || 0) + 1 });
+    return { ok: false, reason: 'invalid_code' };
+  }
+  const verified = db.update('quote_signer_challenges', challenge.id, { verified_at: now.toISOString() });
+  return { ok: true, challenge: verified };
+}
+
 /**
  * Accept a quote by its token. Idempotent: a second call returns the
  * already-created order. Returns { ok, reason?, order, quote }.
  */
-export async function acceptQuote(token, { runPipeline = false, acceptedBy = 'customer' } = {}) {
+export async function acceptQuote(token, {
+  runPipeline = false,
+  acceptedBy = 'customer',
+  challengeId = null,
+  bindingAcknowledged = false,
+  signerName = '',
+  signerTitle = '',
+  signerEmail = '',
+  poNumber = '',
+  ipAddress = null,
+  userAgent = null,
+  now = new Date(),
+} = {}) {
+  const server = await serverAcceptance({
+    action: 'accept', token, challenge_id: challengeId, binding_acknowledged: bindingAcknowledged,
+    signer_name: signerName, signer_title: signerTitle, signer_email: signerEmail, po_number: poNumber,
+  });
+  if (server?.handled) return server;
   const quote = findQuoteByToken(token);
   if (!quote) return { ok: false, reason: 'not_found' };
   if (quote.status === 'accepted' && quote.order_id) {
@@ -41,7 +140,40 @@ export async function acceptQuote(token, { runPipeline = false, acceptedBy = 'cu
   const items = db.list('quote_items', { where: { quote_id: quote.id } });
   if (!items.length) return { ok: false, reason: 'no_items', quote };
 
-  const orderId = `UM-${new Date().getFullYear()}-${String(4900 + db.count('orders')).padStart(5, '0')}`;
+  const challenge = challengeId ? db.get('quote_signer_challenges', challengeId) : null;
+  if (!challenge || challenge.quote_id !== quote.id || !challenge.verified_at || challenge.consumed_at
+      || Number(challenge.quote_revision || 1) !== Number(quote.revision || 1)
+      || new Date(challenge.expires_at).getTime() <= now.getTime()
+      || challenge.signer_email !== String(signerEmail || '').trim().toLowerCase()) {
+    return { ok: false, reason: 'signer_verification_required', quote };
+  }
+  if (!bindingAcknowledged) return { ok: false, reason: 'binding_acknowledgment_required', quote };
+  if (!String(signerName).trim() || !String(signerTitle).trim()) return { ok: false, reason: 'signer_identity_required', quote };
+  if (!String(poNumber).trim()) return { ok: false, reason: 'po_required', quote };
+
+  const acceptedLines = items.map((item) => ({
+    id: item.id,
+    sku: item.sku || item.gtin || null,
+    name: item.name,
+    qty: item.target_qty || item.moq || 1,
+    unit_price: +(Number(item.sell_per_unit) || 0).toFixed(2),
+  }));
+  const evidence = {
+    signer_name: String(signerName).trim(),
+    signer_title: String(signerTitle).trim(),
+    signer_email: String(signerEmail).trim().toLowerCase(),
+    verification_challenge_id: challenge.id,
+    verified_at: challenge.verified_at,
+    accepted_at: now.toISOString(),
+    quote_revision: quote.revision || 1,
+    binding_acknowledged: true,
+    disclaimer_version: 'binding-sourced-lines-v1',
+    ip_address: ipAddress,
+    user_agent: userAgent,
+    accepted_lines_hash: await sha256(JSON.stringify(acceptedLines)),
+  };
+
+  const orderId = `UM-${now.getFullYear()}-${String(4900 + db.count('orders')).padStart(5, '0')}`;
   const subtotal = items.reduce((a, it) => a + (Number(it.ext_sell) || 0), 0);
 
   db.insert('orders', {
@@ -49,15 +181,16 @@ export async function acceptQuote(token, { runPipeline = false, acceptedBy = 'cu
     customer_id: quote.customer_id || null,
     customer_name: quote.customer_name,
     contact_email: quote.contact_email || null,
-    placed_at: new Date().toISOString(),
+    placed_at: now.toISOString(),
     subtotal: +subtotal.toFixed(2),
     freight: 0,
     tax: 0,
     total: +(quote.total || subtotal).toFixed(2),
     payment_terms: quote.payment_terms || 'net30',
     payment_method: quote.payment_method || 'ach',
-    payment_status: 'invoiced',
-    status: 'processing',
+    payment_status: 'pending',
+    status: 'payment_pending',
+    po_number: String(poNumber).trim(),
     segment: quote.segment || 'asc',
     source: 'quote_acceptance',
     quote_id: quote.id,
@@ -76,8 +209,9 @@ export async function acceptQuote(token, { runPipeline = false, acceptedBy = 'cu
     });
   }
 
-  db.update('quotes', quote.id, { status: 'accepted', accepted_at: new Date().toISOString(), accepted_by: acceptedBy, order_id: orderId });
-  db.insert('audit_log', { id: uid('aud'), kind: 'quote.accepted', ref_id: quote.id, payload: { order_id: orderId, total: quote.total } });
+  db.update('quotes', quote.id, { status: 'accepted', accepted_at: evidence.accepted_at, accepted_by: acceptedBy, acceptance_evidence: evidence, order_id: orderId });
+  db.update('quote_signer_challenges', challenge.id, { consumed_at: evidence.accepted_at });
+  db.insert('audit_log', { id: uid('aud'), kind: 'quote.accepted', ref_id: quote.id, payload: { order_id: orderId, total: quote.total, evidence } });
 
   // GUDID spec §6 — UDI is a post-quote / pre-production gate, opened on
   // order commit for import/private-label lines. Never blocks acceptance.
@@ -114,7 +248,9 @@ export async function acceptQuote(token, { runPipeline = false, acceptedBy = 'cu
  * Stores the ask on each line, flips the quote to 'countered', and drops
  * a task in the desk queue so a human responds.
  */
-export function counterQuote(token, { counters = [], note = '', counteredBy = 'customer' } = {}) {
+export async function counterQuote(token, { counters = [], note = '', counteredBy = 'customer' } = {}) {
+  const server = await serverAcceptance({ action: 'counter', token, counters, note });
+  if (server?.handled) return server;
   const quote = findQuoteByToken(token);
   if (!quote) return { ok: false, reason: 'not_found' };
   if (quote.status === 'accepted') return { ok: false, reason: 'already_accepted', quote };
@@ -143,7 +279,9 @@ export function counterQuote(token, { counters = [], note = '', counteredBy = 'c
 }
 
 /** Customer declines the quote, with reason capture (PRD-16 Phase 7). */
-export function declineQuote(token, { reason = '', declinedBy = 'customer' } = {}) {
+export async function declineQuote(token, { reason = '', declinedBy = 'customer' } = {}) {
+  const server = await serverAcceptance({ action: 'decline', token, reason });
+  if (server?.handled) return server;
   const quote = findQuoteByToken(token);
   if (!quote) return { ok: false, reason: 'not_found' };
   if (quote.status === 'accepted') return { ok: false, reason: 'already_accepted', quote };
@@ -158,7 +296,9 @@ export function declineQuote(token, { reason = '', declinedBy = 'customer' } = {
  * refresh for the desk — the rep runs `refreshQuote` (new freight, new
  * validity window) and the same acceptance link comes back to life.
  */
-export function requestRefresh(token, { requestedBy = 'customer' } = {}) {
+export async function requestRefresh(token, { requestedBy = 'customer' } = {}) {
+  const server = await serverAcceptance({ action: 'refresh', token });
+  if (server?.handled) return server;
   const quote = findQuoteByToken(token);
   if (!quote) return { ok: false, reason: 'not_found' };
   if (quote.status === 'accepted') return { ok: false, reason: 'already_accepted', quote };

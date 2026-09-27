@@ -15,8 +15,7 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { D } from '../tokens.js';
-import { Nav } from '../components/layout/Nav.jsx';
-import { Footer } from '../components/layout/Footer.jsx';
+import { AdminShell } from '../components/layout/AdminShell.jsx';
 import { PageHead } from '../components/layout/PageHead.jsx';
 import { Icon } from '../components/shared/Icon.jsx';
 import { useViewport } from '../lib/viewport.js';
@@ -71,8 +70,8 @@ export function QuoteNew() {
   });
 
   const [vendorName, setVendorName] = useState('');
-  const [customerName, setCustomerName] = useState('Atlanta Surgical Center');
-  const [contactName, setContactName] = useState('Mariah Patel');
+  const [customerName, setCustomerName] = useState('');
+  const [contactName, setContactName] = useState('');
   const [customerTier, setCustomerTier] = useState('A');
   const [freightPref, setFreightPref] = useState('cheapest');
   const [csvText, setCsvText] = useState('');
@@ -223,13 +222,12 @@ export function QuoteNew() {
     : [];
 
   return (
-    <div style={{ background: D.paper, fontFamily: D.sans, color: D.ink, minHeight: '100vh' }}>
-      <Nav />
+    <AdminShell active="new-quote">
       <main id="main">
         <PageHead
           eyebrow="SOURCE & QUOTE · NEW"
-          title={<>Upload a sheet. <em>Get a quote.</em></>}
-          sub="Drop your vendor's product list — Excel or CSV, any language. We handle the translation and compliance checks and return an all-in, landed-cost PDF customers can accept."
+          title="Prepare a quote"
+          sub="Start with your supplier list. Review the parsed lines, resolve any warnings, then prepare pricing for approval."
         />
 
         <section style={{ padding: `0 ${padX}px ${isMobile ? 56 : 80}px` }}>
@@ -327,9 +325,7 @@ export function QuoteNew() {
                         })}
                       </div>
                       {unmappedOptional.length > 0 && (
-                        <div style={{ fontSize: 11, color: D.ink3, marginTop: 8 }}>
-                          Not provided: {unmappedOptional.join(', ')}
-                        </div>
+                        <details style={{ fontSize: 12, color: D.ink3, marginTop: 8 }}><summary>Optional fields not supplied</summary><p>{unmappedOptional.join(', ')}</p></details>
                       )}
                     </div>
                   )}
@@ -521,15 +517,14 @@ export function QuoteNew() {
                 </button>
 
                 <div style={{ marginTop: 14, fontSize: 11, color: D.ink3, lineHeight: 1.6 }}>
-                  Every line is compliance-checked and priced all-in — one landed number, no hidden freight or fees — then delivered as an accept-ready PDF.
+                  Review product evidence, availability, freight, tax, and required approvals before issuing a customer quote.
                 </div>
               </div>
             </aside>
           </div>
         </section>
       </main>
-      <Footer />
-    </div>
+    </AdminShell>
   );
 }
 

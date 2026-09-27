@@ -7,11 +7,13 @@
  * originating order's line items.
  */
 
-import { useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { D } from '../tokens.js';
 import { db } from '../lib/db.js';
 import { fmt } from '../lib/format.js';
+import { auth } from '../lib/auth.js';
+import { workspaceRequest } from '../lib/workspaceRequest.js';
 import { useSEO } from '../lib/seo.js';
 
 const PAGE_STYLE = `
@@ -36,17 +38,27 @@ const STATUS_COLOR = { paid: '#2d6a4f', open: D.terra, pending: D.terra, past_du
 export function InvoicePrint() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const invoice = db.useRow('invoices', id);
-  const order = db.useRow('orders', invoice?.order_id);
-  const items = db.useTable('order_items', { where: { order_id: invoice?.order_id } });
-  const org = invoice ? db.get('organizations', invoice.customer_id) : null;
+  const session=auth.use();
+  const staff=['admin','finance'].includes(session?.role);
+  const [document,setDocument]=useState(null),[loadError,setLoadError]=useState('');
+  useEffect(()=>{if(!staff)return;const c=new AbortController();workspaceRequest(`/api/finance/record-payment?invoice=${encodeURIComponent(id)}`,{signal:c.signal}).then(r=>{if(!c.signal.aborted){setDocument(r);setLoadError('');}}).catch(e=>{if(!c.signal.aborted)setLoadError(e.message);});return()=>c.abort();},[id,staff]);
+  const localInvoice=db.useRow('invoices',id);
+  const localOrder=db.useRow('orders',localInvoice?.order_id);
+  const localItems=db.useTable('order_items',{where:{order_id:localInvoice?.order_id}});
+  const invoice=staff?(document?.invoice?.id===id?document.invoice:null):localInvoice;
+  const order=staff?document?.order:localOrder;
+  const items=staff?(document?.items||[]):localItems;
+  const org=staff?document?.organization:invoice?db.get('organizations',invoice.customer_id):null;
+  const backTo=staff?'/admin/finance':'/account/invoices';
 
   useSEO({ title: `Invoice ${id}`, description: 'Unite Medical invoice.', canonical: `/invoices/${id}/print`, noindex: true });
 
-  const subtotal = useMemo(() => items.reduce((a, b) => a + (Number(b.ext_price) || b.qty * b.unit_price || 0), 0), [items]);
+  const subtotal = items.reduce((a, b) => a + (Number(b.ext_price) || b.qty * b.unit_price || 0), 0);
   const freight = order?.freight || 0;
   const tax = order?.tax || 0;
-  const total = invoice?.amount ?? +(subtotal + freight + tax).toFixed(2);
+  const total = Number(invoice?.amount ?? invoice?.total ?? +(subtotal + freight + tax).toFixed(2));
+  const paid = Number(invoice?.paid_amount || 0);
+  const balance = Number(invoice?.balance ?? (invoice?.status === 'paid' ? 0 : Math.max(0, total - paid)));
 
   if (!invoice) {
     return (
@@ -54,9 +66,9 @@ export function InvoicePrint() {
         <style>{PAGE_STYLE}</style>
         <div className="um-print-sheet">
           <div className="um-print-mono">INVOICE</div>
-          <h1 className="um-print-h1">Invoice not found.</h1>
-          <p style={{ color: D.ink2, marginTop: 12 }}>We couldn&apos;t find invoice <code>{id}</code>.</p>
-          <button type="button" className="um-print-cta um-no-print" onClick={() => navigate('/account/invoices')} style={{ background: D.plum, color: D.paper, marginTop: 20 }}>
+          <h1 className="um-print-h1">{staff&&!loadError?'Loading invoice…':'Invoice unavailable.'}</h1>
+          <p style={{ color: D.ink2, marginTop: 12 }}>{loadError||`Retrieving invoice ${id}.`}</p>
+          <button type="button" className="um-print-cta um-no-print" onClick={() => navigate(backTo)} style={{ background: D.plum, color: D.paper, marginTop: 20 }}>
             Back to invoices
           </button>
         </div>
@@ -80,7 +92,7 @@ export function InvoicePrint() {
               Pay online →
             </a>
           )}
-          <Link to="/account/invoices" style={{ padding: '10px 18px', borderRadius: 4, border: `1px solid ${D.line}`, color: D.ink2, textDecoration: 'none', fontSize: 14 }}>
+          <Link to={backTo} style={{ padding: '10px 18px', borderRadius: 4, border: `1px solid ${D.line}`, color: D.ink2, textDecoration: 'none', fontSize: 14 }}>
             ← back to invoices
           </Link>
         </div>
@@ -157,9 +169,12 @@ export function InvoicePrint() {
               </>
             )}
             <tr style={{ borderTop: `2px solid ${D.ink}` }}>
-              <td colSpan={4} style={{ paddingTop: 14, fontWeight: 600 }}>Total due</td>
+              <td colSpan={4} style={{ paddingTop: 14, fontWeight: 600 }}>Invoice total</td>
               <td style={{ textAlign: 'right', paddingTop: 14, fontFamily: D.display, fontSize: 20, color: D.plum }}>{fmt.money(total)}</td>
             </tr>
+
+            {paid > 0 && <tr><td colSpan={4} style={{ textAlign: 'right', color: D.ink2 }}>Payments recorded</td><td style={{ textAlign: 'right' }}>{fmt.money(paid)}</td></tr>}
+            <tr><td colSpan={4} style={{ textAlign: 'right', fontWeight: 600 }}>Balance due</td><td style={{ textAlign: 'right', fontWeight: 600 }}>{fmt.money(balance)}</td></tr>
           </tfoot>
         </table>
 

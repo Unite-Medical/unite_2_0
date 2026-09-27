@@ -10,6 +10,21 @@
    without a call-site sweep.
    ====================================================================== */
 
+@font-face {
+  font-family: 'Unite Manrope';
+  src: url('/fonts/manrope-latin-variable.woff2') format('woff2');
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Headline emphasis uses the same upright type as the surrounding text. */
+:is(h1, h2, h3, h4, h5, h6) em {
+  font-family: inherit;
+  font-style: normal;
+  font-weight: inherit;
+}
+
 *,
 *::before,
 *::after {
@@ -495,3 +510,7 @@ button {
     transition: none !important;
   }
 }
+
+/* Environment notice stays visible without competing with the workspace. */
+.um-staging-banner{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px;padding:7px 16px;background:#f6f2e6;border-bottom:1px solid #e9e2cf;color:#887541;font:11px/1.5 'Unite Manrope',Arial,sans-serif;letter-spacing:.01em}
+.um-staging-banner a{text-decoration:underline;text-underline-offset:3px;color:#6f613f}

@@ -11,7 +11,7 @@
  *   - OAuth client_credentials → JWT exchange against /oauth/token
  *     (FLEXPORT_CLIENT_ID + FLEXPORT_CLIENT_SECRET)
  *
- * Header: `Flexport-Version: 2`
+ * Header: `Flexport-Version: 3`
  *
  * Endpoints used here:
  *   GET    /shipments
@@ -34,7 +34,7 @@ import { section301Lookup } from './section301.js';
 import { hts } from './hts.js';
 
 const FLEXPORT_BASE = 'https://api.flexport.com';
-const FLEXPORT_API_VERSION = '2';
+const FLEXPORT_API_VERSION = '3';
 
 // Vendor-sheet `shipping_port` free text → UN/LOCODE for booking_quotes.
 // Longest-match against the normalized port string; falls back to CNSHA.
@@ -126,7 +126,7 @@ export const flexport = {
       label: 'listShipments',
       predicate: () => isConfigured() || viaBackendProxy(),
       real: async () => {
-        const resp = await callFlexport({ path: `/shipments?per=${limit}&sort=updated_at&direction=desc` });
+        const resp = await callFlexport({ path: `/shipments?per=${limit}&sort=id&direction=desc` });
         return resp?.data?.data || [];
       },
       stub: async () => {

@@ -24,7 +24,7 @@ export function AccountQuotes() {
   const navigate = useNavigate();
   const session = auth.use();
   const { isMobile } = useViewport();
-  const orgId = session?.org_id || 'org_atlsurgical';
+  const orgId = session.org_id;
   const pad = isMobile ? 20 : 40;
 
   const all = db.useTable('quotes', { orderBy: 'created_at', dir: 'desc' });

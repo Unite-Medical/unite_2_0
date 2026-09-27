@@ -135,7 +135,7 @@ export function About() {
               We are grateful for every customer who trusts us with their supply chain. They are
               the reason Unite exists, and everything we build, we build to serve them better.
             </p>
-            <p style={{ fontFamily: D.display, fontSize: 22, fontStyle: 'italic', color: D.ink, marginTop: 32 }}>— Damon R., Founder & CEO</p>
+            <p style={{ fontFamily: D.display, fontSize: 22, fontStyle: 'normal', color: D.ink, marginTop: 32 }}>— Damon R., Founder & CEO</p>
           </div>
         </div>
       </div>

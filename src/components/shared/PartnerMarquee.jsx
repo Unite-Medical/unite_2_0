@@ -1,160 +1,135 @@
-import { useState } from 'react';
-import { D } from '../../tokens.js';
+import { useEffect, useId, useRef, useState } from "react";
+import { D } from "../../tokens.js";
+import "./PartnerMarquee.css";
 
-/**
- * Partner / customer logo set.
- *
- * Each entry has a slug that maps to /public/logos/partners/processed/{slug}--{variant}.svg
- * with a matching PNG fallback at /public/logos/partners/raster-fallback/{slug}--{variant}.png.
- *
- * The `tall` flag bumps render height for stacked / square marks (seals etc.)
- * so they read at the same visual weight as horizontal wordmarks.
- */
 // eslint-disable-next-line react-refresh/only-export-components
 export const DEFAULT_PARTNER_LOGOS = [
-  { slug: 'restore-robotics',       name: 'Restore Robotics' },
-  { slug: 'gopuff',                 name: 'goPuff' },
-  { slug: 'veterans-affairs',       name: 'U.S. Department of Veterans Affairs', tall: true },
-  { slug: 'publix',                 name: 'Publix' },
-  { slug: 'henry-ford-hospital',    name: 'Henry Ford Hospital' },
-  { slug: 'ardent-health',          name: 'Ardent Health' },
-  { slug: 'harps-food',             name: 'Harps Food Stores' },
-  { slug: 'uf-health',              name: 'UF Health' },
-  { slug: 'orlando-health',         name: 'Orlando Health' },
-  { slug: 'total-joint-specialists', name: 'Total Joint Specialists' },
+  { slug: "restore-robotics", name: "Restore Robotics" },
+  { slug: "gopuff", name: "goPuff" },
+  { slug: "veterans-affairs", name: "U.S. Department of Veterans Affairs" },
+  { slug: "publix", name: "Publix" },
+  { slug: "henry-ford-hospital", name: "Henry Ford Hospital" },
+  { slug: "ardent-health", name: "Ardent Health" },
+  { slug: "harps-food", name: "Harps Food Stores" },
+  { slug: "uf-health", name: "UF Health" },
+  { slug: "orlando-health", name: "Orlando Health" },
+  { slug: "total-joint-specialists", name: "Total Joint Specialists" },
 ];
 
-function PartnerLogo({ slug, name, tall, variant, height }) {
-  const h = tall ? Math.round(height * 1.15) : height;
-  const svg = `/logos/partners/processed/${slug}--${variant}.svg`;
-  const png = `/logos/partners/raster-fallback/${slug}--${variant}.png`;
-  // When no logo asset exists for a slug, render a styled text wordmark instead
-  // of hiding the entry. This lets the list be edited by NAME alone — real
-  // logos can be dropped into /public/logos/partners/ later with no code change.
-  const [textFallback, setTextFallback] = useState(false);
-
-  if (textFallback) {
+function PartnerLogo({ item, variant }) {
+  const [fallback, setFallback] = useState(0);
+  if (item.wordmark || fallback === 2) {
     return (
-      <span
-        title={name}
-        style={{
-          fontFamily: D.sans,
-          fontWeight: 600,
-          fontSize: Math.round(h * 0.62),
-          letterSpacing: '-0.01em',
-          whiteSpace: 'nowrap',
-          color: variant === 'paper' ? D.paper : D.ink,
-          opacity: 0.7,
-          flexShrink: 0,
-        }}
-      >
-        {name}
+      <span className="um-partner-wordmark">
+        {item.displayName || item.name}
       </span>
     );
   }
-
   return (
     <img
-      src={svg}
-      alt={name}
-      title={name}
+      className="um-partner-logo"
+      src={
+        fallback === 1
+          ? `/logos/partners/raster-fallback/${item.slug}--${variant}.png`
+          : `/logos/partners/processed/${item.slug}--${variant}.svg`
+      }
+      alt={item.name}
+      width="176"
+      height="48"
       loading="lazy"
       decoding="async"
-      style={{
-        height: h,
-        width: 'auto',
-        display: 'block',
-        flexShrink: 0,
-        opacity: 0.78, // softens the wordmarks so they sit behind the design rather than competing
-      }}
-      onError={(e) => {
-        // SVG failed -> try PNG -> finally a styled text wordmark (never blank).
-        if (e.currentTarget.dataset.fallback) {
-          setTextFallback(true);
-          return;
-        }
-        e.currentTarget.dataset.fallback = '1';
-        e.currentTarget.src = png;
-      }}
+      style={{ "--mark-width": item.width || "176px" }}
+      onError={() => setFallback((value) => Math.min(value + 1, 2))}
     />
   );
 }
 
 export function PartnerMarquee({
   items = DEFAULT_PARTNER_LOGOS,
-  background = D.paperAlt,
+  background = D.paper,
   borderColor = D.line,
-  eyebrow = 'TRUSTED BY THE FRONT LINE',
+  eyebrow = "Partners and customers",
   reverse = false,
-  speed = 'normal',
+  speed = "normal",
   showEyebrow = true,
-  variant = 'ink',
-  height = 28,
-  eyebrowColor = D.plum,
+  variant = "ink",
+  eyebrowColor = D.ink2,
 }) {
-  const speedClass = speed === 'slow' ? ' um-marquee--slow' : '';
-  const dirClass = reverse ? ' um-marquee--reverse' : '';
-  // Double the list so the loop seams invisibly.
-  const doubled = [...items, ...items];
+  const labelId = useId();
+  const sectionRef = useRef(null);
+  const [paused, setPaused] = useState(false);
+  const [active, setActive] = useState(false);
+
+  useEffect(() => {
+    let inView = false;
+    const sync = () => setActive(inView && !document.hidden);
+    const observer = new IntersectionObserver(([entry]) => {
+      inView = entry.isIntersecting;
+      sync();
+    });
+    observer.observe(sectionRef.current);
+    document.addEventListener("visibilitychange", sync);
+    return () => {
+      observer.disconnect();
+      document.removeEventListener("visibilitychange", sync);
+    };
+  }, []);
 
   return (
     <section
-      aria-label="Partners and customers"
+      ref={sectionRef}
+      className="um-partners"
+      aria-label={showEyebrow ? undefined : "Partners and customers"}
+      aria-labelledby={showEyebrow ? labelId : undefined}
+      data-paused={paused || !active}
+      data-variant={variant}
       style={{
-        borderTop: `1px solid ${borderColor}`,
-        borderBottom: `1px solid ${borderColor}`,
-        background,
-        padding: showEyebrow ? '20px 0 22px' : '22px 0',
-        overflow: 'hidden',
-        position: 'relative',
+        "--partner-background": background,
+        "--partner-border": borderColor,
+        "--partner-color": variant === "paper" ? D.paper : D.ink,
+        "--partner-label": eyebrowColor,
+        "--partner-speed": speed === "slow" ? "70s" : "52s",
+        "--partner-direction": reverse ? "reverse" : "normal",
       }}
     >
-      {showEyebrow && (
-        <div
-          style={{
-            maxWidth: 1360,
-            margin: '0 auto',
-            padding: '0 40px 14px',
-            fontFamily: D.mono,
-            fontSize: 11,
-            letterSpacing: 1.4,
-            color: eyebrowColor,
-          }}
+      <div className="um-partners-heading">
+        {showEyebrow && <p id={labelId}>{eyebrow}</p>}
+        <button
+          type="button"
+          className="um-partners-toggle"
+          onClick={() => setPaused((value) => !value)}
+          aria-label={paused ? "Play scrolling logos" : "Pause scrolling logos"}
         >
-          {eyebrow}
-        </div>
-      )}
-      <div
-        className="um-marquee-pause"
-        style={{
-          maskImage:
-            'linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent)',
-          WebkitMaskImage:
-            'linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent)',
-        }}
-      >
-        <div
-          className={`um-marquee${dirClass}${speedClass}`}
-          style={{
-            gap: 64,
-            alignItems: 'center',
-            paddingRight: 64,
-          }}
-        >
-          {doubled.map((item, i) => (
-            <div
-              key={`${item.slug}-${i}`}
-              aria-hidden={i >= items.length}
-              style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}
-            >
-              <PartnerLogo
-                slug={item.slug}
-                name={item.name}
-                tall={item.tall}
-                variant={variant}
-                height={height}
+          <svg viewBox="0 0 20 20" aria-hidden="true">
+            {paused ? (
+              <path d="M6 4l10 6-10 6z" fill="currentColor" />
+            ) : (
+              <path
+                d="M7 5v10m6-10v10"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.6"
               />
-            </div>
+            )}
+          </svg>
+          <span>{paused ? "Play" : "Pause"}</span>
+        </button>
+      </div>
+      <div className="um-partners-viewport">
+        <div className="um-partners-track">
+          {[0, 1].map((copy) => (
+            <ul
+              className="um-partners-group"
+              key={copy}
+              aria-hidden={copy === 1 ? true : undefined}
+              role="list"
+            >
+              {items.map((item) => (
+                <li className="um-partner-slot" key={item.slug}>
+                  <PartnerLogo item={item} variant={variant} />
+                </li>
+              ))}
+            </ul>
           ))}
         </div>
       </div>

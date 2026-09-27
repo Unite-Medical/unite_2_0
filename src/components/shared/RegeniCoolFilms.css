@@ -1,0 +1,15 @@
+.uf-regen-orbit{scroll-margin-top:110px;height:245svh;position:relative;margin:36px auto 0;max-width:1440px;--rc-film-progress:0}
+.uf-regen-orbit-sticky{mix-blend-mode:multiply;position:sticky;top:0;height:100svh;display:flex;flex-direction:column;justify-content:center;padding:112px 40px 28px}
+.uf-regen-film-top,.uf-regen-film-bottom{display:flex;justify-content:space-between;gap:16px;text-align:left;font:10px/1.5 monospace;color:#536457;letter-spacing:.04em}
+.uf-regen-film-top{margin-bottom:14px}.uf-regen-film-top a{color:inherit;text-decoration:none}.uf-regen-film-top a:hover{text-decoration:underline}.uf-regen-film-top a:focus-visible{outline:2px solid #173f32;outline-offset:5px}
+.uf-regen-orbit-media{position:relative;min-height:0;aspect-ratio:16/9;max-height:calc(100svh - 214px);width:100%;background:transparent;overflow:hidden}
+.uf-regen-orbit-media img,.uf-regen-orbit-media video{display:block;width:100%;height:100%;object-fit:contain}
+.uf-regen-orbit-media video{position:absolute;inset:0}
+.uf-regen-film-bottom{margin-top:14px;font:10px/1.5 Archivo,Arial,sans-serif;letter-spacing:0}
+.uf-regen-orbit-track{height:1px;background:#173f3230;margin-top:18px}.uf-regen-orbit-track span{display:block;background:#173f32;width:100%;height:100%;transform:scaleX(var(--rc-film-progress));transform-origin:left}
+.uf-regen-orbit.is-static{height:auto}.uf-regen-orbit.is-static .uf-regen-orbit-sticky{position:relative;height:auto;padding-top:36px}
+@media(max-width:760px){.uf-regen-orbit{height:185svh;margin-top:18px}.uf-regen-orbit-sticky{padding:96px 16px 26px}.uf-regen-film-top{font-size:9px}.uf-regen-film-bottom{font-size:9px;flex-direction:column;gap:4px}.uf-regen-orbit-media{flex:none}}
+.uf-regen-enable-motion{align-self:center;display:inline-flex;align-items:center;gap:14px;margin:18px 0 0;padding:12px 18px;border:1px solid #173f3260;border-radius:4px;background:transparent;color:#173f32;font:500 13px/1.4 Archivo,Arial,sans-serif;cursor:pointer;text-decoration:none}
+.uf-regen-enable-motion:hover{background:#173f320a}
+.uf-regen-enable-motion:focus-visible{outline:2px solid #173f32;outline-offset:4px}
+.uf-regen-film-actions{display:flex;align-items:center;gap:20px}.uf-regen-film-actions button{font:inherit;color:inherit;letter-spacing:inherit;border:0;padding:0;background:none;cursor:pointer}.uf-regen-film-actions button:hover{text-decoration:underline}.uf-regen-film-actions button:focus-visible{outline:2px solid #173f32;outline-offset:4px}

@@ -1,5 +1,6 @@
-// Public, indexable static routes shared by prerendering and sitemap generation.
+// Mirrors src/lib/seo.js useSEO() titles/descriptions per public page.
 export const STATIC_ROUTES = {
+  '/regenicool': { title: 'RegeniCool™ Pro', description: 'Explore the RegeniCool™ Pro ice-water circulation system and request dealer information from Unite Medical.' },
   '/catalog': {
     title: 'Catalog',
     description: 'Browse FDA-registered orthotics, diagnostics, PPE, wound care, pharmaceuticals, and equipment. No minimums on stocked items; same-day shipping before 2pm EST.',
@@ -18,11 +19,11 @@ export const STATIC_ROUTES = {
   },
   '/surplus': {
     title: 'Move surplus inventory',
-    description: 'List excess, near-expiry, or expired medical inventory with your target price. Unite brokers it to buyers across medical, veterinary, research, and overseas channels for a transparent fee.',
+    description: 'Private intake for verified US businesses with unopened, unexpired medical supplies, including PPE.',
   },
   '/surplus/market': {
     title: 'Surplus marketplace',
-    description: 'Browse surplus medical inventory Unite is brokering — sealed, in-date lots plus vet/research/export-eligible stock, direct from the seller at well below list.',
+    description: 'Surplus marketplace intake pilot. Deal acceptance and fee collection are not yet available.',
   },
   '/services': {
     title: 'Services',

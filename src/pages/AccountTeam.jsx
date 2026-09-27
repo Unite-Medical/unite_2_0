@@ -23,7 +23,7 @@ export function AccountTeam() {
   const org = auth.org();
   const { isMobile } = useViewport();
   const pad = isMobile ? 20 : 40;
-  const orgId = session?.org_id || 'org_atlsurgical';
+  const orgId = session.org_id;
 
   const team = db.useTable('profiles', { where: { org_id: orgId }, orderBy: 'created_at' });
   const me = session?.user_id ? db.get('profiles', session.user_id) : null;

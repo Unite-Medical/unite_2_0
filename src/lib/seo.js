@@ -12,7 +12,7 @@ import { useEffect } from 'react';
 
 const SITE_NAME = 'Unite Medical';
 const SITE_URL = 'https://unitemedical.net';
-const DEFAULT_OG_IMAGE = '/favicon-512.png';
+const DEFAULT_OG_IMAGE = '/brand/unite-medical-logo.png';
 const DEFAULT_DESCRIPTION =
   'FDA-registered, veteran-owned wholesale medical supply distribution for ASCs, pharmacies, government, EMS, and regional distributors. Same-day shipping on orders before 2pm EST from our Georgia warehouse.';
 
@@ -95,7 +95,7 @@ export function useSEO({
     document.title = fullTitle;
 
     setMeta({ name: 'description', content: description });
-    setMeta({ name: 'robots', content: noindex ? 'noindex,nofollow' : 'index,follow' });
+    setMeta({ name: 'robots', content: noindex || import.meta.env.VITE_UNITE_ENVIRONMENT==='staging' ? 'noindex,nofollow' : 'index,follow' });
 
     const canonicalHref = canonical
       ? (canonical.startsWith('http') ? canonical : `${SITE_URL}${canonical}`)
@@ -133,7 +133,7 @@ export function organizationSchema() {
     '@type': 'Organization',
     name: SITE_NAME,
     url: SITE_URL,
-    logo: `${SITE_URL}/favicon-512.png`,
+    logo: `${SITE_URL}/brand/unite-medical-logo.png`,
     description:
       'Veteran-owned, FDA-registered wholesale medical supply distribution.',
     foundingDate: '2019',
@@ -189,7 +189,7 @@ export function websiteSchema() {
 }
 
 /** Product schema for PDPs. */
-export function productSchema(product, { stock = 0, image } = {}) {
+export function productSchema(product, { stock = 0, image, includePricing = true } = {}) {
   return {
     '@context': 'https://schema.org',
     '@type': 'Product',
@@ -225,7 +225,7 @@ export function productSchema(product, { stock = 0, image } = {}) {
     ].filter(Boolean),
     // Quote-only products (no public price) get no Offer / rating markup —
     // never advertise a null price or a fabricated rating for them.
-    ...(product.quote_only || product.price == null ? {} : {
+    ...(!includePricing || product.quote_only || product.price == null ? {} : {
       offers: {
         '@type': 'Offer',
         priceCurrency: 'USD',
@@ -258,7 +258,7 @@ export function articleSchema(post) {
     publisher: {
       '@type': 'Organization',
       name: SITE_NAME,
-      logo: { '@type': 'ImageObject', url: `${SITE_URL}/favicon-512.png` },
+      logo: { '@type': 'ImageObject', url: `${SITE_URL}/brand/unite-medical-logo.png` },
     },
     mainEntityOfPage: {
       '@type': 'WebPage',

@@ -17,21 +17,10 @@ export const METHOD_LABEL = {
   net15: 'Net 15', net30: 'Net 30', net60: 'Net 60',
 };
 
-/**
- * Active allowlist for an org. If none is configured, derive a sensible
- * default from the org's terms (+ card) so legacy accounts still transact —
- * admin can tighten the list at any time.
- */
+/** Active, explicit payment allowlist for an organization. Missing grants fail closed. */
 export function approvedMethodsFor(org) {
   if (!org?.id) return [];
-  const rows = db.list('account_payment_methods', { where: { org_id: org.id } }).filter((r) => r.status === 'active');
-  if (rows.length) return rows;
-  const derived = ['card'];
-  if (org.terms && (TERMS_METHODS.has(org.terms) || org.terms === 'ach' || org.terms === 'wire')) derived.push(org.terms);
-  return derived.map((method) => ({
-    id: `derived_${org.id}_${method}`, org_id: org.id, method, status: 'active',
-    credit_limit: TERMS_METHODS.has(method) ? (org.credit_limit ?? null) : null, derived: true,
-  }));
+  return db.list('account_payment_methods', { where: { org_id: org.id } }).filter((row) => row.status === 'active');
 }
 
 export function isMethodAllowed(org, method) {
