@@ -131,6 +131,7 @@ export default async function handler(req, res) {
       if(!Number.isFinite(Date.parse(cutoff))||(since&&Number.isNaN(since.getTime())))return sendJson(res,400,{error:'invalid_cursor'});
       const rows=await sql`SELECT tbl,id,data,updated_at,updated_at::text AS cursor_at,deleted FROM um_rows
         WHERE updated_at<=${cutoff}::timestamptz
+        AND (${serviceAccess} OR left(tbl,3)<>'bi_')
         AND (${Boolean(since)} OR deleted=false)
         AND updated_at>${since?since.toISOString():'1970-01-01T00:00:00Z'}::timestamptz
         AND (updated_at,tbl,id)>(${cursor?.at||'1970-01-01T00:00:00Z'}::timestamptz,${cursor?.table||''},${cursor?.id||''})

@@ -1,3 +1,4 @@
+import { BiDataDesk } from '../../components/BiDataDesk.jsx';
 import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { AdminShell } from '../../components/layout/AdminShell.jsx';
@@ -55,6 +56,7 @@ export function AdvancedBI() {
   const sourceCards = report ? [['QuickBooks', report.qbo], ['Shopify', report.shopify]] : [];
   return <AdminShell active="advanced-bi"><main id="main" className="bi-page">
     <header className="bi-heading"><div><span className="bi-eyebrow">Unite intelligence</span><h1>Advanced BI</h1><p>Your books, your sales, and the decisions behind them.</p></div><Link className="bi-button" to="/admin/integrations">Connections</Link></header>
+    <BiDataDesk />
     <form className="bi-controls" onSubmit={generate}><label>From<input type="date" required value={start} onChange={e => setStart(e.target.value)} /></label><label>Through<input type="date" required min={start} value={end} onChange={e => setEnd(e.target.value)} /></label><label>Accounting basis<select value={basis} onChange={e => setBasis(e.target.value)}><option>Accrual</option><option>Cash</option></select></label><button className="bi-button primary" disabled={busy || loading}>{busy ? 'Building report…' : 'Generate report'}</button></form>
     {error && <p className="bi-error" role="alert">{error}</p>}
     {data && !data.connections.qbo_app_configured && <aside className="bi-notice"><strong>Connect your migrated QuickBooks company</strong><p>The Intuit app credentials still need to be configured. After setup, an administrator can authorize the company. Shopify reports can be generated while accounting is being connected.</p><Link to="/admin/integrations">Review connection setup →</Link></aside>}
