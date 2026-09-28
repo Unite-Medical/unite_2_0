@@ -1,3 +1,5 @@
+import { STOREFRONT_PRODUCTS } from '../lib/storefrontCatalog.js';
+import { CommerceHero } from '../components/shared/CommerceHero.jsx';
 // Catalog — reworked per PRD-28 §5.1:
 //   · 3-supply-state model (In Stock / Source / Available to Quote) replaces
 //     the binary IN STOCK/LOW badge. OOS items still SHOW, with a sourcing
@@ -7,14 +9,14 @@
 //   · Compliance filters wired to real product flags.
 //   · Fake "updated 04 min ago" removed — the WMS projection IS live.
 import { useEffect, useMemo, useState } from 'react';
-import { Link, useSearchParams, useNavigate } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { D } from '../tokens.js';
 import { Nav } from '../components/layout/Nav.jsx';
-import { Footer } from '../components/layout/Footer.jsx';
+import { HomepageFooter } from '../components/layout/HomepageFooter.jsx';
+import './commerce-public.css';
+import './commerce-editorial.css';
 import { PhotoPlaceholder } from '../components/shared/PhotoPlaceholder.jsx';
 import { Icon } from '../components/shared/Icon.jsx';
-import { Grad } from '../components/shared/Grad.jsx';
-import { Eyebrow } from '../components/shared/Eyebrow.jsx';
 import { cartStore } from '../store/cart.js';
 import { db } from '../lib/db.js';
 import { availability } from '../lib/wms/availability.js';
@@ -54,10 +56,8 @@ function SupplyBadge({ state }) {
 
 export function Catalog() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const navigate = useNavigate();
-  const { isMobile, isTablet } = useViewport();
-  const padX = isMobile ? 20 : 40;
-  const PRODUCTS = db.useTable('products');
+  const { isMobile } = useViewport();
+  const PRODUCTS = STOREFRONT_PRODUCTS;
   const inventory = db.useTable('inventory');
   const accountPrices = db.useTable('account_prices');
   const session = auth.use();
@@ -123,7 +123,7 @@ export function Catalog() {
       return (cat === 'All' || categorize(p) === cat) &&
         (compliance.size === 0 || [...compliance].every((flag) => p[flag])) &&
         (supplyFilter === 'all' || (supplyFilter === 'in_stock' ? stocked : !stocked)) &&
-        (!q || `${p.name} ${p.sku} ${p.hcpcs}`.toLowerCase().includes(q));
+        (!q || `${p.name} ${p.sku} ${p.hcpcs} ${(p.variants||[]).map(v=>`${v.sku} ${v.title}`).join(' ')}`.toLowerCase().includes(q));
     });
   }, [PRODUCTS, cat, compliance, supplyFilter, search, stockBySku]);
 
@@ -156,139 +156,34 @@ export function Catalog() {
     </>
   );
 
-  return (
-    <div style={{ background: D.paper, fontFamily: D.sans, color: D.ink, minHeight: '100vh' }}>
-      <Nav />
-      <main id="main">
-      <div style={{ background: D.paperAlt, padding: `${isMobile ? 32 : 48}px ${padX}px`, borderBottom: `1px solid ${D.line}` }}>
-        <div style={{ maxWidth: 1360, margin: '0 auto' }}>
-          <Eyebrow>CATALOG · STOCKED + SOURCED</Eyebrow>
-          <div style={{ display: 'flex', alignItems: isMobile ? 'flex-start' : 'end', justifyContent: 'space-between', marginTop: 10, flexDirection: isMobile ? 'column' : 'row', gap: 8 }}>
-            <h1 style={{ fontFamily: D.display, fontSize: 'clamp(38px, 7.2vw, 72px)', fontWeight: 400, letterSpacing: 'clamp(-0.9px, -0.19vw, -1.8px)', margin: 0, lineHeight: 1.0 }}>
-              {cat === 'All' ? <>The Unite <Grad>catalog</Grad></> : cat}
-            </h1>
-            <div style={{ fontFamily: D.mono, fontSize: 12, color: D.ink2 }}>{filtered.length} results</div>
-          </div>
-          <p style={{ fontSize: isMobile ? 13.5 : 14.5, color: D.ink2, margin: '12px 0 0', maxWidth: 640, lineHeight: 1.55 }}>
-            Stocked items ship same-day on orders before 2pm EST — no minimums. Out of stock or
-            not listed? We source it and quote you a firm price.
-          </p>
-          <div style={{ display: 'flex', gap: 12, marginTop: 20, flexWrap: 'wrap', alignItems: 'center' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 14px', border: `1px solid ${D.line}`, borderRadius: 4, background: D.card, flex: '1 1 280px', maxWidth: 420 }}>
-              <Icon.search />
-              <input
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search SKU, name, HCPCS"
-                aria-label="Search products"
-                style={{ border: 'none', background: 'transparent', outline: 'none', flex: 1, fontSize: 14, fontFamily: D.sans, color: D.ink }}
-              />
-            </div>
-            {cats.map((c) => (
-              <button key={c} onClick={() => setCat(c)} style={{
-                background: cat === c ? D.plum : D.card, color: cat === c ? D.paper : D.ink2,
-                border: `1px solid ${cat === c ? D.plum : D.line}`,
-                padding: '8px 14px', borderRadius: 4, cursor: 'pointer', fontSize: 13, fontFamily: D.sans,
-              }}>{c}</button>
-            ))}
-          </div>
-        </div>
-      </div>
-      <div style={{ maxWidth: 1360, margin: '0 auto', padding: `32px ${padX}px 80px`, display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '220px 1fr', gap: isMobile ? 20 : 40 }}>
-        <div>
-          {isMobile ? (
-            <details style={{ background: D.card, border: `1px solid ${D.line}`, borderRadius: 12, padding: '12px 14px' }}>
-              <summary style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1, color: D.plum, cursor: 'pointer' }}>
-                FILTERS · {compliance.size + (supplyFilter !== 'all' ? 1 : 0)} active
-              </summary>
-              <div style={{ marginTop: 12, paddingTop: 12, borderTop: `1px solid ${D.line}` }}>
-                {filterPanel}
-              </div>
-            </details>
-          ) : filterPanel}
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : isTablet ? 'repeat(2, 1fr)' : 'repeat(3,1fr)', gap: isMobile ? 12 : 18 }}>
-          {filtered.map((p) => {
-            const stock = stockBySku.get(p.sku) || 0;
-            // 3-state supply model (PRD-28 §5.1): stocked items ship today;
-            // OOS items stay visible with a sourcing path (never hidden).
-            const state = stock > 0 ? SUPPLY_STATES.in_stock : SUPPLY_STATES.source;
-            const stocked = state.id === 'in_stock';
-            const accountPrice = priceBySku.get(p.sku);
-            return (
-              <article key={p.sku} className="um-card" style={{ background: D.card, borderRadius: 14, overflow: 'hidden', border: `1px solid ${D.line}`, display: 'flex', flexDirection: 'column' }}>
-                <Link to={`/products/${p.sku}`} style={{ display: 'block' }}>
-                  <PhotoPlaceholder src={PRODUCT_IMG[p.sku]} caption={p.img} height={isMobile ? 140 : 210} stripeFrom="#ebe3d3" stripeTo="#ddd1b7" textColor={D.plum} />
-                </Link>
-                <div style={{ padding: isMobile ? 14 : 18, flex: 1, display: 'flex', flexDirection: 'column' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: D.mono, fontSize: 10, letterSpacing: 0.8, color: D.ink3 }}>
-                    <span>{p.sku}</span>
-                    <SupplyBadge state={state} />
-                  </div>
-                  <Link to={`/products/${p.sku}`} style={{ fontFamily: D.display, fontSize: isMobile ? 16 : 19, color: D.ink, marginTop: 10, lineHeight: 1.25, minHeight: isMobile ? 40 : 46 }}>{p.name}</Link>
-                  <div style={{ fontSize: 12, color: D.ink2, marginTop: 4 }}>{categorize(p)}{!isMobile && ` · HCPCS ${p.hcpcs}`}</div>
-                  <div style={{ display: 'flex', alignItems: 'end', justifyContent: 'space-between', marginTop: 14 }}>
-                    <div>
-                      <div style={{ fontFamily: D.display, fontSize: isMobile ? 20 : 24, color: D.plum, letterSpacing: -0.4 }}>
-                        {p.quote_only ? 'Quote on request' : commerce.can_view_prices
-                          ? (accountPrice?.unit_price != null ? fmt.money(accountPrice.unit_price) : 'Pricing unavailable')
-                          : 'Sign in for pricing'}
-                      </div>
-                      <div style={{ fontFamily: D.mono, fontSize: 10, color: D.ink3 }}>{p.pack_size} · MOQ {p.moq}</div>
-                    </div>
-                    {stocked && commerce.can_use_cart && accountPrice?.unit_price > 0 ? (
-                      <button aria-label={`Add ${p.name} to cart`} onClick={() => cartStore.add(p.sku)} style={{ background: D.ink, color: D.paper, border: 'none', width: 40, height: 40, borderRadius: 8, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                        <Icon.plus />
-                      </button>
-                    ) : stocked ? (
-                      <button
-                        aria-label={`Add ${p.name} to Quick Quote`}
-                        onClick={() => navigate(`/portal/quote?sku=${encodeURIComponent(p.sku)}`)}
-                        style={{ background: D.plum, color: D.paper, border: 'none', padding: '9px 12px', borderRadius: 4, cursor: 'pointer', fontSize: 11.5, fontWeight: 600, fontFamily: D.sans, flexShrink: 0 }}
-                      >
-                        Quick Quote →
-                      </button>
-                    ) : (
-                      <button
-                        aria-label={`Request sourcing for ${p.name}`}
-                        onClick={() => navigate(`/quote?sku=${encodeURIComponent(p.sku)}&path=source`)}
-                        style={{ background: 'transparent', color: D.terra, border: `1.5px solid ${D.terra}`, padding: '9px 12px', borderRadius: 4, cursor: 'pointer', fontSize: 11.5, fontWeight: 600, fontFamily: D.sans, flexShrink: 0 }}
-                      >
-                        Source it →
-                      </button>
-                    )}
-                  </div>
+  const resetFilters = () => { setCat('All'); setCompliance(new Set()); setSupplyFilter('all'); setSearch(''); };
+  return <div className="uc-page">
+    <Nav overlay heroSelector=".umc-masthead" />
+    <main id="main">
+      <CommerceHero eyebrow="THE CATALOG" title="The supplies you need." accent="The care you give." description="Explore the essentials for your care team, with a sourcing partner for everything beyond the shelf." image="/images/homepage-2026/everyday-supplies-1200.webp" imageAlt="Everyday medical supplies arranged on a work surface" action={{to:'/portal/quote',label:'Build a quick quote'}} index="01" />
+      <section className="uc-shop uc-wrap" aria-label="Product catalog">
+        <div className="uc-searchbar"><label className="uc-search"><Icon.search /><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search products, SKU, or HCPCS" aria-label="Search products" />{search&&<button onClick={()=>setSearch('')} aria-label="Clear search">×</button>}</label><span aria-live="polite">{filtered.length} products</span></div>
+        <div className="uc-chips" aria-label="Product categories">{cats.map(c=><button key={c} aria-pressed={cat===c} onClick={()=>setCat(c)}>{c==='All'?'All products':c}</button>)}</div>
+        <div className="uc-catalog-layout"><aside className="uc-filters"><details open={!isMobile}><summary>Refine your search</summary><div>{filterPanel}<button className="uc-text-button" onClick={resetFilters}>Reset filters ↗</button></div></details></aside>
+          <div className="uc-products">{filtered.map(p=>{
+            const stock=stockBySku.get(p.sku)||0;
+            const state=stock>0?SUPPLY_STATES.in_stock:SUPPLY_STATES.source;
+            const accountPrice=priceBySku.get(p.sku);
+            return <article key={p.sku} className="uc-product">
+              <Link className="uc-product-image" to={`/products/${encodeURIComponent(p.sku)}`} aria-label={`View ${p.name}`}><PhotoPlaceholder src={PRODUCT_IMG[p.sku]} alt={p.name} caption="Product image coming soon" height={240} stripeFrom="#f5f5ef" stripeTo="#edeee6" /></Link>
+              <div className="uc-product-body"><div className="uc-product-meta"><span>{categorize(p)}</span><SupplyBadge state={state}/></div>
+                <h2><Link to={`/products/${encodeURIComponent(p.sku)}`}>{p.name}</Link></h2><p className="uc-sku">{p.sku}{p.hcpcs&&p.hcpcs!=='—'?` · HCPCS ${p.hcpcs}`:''}</p>
+                <div className="uc-product-bottom"><p>{p.quote_only?'Quote on request':commerce.can_view_prices?(accountPrice?.unit_price!=null?fmt.money(accountPrice.unit_price):'Request pricing'):'Request business pricing'}<small>{p.variants?.length>1?`${p.variants.length} options available`:p.pack_size&&p.pack_size!=='1 ea'?p.pack_size:'Pack size confirmed with quote'}{p.moq>1?` · MOQ ${p.moq}`:''}</small></p>
+                {stock>0&&commerce.can_use_cart&&accountPrice?.unit_price>0?<button className="uc-button uc-button-small" onClick={()=>cartStore.add(p.sku)} aria-label={`Add ${p.name} to cart`}>Add to cart +</button>:<Link className="uc-product-action" to={p.quote_only||stock<=0?`/quote?sku=${encodeURIComponent(p.sku)}&path=source`:`/portal/quote?sku=${encodeURIComponent(p.sku)}`}>{p.quote_only||stock<=0?'Request sourcing':'Add to quote'} <span>↗</span></Link>}
                 </div>
-              </article>
-            );
+              </div>
+            </article>;
           })}
-          {filtered.length === 0 && (
-            <div style={{ gridColumn: '1 / -1', padding: 48, textAlign: 'center', color: D.ink3, background: D.card, borderRadius: 14, border: `1px dashed ${D.line}` }}>
-              <div>No products match these filters.</div>
-              <div style={{ marginTop: 12, fontSize: 14 }}>
-                Need something we don&apos;t list?{' '}
-                <Link to="/quote" style={{ color: D.plum, textDecoration: 'underline', textUnderlineOffset: 3 }}>
-                  {SUPPLY_STATES.quote.label} — start an RFQ →
-                </Link>
-              </div>
-            </div>
-          )}
-          {/* 3rd supply state — open RFQ for items not in the catalog */}
-          {filtered.length > 0 && (
-            <div style={{ gridColumn: '1 / -1', marginTop: 8, padding: isMobile ? 18 : 24, background: D.paperAlt, borderRadius: 14, border: `1px solid ${D.line}`, display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
-              <div style={{ flex: '1 1 320px' }}>
-                <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.plum }}>{SUPPLY_STATES.quote.short} · ANYTHING NOT LISTED</div>
-                <div style={{ fontSize: 14.5, color: D.ink2, marginTop: 6, lineHeight: 1.55 }}>{SUPPLY_STATES.quote.desc}</div>
-              </div>
-              <button onClick={() => navigate('/quote')} style={{ background: D.plum, color: D.paper, border: 'none', padding: '12px 22px', borderRadius: 4, fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: D.sans }}>
-                {SUPPLY_STATES.quote.cta} →
-              </button>
-            </div>
-          )}
+          {!filtered.length&&<div className="uc-empty"><p className="uc-eyebrow">LET’S TRY AGAIN</p><h2>No products found.</h2><p>Try another search or clear your filters. Our team can help source items beyond the catalog.</p><button className="uc-button" onClick={resetFilters}>Clear all filters ↗</button></div>}
+          </div>
         </div>
-      </div>
-      </main>
-      <Footer />
-    </div>
-  );
+        <div className="uc-callout"><div><p className="uc-eyebrow">BEYOND THE CATALOG</p><h2>Need something else?</h2><p>A specific brand. A hard-to-find item. An entire shortage list.<br/>Tell us what you need, and we’ll take it from here.</p></div><Link className="uc-button uc-button-light" to="/quote">Talk to our sourcing team ↗</Link></div>
+      </section>
+    </main><HomepageFooter />
+  </div>;
 }

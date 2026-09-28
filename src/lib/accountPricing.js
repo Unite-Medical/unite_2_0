@@ -1,3 +1,4 @@
+import { STOREFRONT_PRODUCTS } from './storefrontCatalog.js';
 import { useEffect } from 'react';
 import { auth } from './auth.js';
 import { db } from './db.js';
@@ -19,7 +20,7 @@ export function accountPriceFor(sku, qty = 1) {
 
 function pricingLinesForCatalog() {
   const lines = [];
-  for (const product of db.list('products')) {
+  for (const product of STOREFRONT_PRODUCTS) {
     for (const qty of STANDARD_QUANTITIES) lines.push({ sku: product.sku, qty });
     for (const variant of product.variants || []) {
       if (!variant.sku || variant.sku === product.sku) continue;
@@ -52,14 +53,20 @@ function localDevelopmentPrices(lines) {
 
 export async function fetchAccountPricing(lines, { fetchImpl = fetch } = {}) {
   try {
-    const response = await fetchImpl('/api/catalog/pricing', {
-      method: 'POST', credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ lines }),
-    });
-    const body = await response.json().catch(() => ({}));
-    if (!response.ok) return { ok: false, reason: body.error || 'pricing_failed', status: response.status };
-    return { ok: true, prices: body.prices || [] };
+    const prices = [];
+    // The endpoint accepts 500 lines; large catalogs include several quantity
+    // breaks for every variant. Never silently lose the later products.
+    for (let offset = 0; offset < lines.length; offset += 500) {
+      const response = await fetchImpl('/api/catalog/pricing', {
+        method: 'POST', credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ lines: lines.slice(offset, offset + 500) }),
+      });
+      const body = await response.json().catch(() => ({}));
+      if (!response.ok) return { ok: false, reason: body.error || 'pricing_failed', status: response.status };
+      prices.push(...(body.prices || []));
+    }
+    return { ok: true, prices };
   } catch (error) {
     if (import.meta.env?.DEV) return { ok: true, prices: localDevelopmentPrices(lines), local: true };
     return { ok: false, reason: 'pricing_unreachable', detail: error.message };

@@ -5,13 +5,12 @@ import { captureUniteEvent } from '../lib/analytics/index.js';
 // mechanism (§1.4). The button label everywhere stays "Start a quote".
 import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { D } from '../tokens.js';
 import { Nav } from '../components/layout/Nav.jsx';
-import { Footer } from '../components/layout/Footer.jsx';
-import { PageHead } from '../components/layout/PageHead.jsx';
-import { Icon } from '../components/shared/Icon.jsx';
+import { HomepageFooter } from '../components/layout/HomepageFooter.jsx';
+import { CommerceHero } from '../components/shared/CommerceHero.jsx';
+import './commerce-public.css';
+import './commerce-editorial.css';
 
-import { useViewport } from '../lib/viewport.js';
 import { useSEO } from '../lib/seo.js';
 
 // The three quote paths. Lead-type tags flow to HubSpot + the leads table so
@@ -20,30 +19,27 @@ const PATHS = [
   {
     id: 'source',
     n: '01',
-    h: 'Source a specific product or brand',
+    h: 'Find a product.',
     p: 'You know exactly what you need — a brand, a SKU, a hard-to-find item. We find it and come back with a firm price and delivery window.',
     tag: 'Quote · source a product or brand',
   },
   {
     id: 'custom',
     n: '02',
-    h: 'Custom quote — made to spec',
+    h: 'Make it yours.',
     p: 'Product built to your specification, under your label or a Unite label. From spec to landed delivery, we run the whole chain.',
     tag: 'Quote · custom / made to spec',
   },
   {
     id: 'shortage',
     n: '03',
-    h: 'I have a shortage list',
+    h: 'Close a supply gap.',
     p: 'Backordered somewhere else? Paste or upload your shortage list and we return a quote — stocked items matched against our own live inventory, the rest sourced.',
     tag: 'Shortage list',
   },
 ];
 
-const inputStyle = { marginTop: 6, padding: '12px 14px', background: D.paper, border: `1px solid ${D.line}`, borderRadius: 10, fontSize: 14, color: D.ink, width: '100%', outline: 'none', fontFamily: D.sans, boxSizing: 'border-box' };
-const labelStyle = { fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 };
-
-function PathForm({ path, prefillSku, isMobile }) {
+function PathForm({ path, prefillSku }) {
   const [form, setForm] = useState({
     item: prefillSku || '',
     qty: '',
@@ -61,6 +57,7 @@ function PathForm({ path, prefillSku, isMobile }) {
 
   async function submit(e) {
     e.preventDefault();
+    if (busy) return;
     setBusy(true);
     setError(null);
     try {
@@ -92,74 +89,20 @@ function PathForm({ path, prefillSku, isMobile }) {
     }
   }
 
-  if (done) {
-    return (
-      <div style={{ padding: 24, background: D.paperAlt, borderRadius: 12 }}>
-        <div style={{ fontFamily: D.display, fontSize: 24, color: D.plum }}>Quote request in.</div>
-        <p style={{ color: D.ink2, marginTop: 8, marginBottom: 0, fontSize: 14, lineHeight: 1.6 }}>
-          Reference <code>{done}</code>. We&apos;ll come back with pricing inside one business day.
-        </p>
-      </div>
-    );
-  }
-  return (
-    <form onSubmit={submit}>
-      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 12 }}>
-        {path.id === 'source' ? (
-          <>
-            <label style={{ gridColumn: isMobile ? 'auto' : '1 / -1' }}>
-              <div style={labelStyle}>PRODUCT / BRAND / SKU</div>
-              <input required placeholder="e.g. BinaxNOW COVID-19 Ag, 22-pack…" value={form.item} onChange={(e) => set('item', e.target.value)} style={inputStyle} />
-            </label>
-            <label>
-              <div style={labelStyle}>QUANTITY NEEDED</div>
-              <input required placeholder="e.g. 500 kits / month" value={form.qty} onChange={(e) => set('qty', e.target.value)} style={inputStyle} />
-            </label>
-          </>
-        ) : (
-          <>
-            <label style={{ gridColumn: isMobile ? 'auto' : '1 / -1' }}>
-              <div style={labelStyle}>DESCRIBE THE PRODUCT / SPEC</div>
-              <textarea required rows={3} placeholder="What are we building? Materials, sizes, packaging, certifications…" value={form.spec} onChange={(e) => set('spec', e.target.value)} style={{ ...inputStyle, resize: 'vertical' }} />
-            </label>
-            <label>
-              <div style={labelStyle}>QUANTITY / RUN SIZE</div>
-              <input required placeholder="e.g. 10,000 units" value={form.qty} onChange={(e) => set('qty', e.target.value)} style={inputStyle} />
-            </label>
-            <label>
-              <div style={labelStyle}>WHOSE LABEL?</div>
-              <select value={form.label_pref} onChange={(e) => set('label_pref', e.target.value)} style={inputStyle}>
-                {['My label', 'A Unite label', 'Not sure yet'].map((o) => <option key={o}>{o}</option>)}
-              </select>
-            </label>
-          </>
-        )}
-        <label>
-          <div style={labelStyle}>ORGANIZATION</div>
-          <input value={form.org} onChange={(e) => set('org', e.target.value)} style={inputStyle} />
-        </label>
-        <label>
-          <div style={labelStyle}>YOUR NAME</div>
-          <input required value={form.name} onChange={(e) => set('name', e.target.value)} style={inputStyle} />
-        </label>
-        <label style={{ gridColumn: isMobile ? 'auto' : '1 / -1' }}>
-          <div style={labelStyle}>WORK EMAIL</div>
-          <input required type="email" value={form.email} onChange={(e) => set('email', e.target.value)} style={inputStyle} />
-        </label>
-      </div>
-      <button type="submit" disabled={busy} style={{ marginTop: 16, background: D.plum, color: D.paper, border: 'none', padding: '14px 24px', borderRadius: 4, fontSize: 14, fontWeight: 600, cursor: busy ? 'wait' : 'pointer', opacity: busy ? 0.7 : 1, fontFamily: D.sans }}>
-        {busy ? 'Sending…' : 'Start a quote →'}
-      </button>
-      {error && <div style={{ color: '#c3382d', fontSize: 12, marginTop: 8 }}>{error}</div>}
-    </form>
-  );
+  if (done) return <div className="uq-success us-confirmation" role="status"><p className="uc-eyebrow">REQUEST RECEIVED</p><h3>You’re in good hands.</h3><p>Your request is with our team. We’ll follow up with pricing and next steps.</p><small>Reference {done}</small></div>;
+  return <form className="us-request-form" onSubmit={submit}><fieldset disabled={busy}><legend>{path.id==='source'?'What can we find for you?':'Tell us about your project.'}</legend><div className="us-fields">
+    {path.id==='source'?<label className="us-wide">Product, brand, or SKU<input required maxLength={1000} placeholder="Product name, brand, or item number" value={form.item} onChange={e=>set('item',e.target.value)}/></label>:<label className="us-wide">Product specifications<textarea required rows={4} maxLength={4000} placeholder="Materials, sizes, packaging, and requirements" value={form.spec} onChange={e=>set('spec',e.target.value)}/></label>}
+    <label>Quantity needed<input required maxLength={200} placeholder="e.g. 500 boxes per month" value={form.qty} onChange={e=>set('qty',e.target.value)}/></label>
+    {path.id==='custom'&&<label>Label preference<select value={form.label_pref} onChange={e=>set('label_pref',e.target.value)}>{['My label','A Unite label','Not sure yet'].map(option=><option key={option}>{option}</option>)}</select></label>}
+    <label>Organization<input autoComplete="organization" maxLength={200} value={form.org} onChange={e=>set('org',e.target.value)} placeholder="Your company or facility"/></label>
+    <label>Your name<input required autoComplete="name" maxLength={200} value={form.name} onChange={e=>set('name',e.target.value)} placeholder="First and last name"/></label>
+    <label>Work email<input required type="email" autoComplete="email" maxLength={254} value={form.email} onChange={e=>set('email',e.target.value)} placeholder="you@company.com"/></label>
+  </div>{error&&<p className="uq-error" role="alert">{error}</p>}<button className="uc-button" type="submit" disabled={busy}>{busy?'Sending your request…':'Request a quote'} <span>↗</span></button><p className="uq-note">Our team will review your request and follow up. Please do not include patient information.</p></fieldset></form>;
 }
 
 export function QuoteStart() {
   const navigate = useNavigate();
   const [params] = useSearchParams();
-  const { isMobile } = useViewport();
-  const padX = isMobile ? 20 : 40;
   const initialPath = PATHS.some((p) => p.id === params.get('path')) ? params.get('path') : null;
   const [selected, setSelected] = useState(initialPath);
   const prefillSku = params.get('sku') || '';
@@ -173,73 +116,10 @@ export function QuoteStart() {
 
   const active = PATHS.find((p) => p.id === selected);
 
-  return (
-    <div style={{ background: D.paper, fontFamily: D.sans, color: D.ink, minHeight: '100vh' }}>
-      <Nav />
-      <main id="main">
-        <PageHead
-          eyebrow="SOURCE & QUOTE"
-          title={<>What do you <em>need</em>?</>}
-          sub="Pick a path — each one asks only what's relevant, and every quote comes back compliance-checked with one all-in price."
-        />
-        <div style={{ maxWidth: 1360, margin: '0 auto', padding: `12px ${padX}px ${isMobile ? 56 : 80}px` }}>
-          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: isMobile ? 12 : 20 }}>
-            {PATHS.map((p) => {
-              const isActive = selected === p.id;
-              return (
-                <button
-                  key={p.id}
-                  onClick={() => {
-                    if (p.id === 'shortage') { navigate('/shortage-list'); return; }
-                    setSelected(p.id);
-                  }}
-                  className="um-card"
-                  style={{
-                    textAlign: 'left', cursor: 'pointer',
-                    background: isActive ? D.ink : D.card,
-                    color: isActive ? D.paper : D.ink,
-                    border: `1.5px solid ${isActive ? D.ink : D.line}`,
-                    borderRadius: 8, padding: isMobile ? 20 : 28,
-                    fontFamily: D.sans,
-                    display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
-                  }}
-                >
-                  <span style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.2, color: isActive ? D.plumSoft : D.plum }}>{p.n}</span>
-                  <span style={{ fontFamily: D.display, fontSize: isMobile ? 22 : 26, letterSpacing: -0.5, lineHeight: 1.1, marginTop: 10 }}>{p.h}</span>
-                  <span style={{ fontSize: 13.5, lineHeight: 1.6, marginTop: 10, color: isActive ? 'rgba(243,242,235,.75)' : D.ink2, flex: 1 }}>{p.p}</span>
-                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginTop: 16, fontSize: 13, fontWeight: 600, color: isActive ? D.paper : D.plum }}>
-                    {p.id === 'shortage' ? 'Match my list' : isActive ? 'Selected' : 'Choose this'} <Icon.arrow />
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-
-          {active && active.id !== 'shortage' && (
-            <div style={{ marginTop: isMobile ? 20 : 28, display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1.4fr', gap: isMobile ? 20 : 40, alignItems: 'start' }}>
-              <div>
-                <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 12 }}>{active.tag.toUpperCase()}</div>
-                <div style={{ fontFamily: D.display, fontSize: isMobile ? 26 : 34, letterSpacing: -0.6, lineHeight: 1.1 }}>
-                  {active.id === 'source' ? 'Tell us the product. We\u2019ll do the rest.' : 'From your spec to your dock.'}
-                </div>
-                <p style={{ fontSize: 14.5, color: D.ink2, lineHeight: 1.65, marginTop: 12, maxWidth: 420 }}>
-                  {active.id === 'source'
-                    ? 'Every quote comes back compliance-checked with one all-in landed price — no hidden freight, no surprise fees.'
-                    : 'Manufacturing, compliance, packaging, and fulfillment handled end to end — your brand stays on the front.'}
-                </p>
-                <p style={{ fontSize: 13, color: D.ink3, marginTop: 16 }}>
-                  Need several items?{' '}
-                  <Link to="/portal/quote" style={{ color: D.plum, textDecoration: 'underline', textUnderlineOffset: 3 }}>Build a Quick Quote</Link>.
-                </p>
-              </div>
-              <div style={{ background: D.card, border: `1px solid ${D.line}`, borderRadius: 16, padding: isMobile ? 20 : 28 }}>
-                <PathForm key={active.id} path={active} prefillSku={prefillSku} isMobile={isMobile} />
-              </div>
-            </div>
-          )}
-        </div>
-      </main>
-      <Footer />
-    </div>
-  );
+  return <div className="uc-page us-page"><Nav overlay heroSelector=".umc-masthead"/><main id="main">
+    <CommerceHero eyebrow="SOURCE & QUOTE" title="Tell us what you need." accent="We’ll take it from here." description="A product you can’t find. A specification that needs care. A supply gap that needs closing. Start with Unite." image="/images/homepage-2026/supply-hero-1600.webp" imageAlt="Supplies being prepared for distribution" action={{to:'/portal/quote',label:'Build a catalog quote'}} index="03"/>
+    <section className="uc-wrap us-paths"><div className="us-section-intro"><p className="uc-eyebrow">A DIRECT PATH TO WHAT’S NEXT</p><h2>How can we help?</h2></div>{PATHS.map(path=><button key={path.id} className="us-path" aria-pressed={selected===path.id} onClick={()=>{if(path.id==='shortage'){navigate('/shortage-list');return;}setSelected(path.id);requestAnimationFrame(()=>document.getElementById('quote-request')?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'}));}}><span className="uc-eyebrow">{path.n}</span><h3>{path.h}</h3><p>{path.p}</p><span className="us-path-arrow" aria-hidden="true">{selected===path.id?'↓':'↗'}</span></button>)}</section>
+    {active&&active.id!=='shortage'&&<section className="us-request" id="quote-request"><div className="uc-wrap us-request-grid"><div><p className="uc-eyebrow">LET’S GET STARTED</p><h2>{active.id==='source'?<>Your request.<br/>Our attention.</>:<>Built around<br/>your needs.</>}</h2><p>{active.id==='source'?'Share the product, brand, and quantity. We’ll confirm the details and work through pricing and availability with you.':'From the first specification to packaging and delivery, tell us what matters for your project.'}</p><a href="tel:+18338686483">Prefer to talk? 833.868.6483 ↗</a></div><PathForm key={active.id} path={active} prefillSku={prefillSku}/></div></section>}
+    <section className="uc-wrap us-closing"><p className="uc-eyebrow">ALREADY KNOW YOUR ITEMS?</p><h2>A few clicks.<br/>A clear quote.</h2><Link className="uc-button" to="/portal/quote">Build a Quick Quote <span>↗</span></Link></section>
+  </main><HomepageFooter/></div>;
 }
