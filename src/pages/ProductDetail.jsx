@@ -1,3 +1,4 @@
+import { shareImagePath } from '../lib/seoMetadata.js';
 import { STOREFRONT_PRODUCTS, storefrontProduct } from '../lib/storefrontCatalog.js';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
@@ -61,7 +62,7 @@ export function ProductDetail() {
   }, [product?.id]);
   useSEO(product ? {
     title: product.name, description: `${product.name}. Explore product details and request business pricing from Unite Medical.`,
-    canonical: `/products/${encodeURIComponent(product.sku)}`, type: 'product', ogImage: PRODUCT_IMG[product.sku],
+    canonical: `/products/${encodeURIComponent(product.sku)}`, type: 'website', ogImage: shareImagePath(`/products/${encodeURIComponent(product.sku)}`),
     jsonLd: [productSchema(product, { image: PRODUCT_IMG[product.sku], includePricing: false }), breadcrumbSchema([{ name:'Catalog',path:'/catalog' },{name:category,path:categoryPath},{name:product.name,path:`/products/${encodeURIComponent(product.sku)}`}])],
   } : { title:'Product not found', noindex:true });
 

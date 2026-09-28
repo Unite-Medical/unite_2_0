@@ -1,14 +1,6 @@
-# Unite Medical · robots.txt
+# Allow crawlers to read the noindex directives on account and utility pages.
 User-agent: *
 Allow: /
-Disallow: /cart
-Disallow: /checkout
-Disallow: /orders/
-Disallow: /dashboard
-Disallow: /account/
-Disallow: /admin
-Disallow: /admin/
-Disallow: /login
-Disallow: /register
+Disallow: /api/
 
 Sitemap: https://unitemedical.net/sitemap.xml

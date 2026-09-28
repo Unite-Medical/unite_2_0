@@ -1,16 +1,18 @@
+const NotFound = lazy(() => import('./pages/NotFound.jsx').then(m=>({default:m.NotFound})));
 import { AnalyticsPageTracker } from './components/AnalyticsPageTracker.jsx';
 const WarehouseMobile = lazy(() => import('./pages/WarehouseMobile.jsx').then(m=>({default:m.WarehouseMobile})));
-import {StaffShipments} from './pages/admin/StaffShipments.jsx';
-import {AdminDecisions} from './pages/admin/AdminDecisions.jsx';
-import { AdminRefundReviews } from './pages/admin/AdminRefundReviews.jsx';
-import { AdminInquiries } from './pages/admin/AdminInquiries.jsx';
-import { RegeniCool } from './pages/RegeniCool.jsx';
+const StaffShipments = lazy(() => import('./pages/admin/StaffShipments.jsx').then(m=>({default:m.StaffShipments})));
+const AdminDecisions = lazy(() => import('./pages/admin/AdminDecisions.jsx').then(m=>({default:m.AdminDecisions})));
+const AdminRefundReviews = lazy(() => import('./pages/admin/AdminRefundReviews.jsx').then(m=>({default:m.AdminRefundReviews})));
+const AdminInquiries = lazy(() => import('./pages/admin/AdminInquiries.jsx').then(m=>({default:m.AdminInquiries})));
+const RegeniCool = lazy(() => import('./pages/RegeniCool.jsx').then(m=>({default:m.RegeniCool})));
 import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
 import { ScrollToTop } from './components/layout/ScrollToTop.jsx';
 import { IntercomMessenger } from './components/layout/IntercomMessenger.jsx';
 import { PageLoader } from './components/layout/PageLoader.jsx';
+import { useStartupReady } from './lib/startup.js';
 import { Bootstrap } from './components/layout/Bootstrap.jsx';
 import { RequireAdmin } from './components/layout/RequireAdmin.jsx';
 import { RequireSession } from './components/layout/RequireSession.jsx';
@@ -131,6 +133,11 @@ const AdminDesk = lazy(() => import('./pages/admin/AdminDesk.jsx').then(m=>({def
 const AdminLaunch = lazy(() => import('./pages/admin/AdminLaunch.jsx').then(m=>({default:m.AdminLaunch})));
 const AccountDocuments = lazy(() => import('./pages/AccountDocuments.jsx').then(m=>({default:m.AccountDocuments})));
 
+// Keep sign-in and activation mutations from racing the initial session lookup.
+function SessionStartup({ children }) {
+  return useStartupReady() ? children : <PageLoader />;
+}
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -215,7 +222,7 @@ export default function App() {
           <Route path="/segments/ems" element={<SegmentEMS />} />
           <Route path="/segments/distributors" element={<SegmentDealers />} />
 
-          <Route path="/activate" element={<ActivateAccount />} />
+          <Route path="/activate" element={<SessionStartup><ActivateAccount /></SessionStartup>} />
           <Route path="/account/documents" element={<RequireSession roles={['customer','distributor']}><AccountDocuments /></RequireSession>} />
           <Route path="/staff/welllink" element={<RequireSession roles={['admin','sales','sales_manager','finance','warehouse_operator','warehouse_manager']}><AdminWellLink /></RequireSession>} />
           <Route path="/warehouse" element={<RequireSession roles={['admin','warehouse_manager','warehouse_operator']}><WarehouseMobile /></RequireSession>} />
@@ -225,8 +232,8 @@ export default function App() {
           <Route path="/admin/desk" element={<RequireAdmin><AdminDesk /></RequireAdmin>} />
           <Route path="/admin/launch" element={<RequireAdmin><AdminLaunch /></RequireAdmin>} />
           <Route path="/admin/testing" element={<RequireAdmin><AdminTesting /></RequireAdmin>} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<SessionStartup><Login /></SessionStartup>} />
+          <Route path="/register" element={<SessionStartup><Register /></SessionStartup>} />
 
           <Route path="/dashboard" element={<RequireSession roles={['customer', 'distributor']}><Dashboard /></RequireSession>} />
           <Route path="/account/settings" element={<RequireSession roles={['customer', 'distributor']}><AccountSettings /></RequireSession>} />
@@ -307,7 +314,7 @@ export default function App() {
           <Route path="/admin/inventory/transfers" element={<RequireAdmin><AdminTransfers /></RequireAdmin>} />
           <Route path="/admin/webhooks"         element={<RequireAdmin><AdminWebhooks /></RequireAdmin>} />
 
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
     </BrowserRouter>

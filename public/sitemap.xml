@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://unitemedical.net/</loc></url>
+  <url><loc>https://unitemedical.net/welllink</loc></url>
   <url><loc>https://unitemedical.net/regenicool</loc></url>
   <url><loc>https://unitemedical.net/catalog</loc></url>
   <url><loc>https://unitemedical.net/quote</loc></url>
   <url><loc>https://unitemedical.net/shortage-list</loc></url>
   <url><loc>https://unitemedical.net/supply-risk</loc></url>
   <url><loc>https://unitemedical.net/surplus</loc></url>
-  <url><loc>https://unitemedical.net/surplus/market</loc></url>
   <url><loc>https://unitemedical.net/services</loc></url>
   <url><loc>https://unitemedical.net/services/distribution</loc></url>
   <url><loc>https://unitemedical.net/services/pdac</loc></url>
@@ -36,16 +36,42 @@
   <url><loc>https://unitemedical.net/terms</loc></url>
   <url><loc>https://unitemedical.net/returns</loc></url>
   <url><loc>https://unitemedical.net/shipping</loc></url>
+  <url><loc>https://unitemedical.net/products/NGPF7000</loc></url>
+  <url><loc>https://unitemedical.net/products/AM150</loc></url>
+  <url><loc>https://unitemedical.net/products/UM-GS15-UNIT</loc></url>
+  <url><loc>https://unitemedical.net/products/81202</loc></url>
+  <url><loc>https://unitemedical.net/products/81201</loc></url>
+  <url><loc>https://unitemedical.net/products/81003</loc></url>
+  <url><loc>https://unitemedical.net/products/81001</loc></url>
+  <url><loc>https://unitemedical.net/products/24250</loc></url>
+  <url><loc>https://unitemedical.net/products/24200</loc></url>
+  <url><loc>https://unitemedical.net/products/55001</loc></url>
+  <url><loc>https://unitemedical.net/products/55502</loc></url>
+  <url><loc>https://unitemedical.net/products/54501</loc></url>
+  <url><loc>https://unitemedical.net/products/62200</loc></url>
+  <url><loc>https://unitemedical.net/products/63501</loc></url>
+  <url><loc>https://unitemedical.net/products/52500</loc></url>
+  <url><loc>https://unitemedical.net/products/60-22</loc></url>
+  <url><loc>https://unitemedical.net/products/UMRA9-E02802</loc></url>
+  <url><loc>https://unitemedical.net/products/35501110</loc></url>
   <url><loc>https://unitemedical.net/products/WFLUAB-POC-25</loc></url>
-  <url><loc>https://unitemedical.net/products/APN-3001-C</loc></url>
+  <url><loc>https://unitemedical.net/products/APN%203001</loc></url>
   <url><loc>https://unitemedical.net/products/RA2-E02401</loc></url>
-  <url><loc>https://unitemedical.net/products/L03A-R1445</loc></url>
+  <url><loc>https://unitemedical.net/products/Binax-COV%2FFLU</loc></url>
+  <url><loc>https://unitemedical.net/products/CFR-1</loc></url>
+  <url><loc>https://unitemedical.net/products/WCOVFLU-OTC</loc></url>
+  <url><loc>https://unitemedical.net/products/WFLUAB-OTC-2</loc></url>
+  <url><loc>https://unitemedical.net/products/OSOM-Flu-SARS-CoV-2</loc></url>
+  <url><loc>https://unitemedical.net/products/RCUM-00171</loc></url>
+  <url><loc>https://unitemedical.net/products/ACT21002-1-OTC</loc></url>
+  <url><loc>https://unitemedical.net/products/CKW-L</loc></url>
   <url><loc>https://unitemedical.net/products/L03A-R0645</loc></url>
-  <url><loc>https://unitemedical.net/products/RA9-E02402</loc></url>
-  <url><loc>https://unitemedical.net/products/RA9-E02404</loc></url>
+  <url><loc>https://unitemedical.net/products/L03A-R1445</loc></url>
   <url><loc>https://unitemedical.net/products/7678383</loc></url>
-  <url><loc>https://unitemedical.net/products/VA1S50S</loc></url>
+  <url><loc>https://unitemedical.net/products/RA9-E02404</loc></url>
+  <url><loc>https://unitemedical.net/products/RA9-E02402</loc></url>
   <url><loc>https://unitemedical.net/products/WCOVFLU-POC-25</loc></url>
+  <url><loc>https://unitemedical.net/products/VA1S50S</loc></url>
   <url><loc>https://unitemedical.net/products/BF-KB</loc></url>
   <url><loc>https://unitemedical.net/products/BF-ZDK</loc></url>
   <url><loc>https://unitemedical.net/products/11060527362</loc></url>
@@ -65,12 +91,13 @@
   <url><loc>https://unitemedical.net/products/6935297</loc></url>
   <url><loc>https://unitemedical.net/products/6935298</loc></url>
   <url><loc>https://unitemedical.net/products/6935153</loc></url>
-  <url><loc>https://unitemedical.net/products/21IN-0303000002-B</loc></url>
-  <url><loc>https://unitemedical.net/products/21IN-0103000012-B</loc></url>
+  <url><loc>https://unitemedical.net/products/PD00525</loc></url>
   <url><loc>https://unitemedical.net/products/21IN-5023000001-B</loc></url>
   <url><loc>https://unitemedical.net/products/21IN-2003000002-B</loc></url>
   <url><loc>https://unitemedical.net/products/21IN-1003000008-B</loc></url>
   <url><loc>https://unitemedical.net/products/21IN-0503000010-B</loc></url>
+  <url><loc>https://unitemedical.net/products/21IN-0303000002-B</loc></url>
+  <url><loc>https://unitemedical.net/products/21IN-0103000012-B</loc></url>
   <url><loc>https://unitemedical.net/products/RA9-E01802B</loc></url>
   <url><loc>https://unitemedical.net/products/RA9-E01701B</loc></url>
   <url><loc>https://unitemedical.net/products/RA9-E02501B</loc></url>
@@ -84,44 +111,47 @@
   <url><loc>https://unitemedical.net/products/1001-0340</loc></url>
   <url><loc>https://unitemedical.net/products/LFA0462-2V6-BIO</loc></url>
   <url><loc>https://unitemedical.net/products/LFA0462-1V10-BIO</loc></url>
-  <url><loc>https://unitemedical.net/products/Status-33225-B25</loc></url>
-  <url><loc>https://unitemedical.net/products/USAM100SC</loc></url>
+  <url><loc>https://unitemedical.net/products/COV-FLU-2</loc></url>
+  <url><loc>https://unitemedical.net/products/ACT21002-1%20OTC%201</loc></url>
+  <url><loc>https://unitemedical.net/products/Status-33225%20(B25)</loc></url>
+  <url><loc>https://unitemedical.net/products/24750</loc></url>
+  <url><loc>https://unitemedical.net/products/USAM200C-XS</loc></url>
   <url><loc>https://unitemedical.net/products/USAMN95F50</loc></url>
-  <url><loc>https://unitemedical.net/products/USAM350T</loc></url>
   <url><loc>https://unitemedical.net/products/USAM150</loc></url>
+  <url><loc>https://unitemedical.net/products/USAM350T</loc></url>
+  <url><loc>https://unitemedical.net/products/USAM100SC</loc></url>
   <url><loc>https://unitemedical.net/products/USAM100C-XS</loc></url>
   <url><loc>https://unitemedical.net/products/AMC200-XS</loc></url>
-  <url><loc>https://unitemedical.net/products/AFO0671L-S</loc></url>
-  <url><loc>https://unitemedical.net/products/BC3349-1</loc></url>
   <url><loc>https://unitemedical.net/products/AM350</loc></url>
   <url><loc>https://unitemedical.net/products/USAM350</loc></url>
   <url><loc>https://unitemedical.net/products/USAM250</loc></url>
-  <url><loc>https://unitemedical.net/products/UMRA9-E00302</loc></url>
   <url><loc>https://unitemedical.net/products/UMSL1016</loc></url>
   <url><loc>https://unitemedical.net/products/VGPF3002</loc></url>
-  <url><loc>https://unitemedical.net/products/UMRA9-E00301</loc></url>
+  <url><loc>https://unitemedical.net/products/UMRA9-E00302</loc></url>
+  <url><loc>https://unitemedical.net/products/BC3349-1</loc></url>
   <url><loc>https://unitemedical.net/products/LO2742</loc></url>
-  <url><loc>https://unitemedical.net/products/KO4552L-S</loc></url>
   <url><loc>https://unitemedical.net/products/HS3170-S</loc></url>
   <url><loc>https://unitemedical.net/products/SEWH3960</loc></url>
   <url><loc>https://unitemedical.net/products/AFO71-Panel</loc></url>
   <url><loc>https://unitemedical.net/products/LSO3148</loc></url>
   <url><loc>https://unitemedical.net/products/LSO3750</loc></url>
-  <url><loc>https://unitemedical.net/products/WHO1615-SM</loc></url>
-  <url><loc>https://unitemedical.net/products/SS2397</loc></url>
-  <url><loc>https://unitemedical.net/products/KO4351L</loc></url>
-  <url><loc>https://unitemedical.net/products/KO3233-1</loc></url>
-  <url><loc>https://unitemedical.net/products/KO3233</loc></url>
+  <url><loc>https://unitemedical.net/products/WHFO0709L</loc></url>
+  <url><loc>https://unitemedical.net/products/HO1690</loc></url>
+  <url><loc>https://unitemedical.net/products/CC180</loc></url>
   <url><loc>https://unitemedical.net/products/Cryo3670</loc></url>
   <url><loc>https://unitemedical.net/products/Cryo3233</loc></url>
   <url><loc>https://unitemedical.net/products/CryoAnkle</loc></url>
-  <url><loc>https://unitemedical.net/products/CC180</loc></url>
-  <url><loc>https://unitemedical.net/products/HO1690</loc></url>
   <url><loc>https://unitemedical.net/products/CryoElbow</loc></url>
   <url><loc>https://unitemedical.net/products/HO1686</loc></url>
-  <url><loc>https://unitemedical.net/products/WHFO0709L</loc></url>
   <url><loc>https://unitemedical.net/products/EO6061L</loc></url>
+  <url><loc>https://unitemedical.net/products/AFO0671L-S</loc></url>
+  <url><loc>https://unitemedical.net/products/KO4552L-S</loc></url>
+  <url><loc>https://unitemedical.net/products/WHO1615-SM</loc></url>
   <url><loc>https://unitemedical.net/products/KO3233-PO</loc></url>
+  <url><loc>https://unitemedical.net/products/SS2397</loc></url>
+  <url><loc>https://unitemedical.net/products/KO4351L</loc></url>
   <url><loc>https://unitemedical.net/products/KO3233-SM</loc></url>
+  <url><loc>https://unitemedical.net/products/KO3233-1</loc></url>
+  <url><loc>https://unitemedical.net/products/KO3233</loc></url>
   <url><loc>https://unitemedical.net/products/REGENICOOL-PRO</loc></url>
 </urlset>

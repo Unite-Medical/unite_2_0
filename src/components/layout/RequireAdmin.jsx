@@ -1,3 +1,5 @@
+import { useStartupReady } from '../../lib/startup.js';
+import { PageLoader } from './PageLoader.jsx';
 import { Navigate, useLocation } from 'react-router-dom';
 import { auth } from '../../lib/auth.js';
 import { staffHome } from '../../lib/staffWorkspace.js';
@@ -9,8 +11,11 @@ import { D } from '../../tokens.js';
  * splash for signed-in non-admin users.
  */
 export function RequireAdmin({ children }) {
+  const ready = useStartupReady();
   const session = auth.use();
   const location = useLocation();
+
+  if (!ready) return <PageLoader />;
 
   if (!session) {
     const next = encodeURIComponent(`${location.pathname}${location.search}`);

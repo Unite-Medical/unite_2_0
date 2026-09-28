@@ -1,3 +1,5 @@
+import { useStartupReady } from '../../lib/startup.js';
+import { PageLoader } from './PageLoader.jsx';
 import { Navigate, useLocation } from 'react-router-dom';
 import { auth } from '../../lib/auth.js';
 import { commerceAccessFor } from '../../lib/accessPolicy.js';
@@ -5,9 +7,12 @@ import { staffHome } from '../../lib/staffWorkspace.js';
 import { D } from '../../tokens.js';
 
 export function RequireSession({ children, roles = null, approvedAccount = false }) {
+  const ready = useStartupReady();
   const session = auth.use();
   const location = useLocation();
   const organization = auth.org();
+
+  if (!ready) return <PageLoader />;
 
   if (!session) {
     const next = encodeURIComponent(`${location.pathname}${location.search}`);

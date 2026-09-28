@@ -7,8 +7,84 @@
       "destination": "/api/proxy?__proxypath=:path*"
     },
     {
-      "source": "/((?!api/).*)",
-      "destination": "/index.html"
+      "source": "/admin/:path*",
+      "destination": "/workspace.html"
+    },
+    {
+      "source": "/staff/:path*",
+      "destination": "/workspace.html"
+    },
+    {
+      "source": "/account/:path*",
+      "destination": "/workspace.html"
+    },
+    {
+      "source": "/dashboard/:path*",
+      "destination": "/workspace.html"
+    },
+    {
+      "source": "/cart/:path*",
+      "destination": "/workspace.html"
+    },
+    {
+      "source": "/checkout/:path*",
+      "destination": "/workspace.html"
+    },
+    {
+      "source": "/orders/:path*",
+      "destination": "/workspace.html"
+    },
+    {
+      "source": "/invoices/:path*",
+      "destination": "/workspace.html"
+    },
+    {
+      "source": "/quotes/:path*",
+      "destination": "/workspace.html"
+    },
+    {
+      "source": "/q/:path*",
+      "destination": "/workspace.html"
+    },
+    {
+      "source": "/vendor/:path*",
+      "destination": "/workspace.html"
+    },
+    {
+      "source": "/rep/:path*",
+      "destination": "/workspace.html"
+    },
+    {
+      "source": "/warehouse/:path*",
+      "destination": "/workspace.html"
+    },
+    {
+      "source": "/work/:path*",
+      "destination": "/workspace.html"
+    },
+    {
+      "source": "/distributor/:path*",
+      "destination": "/workspace.html"
+    },
+    {
+      "source": "/activate/:path*",
+      "destination": "/workspace.html"
+    },
+    {
+      "source": "/login/:path*",
+      "destination": "/workspace.html"
+    },
+    {
+      "source": "/register/:path*",
+      "destination": "/workspace.html"
+    },
+    {
+      "source": "/quote/engine/:path*",
+      "destination": "/workspace.html"
+    },
+    {
+      "source": "/quote/new/:path*",
+      "destination": "/workspace.html"
     }
   ],
   "redirects": [
@@ -76,6 +152,41 @@
       "source": "/segments/gov",
       "destination": "/government",
       "permanent": true
+    },
+    {
+      "source": "/surplus/market",
+      "destination": "/surplus",
+      "permanent": true
+    },
+    {
+      "source": "/services/robotics",
+      "destination": "/robotics",
+      "permanent": true
+    },
+    {
+      "source": "/solutions/asc",
+      "destination": "/segments/asc",
+      "permanent": true
+    },
+    {
+      "source": "/solutions/pharmacy",
+      "destination": "/segments/pharmacy",
+      "permanent": true
+    },
+    {
+      "source": "/solutions/government",
+      "destination": "/government",
+      "permanent": true
+    },
+    {
+      "source": "/solutions/distributors",
+      "destination": "/segments/distributors",
+      "permanent": true
+    },
+    {
+      "source": "/solutions/ems",
+      "destination": "/segments/ems",
+      "permanent": true
     }
   ],
   "headers": [
@@ -109,6 +220,42 @@
         {
           "key": "Cache-Control",
           "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/fonts/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/media/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/(admin|staff|account|dashboard|cart|checkout|orders|invoices|quotes|q|vendor|rep|warehouse|work|distributor|activate|login|register)(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    },
+    {
+      "source": "/quote/(engine|new)(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
         }
       ]
     }

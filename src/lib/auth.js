@@ -95,7 +95,7 @@ export const auth = {
       return null;
     }
     try {
-      const response = await fetch('/api/auth/session', { credentials: 'include' });
+      const response = await fetch('/api/auth/session', { credentials: 'include', signal: AbortSignal.timeout(15000) });
       if (!response.ok) {
         const error = new Error(`HTTP ${response.status}`);
         error.invalidSession = [401, 403].includes(response.status);

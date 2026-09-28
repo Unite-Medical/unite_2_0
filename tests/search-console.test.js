@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { buildSitemap } from '../scripts/sitemap.mjs';
 import { googleVerification } from '../scripts/google-verification.mjs';
 import { STATIC_ROUTES } from '../scripts/seo-routes.mjs';
-import { REAL_PRODUCTS } from '../src/data/realCatalog.js';
+import { REAL_PRODUCTS } from '../src/data/publicCatalog.js';
 
 test('sitemap contains canonical public routes and current catalog, no filters, placeholders or private routes', () => {
   const xml = buildSitemap();

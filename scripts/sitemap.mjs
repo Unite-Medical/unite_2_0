@@ -1,7 +1,7 @@
 import { writeFile } from 'node:fs/promises';
 import { pathToFileURL } from 'node:url';
 import { STATIC_ROUTES } from './seo-routes.mjs';
-import { REAL_PRODUCTS } from '../src/data/realCatalog.js';
+import { REAL_PRODUCTS } from '../src/data/publicCatalog.js';
 
 export function buildSitemap() {
   // No public blog posts are currently seeded. Add published article metadata
