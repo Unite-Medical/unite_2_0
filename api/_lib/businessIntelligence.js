@@ -40,16 +40,22 @@ export async function readAccountingReports(sql, period, { getContext = qboAcces
     const url = new URL(`${root}/v3/company/${encodeURIComponent(context.realmId)}/reports/${name}`);
     url.searchParams.set('minorversion', '75');
     if (name === 'ProfitAndLoss') url.searchParams.set('start_date', period.start);
-    url.searchParams.set('end_date', period.end);
+    if (!name.startsWith('Aged')) url.searchParams.set('end_date', period.end);
     if (name === 'ProfitAndLoss' || name === 'BalanceSheet') url.searchParams.set('accounting_method', period.basis);
-    if (name.startsWith('Aged')) { url.searchParams.set('report_date', period.end); url.searchParams.set('aging_method', 'Report_Date'); }
+    if (name.startsWith('Aged')) url.searchParams.set('report_date', period.end);
     const response = await fetchImpl(url, { headers: { Authorization: `Bearer ${context.accessToken}`, Accept: 'application/json' }, signal: AbortSignal.timeout(15000) });
-    if (!response.ok) throw new Error('Report unavailable');
     const body = await response.json();
-    if (!body.Header || body.Fault) throw new Error('Invalid report');
+    if (!response.ok || !body.Header || body.Fault) {
+      const error = new Error('Report unavailable');
+      error.http_status = response.status;
+      const fault = body.Fault?.Error?.[0];
+      error.provider_code = /^[a-zA-Z0-9_]+$/.test(String(fault?.code)) ? String(fault.code) : null;
+      error.provider_message = String(fault?.Message || '').slice(0, 180);
+      throw error;
+    }
     return { id: name, label, status: 'ready', ...flattenQboReport(body) };
   }));
-  const reports = results.map((r, i) => r.status === 'fulfilled' ? r.value : { id: definitions[i][0], label: definitions[i][1], status: 'unavailable', message: 'QuickBooks did not return this report. Check company access and report availability.' });
+  const reports = results.map((r, i) => r.status === 'fulfilled' ? r.value : { id: definitions[i][0], label: definitions[i][1], status: 'unavailable', http_status: r.reason?.http_status || null, provider_code: r.reason?.provider_code || null, provider_message: r.reason?.provider_message || null, message: 'QuickBooks did not return this report. Check company access and report availability.' });
   return { status: reports.every(r => r.status === 'ready') ? 'ready' : reports.some(r => r.status === 'ready') ? 'partial' : 'unavailable', environment: context.environment, company_id: context.realmId, retrieved_at: new Date().toISOString(), reports };
 }
 
