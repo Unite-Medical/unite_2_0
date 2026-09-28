@@ -24,7 +24,7 @@ await page.route('**/api/**',async route=>{
 });
 try{
  await page.goto(`${base}/welllink?utm_source=welllink&utm_campaign=welllink_cc_ns_0052`);
- await page.getByRole('heading',{name:'Standard Luer Lock syringes. For WellLink members.',exact:true}).waitFor();
+ await page.getByRole('heading',{name:'Small essentials. A stronger connection.',exact:true}).waitFor();
  assert.equal(await page.locator('.wm-product-grid article').count(),6);
  const body=await page.locator('main').innerText();assert(!body.includes('$'));assert(!body.includes('2029'));assert(body.includes('BD 309646'));
  await page.screenshot({path:`${output}/welllink-desktop.png`});

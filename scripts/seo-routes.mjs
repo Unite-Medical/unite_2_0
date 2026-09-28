@@ -119,8 +119,8 @@ export const STATIC_ROUTES = {
     description: 'The HCPCS Level II codes Unite Medical products bill against, with official CMS descriptions. PDAC-approved SKUs flagged; every SKU links to its product page.',
   },
   '/case-studies/tjs': {
-    title: 'Case study · TJS',
-    description: 'How a regional surgical group cut supply spend with consolidated distribution.',
+    title: 'Total Joint Specialists — a recovery store, fully supported',
+    description: 'A branded recovery store for Total Joint Specialists. Unite brings together private-label products, care-pathway integration and direct-to-patient fulfillment.',
   },
   '/privacy': { title: 'Privacy policy', description: 'How Unite Medical collects, uses, and protects your data.' },
   '/terms': { title: 'Terms of service', description: 'Terms governing purchases and use of unitemedical.net.' },
