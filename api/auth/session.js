@@ -4,11 +4,10 @@ import { neon } from '@neondatabase/serverless';
 import {
   authorizeLiveProfile,
   clearSessionCookie,
-  createSessionToken,
+  issueSession,
   hashStoredPassword,
   passwordNeedsUpgrade,
   sessionFromRequest,
-  setSessionCookie,
   verifyStoredPassword,
 } from '../_lib/auth.js';
 import { logEvent, readRawBody, sendJson } from '../_lib/http.js';
@@ -120,8 +119,8 @@ export default async function handler(req, res) {
         clearSessionCookie(res);
         return sendJson(res, 401, { error: live.reason });
       }
-      const session = {...safeSession(profile, await organizationFor(sql, profile)),mfa_verified:claimed.mfa_verified===true,role:claimed.role};
-      setSessionCookie(res, createSessionToken(session));
+      const session = {...safeSession(profile, await organizationFor(sql, profile)),mfa_verified:claimed.mfa_verified===true,role:claimed.role,...(claimed.remember_until?{remember_until:claimed.remember_until}:{})};
+      issueSession(res, session);
       return sendJson(res, 200, { session });
     } catch (error) {
       logEvent('auth.session', 'validation_error', { error: error.message });
@@ -154,7 +153,7 @@ export default async function handler(req, res) {
 
   try {
     const raw = await readRawBody(req);
-    const { email: rawEmail = '', password = '' } = JSON.parse(raw.toString('utf8') || '{}');
+    const { email: rawEmail = '', password = '', remember = false } = JSON.parse(raw.toString('utf8') || '{}');
     const email = String(rawEmail).trim().toLowerCase();
     if (!email || !password) return sendJson(res, 400, { error: 'credentials_required' });
     const descriptors = loginThrottleDescriptors(email, req);
@@ -211,7 +210,7 @@ export default async function handler(req, res) {
     ]);
     if(requiresMfa([profile.role,...(profile.roles||[])])) { clearSessionCookie(res); return sendJson(res,200,await beginMfa(sql,profile)); }
     const session = safeSession(profile, await organizationFor(sql, profile));
-    setSessionCookie(res, createSessionToken(session));
+    issueSession(res, session, {remember: remember === true});
     logEvent('auth.session', 'login_succeeded', { user_id: session.user_id, role: session.role });
     return sendJson(res, 200, { session });
   } catch (error) {

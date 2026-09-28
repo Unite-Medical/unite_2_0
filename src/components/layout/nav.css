@@ -12,3 +12,19 @@
 @media(max-width:600px){.un-nav{background:#f3f2ebf5}.un-nav.un-nav--dark{background:#101c16ed}}
 @media(prefers-reduced-motion:reduce){.un-nav,.un-nav *{transition:none!important}}
 @supports not (backdrop-filter:blur(20px)){.un-nav{background:#f3f2eb}.un-nav.un-nav--dark{background:#14201aed}.un-nav-menu{background:#f3f2eb}}
+
+/* Quiet, tactile controls share the site's warm glass and rounded geometry. */
+.un-nav-actions{gap:8px}
+.un-nav-icon,.un-nav-toggle{width:44px;height:44px;border:1px solid transparent;border-radius:50%;background:transparent;color:inherit;transition:background .2s,border-color .2s}
+.un-nav-icon:hover,.un-nav-toggle:hover{background:#16201a0a;border-color:#16201a20}
+.un-nav--dark .un-nav-icon:hover,.un-nav--dark .un-nav-toggle:hover{background:#ffffff12;border-color:#ffffff30}
+.un-nav-account{display:flex;align-items:center;min-height:44px;padding:0 12px;border-radius:24px;font-size:12px;font-weight:500;transition:background .2s}
+.un-nav-account:hover{background:#16201a0a}.un-nav--dark .un-nav-account:hover{background:#ffffff12}
+.un-nav-cta{min-height:44px;box-sizing:border-box;padding:7px 9px 7px 18px;gap:18px;border:1px solid #d6d9cc;border-radius:28px;background:#e7eadf;font-size:12px;font-weight:500;transition:background .2s,box-shadow .2s}
+.un-nav-cta:hover{background:#f3f2eb;box-shadow:0 2px 12px #101c1612}
+.un-nav-cta>span[aria-hidden]{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#16201a;color:#f3f2eb;font-size:17px;line-height:1}
+.un-nav-toggle{margin-left:4px;gap:5px;padding:10px;border-color:#16201a26}
+.un-nav--dark .un-nav-toggle{border-color:#ffffff35}
+.un-nav-toggle span{background:currentColor;width:18px}
+.un-nav-menu{border-radius:16px}
+@media(max-width:600px){.un-nav-actions{gap:6px}.un-nav-search,.un-nav-account{display:none}.un-nav-cta{min-height:44px;padding:7px 8px 7px 13px;gap:10px;font-size:11px}.un-nav-toggle{width:44px;height:44px;margin-left:0}.un-nav{padding:8px 10px}.un-nav-logo,.un-nav-logo img{width:94px!important}}

@@ -1,3 +1,4 @@
+import { PasswordRecovery } from '../components/PasswordRecovery.jsx';
 import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { WorkspaceIcon } from '../components/workspace/WorkspaceIcon.jsx';
@@ -26,6 +27,8 @@ export function Login() {
   useSEO({ title: 'Sign in', description: 'Sign in to your Unite Medical B2B account.', canonical: '/login', noindex: true });
   const [email, setEmail] = useState(() => import.meta.env.DEV ? 'sarah@atlanta-surgical.com' : '');
   const [password, setPassword] = useState(() => import.meta.env.DEV ? 'demo' : '');
+  const [remember,setRemember]=useState(false);
+  const [passwordRecovery,setPasswordRecovery]=useState(()=>searchParams.has('reset')||searchParams.has('forgot'));
   const [showPassword,setShowPassword]=useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
@@ -40,8 +43,8 @@ export function Login() {
     e.preventDefault();
     setError(null); setSubmitting(true);
     try {
-      const session = await auth.login(email, password);
-      if(session.mfa_required){setMfa(session);setPassword('');return;}
+      const session = await auth.login(email, password,remember);
+      if(session.mfa_required){setMfa(session);return;}
       navigate(destinationFor(session));
     } catch (err) {
       setError(err.message);
@@ -65,15 +68,16 @@ export function Login() {
     }
   }
 
-  async function verifyMfa(e){e.preventDefault();setSubmitting(true);setError(null);try{const result=await auth.completeMfa(mfa.challenge,recovery?'':code,recovery?code:undefined);setCode('');if(result.recovery_codes){setRecoveryCodes(result.recovery_codes);setVerifiedSession(result.session);setMfa(null);}else navigate(destinationFor(result.session));}catch(err){setError(err.message);}finally{setSubmitting(false);}}
+  async function verifyMfa(e){e.preventDefault();setSubmitting(true);setError(null);try{const result=await auth.completeMfa(mfa.challenge,recovery?'':code,recovery?code:undefined,remember);setCode('');if(result.recovery_codes){setRecoveryCodes(result.recovery_codes);setVerifiedSession(result.session);setMfa(null);}else navigate(destinationFor(result.session));}catch(err){setError(err.message);}finally{setSubmitting(false);}}
+  if(passwordRecovery)return <SignInLayout step="ACCOUNT RECOVERY"><PasswordRecovery onBack={()=>{setPasswordRecovery(false);window.history.replaceState(null,'','/login');}}/></SignInLayout>;
   if(recoveryCodes)return <SignInLayout step="ACCOUNT SECURITY"><div className="um-signin-kicker"><WorkspaceIcon name="shield" size={18}/> Recovery access</div><h1>Keep a way back in.</h1><p className="um-signin-subtitle">Save these recovery codes in your password manager. Each works once if you lose your authenticator, and they will not be shown again.</p><pre className="um-recovery-codes">{recoveryCodes.join('\n')}</pre><button className="ws-button primary um-signin-submit" onClick={()=>{setRecoveryCodes(null);navigate(destinationFor(verifiedSession));}}>I saved my codes. Continue <WorkspaceIcon name="arrow" size={16}/></button></SignInLayout>;
-  if(mfa)return <SignInLayout step="TWO-STEP SIGN-IN"><div className="um-signin-kicker"><WorkspaceIcon name="shield" size={18}/> One more step</div><h1>{mfa.enrollment?'Secure your account.':'Verify it’s you.'}</h1>{mfa.enrollment?<><p className="um-signin-subtitle">Add this account in your authenticator using the setup key below. Choose time-based codes.</p><div className="um-enrollment"><label>Account<input readOnly value={mfa.account}/></label><label>Setup key<input readOnly value={mfa.setup_key} onFocus={e=>e.target.select()}/></label></div></>:<p className="um-signin-subtitle">{recovery?'Enter one of the recovery codes you saved.':'Enter the six-digit code from your authenticator.'}</p>}<form onSubmit={verifyMfa}><label>{recovery?'Recovery code':'Verification code'}<input className="um-code-input" autoComplete="one-time-code" inputMode={recovery?'text':'numeric'} value={code} onChange={e=>setCode(e.target.value)} required pattern={recovery?undefined:'[0-9]{6}'} placeholder={recovery?'Recovery code':'000000'}/></label>{error&&<p className="ws-error" role="alert">{error}</p>}<button type="submit" className="ws-button primary um-signin-submit" disabled={submitting}>{submitting?'Verifying…':'Verify and continue'}<WorkspaceIcon name="arrow" size={16}/></button></form><div className="um-signin-secondary">{!mfa.enrollment&&<button onClick={()=>{setRecovery(v=>!v);setCode('');setError(null);}}>{recovery?'Use authenticator instead':'Use a recovery code'}</button>}<button onClick={()=>{setMfa(null);setCode('');setError(null);}}>Back to sign in</button></div></SignInLayout>;
+  if(mfa)return <SignInLayout step="TWO-STEP SIGN-IN"><div className="um-signin-kicker"><WorkspaceIcon name="shield" size={18}/> One more step</div><h1>{mfa.enrollment?'Secure your account.':'Verify it’s you.'}</h1>{mfa.enrollment?<><p className="um-signin-subtitle">Add this account in your authenticator using the setup key below. Choose time-based codes.</p><div className="um-enrollment"><label>Account<input readOnly value={mfa.account}/></label><label>Setup key<input readOnly value={mfa.setup_key} onFocus={e=>e.target.select()}/></label></div></>:<p className="um-signin-subtitle">{recovery?'Enter one of the recovery codes you saved.':'Enter the six-digit code from your authenticator.'}</p>}<form onSubmit={verifyMfa}><input type="text" name="username" autoComplete="username" value={email} readOnly hidden/><input type="password" name="password" autoComplete="current-password" value={password} readOnly hidden/><label>{recovery?'Recovery code':'Verification code'}<input className="um-code-input" autoComplete="one-time-code" inputMode={recovery?'text':'numeric'} value={code} onChange={e=>setCode(e.target.value)} required pattern={recovery?undefined:'[0-9]{6}'} placeholder={recovery?'Recovery code':'000000'}/></label>{error&&<p className="ws-error" role="alert">{error}</p>}<button type="submit" className="ws-button primary um-signin-submit" disabled={submitting}>{submitting?'Verifying…':'Verify and continue'}<WorkspaceIcon name="arrow" size={16}/></button></form><div className="um-signin-secondary">{!mfa.enrollment&&<button onClick={()=>{setRecovery(v=>!v);setCode('');setError(null);}}>{recovery?'Use authenticator instead':'Use a recovery code'}</button>}<button onClick={()=>{setMfa(null);setCode('');setError(null);}}>Back to sign in</button></div></SignInLayout>;
   return <SignInLayout>
     <div className="um-signin-kicker"><span/> Welcome to Unite</div><h1>Welcome back.</h1><p className="um-signin-subtitle">Sign in to pick up where you left off.</p>
     <form onSubmit={handleSubmit}>
-      <label>Work email<input type="email" autoComplete="username" placeholder="you@company.com" required value={email} onChange={e=>setEmail(e.target.value)}/></label>
-      <label>Password<div className="um-password-field"><input aria-label="Password" type={showPassword?'text':'password'} autoComplete="current-password" placeholder="Enter your password" required value={password} onChange={e=>setPassword(e.target.value)}/><button type="button" aria-label={showPassword?'Hide password':'Show password'} aria-pressed={showPassword} onClick={()=>setShowPassword(v=>!v)}>{showPassword?'Hide':'Show'}</button></div></label>
-      <div className="um-signin-help"><Link to="/contact">Need help signing in?</Link></div>
+      <label>Work email<input name="username" type="email" autoComplete="username" placeholder="you@company.com" required value={email} onChange={e=>setEmail(e.target.value)}/></label>
+      <label>Password<div className="um-password-field"><input name="password" aria-label="Password" type={showPassword?'text':'password'} autoComplete="current-password" placeholder="Enter your password" required value={password} onChange={e=>setPassword(e.target.value)}/><button type="button" aria-label={showPassword?'Hide password':'Show password'} aria-pressed={showPassword} onClick={()=>setShowPassword(v=>!v)}>{showPassword?'Hide':'Show'}</button></div></label>
+      <label className="um-remember"><input type="checkbox" checked={remember} onChange={e=>setRemember(e.target.checked)}/><span>Keep me signed in for 30 days<small>On your personal device. MFA stays verified until you sign out.</small></span></label><div className="um-signin-help"><button type="button" onClick={()=>setPasswordRecovery(true)}>Forgot password?</button></div>
       {error&&<div className="ws-error" role="alert">{error}</div>}
       <button className="ws-button primary um-signin-submit" type="submit" disabled={submitting}>{submitting?'Signing in…':'Sign in'}<WorkspaceIcon name="arrow" size={17}/></button>
     </form>

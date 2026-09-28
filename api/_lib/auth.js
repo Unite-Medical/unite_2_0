@@ -3,6 +3,7 @@ import crypto from 'node:crypto';
 import { safeEqual, sendJson } from './http.js';
 
 const COOKIE_NAME = 'um_session';
+export const REMEMBER_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 const DEFAULT_TTL_MS = 8 * 60 * 60 * 1000;
 
 function secretOrThrow(secret) {
@@ -29,6 +30,7 @@ export function createSessionToken(session, { secret, now = Date.now(), ttlMs = 
     tier: session.tier || null,
     session_revision: Number(session.session_revision || 0),
     mfa_verified: session.mfa_verified === true,
+    ...(session.remember_until ? { remember_until: session.remember_until } : {}),
     iat: Math.floor(now / 1000),
     exp: Math.floor((now + ttlMs) / 1000),
   };
@@ -131,4 +133,13 @@ export function requireSession(req, res, { roles = null } = {}) {
     return null;
   }
   return session;
+}
+
+// A verified personal-device session has a fixed end date, never a sliding 30-day window.
+export function issueSession(res, session, { remember = false, now = Date.now() } = {}) {
+  if (remember && !session.remember_until) session.remember_until = Math.floor((now + REMEMBER_TTL_MS) / 1000);
+  const ttlMs = session.remember_until
+    ? Math.max(0, Math.min(REMEMBER_TTL_MS, session.remember_until * 1000 - now))
+    : DEFAULT_TTL_MS;
+  setSessionCookie(res, createSessionToken(session, { now, ttlMs }), { maxAgeSeconds: Math.floor(ttlMs / 1000) });
 }
