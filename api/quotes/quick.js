@@ -100,23 +100,45 @@ async function defaultResolveBusinessDomain(domain) {
   }
 }
 
-async function defaultFetchWebsite(url) {
-  const target = /^https?:\/\//i.test(url) ? url : `https://${url}`;
+export async function fetchQuickQuoteWebsite(url, {
+  resolveWebsiteAddresses = defaultResolveWebsiteAddresses,
+  fetchWebsiteResponse = fetch,
+} = {}) {
+  let target = /^https?:\/\//i.test(url) ? url : `https://${url}`;
+  // Follow ordinary company redirects explicitly so every destination is checked.
+  // Automatic redirects would bypass the public-address validation.
   try {
-    const response = await fetch(target, {
-      method: 'HEAD', redirect: 'error', signal: AbortSignal.timeout(5000),
-      headers: { 'User-Agent': 'UniteMedical-QuickQuote-Verification/1.0' },
-    });
-    if (response.status === 405) {
-      return fetch(target, {
-        method: 'GET', redirect: 'error', signal: AbortSignal.timeout(5000),
-        headers: { 'User-Agent': 'UniteMedical-QuickQuote-Verification/1.0', Range: 'bytes=0-1024' },
-      });
+    for (let hop = 0; hop <= 4; hop += 1) {
+      const parsed = new URL(target);
+      if (!['http:', 'https:'].includes(parsed.protocol) || parsed.username || parsed.password
+          || !publicHostname(parsed.hostname) || (parsed.port && !['80', '443'].includes(parsed.port))) {
+        return { ok: false, status: 0 };
+      }
+      const addresses = await resolveWebsiteAddresses(parsed.hostname);
+      if (!addresses.length || addresses.some(address => !publicAddress(address))) return { ok: false, status: 0 };
+      const options = {
+        method: 'HEAD', redirect: 'manual', signal: AbortSignal.timeout(5000),
+        headers: { 'User-Agent': 'UniteMedical-QuickQuote-Verification/1.0' },
+      };
+      let response = await fetchWebsiteResponse(parsed.href, options);
+      if (response.status === 405) {
+        await response.body?.cancel();
+        response = await fetchWebsiteResponse(parsed.href, {
+          ...options, method: 'GET', signal: AbortSignal.timeout(5000),
+          headers: { ...options.headers, Range: 'bytes=0-1024' },
+        });
+      }
+      await response.body?.cancel();
+      if ([301, 302, 303, 307, 308].includes(response.status)) {
+        const location = response.headers.get('location');
+        if (!location) return { ok: false, status: response.status };
+        target = new URL(location, parsed).href;
+        continue;
+      }
+      return { ok: response.ok, status: response.status };
     }
-    return response;
-  } catch {
-    return { ok: false, status: 0 };
-  }
+  } catch { /* Network failures keep business verification pending. */ }
+  return { ok: false, status: 0 };
 }
 
 async function defaultResolveWebsiteAddresses(domain) {
@@ -127,13 +149,13 @@ async function defaultResolveWebsiteAddresses(domain) {
 export async function verifyQuickQuoteNetwork(identity, {
   resolveBusinessDomain = defaultResolveBusinessDomain,
   resolveWebsiteAddresses = defaultResolveWebsiteAddresses,
-  fetchWebsite = defaultFetchWebsite,
+  fetchWebsite = fetchQuickQuoteWebsite,
 } = {}) {
   if (!identity?.website_domain || !identity?.email_domain) return { ok: false, reason: 'business_identity_required' };
   if (!await resolveBusinessDomain(identity.email_domain)) return { ok: false, reason: 'business_domain_unverified' };
   const addresses = await resolveWebsiteAddresses(identity.website_domain);
   if (!addresses.length || addresses.some((address) => !publicAddress(address))) return { ok: false, reason: 'business_website_invalid' };
-  const response = await fetchWebsite(identity.website);
+  const response = await fetchWebsite(identity.website, { resolveWebsiteAddresses });
   if (!response?.ok) return { ok: false, reason: 'business_website_unreachable' };
   return { ok: true };
 }

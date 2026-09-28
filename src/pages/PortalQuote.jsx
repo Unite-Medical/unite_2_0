@@ -1,5 +1,9 @@
 import {trackFunnel} from '../lib/funnelTelemetry.js';
-import '../styles/workspace.css';
+import './commerce-public.css';
+import { HomepageFooter } from '../components/layout/HomepageFooter.jsx';
+import { PRODUCT_IMG } from '../lib/imageMap.js';
+import { categorize } from '../lib/taxonomy.js';
+import { Icon } from '../components/shared/Icon.jsx';
 /**
  * Customer self-serve quoting portal — PRD-19.
  *
@@ -11,13 +15,11 @@ import '../styles/workspace.css';
  */
 
 import { useEffect, useMemo, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { D } from '../tokens.js';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Nav } from '../components/layout/Nav.jsx';
 import { auth } from '../lib/auth.js';
 import { db } from '../lib/db.js';
 import { fmt } from '../lib/format.js';
-import { useViewport } from '../lib/viewport.js';
 import { useSEO } from '../lib/seo.js';
 import { commerceAccessFor } from '../lib/accessPolicy.js';
 
@@ -32,16 +34,15 @@ export function PortalQuote() {
   const session = auth.use();
   const org = auth.org();
   const commerce = commerceAccessFor(session, org);
-  const { isMobile } = useViewport();
   const products = db.useTable('products', { orderBy: 'name', dir: 'asc' });
   const accountPrices = db.useTable('account_prices');
 
   const [query, setQuery] = useState('');
   useEffect(()=>{trackFunnel('session_started');},[]);
-  const [intent,setIntent]=useState('');const [category,setCategory]=useState('');
+  const [category,setCategory]=useState('');
   const [cart, setCart] = useState(() => {
     const sku = searchParams.get('sku');
-    const qty = Math.max(1, Number(searchParams.get('qty')) || 1);
+    const qty = Math.min(1000000, Math.max(1, Math.round(Number(searchParams.get('qty')) || 1)));
     return sku ? { [sku]: qty } : {};
   }); // sku -> qty
   const [busy, setBusy] = useState(false);
@@ -60,9 +61,8 @@ export function PortalQuote() {
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     const list = q ? products.filter((p) => `${p.name} ${p.sku} ${p.category || ''}`.toLowerCase().includes(q)) : products;
-    const pattern={diagnostics:/diagnostic|test|lab/i,ppe:/ppe|glove|mask|gown|protect/i,orthotics:/orthot|brace|recovery|support/i}[intent];
-    return list.filter(p=>(!category||p.category===category)&&(!pattern||pattern.test(`${p.name} ${p.category||''}`))).slice(0, 40);
-  }, [products, query, category, intent]);
+    return list.filter(p=>!category||categorize(p)===category);
+  }, [products, query, category]);
 
   const lines = useMemo(() => Object.entries(cart)
     .filter(([, qty]) => qty > 0)
@@ -83,7 +83,7 @@ export function PortalQuote() {
 
   function setQty(sku, qty) {
     trackFunnel(qty<=0?'item_removed':cart[sku]?'quantity_changed':'item_added');
-    setCart((c) => ({ ...c, [sku]: Math.max(0, Math.round(qty || 0)) }));
+    setCart((c) => ({ ...c, [sku]: Math.min(1000000, Math.max(0, Math.round(qty || 0))) }));
     setIdempotencyKey(newQuoteKey());
     setQuoteError(null);
   }
@@ -106,6 +106,15 @@ export function PortalQuote() {
       return payload;
     }
     const message = {
+      business_identity_required: 'Enter complete business details and a valid five-digit shipping ZIP.',
+      business_website_invalid: 'Enter a public company website, such as company.com.',
+      product_not_found: 'An item is no longer available. Remove it from your list and try again.',
+      quote_only: 'An item needs a custom quote. Please use Request sourcing for that item.',
+      approved_price_required: 'An item needs a custom price. Please request sourcing for that item.',
+      account_not_approved: 'Your account is awaiting approval. Contact our team for a quote.',
+      customer_or_distributor_required: 'Use a customer account to generate a quote, or sign out to request a business quote.',
+      price_unavailable: 'An item needs a custom price. Please request sourcing for that item.',
+      quick_quote_not_configured: 'Quick Quote is temporarily unavailable. Please contact our team.',
       work_email_required: 'Use a company work email, not a personal mailbox.',
       email_website_mismatch: 'Your work email domain must match the company website.',
       business_domain_unverified: 'We could not verify that company email domain.',
@@ -135,8 +144,8 @@ export function PortalQuote() {
 
   async function submitSourcing() {
     const email = session?.email || identity.email;
-    if (!email) {
-      setSourceError('Enter your company and work email in the quote form first.');
+    if (!email || !(org?.name || identity.company_name).trim() || !(session?.name || identity.contact_name).trim()) {
+      setSourceError('Enter your company, name, and work email under Business details first.');
       return;
     }
     trackFunnel('noncatalog_item_added');
@@ -165,129 +174,34 @@ export function PortalQuote() {
     }
   }
 
-  const pad = isMobile ? 20 : 40;
+  function updateIdentity(field, value) {
+    setIdentity(current=>({...current,[field]:value}));
+    setIdempotencyKey(newQuoteKey());
+    setIdentityError(null); setQuoteError(null);
+  }
 
-  return (
-    <div style={{ background: D.paper, fontFamily: D.sans, color: D.ink, minHeight: '100vh' }}>
-      <Nav />
-      <main id="main">
-        <div style={{ padding: `${isMobile ? 32 : 56}px ${pad}px 24px`, maxWidth: 1280, margin: '0 auto' }}>
-          <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum }}>SELF-SERVE QUOTING</div>
-          <h1 style={{ fontFamily: D.display, fontSize: 'clamp(36px, 7vw, 72px)', fontWeight: 400, letterSpacing: -1.4, margin: '12px 0 0', lineHeight: 1.02 }}>Build your quote</h1>
-          <div style={{ fontSize: isMobile ? 14 : 16, color: D.ink2, marginTop: 14, maxWidth: 640 }}>
-            {commerce.can_view_prices
-              ? <>Add stocked items below. Pricing reflects your <strong>{org?.name}</strong> account tier ({org?.tier}).</>
-              : <>Build an unpriced list first. We only reveal pricing after work-email and company verification.</>}
-          </div>
-        </div>
-
-        <div style={{ maxWidth: 1280, margin: '0 auto', padding: `8px ${pad}px 80px`, display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.5fr 1fr', gap: 24, alignItems: 'start' }}>
-          <section className="ws-card" style={{gridColumn:'1 / -1'}}><h2>What do you need?</h2><div className="ws-actions">{[['restock','Restock'],['substitute','Find a substitute'],['diagnostics','Diagnostic tests'],['ppe','PPE'],['orthotics','Braces and recovery'],['source','Source something else']].map(([id,label])=><button className={`ws-button ${intent===id?'primary':''}`} key={id} onClick={()=>{setIntent(id);setCategory('');trackFunnel('intent_selected',{intent:id});}}>{label}</button>)}</div><label>Category<select value={category} onChange={e=>{setCategory(e.target.value);trackFunnel('category_viewed',{category:e.target.value});}}><option value="">All categories</option>{[...new Set(products.map(p=>p.category).filter(Boolean))].sort().map(c=><option key={c}>{c}</option>)}</select></label><p>Your quote list stays intact when you switch categories.</p></section>
-          {/* Catalog picker */}
-          <div>
-            <input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              onBlur={()=>{if(query.trim())trackFunnel('search_performed');}}
-              placeholder="Search the catalog — name, SKU, or category"
-              style={{ width: '100%', padding: '14px 16px', borderRadius: 12, border: `1.5px solid ${D.line}`, fontSize: 15, fontFamily: D.sans, background: D.card, color: D.ink, boxSizing: 'border-box' }}
-            />
-            <div style={{ marginTop: 16, background: D.card, border: `1px solid ${D.line}`, borderRadius: 14, overflow: 'hidden' }}>
-              {filtered.map((p, i) => {
-                const qty = cart[p.sku] || 0;
-                return (
-                  <div key={p.sku} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', borderTop: i === 0 ? 'none' : `1px solid ${D.line}` }}>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: 14, fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.name}</div>
-                      <div style={{ fontFamily: D.mono, fontSize: 11, color: D.ink3 }}>{p.sku} · {commerce.can_view_prices ? (scopedPrice(accountPrices, p.sku, 1, org?.id) ? `${fmt.money(scopedPrice(accountPrices, p.sku, 1, org?.id).unit_price)} account price` : 'pricing loading') : 'pricing after verification'}</div>
-                    </div>
-                    <input
-                      type="number" min="0" value={qty || ''}
-                      onChange={(e) => setQty(p.sku, Number(e.target.value))}
-                      placeholder="qty"
-                      style={{ width: 80, padding: '8px 10px', borderRadius: 8, border: `1px solid ${D.line}`, fontSize: 14, fontFamily: D.mono, textAlign: 'right', background: D.paper, color: D.ink }}
-                    />
-                  </div>
-                );
-              })}
-              {filtered.length === 0 && <div style={{ padding: 24, color: D.ink3, fontSize: 14 }}>No products match “{query}”.</div>}
-            </div>
-
-            {/* Sourcing request */}
-            <div style={{ marginTop: 24, background: D.card, border: `1px solid ${D.line}`, borderRadius: 14, padding: 20 }}>
-              <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>CAN&apos;T FIND IT?</div>
-              <div style={{ fontSize: 14, color: D.ink2, marginTop: 8 }}>Tell us what you need — our sourcing desk hunts it down globally and quotes you landed cost.</div>
-              {sourceDone ? (
-                <div style={{ marginTop: 12, color: '#3b8760', fontSize: 14 }}>Got it — our sourcing team will be in touch.</div>
-              ) : (
-                <>
-                  <textarea value={sourceText} onChange={(e) => setSourceText(e.target.value)} rows={3} placeholder="e.g. 5,000 units nitrile exam gloves, blue, size L, EN455"
-                    style={{ width: '100%', marginTop: 12, padding: 12, borderRadius: 10, border: `1px solid ${D.line}`, fontSize: 14, fontFamily: D.sans, background: D.paper, color: D.ink, boxSizing: 'border-box', resize: 'vertical' }} />
-                  <button type="button" onClick={submitSourcing} disabled={!sourceText.trim() || sourceBusy} style={{ marginTop: 10, background: 'transparent', color: D.ink, border: `1.5px solid ${D.ink}`, padding: '10px 18px', borderRadius: 4, cursor: sourceText.trim() && !sourceBusy ? 'pointer' : 'not-allowed', fontSize: 14, fontWeight: 600, opacity: sourceText.trim() && !sourceBusy ? 1 : 0.5 }}>{sourceBusy ? 'Saving…' : 'Request sourcing'}</button>
-                  {sourceError && <div style={{ color: '#c3382d', fontSize: 12, marginTop: 8 }}>{sourceError}</div>}
-                </>
-              )}
-            </div>
-          </div>
-
-          {/* Quote summary */}
-          <div style={{ position: isMobile ? 'static' : 'sticky', top: 92 }}>
-            <div style={{ background: D.card, border: `1px solid ${D.line}`, borderRadius: 14, padding: 22 }}>
-              <div style={{ fontFamily: D.display, fontSize: 24, letterSpacing: -0.4 }}>Your quote</div>
-              {lines.length === 0 ? (
-                <div style={{ color: D.ink3, fontSize: 14, marginTop: 14 }}>Add items from the catalog to start your quote.</div>
-              ) : (
-                <div style={{ marginTop: 14, display: 'grid', gap: 10 }}>
-                  {lines.map((l) => (
-                    <div key={l.sku} style={{ display: 'flex', justifyContent: 'space-between', gap: 10, fontSize: 13, borderBottom: `1px solid ${D.line}`, paddingBottom: 8 }}>
-                      <div style={{ minWidth: 0 }}>
-                        <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.name}</div>
-                        <div style={{ fontFamily: D.mono, fontSize: 11, color: D.ink3 }}>
-                          {commerce.can_view_prices && l.unit != null ? <>{l.qty.toLocaleString()} × {fmt.money(l.unit)}</> : <>{l.qty.toLocaleString()} units</>}
-                          {commerce.can_view_prices && l.discount > 0 && <span style={{ color: '#3b8760' }}> · −{l.discount}%{l.contract ? ' contract' : ''}</span>}
-                        </div>
-                      </div>
-                      {commerce.can_view_prices && l.ext != null && <div style={{ fontFamily: D.mono, fontWeight: 600 }}>{fmt.money(l.ext)}</div>}
-                    </div>
-                  ))}
-                  {commerce.can_view_prices ? (
-                    <>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: 6 }}>
-                        <span style={{ fontFamily: D.mono, fontSize: 11, color: D.ink3 }}>TOTAL (FOB GA)</span>
-                        <span style={{ fontFamily: D.display, fontSize: 28, color: D.plum }}>{total == null ? 'Pricing loading' : fmt.money(total)}</span>
-                      </div>
-                      <button type="button" onClick={generate} disabled={busy || total == null} style={{ marginTop: 8, background: D.plum, color: D.paper, border: 'none', padding: '14px', borderRadius: 4, cursor: busy || total == null ? 'not-allowed' : 'pointer', fontSize: 15, fontWeight: 600, opacity: busy || total == null ? 0.6 : 1 }}>
-                        {busy ? 'Generating…' : 'Generate quote →'}
-                      </button>
-                      {quoteError && <div style={{ color: '#c3382d', fontSize: 12 }}>{quoteError}</div>}
-                    </>
-                  ) : (
-                    <div style={{ display: 'grid', gap: 8, marginTop: 8 }}>
-                      {[
-                        ['company_name', 'Company name'], ['contact_name', 'Contact name'],
-                        ['email', 'Work email'], ['website', 'Company website'], ['shipping_zip', 'Shipping ZIP'],
-                      ].map(([field, label]) => (
-                        <input key={field} value={identity[field]} onChange={(event) => setIdentity((current) => ({ ...current, [field]: event.target.value }))} placeholder={label} inputMode={field === 'shipping_zip' ? 'postal-code' : undefined} style={{ width: '100%', boxSizing: 'border-box', padding: '10px 11px', border: `1px solid ${D.line}`, borderRadius: 6, background: D.paper, color: D.ink }} />
-                      ))}
-                      {identityError && <div style={{ color: '#c3382d', fontSize: 12 }}>{identityError}</div>}
-                      {quoteError && <div style={{ color: '#c3382d', fontSize: 12 }}>{quoteError}</div>}
-                      <button type="button" onClick={verifyAndGenerate} disabled={busy} style={{ background: D.plum, color: D.paper, border: 'none', padding: '14px', borderRadius: 4, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>
-                        {busy ? 'Verifying…' : 'Verify business and generate quote →'}
-                      </button>
-                    </div>
-                  )}
-                  <div style={{ fontSize: 11, color: D.ink3, textAlign: 'center' }}>You&apos;ll be able to review and accept it on the next screen.</div>
-                </div>
-              )}
-            </div>
-            {!session && (
-              <div style={{ marginTop: 14, fontSize: 13, color: D.ink2, textAlign: 'center' }}>
-                <button type="button" onClick={() => navigate('/login')} style={{ background: 'none', border: 'none', color: D.plum, cursor: 'pointer', fontWeight: 600, textDecoration: 'underline' }}>Sign in</button> to price at your negotiated account tier.
-              </div>
-            )}
-          </div>
-        </div>
-      </main>
-    </div>
-  );
+  return <div className="uc-page uq-page"><Nav /><main id="main">
+    <header className="uc-hero uc-wrap"><p className="uc-eyebrow">QUICK QUOTE / YOUR NEXT ORDER, SIMPLIFIED</p><div className="uc-hero-grid"><h1>Your supplies.<br/><span>Your next step.</span></h1><div><p>Build your list, tell us about your business, and get a quote to review. All in one place.</p><Link className="uc-text-link" to="/catalog">Explore the full catalog ↗</Link></div></div>
+      <ol className="uq-steps"><li><span>01</span> Choose your supplies</li><li><span>02</span> Verify your business</li><li><span>03</span> Review your quote</li></ol>
+    </header>
+    <div className="uq-layout uc-wrap"><section className="uq-picker" aria-label="Choose products"><div className="uq-section-head"><h2>Find your supplies</h2><span>{filtered.length} products</span></div>
+      <div className="uq-search-tools"><label className="uc-search"><Icon.search/><input value={query} onChange={e=>setQuery(e.target.value)} onBlur={()=>{if(query.trim())trackFunnel('search_performed');}} placeholder="Search by name or SKU" aria-label="Search quote products"/></label><label className="uq-category"><span className="uc-sr-only">Product category</span><select value={category} onChange={e=>{setCategory(e.target.value);trackFunnel('category_viewed',{category:e.target.value});}}><option value="">All categories</option>{[...new Set(products.map(categorize))].sort().map(c=><option key={c}>{c}</option>)}</select></label></div>
+      <div className="uq-product-list">{filtered.map(p=><article className={`uq-product${cart[p.sku]?' is-selected':''}`} key={p.sku}>
+        <div className="uq-thumbnail">{PRODUCT_IMG[p.sku]?<img src={PRODUCT_IMG[p.sku]} alt="" loading="lazy"/>:<span aria-hidden="true">UM</span>}</div>
+        <div className="uq-product-copy"><span className="uc-eyebrow">{categorize(p)}</span><h3><Link to={`/products/${p.sku}`}>{p.name}</Link></h3><p>{p.sku}{p.pack_size?` · ${p.pack_size}`:''}</p>{commerce.can_view_prices&&<p>{scopedPrice(accountPrices,p.sku,1,org?.id)?fmt.money(scopedPrice(accountPrices,p.sku,1,org?.id).unit_price):'Price on request'}</p>}</div>
+        {p.quote_only?<Link className="uc-text-link" to={`/quote?sku=${encodeURIComponent(p.sku)}&path=source`}>Request sourcing ↗</Link>:<label className="uq-qty"><span>Quantity</span><input aria-label={`Quantity for ${p.name}`} type="number" min="0" max="1000000" step="1" value={cart[p.sku]||''} disabled={busy} onChange={e=>setQty(p.sku,Number(e.target.value))} placeholder="0" inputMode="numeric"/></label>}
+      </article>)}{!filtered.length&&<div className="uc-empty"><h3>No matching supplies.</h3><p>Try a different name or SKU, or send a sourcing request below.</p><button className="uc-text-button" onClick={()=>{setQuery('');setCategory('');}}>Clear search and category ↗</button></div>}</div>
+      <section className="uq-sourcing" id="sourcing"><p className="uc-eyebrow">CAN’T FIND IT?</p><h2>We’ll help you source it.</h2><p>Tell us the product, brand, and quantity you need. Our team will follow up with pricing and availability.</p>
+        {sourceDone?<p className="uq-success" role="status">Request received. Our sourcing team will be in touch.</p>:<><label className="uc-sr-only" htmlFor="sourcing-description">What do you need sourced?</label><textarea id="sourcing-description" value={sourceText} onChange={e=>setSourceText(e.target.value)} rows={3} placeholder="Product, brand, quantity, and any specific requirements" maxLength={4000}/>{!session&&<p className="uq-note">Enter your company, name, and work email under Business details before sending.</p>}<button className="uc-button uc-button-outline" type="button" onClick={submitSourcing} disabled={!sourceText.trim()||sourceBusy}>{sourceBusy?'Saving request…':'Request sourcing ↗'}</button>{sourceError&&<p className="uq-error" role="alert">{sourceError}</p>}</>}
+      </section>
+    </section>
+    <aside className="uq-summary" aria-label="Your quote"><div className="uq-summary-heading"><p className="uc-eyebrow">YOUR QUOTE</p><h2>A clear next step.</h2><p aria-live="polite">{lines.length?`${lines.length} ${lines.length===1?'product':'products'} selected`:'Start with the supplies you need.'}</p></div>
+      <div className="uq-summary-body">{!lines.length?<div className="uq-empty-list"><span aria-hidden="true">+</span><p>Add quantities beside any product.<br/>Your quote list will appear here.</p></div>:<ul className="uq-lines">{lines.map(l=><li key={l.sku}><div><strong>{l.name}</strong><small>{l.sku} · Qty {l.qty.toLocaleString()}{l.unit!=null?` × ${fmt.money(l.unit)}`:''}</small>{l.ext!=null&&<span>{fmt.money(l.ext)}</span>}</div><button aria-label={`Remove ${l.name}`} disabled={busy} onClick={()=>setQty(l.sku,0)}>×</button></li>)}</ul>}
+      {commerce.can_view_prices?<><p className="uq-note">Pricing for {org?.name}.</p><div className="uq-total"><span>Estimated total</span><strong>{total==null?'Price pending':fmt.money(total)}</strong></div><button className="uc-button" disabled={busy||!lines.length||total==null} onClick={generate}>{busy?'Generating your quote…':'Generate quote ↗'}</button>{quoteError&&<p className="uq-error" role="alert">{quoteError}</p>}</>:<form onSubmit={e=>{e.preventDefault();verifyAndGenerate();}}><fieldset disabled={busy}><legend>Business details</legend><p className="uq-note">Use a work email that matches your company website to unlock pricing.</p><div className="uq-identity">{[
+        ['company_name','Company name','text','organization','Your organization'],['contact_name','Your name','text','name','First and last name'],['email','Work email','email','email','you@company.com'],['website','Company website','text','url','company.com'],['shipping_zip','Shipping ZIP','text','postal-code','12345'],
+      ].map(([field,label,type,autoComplete,placeholder])=><label key={field}>{label}<input required type={type} autoComplete={autoComplete} maxLength={field==='shipping_zip'?10:254} pattern={field==='shipping_zip'?'[0-9]{5}(-[0-9]{4})?':undefined} value={identity[field]} onChange={e=>updateIdentity(field,e.target.value)} placeholder={placeholder}/></label>)}</div>{identityError&&<p className="uq-error" role="alert">{identityError}</p>}{quoteError&&<p className="uq-error" role="alert">{quoteError}</p>}<button className="uc-button" type="submit" disabled={busy||!lines.length}>{busy?'Verifying your business…':'Verify & generate quote ↗'}</button></fieldset></form>}
+      <p className="uq-note uq-review-note">Review your quote before accepting. Generating a quote does not place an order.</p>{!session&&<p className="uq-login">Already a customer? <Link to="/login?next=%2Fportal%2Fquote">Sign in ↗</Link></p>}
+      </div>
+    </aside></div>
+  </main><HomepageFooter/></div>;
 }

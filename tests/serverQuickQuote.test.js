@@ -84,3 +84,51 @@ test('quick quote plan is idempotent, server-priced, provisional, and persists o
   assert.equal(replay.quote.id, first.quote.id);
   assert.equal(replay.token, first.token);
 });
+
+test('company website verification follows public redirects and handles HEAD not allowed', async () => {
+  const { fetchQuickQuoteWebsite } = await import('../api/quotes/quick.js');
+  const calls = [];
+  const result = await fetchQuickQuoteWebsite('verified-surgical.org', {
+    resolveWebsiteAddresses: async () => ['203.0.113.10'],
+    fetchWebsiteResponse: async (url, options) => {
+      calls.push([url, options.method, options.redirect]);
+      if (url === 'https://verified-surgical.org/') return new Response(null, { status: 301, headers: { location: 'https://www.verified-surgical.org/' } });
+      return new Response(null, { status: options.method === 'HEAD' ? 405 : 200 });
+    },
+  });
+  assert.equal(result.ok, true);
+  assert.deepEqual(calls, [
+    ['https://verified-surgical.org/', 'HEAD', 'manual'],
+    ['https://www.verified-surgical.org/', 'HEAD', 'manual'],
+    ['https://www.verified-surgical.org/', 'GET', 'manual'],
+  ]);
+});
+
+test('company redirects cannot reach local addresses, private DNS, unsupported protocols, or loop forever', async () => {
+  const { fetchQuickQuoteWebsite } = await import('../api/quotes/quick.js');
+  for (const destination of ['http://127.0.0.1/', 'http://localhost/', 'https://internal.verified-surgical.org/', 'file:///etc/passwd', 'https://user:pass@verified-surgical.org/']) {
+    let fetches = 0;
+    const result = await fetchQuickQuoteWebsite('verified-surgical.org', {
+      resolveWebsiteAddresses: async host => host.startsWith('internal.') ? ['10.0.0.1'] : ['203.0.113.10'],
+      fetchWebsiteResponse: async () => { fetches++; return new Response(null, { status: 302, headers: { location: destination } }); },
+    });
+    assert.equal(result.ok, false, destination);
+    assert.equal(fetches, 1, destination);
+  }
+  let fetches = 0;
+  const result = await fetchQuickQuoteWebsite('verified-surgical.org', {
+    resolveWebsiteAddresses: async () => ['203.0.113.10'],
+    fetchWebsiteResponse: async () => { fetches++; return new Response(null, { status: 302, headers: { location: '/' } }); },
+  });
+  assert.equal(result.ok, false);
+  assert.equal(fetches, 5);
+});
+
+test('quick quote pricing rejects unknown and quote-only products; quantities consolidate and client prices are ignored', () => {
+  const normalized = normalizeQuickQuoteRequest({ ...request, lines: [{ sku: 'SKU-1', qty: 2, unit_price: 0.01 }, { sku: 'SKU-1', qty: 3 }] });
+  assert.deepEqual(normalized.lines, [{ sku: 'SKU-1', qty: 5 }]);
+  const options = { request: normalized, products, tokenSecret: 'quote-link-secret-that-is-long-enough' };
+  assert.equal(buildQuickQuotePlan(options).quote.total, 60);
+  assert.equal(buildQuickQuotePlan({ ...options, products: [] }).reason, 'product_not_found');
+  assert.equal(buildQuickQuotePlan({ ...options, products: [{ ...products[0], quote_only: true }] }).reason, 'quote_only');
+});
