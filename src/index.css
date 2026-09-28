@@ -556,3 +556,7 @@ button {
 .um-static-preview h1{font-size:clamp(36px,6vw,76px);font-weight:400;letter-spacing:-.05em;line-height:1.08;max-width:1000px;margin:24px 0}
 .um-static-preview>p:not(.um-static-label){max-width:690px;font-size:17px;line-height:1.8}
 .um-static-preview nav{display:flex;gap:30px;flex-wrap:wrap;margin-top:40px}.um-static-preview nav a{color:#1d5c4d;padding:12px 0;border-bottom:1px solid #9dbcae}
+
+/* A lightweight launcher keeps support available without booting chat on page load. */
+.um-chat-launcher{position:fixed;right:20px;bottom:20px;z-index:1000;display:flex;align-items:center;gap:9px;min-height:48px;padding:12px 18px;border:1px solid #ffffff33;border-radius:28px;background:#173e32;color:#fff;font:600 13px "Unite Manrope",Arial,sans-serif;box-shadow:0 4px 18px #0002;cursor:pointer}.um-chat-launcher:focus-visible{outline:3px solid #bce49b;outline-offset:3px}.um-chat-launcher svg{flex-shrink:0}
+@media(max-width:600px){.um-chat-launcher{width:48px;padding:12px;justify-content:center}.um-chat-label{display:none}.um-chat-launcher.is-home{bottom:86px}}

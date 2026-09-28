@@ -7,7 +7,7 @@ export function messengerAllowed(location) {
 }
 
 // Visitor chat only. Account identity and order data require a separate verified integration.
-export function createMessenger(win, doc, appId) {
+export function createMessenger(win, doc, appId, {onError} = {}) {
   let active = false;
   let lastPath = '';
   return {
@@ -43,6 +43,7 @@ export function createMessenger(win, doc, appId) {
         script.onerror = () => {
           active = false;
           script.remove();
+          onError?.();
         };
         doc.head.appendChild(script);
       }

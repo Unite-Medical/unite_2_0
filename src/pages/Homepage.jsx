@@ -1,7 +1,5 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Nav } from "../components/layout/Nav.jsx";
 import { Icon } from "../components/shared/Icon.jsx";
 import { HomepageFooter } from "../components/layout/HomepageFooter.jsx";
@@ -12,7 +10,6 @@ import { HomepageJourney } from "../components/shared/HomepageJourney.jsx";
 import { useSEO, organizationSchema, websiteSchema } from "../lib/seo.js";
 import "./homepage.css";
 
-gsap.registerPlugin(ScrollTrigger);
 const MEDIA = "/media/homepage-film";
 // Restore the previous homepage's roster. Text-only source assets are rendered
 // as readable names instead of their cropped placeholder SVGs.
@@ -44,11 +41,12 @@ function Hero() {
     const video = videoRef.current;
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     const connection = navigator.connection;
+    const mobile = window.matchMedia("(max-width: 760px)");
     let inView = true;
     const syncPlayback = () => {
       const requested =
         preferenceRef.current ??
-        !(reducedMotion.matches || connection?.saveData);
+        !(reducedMotion.matches || mobile.matches || connection?.saveData);
       if (requested && inView && !document.hidden) {
         if (!video.getAttribute("src"))
           video.src = `${MEDIA}/unite-hero-${window.matchMedia("(max-width: 760px)").matches ? "720" : "1080"}.mp4`;
@@ -83,6 +81,8 @@ function Hero() {
     <section ref={heroRef} className="uf-hero" aria-labelledby="hero-title">
       <div className="uf-hero-window">
         <div className="uf-hero-media">
+          <picture>
+          <source media="(max-width: 760px)" srcSet="/images/mobile-v1/home-hero.webp"/>
           <img
             className="uf-hero-poster"
             src={`${MEDIA}/hero-poster.webp`}
@@ -91,6 +91,7 @@ function Hero() {
             alt=""
             fetchPriority="high"
           />
+          </picture>
           <video
             ref={videoRef}
             muted
@@ -294,9 +295,16 @@ export function Homepage() {
     jsonLd: [organizationSchema(), websiteSchema()],
   });
   const rootRef = useRef(null);
-  useLayoutEffect(() => {
-    const media = gsap.matchMedia();
-    media.add("(prefers-reduced-motion: no-preference)", () => {
+  useEffect(() => {
+    // Mobile paints the editorial layout immediately; desktop retains the entrance
+    // and parallax choreography without shipping its animation engine to phones.
+    if (matchMedia('(max-width: 760px), (prefers-reduced-motion: reduce)').matches) return;
+    let disposed = false, media;
+    Promise.all([import('gsap'), import('gsap/ScrollTrigger')]).then(([{default: gsap}, {ScrollTrigger}]) => {
+    if (disposed) return;
+    gsap.registerPlugin(ScrollTrigger);
+    media = gsap.matchMedia();
+    media.add("(min-width: 761px) and (prefers-reduced-motion: no-preference)", () => {
       const context = gsap.context(() => {
         const entrance = gsap.timeline({ defaults: { ease: "power3.out" } });
         entrance.fromTo(
@@ -382,7 +390,7 @@ export function Homepage() {
       }, rootRef);
       return () => context.revert();
     });
-    media.add("(prefers-reduced-motion: no-preference)", () => {
+    media.add("(min-width: 761px) and (prefers-reduced-motion: no-preference)", () => {
       const context = gsap.context(() => {
         gsap.fromTo(
           ".uf-mission-landscape img",
@@ -434,7 +442,8 @@ export function Homepage() {
       }, rootRef);
       return () => context.revert();
     });
-    return () => media.revert();
+    }).catch(() => { /* The complete page stays visible if motion cannot load. */ });
+    return () => { disposed = true; media?.revert(); };
   }, []);
   return (
     <div ref={rootRef} className="uf-home">

@@ -27,22 +27,38 @@ export function renderRoute(baseHtml, route, options = {}, environment = {stagin
   for (const [property,content] of Object.entries(properties)) tags.push(`<meta property="${property}" content="${esc(content)}" />`);
   const schema = Object.hasOwn(options, 'jsonLd') ? options.jsonLd : routeSchema(route,meta);
   if (schema) tags.push(`<script id="um-jsonld" type="application/ld+json">${json(schema)}</script>`);
-  const hero = {'/':'/media/homepage-film/hero-poster.webp','/robotics':'/images/robotics/da-vinci-xi-system.jpg','/welllink':'/images/program-films/welllink-poster.jpg','/case-studies/tjs':'/images/program-films/tjs-poster.jpg'}[route];
-  if (hero) tags.push(`<link rel="preload" as="image" href="${hero}" fetchpriority="high" />`);
+  const hero = {'/':'/media/homepage-film/hero-poster.webp','/robotics':'/images/mobile-v1/robotics-system.webp','/welllink':'/images/mobile-v1/welllink.webp','/case-studies/tjs':'/images/mobile-v1/tjs.webp'}[route];
+  if (route === "/") tags.push('<link rel="preload" as="image" href="/images/mobile-v1/home-hero.webp" media="(max-width: 760px)" fetchpriority="high" />');
+  if (hero) tags.push(`<link rel="preload" as="image" href="${hero}" ${route === "/" ? 'media="(min-width: 761px)"' : ""} fetchpriority="high" />`);
   html = html.replace('</head>',tags.join('\n')+'\n</head>');
   // Honest page summaries and real links, also usable when scripts cannot load.
   // React replaces this same-user-visible content on startup, rather than a blank root.
-  const preview = `<main id="main" class="um-static-preview"><a href="/" aria-label="Unite Medical home"><img src="/brand/unite-medical-logo.png" width="180" alt="Unite Medical" /></a><p class="um-static-label">UNITE MEDICAL</p><h1>${esc(options.title || STATIC_ROUTES[route]?.title || SITE_NAME)}</h1><p>${esc(meta.description)}</p><nav aria-label="Explore Unite Medical"><a href="/catalog">Explore products ↗</a><a href="/quote">Request a quote ↗</a><a href="/contact">Contact our team ↗</a></nav></main>`;
+  const preview = `<main id="main" class="um-static-preview"><a href="/" aria-label="Unite Medical home"><img src="/images/mobile-v1/logo.webp" width="180" alt="Unite Medical" /></a><p class="um-static-label">UNITE MEDICAL</p><h1>${esc(options.title || STATIC_ROUTES[route]?.title || SITE_NAME)}</h1><p>${esc(meta.description)}</p><nav aria-label="Explore Unite Medical"><a href="/catalog">Explore products ↗</a><a href="/quote">Request a quote ↗</a><a href="/contact">Contact our team ↗</a></nav></main>`;
   return html.replace('<div id="root"></div>',`<div id="root">${preview}</div>`);
 }
 
 async function main() {
   const base = await readFile(path.join(DIST,'index.html'),'utf8');
+  const manifest = JSON.parse(await readFile(path.join(DIST,'.vite/manifest.json'),'utf8'));
+  const pageModules = {'/':'Homepage','/catalog':'Catalog','/portal/quote':'PortalQuote','/quote':'QuoteStart','/robotics':'Robotics','/welllink':'WellLink','/case-studies/tjs':'CaseStudyTJS'};
+  function preloadPage(route) {
+    const name = pageModules[route] || (route.startsWith('/products/') ? 'ProductDetail' : null);
+    const seen = new Set(), tags=[];
+    function visit(key) {
+      if(seen.has(key))return;seen.add(key);
+      const entry=manifest[key];if(!entry)return;
+      if(!base.includes(`href="/${entry.file}"`)) tags.push(`<link rel="modulepreload" crossorigin href="/${entry.file}" />`);
+      for(const css of entry.css||[]) if(!seen.has(css)){seen.add(css);if(!base.includes(`href="/${css}"`)) tags.push(`<link rel="stylesheet" crossorigin href="/${css}" />`);}
+      for(const dependency of entry.imports||[])visit(dependency);
+    }
+    if(name)visit(`src/pages/${name}.jsx`);
+    return base.replace('</head>',tags.join('\n')+'\n</head>');
+  }
   let count=0;
   async function emit(route,options) {
     const dir=path.join(DIST,...route.split('/').filter(Boolean).map(decodeURIComponent));
     await mkdir(dir,{recursive:true});
-    await writeFile(path.join(dir,'index.html'),renderRoute(base,route,options));count++;
+    await writeFile(path.join(dir,'index.html'),renderRoute(preloadPage(route),route,options));count++;
   }
   for(const [route,meta] of Object.entries(STATIC_ROUTES)) await emit(route,meta);
   for(const p of REAL_PRODUCTS) {

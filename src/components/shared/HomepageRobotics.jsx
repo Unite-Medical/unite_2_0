@@ -47,7 +47,7 @@ export function HomepageRobotics() {
   return (
     <section ref={frame} className="uf-robotics-feature" aria-labelledby="home-robotics-heading">
       <div className="uf-robotics-media" aria-hidden="true">
-        <img src="/images/robotics/da-vinci-xi-system.jpg" alt="" width="1728" height="1117" loading="lazy" decoding="async" />
+        <img src="/images/mobile-v1/robotics-system.webp" alt="" width="1728" height="1117" loading="lazy" decoding="async" />
         <video ref={film} hidden={failed} muted loop playsInline preload="none"
           onPlay={() => setPlaying(true)} onPause={() => setPlaying(false)}
           onError={() => { setFailed(true); setPlaying(false); }} />

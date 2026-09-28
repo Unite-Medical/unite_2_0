@@ -34,6 +34,7 @@ export default defineConfig(({ command, mode }) => ({
     },
   },
   build: {
+    manifest: true,
     target: 'es2020',
     cssCodeSplit: true,
     sourcemap: false,

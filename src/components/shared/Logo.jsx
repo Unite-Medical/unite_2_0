@@ -7,7 +7,7 @@ export function UMLogoMark({ size = 28 }) {
     <svg width={size} height={size} viewBox="0 0 860 523" role="img" aria-label="Unite Medical" style={{display:'block',flexShrink:0}}>
       {/* Isolate the original mark from the transparent wordmark; preserve its exact artwork. */}
       <defs><clipPath id={clipId}><path d="M0 0H860V320H365V523H0Z"/></clipPath></defs>
-      <image href="/brand/unite-medical-logo.png" width="2000" height="523" clipPath={`url(#${clipId})`}/>
+      <image href="/images/mobile-v1/logo.webp" width="2000" height="523" clipPath={`url(#${clipId})`}/>
     </svg>
   );
 }
@@ -16,7 +16,7 @@ export function UMLogo({ size = 28, color = "#16201a" }) {
   const reversed = ["#f3f2eb", "#fff", "#ffffff"].includes(color.toLowerCase());
   return (
     <img
-      src="/brand/unite-medical-logo.png"
+      src="/images/mobile-v1/logo.webp"
       alt="Unite Medical"
       width="2000"
       height="523"
