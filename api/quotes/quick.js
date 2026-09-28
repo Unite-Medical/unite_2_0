@@ -1,4 +1,5 @@
 import crypto from 'node:crypto';
+import { loadQuickQuoteCatalog } from '../_lib/quickQuoteCatalog.js';
 import { resolve4, resolve6, resolveMx } from 'node:dns/promises';
 import { isIP } from 'node:net';
 import { neon } from '@neondatabase/serverless';
@@ -293,14 +294,14 @@ export default async function handler(req, res) {
     }
 
     const [productRows, pricingRows, contractRows, volumeRows] = await Promise.all([
-      sql`SELECT data FROM um_rows WHERE tbl='products' AND deleted=false`,
+      loadQuickQuoteCatalog(sql),
       sql`SELECT data FROM um_rows WHERE tbl='pricing' AND deleted=false`,
       sql`SELECT data FROM um_rows WHERE tbl='customer_contract_prices' AND deleted=false`,
       sql`SELECT data FROM um_rows WHERE tbl='volume_breaks' AND deleted=false`,
     ]);
     const plan = buildQuickQuotePlan({
       request: normalized,
-      products: productRows.map((row) => row.data),
+      products: productRows,
       pricingRows: pricingRows.map((row) => row.data),
       contractRows: contractRows.map((row) => row.data),
       volumeBreakRows: volumeRows.map((row) => row.data),

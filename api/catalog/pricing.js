@@ -1,3 +1,4 @@
+import { loadQuickQuoteCatalog } from '../_lib/quickQuoteCatalog.js';
 import { neon } from '@neondatabase/serverless';
 import { sessionFromRequest } from '../_lib/auth.js';
 import { loadCommerceContext, resolveAuthoritativePrice } from '../_lib/commerce.js';
@@ -30,7 +31,7 @@ export default async function handler(req, res) {
     if (!requested.length) return sendJson(res, 400, { error: 'pricing_lines_required' });
 
     const [products, pricingRows, contractRows, volumeBreakRows] = await Promise.all([
-      rowsFor(sql, 'products'), rowsFor(sql, 'pricing'), rowsFor(sql, 'customer_contract_prices'), rowsFor(sql, 'volume_breaks'),
+      loadQuickQuoteCatalog(sql), rowsFor(sql, 'pricing'), rowsFor(sql, 'customer_contract_prices'), rowsFor(sql, 'volume_breaks'),
     ]);
     const results = requested.map((line) => {
       const parent = products.find((product) => (
