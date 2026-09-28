@@ -6,7 +6,7 @@ import { buildBusinessReport, saveBusinessReport } from '../api/_lib/businessInt
 if (process.env.VERCEL_PROJECT_ID !== 'prj_PL5BOZooLBtLiPQlrn34SyC0MRKS') throw new Error('BI verification is restricted to the staging project.');
 const sql = neon(process.env.DATABASE_URL);
 const report = await buildBusinessReport(sql, { start: process.env.UNITE_BI_START, end: process.env.UNITE_BI_END, basis: 'Accrual' });
-console.log('Unite BI verification:', JSON.stringify({ qbo: report.qbo.status, shopify: report.shopify.status, order_count: report.shopify.fetched_orders, history_access: report.shopify.all_orders_access }));
+console.log('Unite BI verification:', JSON.stringify({ qbo: report.qbo.status, qbo_reports: report.qbo.reports.map(r=>({id:r.id,status:r.status,http_status:r.http_status,provider_code:r.provider_code,provider_message:r.provider_message})), shopify: report.shopify.status, order_count: report.shopify.fetched_orders, history_access: report.shopify.all_orders_access }));
 if (report.shopify.status !== 'ready') throw new Error('Shopify BI verification failed: ' + (report.shopify.message || report.shopify.warnings?.join(' ')));
 const queued = await sql`SELECT data->>'status' AS status,COUNT(*)::int AS count FROM um_rows WHERE tbl='accounting_jobs' AND deleted=false GROUP BY data->>'status'`;
 console.log('Unite accounting queue:', JSON.stringify(queued));
