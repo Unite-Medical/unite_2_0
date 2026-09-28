@@ -8,7 +8,7 @@
   "theme_color": "#0e1713",
   "icons": [
     {
-      "src": "/brand/unite-medical-icon.png",
+      "src": "/brand/unite-medical-icon.png?v=official-20260928",
       "sizes": "180x180",
       "type": "image/png",
       "purpose": "any"

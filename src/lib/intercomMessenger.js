@@ -29,7 +29,7 @@ export function createMessenger(win, doc, appId, {onError} = {}) {
         win.Intercom = queue;
       }
       if (!active) {
-        win.Intercom('boot', { app_id: appId, api_base: 'https://api-iam.intercom.io' });
+        win.Intercom('boot', { app_id: appId, api_base: 'https://api-iam.intercom.io', hide_default_launcher: true });
         active = true;
       } else if (lastPath !== location.pathname) {
         win.Intercom('update');

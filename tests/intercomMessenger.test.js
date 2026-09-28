@@ -18,7 +18,7 @@ test('queues anonymous boot once, updates routes, shuts down on private pages an
   messenger.sync(at('/'));
   messenger.sync(at('/'));
   assert.equal(scripts.length, 1);
-  assert.deepEqual(win.Intercom.q, [['boot', { app_id: 'test-app', api_base: 'https://api-iam.intercom.io' }]]);
+  assert.deepEqual(win.Intercom.q, [['boot', { app_id: 'test-app', api_base: 'https://api-iam.intercom.io', hide_default_launcher: true }]]);
   messenger.sync(at('/support'));
   messenger.sync(at('/account'));
   messenger.sync(at('/account/orders'));

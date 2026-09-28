@@ -50,5 +50,13 @@ export function IntercomMessenger() {
     const timer = setInterval(refresh, 10 * 60 * 1000);
     return () => { controller.abort(); clearInterval(timer); };
   }, [pathname, search, hash, principal, customer, requested, allowed]);
-  return allowed && !requested ? <button className={`um-chat-launcher${pathname === '/' ? ' is-home' : ''}`} onClick={() => {openPending.current = true; setRequested(true);}} aria-label="Chat with Unite"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d="M20 11.5a8 8 0 0 1-8 8 9 9 0 0 1-3.5-.7L4 20l1.2-4.5A8 8 0 1 1 20 11.5Z"/><path d="M8 10h8M8 14h5"/></svg><span className="um-chat-label">Chat with Unite</span></button> : null;
+  return allowed ? (
+    <button className={`um-chat-launcher${pathname === '/' ? ' is-home' : ''}`} onClick={() => {
+      if (requested) window.Intercom?.('show');
+      else { openPending.current = true; setRequested(true); }
+    }} aria-label="Chat with Unite">
+      <img src="/brand/unite-intercom-launcher.png" width="36" height="36" alt="" aria-hidden="true" />
+      <span className="um-chat-label">Chat with Unite</span>
+    </button>
+  ) : null;
 }
