@@ -2,7 +2,7 @@
 
 Public routes render immediately instead of waiting for `/api/auth/session` and the admin database snapshot. Protected pages and authentication forms still wait for startup. Staff screens, PDF import, 3D warehouse tools, barcode scanning and analytics are excluded from the initial script payload. Archivo and IBM Plex Mono are self-hosted.
 
-Initial HTML script/module-preload payload measured from production builds: **2,776,909 → 671,506 bytes** (75.8% reduction, uncompressed). The new initial payload is 155,421 bytes gzipped. These are bundle measurements, not a claim about field Core Web Vitals.
+Initial HTML script/module-preload payload measured from production builds: **2,776,909 → 671,506 bytes** (75.8% reduction, uncompressed). The new initial payload is 155,421 bytes gzipped. Live staging serves 673,793 uncompressed bytes for the same initial script set (environment-specific build difference). These are bundle measurements, not a claim about field Core Web Vitals.
 
 The shared metadata registry emits titles, descriptions, canonical URLs, Open Graph/Twitter cards, image dimensions and alternative text before JavaScript. It covers 36 marketing routes, Quick Quote and 118 public products. The sitemap includes the 118-product public catalog rather than the older 88-product source. Organization and product schemas omit invented telephone numbers, founding dates and aggregate ratings. Public product metadata never exposes account prices.
 
