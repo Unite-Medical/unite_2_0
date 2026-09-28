@@ -26,17 +26,22 @@ function safeItems(items,sessionId){return items.flatMap(item=>{
  // Product activity shows business actions only; omit model reasoning summaries.
  return [];
 });}
-async function executePending(sql,session,actor){
- for(const action of (session.required_actions||[]).slice(0,4)){
+export async function executePending(sql,session,actor,{runTool=callCommerceAgentTool,sendResult=openai}={}){
+ let submitted=0;
+ for(const action of (session.required_actions||[])){
   if(action.type!=='function_call')continue;
   const id=agentCardId(session.id,action.call_id),at=new Date().toISOString();
   let receipt=(await sql`SELECT data FROM um_rows WHERE tbl='commerce_agent_steps' AND id=${id} AND data->>'user_id'=${actor.user_id}`)[0]?.data;
+  // The provider can retain the entire parallel batch until every result arrives.
+  // Count only unacknowledged actions against this invocation's work limit.
+  if(receipt?.submitted_at)continue;
+  if(submitted>=4)break;
   if(!receipt){
    const entry={id,session_id:session.id,user_id:actor.user_id,turn_id:action.turn_id,label:toolLabel(action),status:'working',at};
    const claim=await sql`INSERT INTO um_rows(tbl,id,data) VALUES('commerce_agent_steps',${id},${JSON.stringify(entry)}::jsonb) ON CONFLICT(tbl,id) DO NOTHING RETURNING id`;
    if(!claim.length)continue;
    let outcome;
-   try{const result=await callCommerceAgentTool(sql,action,{actor,sessionId:session.id});outcome={success:true,output:JSON.stringify(result)};}
+   try{const result=await runTool(sql,action,{actor,sessionId:session.id});outcome={success:true,output:JSON.stringify(result)};}
    catch(error){outcome={success:false,error:error.message||'Record action failed.'};}
    receipt={...entry,status:outcome.success?'complete':'failed',detail:outcome.success?'Finished':outcome.error,outcome};
    await sql`UPDATE um_rows SET data=${JSON.stringify(receipt)}::jsonb,updated_at=now() WHERE tbl='commerce_agent_steps' AND id=${id}`;
@@ -46,7 +51,10 @@ async function executePending(sql,session,actor){
    continue;
   }
   // Reusing stored output makes provider retries safe; tools are not executed twice.
-  await openai('/'+session.id+'/events',{events:[{type:'agent.session.input.tool_result',turn_id:action.turn_id,call_id:action.call_id,...receipt.outcome}]});
+  await sendResult('/'+session.id+'/events',{events:[{type:'agent.session.input.tool_result',turn_id:action.turn_id,call_id:action.call_id,...receipt.outcome}]});
+  receipt={...receipt,submitted_at:new Date().toISOString()};
+  await sql`UPDATE um_rows SET data=${JSON.stringify(receipt)}::jsonb,updated_at=now() WHERE tbl='commerce_agent_steps' AND id=${id}`;
+  submitted++;
  }
 }
 export default async function handler(req,res){
