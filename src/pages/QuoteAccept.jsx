@@ -1,3 +1,7 @@
+import { Nav } from '../components/layout/Nav.jsx';
+import { HomepageFooter } from '../components/layout/HomepageFooter.jsx';
+import './commerce-public.css';
+import './commerce-editorial.css';
 import {trackFunnel} from '../lib/funnelTelemetry.js';
 /**
  * Public quote acceptance — PRD-16 / PRD-19.
@@ -25,7 +29,7 @@ import {
 } from '../lib/quoteAcceptance.js';
 
 const SHEET = {
-  maxWidth: 820, margin: '0 auto', padding: '48px 24px 80px',
+  maxWidth: 980, margin: '0 auto', padding: '60px 24px 90px',
 };
 
 const DECLINE_REASONS = [
@@ -152,11 +156,11 @@ export function QuoteAccept() {
   }
 
   const wrap = (child) => (
-    <div style={{ background: D.paper, color: D.ink, fontFamily: D.sans, minHeight: '100vh' }}>
-      <div style={SHEET}>
+    <div className="uc-page ua-page"><Nav/>
+      <main id="main" className="ua-sheet" style={SHEET}>
         <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum }}>UNITE MEDICAL · QUOTE</div>
         {child}
-      </div>
+      </main><HomepageFooter/>
     </div>
   );
 
@@ -167,7 +171,7 @@ export function QuoteAccept() {
   if (!quote || viewStatus === 'not_found') {
     return wrap(
       <>
-        <h1 style={{ fontFamily: D.display, fontSize: 40, letterSpacing: -1, marginTop: 10 }}>Quote link not found</h1>
+        <h1 style={{ fontFamily: 'inherit', fontSize: 40, letterSpacing: -1, marginTop: 10 }}>Quote link not found</h1>
         <p style={{ color: D.ink2, marginTop: 12 }}>This acceptance link is invalid or has been revoked. Please contact your Unite Medical rep for a fresh quote.</p>
         <Link to="/" style={{ color: D.plum, marginTop: 20, display: 'inline-block' }}>← unitemedical.net</Link>
       </>,
@@ -182,7 +186,7 @@ export function QuoteAccept() {
   if (state.status === 'accepted' && state.order) {
     return wrap(
       <>
-        <h1 style={{ fontFamily: D.display, fontSize: 40, letterSpacing: -1, marginTop: 10 }}>Quote accepted — thank you.</h1>
+        <h1 style={{ fontFamily: 'inherit', fontSize: 40, letterSpacing: -1, marginTop: 10 }}>Quote accepted — thank you.</h1>
         <p style={{ color: D.ink2, marginTop: 12, fontSize: 15, lineHeight: 1.6 }}>
           We&apos;ve converted quote <strong>{quote.id}</strong> into order <strong>{state.order.id}</strong>. Our team will confirm
           inventory and send tracking as soon as your shipment clears. A confirmation email is on its way.
@@ -198,7 +202,7 @@ export function QuoteAccept() {
   if (quote.status === 'declined') {
     return wrap(
       <>
-        <h1 style={{ fontFamily: D.display, fontSize: 40, letterSpacing: -1, marginTop: 10 }}>Quote declined</h1>
+        <h1 style={{ fontFamily: 'inherit', fontSize: 40, letterSpacing: -1, marginTop: 10 }}>Quote declined</h1>
         <p style={{ color: D.ink2, marginTop: 12, fontSize: 15, lineHeight: 1.6 }}>
           You declined quote <strong>{quote.id}</strong>{quote.decline_reason ? <> ({quote.decline_reason})</> : null}. If circumstances change, your rep can issue a fresh quote any time.
         </p>
@@ -210,7 +214,7 @@ export function QuoteAccept() {
   return wrap(
     <>
       <div style={{ display: 'flex', alignItems: 'baseline', gap: 14, flexWrap: 'wrap' }}>
-        <h1 style={{ fontFamily: D.display, fontSize: 40, letterSpacing: -1, marginTop: 10, marginBottom: 0 }}>{quote.id}</h1>
+        <h1 style={{ fontFamily: 'inherit', fontSize: 40, letterSpacing: -1, marginTop: 10, marginBottom: 0 }}>Your quote, ready to review.</h1>
         {quote.revision > 1 && (
           <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3, border: `1px solid ${D.line}`, borderRadius: 3, padding: '3px 8px' }}>REV {quote.revision}</span>
         )}
@@ -218,13 +222,14 @@ export function QuoteAccept() {
           <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: '#7c5b1d', background: '#fdf6e3', border: '1px solid #ecd9a8', borderRadius: 3, padding: '3px 8px' }}>COUNTER UNDER REVIEW</span>
         )}
       </div>
+      <p className="ua-reference">Reference {quote.id}</p>
       <div style={{ color: D.ink2, marginTop: 8 }}>Prepared for <strong>{quote.customer_name}</strong> · valid until {fmt.date(quote.valid_until, { year: true })}{quote.eta ? <> · ETA {fmt.date(quote.eta, { year: true })}</> : null}</div>
 
       {quote.cover_letter && (
         <div style={{ marginTop: 24, padding: 20, background: D.paperAlt, borderRadius: 10, border: `1px solid ${D.line}`, whiteSpace: 'pre-wrap', lineHeight: 1.6, fontSize: 14 }}>{quote.cover_letter}</div>
       )}
 
-      <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: 28, fontSize: 14 }}>
+      <div className="ua-table-scroll"><table style={{ width: '100%', borderCollapse: 'collapse', marginTop: 28, fontSize: 14 }}>
         <thead>
           <tr style={{ textAlign: 'left', borderBottom: `2px solid ${D.ink}`, fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>
             <th style={{ padding: '10px 8px' }}>PRODUCT</th>
@@ -266,10 +271,10 @@ export function QuoteAccept() {
         <tfoot>
           <tr>
             <td colSpan={countering ? 4 : 3} style={{ padding: '14px 8px', fontWeight: 600 }}>{quote.delivery_review_required?'Merchandise estimate':'Delivered total'}</td>
-            <td style={{ padding: '14px 8px', textAlign: 'right', fontFamily: D.display, fontSize: 22, color: D.plum }}>{fmt.money(total)}</td>
+            <td style={{ padding: '14px 8px', textAlign: 'right', fontFamily: 'inherit', fontSize: 22, color: D.plum }}>{fmt.money(total)}</td>
           </tr>
         </tfoot>
-      </table>
+      </table></div>
 
       {items.length > 0 && (
         <div style={{ marginTop: 18, display: 'flex', gap: 18, flexWrap: 'wrap', fontFamily: D.mono, fontSize: 11, color: D.ink3 }}>

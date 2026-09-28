@@ -1,3 +1,4 @@
+import { CommerceHero } from '../components/shared/CommerceHero.jsx';
 // Catalog — reworked per PRD-28 §5.1:
 //   · 3-supply-state model (In Stock / Source / Available to Quote) replaces
 //     the binary IN STOCK/LOW badge. OOS items still SHOW, with a sourcing
@@ -12,6 +13,7 @@ import { D } from '../tokens.js';
 import { Nav } from '../components/layout/Nav.jsx';
 import { HomepageFooter } from '../components/layout/HomepageFooter.jsx';
 import './commerce-public.css';
+import './commerce-editorial.css';
 import { PhotoPlaceholder } from '../components/shared/PhotoPlaceholder.jsx';
 import { Icon } from '../components/shared/Icon.jsx';
 import { cartStore } from '../store/cart.js';
@@ -120,7 +122,7 @@ export function Catalog() {
       return (cat === 'All' || categorize(p) === cat) &&
         (compliance.size === 0 || [...compliance].every((flag) => p[flag])) &&
         (supplyFilter === 'all' || (supplyFilter === 'in_stock' ? stocked : !stocked)) &&
-        (!q || `${p.name} ${p.sku} ${p.hcpcs}`.toLowerCase().includes(q));
+        (!q || `${p.name} ${p.sku} ${p.hcpcs} ${(p.variants||[]).map(v=>`${v.sku} ${v.title}`).join(' ')}`.toLowerCase().includes(q));
     });
   }, [PRODUCTS, cat, compliance, supplyFilter, search, stockBySku]);
 
@@ -155,13 +157,9 @@ export function Catalog() {
 
   const resetFilters = () => { setCat('All'); setCompliance(new Set()); setSupplyFilter('all'); setSearch(''); };
   return <div className="uc-page">
-    <Nav />
+    <Nav overlay heroSelector=".umc-masthead" />
     <main id="main">
-      <header className="uc-hero uc-wrap">
-        <p className="uc-eyebrow">THE UNITE CATALOG / STOCKED + SOURCED</p>
-        <div className="uc-hero-grid"><h1>Equipped for<br /><span>better care.</span></h1><div><p>The essentials you rely on. A sourcing team for everything else. Find the right supplies for your next day of care.</p><Link className="uc-button" to="/portal/quote">Build a quick quote <span>↗</span></Link></div></div>
-        <div className="uc-proof"><span>Bracing & orthotics</span><span>Diagnostic tests</span><span>Medical supplies</span><span>One supply partner</span></div>
-      </header>
+      <CommerceHero eyebrow="THE CATALOG" title="The supplies you need." accent="The care you give." description="Explore the essentials for your care team, with a sourcing partner for everything beyond the shelf." image="/images/homepage-2026/everyday-supplies-1200.webp" imageAlt="Everyday medical supplies arranged on a work surface" action={{to:'/portal/quote',label:'Build a quick quote'}} index="01" />
       <section className="uc-shop uc-wrap" aria-label="Product catalog">
         <div className="uc-searchbar"><label className="uc-search"><Icon.search /><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search products, SKU, or HCPCS" aria-label="Search products" />{search&&<button onClick={()=>setSearch('')} aria-label="Clear search">×</button>}</label><span aria-live="polite">{filtered.length} products</span></div>
         <div className="uc-chips" aria-label="Product categories">{cats.map(c=><button key={c} aria-pressed={cat===c} onClick={()=>setCat(c)}>{c==='All'?'All products':c}</button>)}</div>
@@ -171,10 +169,10 @@ export function Catalog() {
             const state=stock>0?SUPPLY_STATES.in_stock:SUPPLY_STATES.source;
             const accountPrice=priceBySku.get(p.sku);
             return <article key={p.sku} className="uc-product">
-              <Link className="uc-product-image" to={`/products/${p.sku}`} aria-label={`View ${p.name}`}><PhotoPlaceholder src={PRODUCT_IMG[p.sku]} alt={p.name} caption="Product image coming soon" height={240} stripeFrom="#f5f5ef" stripeTo="#edeee6" /></Link>
+              <Link className="uc-product-image" to={`/products/${encodeURIComponent(p.sku)}`} aria-label={`View ${p.name}`}><PhotoPlaceholder src={PRODUCT_IMG[p.sku]} alt={p.name} caption="Product image coming soon" height={240} stripeFrom="#f5f5ef" stripeTo="#edeee6" /></Link>
               <div className="uc-product-body"><div className="uc-product-meta"><span>{categorize(p)}</span><SupplyBadge state={state}/></div>
-                <h2><Link to={`/products/${p.sku}`}>{p.name}</Link></h2><p className="uc-sku">{p.sku}{p.hcpcs&&p.hcpcs!=='—'?` · HCPCS ${p.hcpcs}`:''}</p>
-                <div className="uc-product-bottom"><p>{p.quote_only?'Quote on request':commerce.can_view_prices?(accountPrice?.unit_price!=null?fmt.money(accountPrice.unit_price):'Pricing unavailable'):'Business pricing available'}<small>{p.pack_size}{p.moq?` · MOQ ${p.moq}`:''}</small></p>
+                <h2><Link to={`/products/${encodeURIComponent(p.sku)}`}>{p.name}</Link></h2><p className="uc-sku">{p.sku}{p.hcpcs&&p.hcpcs!=='—'?` · HCPCS ${p.hcpcs}`:''}</p>
+                <div className="uc-product-bottom"><p>{p.quote_only?'Quote on request':commerce.can_view_prices?(accountPrice?.unit_price!=null?fmt.money(accountPrice.unit_price):'Request pricing'):'Request business pricing'}<small>{p.variants?.length>1?`${p.variants.length} options available`:p.pack_size&&p.pack_size!=='1 ea'?p.pack_size:'Pack size confirmed with quote'}{p.moq>1?` · MOQ ${p.moq}`:''}</small></p>
                 {stock>0&&commerce.can_use_cart&&accountPrice?.unit_price>0?<button className="uc-button uc-button-small" onClick={()=>cartStore.add(p.sku)} aria-label={`Add ${p.name} to cart`}>Add to cart +</button>:<Link className="uc-product-action" to={p.quote_only||stock<=0?`/quote?sku=${encodeURIComponent(p.sku)}&path=source`:`/portal/quote?sku=${encodeURIComponent(p.sku)}`}>{p.quote_only||stock<=0?'Request sourcing':'Add to quote'} <span>↗</span></Link>}
                 </div>
               </div>

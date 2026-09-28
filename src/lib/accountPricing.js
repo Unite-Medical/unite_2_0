@@ -52,14 +52,20 @@ function localDevelopmentPrices(lines) {
 
 export async function fetchAccountPricing(lines, { fetchImpl = fetch } = {}) {
   try {
-    const response = await fetchImpl('/api/catalog/pricing', {
-      method: 'POST', credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ lines }),
-    });
-    const body = await response.json().catch(() => ({}));
-    if (!response.ok) return { ok: false, reason: body.error || 'pricing_failed', status: response.status };
-    return { ok: true, prices: body.prices || [] };
+    const prices = [];
+    // The endpoint accepts 500 lines; large catalogs include several quantity
+    // breaks for every variant. Never silently lose the later products.
+    for (let offset = 0; offset < lines.length; offset += 500) {
+      const response = await fetchImpl('/api/catalog/pricing', {
+        method: 'POST', credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ lines: lines.slice(offset, offset + 500) }),
+      });
+      const body = await response.json().catch(() => ({}));
+      if (!response.ok) return { ok: false, reason: body.error || 'pricing_failed', status: response.status };
+      prices.push(...(body.prices || []));
+    }
+    return { ok: true, prices };
   } catch (error) {
     if (import.meta.env?.DEV) return { ok: true, prices: localDevelopmentPrices(lines), local: true };
     return { ok: false, reason: 'pricing_unreachable', detail: error.message };

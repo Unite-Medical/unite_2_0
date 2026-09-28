@@ -32,7 +32,7 @@ await page.route('**/api/**', async route => {
     return reply({ ok: true, token: lastPlan.token }, 201);
   }
   if (path === '/api/quotes/acceptance') return reply(sanitizePublicQuoteAcceptance(lastPlan));
-  if (path === '/api/sourcing/request') { sourcingCalls++; return reply({ ok: true, id: 'synthetic_sourcing_review' }); }
+  if (path === '/api/sourcing/request') { sourcingCalls++; return reply({ ok: true, request: { id: 'synthetic_sourcing_review' } }); }
   return reply({ ok: true, rows: [], session: null });
 });
 try {
@@ -106,6 +106,45 @@ try {
   }
   await page.setViewportSize({ width: 390, height: 844 });
   await page.screenshot({ path: `${output}/catalog-mobile.png` });
+  // Public variant selection must survive the product → quote transition.
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto(`${base}/products/VA1S50S`);
+  await page.getByRole('button', { name: 'Medium', exact: true }).click();
+  await page.getByRole('spinbutton', { name: 'Order quantity' }).fill('4');
+  await page.screenshot({ path: `${output}/product-desktop.png` });
+  await page.getByRole('link', { name: 'Request pricing', exact: false }).click();
+  await page.locator('.uq-lines').getByText(/VA1M50S · Qty 4/).waitFor();
+  await page.getByRole('textbox', { name: 'Search quote products' }).fill('VA1M50S');
+  assert.equal(await page.locator('.uq-product').count(), 1);
+  const variantSelect = page.getByRole('combobox', { name: 'Option for The Vero Ankle® Brace' });
+  assert.equal(await variantSelect.inputValue(), 'VA1M50S');
+  assert.equal(await page.getByRole('spinbutton').inputValue(), '4');
+  await variantSelect.selectOption('VA1L50S');
+  await page.getByRole('spinbutton').fill('2');
+  assert.equal(await page.locator('.uq-lines li').count(), 2);
+  await page.screenshot({ path: `${output}/quote-options-desktop.png`, fullPage: true });
+  // SKU punctuation must not split the product route.
+  await page.goto(`${base}/products/${encodeURIComponent('Binax-COV/FLU')}`);
+  await page.getByRole('heading', { name: /BinaxNOW/, level: 1 }).waitFor();
+  for (const width of [360, 390, 768, 1024]) {
+    await page.setViewportSize({ width, height: 844 });
+    await page.goto(`${base}/products/VA1S50S`);
+    await page.locator('.up-product-copy').waitFor();
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false, `product overflow at ${width}`);
+    await page.goto(`${base}/quote?path=source&sku=VA1M50S`);
+    await page.locator('.us-request-form').waitFor();
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false, `sourcing overflow at ${width}`);
+  }
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.screenshot({ path: `${output}/sourcing-desktop.png`, fullPage: true });
+  assert.equal(await page.getByRole('textbox', { name: 'Product, brand, or SKU' }).inputValue(), 'VA1M50S');
+  await page.getByRole('textbox', { name: 'Quantity needed' }).fill('4 units');
+  await page.getByRole('textbox', { name: 'Organization', exact: true }).fill('Synthetic browser QA');
+  await page.getByRole('textbox', { name: 'Your name', exact: true }).fill('QA Buyer');
+  await page.getByRole('textbox', { name: 'Work email', exact: true }).fill('qa@unitemedical.net');
+  await page.getByRole('button', { name: 'Request a quote', exact: false }).click();
+  await page.getByRole('heading', { name: 'You’re in good hands.' }).waitFor();
+  assert.equal(sourcingCalls, 2);
   assert.deepEqual(errors, []);
-  console.log(`PASS: ${count} products; filters; catalog-to-quote; quantities; removal; validation; retry; server-priced review; account gate; sourcing; 360–1440px layouts. API persistence and external services are isolated.`);
+  console.log(`PASS: ${count} products; filters; catalog-to-quote; quantities; removal; validation; retry; server-priced review; account gate; variants; SKU punctuation; sourcing forms; 360–1440px layouts. API persistence and external services are isolated.`);
 } finally { await browser.close(); }
