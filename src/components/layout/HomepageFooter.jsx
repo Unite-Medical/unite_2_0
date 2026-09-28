@@ -10,6 +10,7 @@ const COLUMNS = [
     links: [
       ["/catalog", "Products"],
       ["/quote", "Source & quote"],
+      ["/welllink", "WellLink members"],
       ["/services/private-label", "Private label"],
     ],
   },

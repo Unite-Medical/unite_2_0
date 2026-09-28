@@ -42,7 +42,7 @@ export const RAW_SYNC_SERVER_OWNED_TABLES = new Set([
   'distributor_products', 'settlement_agreements', 'vendor_bills', 'vendor_bill_variances',
   'ap_intake', 'settlement_payments', 'ar_payments', 'accounting_reconciliation',
   'customerio_outbox', 'customerio_events', 'gmail_outbox', 'notification_outbox',
-  'welllink_tasks', 'staff_followups', 'public_inquiries', 'inquiry_notifications', 'audit_log', 'tasks', 'auth_login_limits', 'registration_locks', 'system_health', 'webhook_events',
+  'welllink_requests', 'welllink_tasks', 'staff_followups', 'public_inquiries', 'inquiry_notifications', 'audit_log', 'tasks', 'auth_login_limits', 'registration_locks', 'system_health', 'webhook_events',
 ]);
 export const RAW_SYNC_ADMIN_ALLOWED_TABLES = new Set([
   'categories', 'products', 'leads', 'contacts', 'activities',

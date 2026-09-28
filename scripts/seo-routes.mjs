@@ -1,5 +1,6 @@
 // Mirrors src/lib/seo.js useSEO() titles/descriptions per public page.
 export const STATIC_ROUTES = {
+  '/welllink': {title:'WellLink member program',description:'Six standard Luer Lock syringe sizes through WellLink contract CC-NS-0052. Request facility access, a contract quote, or a sample box.'},
   '/regenicool': { title: 'RegeniCool™ Pro', description: 'Explore the RegeniCool™ Pro ice-water circulation system and request dealer information from Unite Medical.' },
   '/catalog': {
     title: 'Catalog',

@@ -77,7 +77,7 @@ export function Login() {
       {error&&<div className="ws-error" role="alert">{error}</div>}
       <button className="ws-button primary um-signin-submit" type="submit" disabled={submitting}>{submitting?'Signing in…':'Sign in'}<WorkspaceIcon name="arrow" size={17}/></button>
     </form>
-    <div className="um-signin-register">New to Unite? <Link to="/register">Request an account <span aria-hidden="true">↗</span></Link></div>
+    <div className="um-signin-register">New to Unite? <Link to={next?.startsWith('/welllink')?'/welllink#welllink-request':'/register'}>Request an account <span aria-hidden="true">↗</span></Link></div>
     {import.meta.env.DEV&&<details className="ws-details um-demo-access"><summary>Local demo access</summary><p>Sample accounts for development.</p><button type="button" className="ws-button" onClick={handleDemoAdmin} disabled={submitting}>Open admin console</button><p>Customer: sarah@atlanta-surgical.com / demo</p></details>}
   </SignInLayout>;
 }

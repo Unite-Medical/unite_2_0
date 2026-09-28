@@ -19,6 +19,7 @@ const AdminTesting = lazy(() => import('./pages/admin/AdminTesting.jsx').then(m=
 const Homepage = lazy(() => import('./pages/Homepage.jsx').then((m) => ({ default: m.Homepage })));
 const Catalog = lazy(() => import('./pages/Catalog.jsx').then((m) => ({ default: m.Catalog })));
 const Quote = lazy(() => import('./pages/Quote.jsx').then((m) => ({ default: m.Quote })));
+const WellLink = lazy(() => import('./pages/WellLink.jsx').then(m=>({default:m.WellLink})));
 const QuoteStart = lazy(() => import('./pages/QuoteStart.jsx').then((m) => ({ default: m.QuoteStart })));
 const QuotePrint = lazy(() => import('./pages/QuotePrint.jsx').then((m) => ({ default: m.QuotePrint })));
 const QuoteAccept = lazy(() => import('./pages/QuoteAccept.jsx').then((m) => ({ default: m.QuoteAccept })));
@@ -145,6 +146,7 @@ export default function App() {
           <Route path="/catalog" element={<Catalog />} />
           {/* A5 quote router (PRD-28 §5.4) — the chooser is the front door;
               the engine demo moves to /quote/engine. */}
+          <Route path="/welllink" element={<WellLink />} />
           <Route path="/quote" element={<QuoteStart />} />
           <Route path="/quote/engine" element={<RequireSession roles={['sales', 'sales_manager', 'customer_service', 'admin']}><Quote /></RequireSession>} />
           <Route path="/quote/new" element={<RequireSession roles={['sales', 'sales_manager', 'customer_service', 'admin']}><Navigate to="/admin/quotes?new=1" replace /></RequireSession>} />
