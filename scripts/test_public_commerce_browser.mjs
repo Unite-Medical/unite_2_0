@@ -106,6 +106,20 @@ try {
   }
   await page.setViewportSize({ width: 390, height: 844 });
   await page.screenshot({ path: `${output}/catalog-mobile.png` });
+  // Reproduce a signed-in browser whose synced legacy catalog has only one
+  // brace. Public merchandising must remain complete without resetting data.
+  await page.evaluate(() => {
+    const cache = JSON.parse(localStorage.getItem('um.db.v1'));
+    cache.products = cache.products.filter(p => p.sku === 'VA1S50S');
+    localStorage.setItem('um.db.v1', JSON.stringify(cache));
+  });
+  await page.goto(`${base}/catalog?cat=Bracing%20%26%20Orthotics`);
+  await page.locator('.uc-product').first().waitFor();
+  assert.equal(await page.locator('.uc-product').count(), 28, 'sparse staff snapshot must not hide public braces');
+  await page.getByRole('button', { name: 'All products', exact: true }).click();
+  assert.equal(await page.locator('.uc-product').count(), 118);
+  await page.goto(`${base}/products/PWB6061-XS-T`);
+  await page.getByRole('heading', { name: 'Tall Walking Boot Pneumatic', exact: true, level: 1 }).waitFor();
   // Public variant selection must survive the product → quote transition.
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto(`${base}/products/VA1S50S`);

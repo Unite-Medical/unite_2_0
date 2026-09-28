@@ -1,3 +1,4 @@
+import { SORTED_STOREFRONT_PRODUCTS } from '../lib/storefrontCatalog.js';
 import { CommerceHero } from '../components/shared/CommerceHero.jsx';
 import {trackFunnel} from '../lib/funnelTelemetry.js';
 import './commerce-public.css';
@@ -36,7 +37,7 @@ export function PortalQuote() {
   const session = auth.use();
   const org = auth.org();
   const commerce = commerceAccessFor(session, org);
-  const products = db.useTable('products', { orderBy: 'name', dir: 'asc' });
+  const products = SORTED_STOREFRONT_PRODUCTS;
   const accountPrices = db.useTable('account_prices');
 
   const [query, setQuery] = useState('');

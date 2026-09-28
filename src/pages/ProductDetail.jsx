@@ -1,3 +1,4 @@
+import { STOREFRONT_PRODUCTS, storefrontProduct } from '../lib/storefrontCatalog.js';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { captureUniteEvent } from '../lib/analytics/index.js';
@@ -9,7 +10,7 @@ import { cartStore } from '../store/cart.js';
 import { db } from '../lib/db.js';
 import { fmt } from '../lib/format.js';
 import { PRODUCT_IMG } from '../lib/imageMap.js';
-import { productDescription, productDocuments, relatedProducts } from '../lib/productCopy.js';
+import { productDescription, productDocuments } from '../lib/productCopy.js';
 import { useSEO, productSchema, breadcrumbSchema } from '../lib/seo.js';
 import { categorize } from '../lib/taxonomy.js';
 import { auth } from '../lib/auth.js';
@@ -20,7 +21,7 @@ import './commerce-editorial.css';
 export function ProductDetail() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const product = db.useRow('products', id);
+  const product = useMemo(() => storefrontProduct(id), [id]);
   const session = auth.use();
   const organization = db.useRow('organizations', session?.org_id || '__anonymous__');
   const commerce = commerceAccessFor(session, organization);
@@ -50,7 +51,7 @@ export function ProductDetail() {
   const categoryPath = `/catalog?cat=${encodeURIComponent(category)}`;
   const description = useMemo(() => product ? productDescription(product) : [], [product]);
   const documents = useMemo(() => product ? productDocuments(product) : [], [product]);
-  const related = useMemo(() => product ? relatedProducts(product, 4) : [], [product]);
+  const related = useMemo(() => product ? STOREFRONT_PRODUCTS.filter(p => p.sku !== product.sku && categorize(p) === categorize(product)).slice(0, 4) : [], [product]);
   const tracked = useRef(null);
   useEffect(() => {
     if (product?.id && tracked.current !== product.id) {

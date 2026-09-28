@@ -1,3 +1,4 @@
+import { STOREFRONT_PRODUCTS } from './storefrontCatalog.js';
 import { useEffect } from 'react';
 import { auth } from './auth.js';
 import { db } from './db.js';
@@ -19,7 +20,7 @@ export function accountPriceFor(sku, qty = 1) {
 
 function pricingLinesForCatalog() {
   const lines = [];
-  for (const product of db.list('products')) {
+  for (const product of STOREFRONT_PRODUCTS) {
     for (const qty of STANDARD_QUANTITIES) lines.push({ sku: product.sku, qty });
     for (const variant of product.variants || []) {
       if (!variant.sku || variant.sku === product.sku) continue;

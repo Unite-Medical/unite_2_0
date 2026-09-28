@@ -1,3 +1,4 @@
+import { STOREFRONT_PRODUCTS } from '../lib/storefrontCatalog.js';
 import { CommerceHero } from '../components/shared/CommerceHero.jsx';
 // Catalog — reworked per PRD-28 §5.1:
 //   · 3-supply-state model (In Stock / Source / Available to Quote) replaces
@@ -56,7 +57,7 @@ function SupplyBadge({ state }) {
 export function Catalog() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { isMobile } = useViewport();
-  const PRODUCTS = db.useTable('products');
+  const PRODUCTS = STOREFRONT_PRODUCTS;
   const inventory = db.useTable('inventory');
   const accountPrices = db.useTable('account_prices');
   const session = auth.use();

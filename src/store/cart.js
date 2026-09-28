@@ -1,3 +1,4 @@
+import { storefrontProduct } from '../lib/storefrontCatalog.js';
 import { captureUniteEvent } from '../lib/analytics/index.js';
 /**
  * Cart store backed by the in-browser DB so the cart survives refreshes
@@ -60,7 +61,7 @@ export const cartStore = {
       return { ok: false, reason: 'approved_account_required' };
     }
     if (!activeCartId) activeCartId = ensureCartFor(session);
-    const product = db.get('products', productId);
+    const product = storefrontProduct(productId) || db.get('products', productId);
     if (!product) return { ok: false, reason: 'product_not_found' };
     const lineSku = variant?.sku || product.sku;
     const lineName = variant?.title ? `${product.name} · ${variant.title}` : product.name;
