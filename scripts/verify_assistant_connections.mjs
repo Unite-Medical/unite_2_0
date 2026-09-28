@@ -1,3 +1,4 @@
+if(process.env.UNITE_INITIALIZE_BI_PIPELINE==='1')await import('./verify_bi_pipeline.mjs');
 // Opt-in deployment verification. Runs where encrypted server secrets are available.
 // Log only status and counts, never credentials or customer content.
 if(process.env.UNITE_VERIFY_BI==='1')await import('./verify_bi_connections.mjs');

@@ -133,6 +133,10 @@
     {
       "path": "/api/qbo/order-outbox",
       "schedule": "*/5 * * * *"
+    },
+    {
+      "path": "/api/internal/bi-refresh",
+      "schedule": "*/5 * * * *"
     }
   ],
   "functions": {
@@ -160,6 +164,12 @@
       "maxDuration": 60
     },
     "api/admin/inventory-evidence.js": {
+      "maxDuration": 60
+    },
+    "api/admin/bi-pipeline.js": {
+      "maxDuration": 60
+    },
+    "api/internal/bi-refresh.js": {
       "maxDuration": 60
     }
   }

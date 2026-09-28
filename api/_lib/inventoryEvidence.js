@@ -2,18 +2,18 @@ import { qboAccessContext } from './qboTokens.js';
 import { qboPoRequest } from './qboPurchaseOrders.js';
 import { SERVICES } from './services.js';
 
-const qboEntities = { qbo_pos: 'PurchaseOrder', qbo_items: 'Item', qbo_bills: 'Bill', qbo_purchases: 'Purchase', qbo_vendor_credits: 'VendorCredit' };
-const internalTables = ['warehouses', 'product_variants', 'inventory', 'inventory_lots', 'purchase_orders', 'po_receipts', 'stock_movements', 'lots', 'reservations', 'count_sessions', 'count_lines', 'transfers', 'transfer_lines', 'consignment_movements'];
+const qboEntities = { qbo_pos: 'PurchaseOrder', qbo_items: 'Item', qbo_bills: 'Bill', qbo_purchases: 'Purchase', qbo_vendor_credits: 'VendorCredit', qbo_invoices: 'Invoice', qbo_payments: 'Payment', qbo_customers: 'Customer', qbo_vendors: 'Vendor' };
+const internalTables = ['warehouses', 'product_variants', 'inventory', 'inventory_lots', 'purchase_orders', 'po_receipts', 'stock_movements', 'lots', 'reservations', 'count_sessions', 'count_lines', 'warehouse_counts', 'transfers', 'transfer_lines', 'consignment_movements'];
 const pageInfo = 'pageInfo{hasNextPage endCursor}';
 const inventoryQuery = `query InventoryEvidence($after:String){inventoryItems(first:25,after:$after){nodes{id sku tracked updatedAt variant{id title product{id title status}} inventoryLevels(first:20,includeInactive:true){nodes{id updatedAt location{id name isActive} quantities(names:["available","on_hand","committed","incoming","reserved","damaged","quality_control","safety_stock"]){name quantity}} ${pageInfo}}} ${pageInfo}}}`;
-const ordersQuery = `query OrderEvidence($after:String,$query:String!){orders(first:10,after:$after,query:$query,sortKey:UPDATED_AT){nodes{id name createdAt updatedAt closedAt cancelledAt test displayFinancialStatus displayFulfillmentStatus lineItems(first:50){nodes{id sku name quantity currentQuantity unfulfilledQuantity refundableQuantity variant{id inventoryItem{id}}} ${pageInfo}}} ${pageInfo}} currentAppInstallation{accessScopes{handle}}}`;
+const ordersQuery = `query OrderEvidence($after:String,$query:String!){orders(first:10,after:$after,query:$query,sortKey:UPDATED_AT){nodes{id name createdAt updatedAt closedAt cancelledAt test displayFinancialStatus displayFulfillmentStatus customer{id displayName} currentTotalPriceSet{shopMoney{amount currencyCode}} currentSubtotalPriceSet{shopMoney{amount currencyCode}} totalRefundedSet{shopMoney{amount currencyCode}} lineItems(first:50){nodes{id sku name quantity currentQuantity unfulfilledQuantity refundableQuantity variant{id inventoryItem{id}}} ${pageInfo}}} ${pageInfo}} currentAppInstallation{accessScopes{handle}}}`;
 const pick = (o, keys) => Object.fromEntries(keys.filter(k => o[k] !== undefined).map(k => [k, o[k]]));
 export function evidenceParameters(params) {
   const source = params.get('source'), page = Number(params.get('page') || 1), cursor = params.get('cursor') || null;
   const since = params.get('since') || new Date(Date.now() - 60 * 86400000).toISOString().slice(0, 10);
   if (!Number.isInteger(page) || page < 1 || page > 10000 || (cursor && cursor.length > 2000)) throw new Error('invalid_pagination');
   if (!/^\d{4}-\d{2}-\d{2}$/.test(since) || !Number.isFinite(Date.parse(since)) || new Date(since).toISOString().slice(0, 10) !== since) throw new Error('invalid_since_date');
-  if (![...Object.keys(qboEntities), 'shopify_inventory', 'shopify_open_orders', 'shopify_recent_orders', 'shipstation_orders', 'shipstation_shipments', 'shipstation_awaiting_payment', 'shipstation_awaiting_shipment', 'shipstation_on_hold', 'unite_inventory'].includes(source)) throw new Error('invalid_source');
+  if (![...Object.keys(qboEntities), 'shopify_inventory', 'shopify_open_orders', 'shopify_recent_orders', 'shopify_all_orders', 'shipstation_orders', 'shipstation_shipments', 'shipstation_awaiting_payment', 'shipstation_awaiting_shipment', 'shipstation_on_hold', 'unite_inventory'].includes(source)) throw new Error('invalid_source');
   return { source, page, cursor, since };
 }
 export async function readEvidencePage(sql, input, { getQboContext = qboAccessContext, qboRequest = qboPoRequest, services = SERVICES, fetchImpl = fetch } = {}) {
@@ -21,7 +21,7 @@ export async function readEvidencePage(sql, input, { getQboContext = qboAccessCo
   const base = { source, page, retrieved_at, warnings: [] };
   if (qboEntities[source]) {
     const context = await getQboContext(sql), entity = qboEntities[source];
-    const query = `select * from ${entity}${entity === 'Item' ? ' where Active IN (true,false)' : ''} startposition ${(page - 1) * 100 + 1} maxresults 100`;
+    const query = `select * from ${entity}${['Item','Customer','Vendor'].includes(entity) ? ' where Active IN (true,false)' : ''} orderby Id startposition ${(page - 1) * 100 + 1} maxresults 100`;
     const payload = await qboRequest(context, 'query', { query });
     if (!payload.QueryResponse || (payload.QueryResponse[entity] && !Array.isArray(payload.QueryResponse[entity]))) throw new Error('quickbooks_invalid_page');
     const records = payload.QueryResponse[entity] || [];
@@ -35,10 +35,10 @@ export async function readEvidencePage(sql, input, { getQboContext = qboAccessCo
     const service = services.shopify;
     if (!service.configured()) throw new Error('shopify_not_configured');
     const inventory = source === 'shopify_inventory';
-    const filter = source === 'shopify_open_orders' ? 'status:open' : `updated_at:>=${since}`;
+    const filter = source === 'shopify_all_orders' ? `created_at:<="${input.until || retrieved_at}"` : source === 'shopify_open_orders' ? 'status:open' : `updated_at:>=${since}`;
     const response = await fetchImpl(service.buildUrl(`/admin/api/${process.env.SHOPIFY_API_VERSION || '2026-04'}/graphql.json`, {}), {
       method: 'POST', headers: await service.headers(), signal: AbortSignal.timeout(20000),
-      body: JSON.stringify({ query: inventory ? inventoryQuery : ordersQuery, variables: { after: cursor, ...(!inventory ? { query: filter } : {}) } }),
+      body: JSON.stringify({ query: inventory ? inventoryQuery : source === 'shopify_all_orders' ? ordersQuery.replace('sortKey:UPDATED_AT','sortKey:ID') : ordersQuery, variables: { after: cursor, ...(!inventory ? { query: filter } : {}) } }),
     });
     const payload = await response.json();
     if (!response.ok || payload.errors?.length || !payload.data) {
@@ -52,7 +52,7 @@ export async function readEvidencePage(sql, input, { getQboContext = qboAccessCo
     const warnings = records.filter(r => (inventory ? r.inventoryLevels : r.lineItems)?.pageInfo?.hasNextPage).map(r => `Nested records truncated for ${r.id}; fetch remaining lines/locations before reconciliation.`);
     const scopes = payload.data.currentAppInstallation?.accessScopes?.map(s => s.handle);
     if (!inventory && !scopes?.includes('read_all_orders')) warnings.push('Order access may be restricted to 60 days; older open orders may be absent.');
-    return { ...base, records, has_more: connection.pageInfo.hasNextPage, next_cursor: connection.pageInfo.endCursor, warnings, scopes, coverage: inventory ? 'Current inventory at retrieval, including inactive levels.' : filter };
+    return { ...base, records, has_more: connection.pageInfo.hasNextPage, next_cursor: connection.pageInfo.endCursor, warnings, scopes, coverage: inventory ? 'Current inventory at retrieval, including inactive levels.' : filter || 'All accessible orders; current values, not period-recognized revenue.' };
   }
   const service = services.shipstation;
   if (!service.configured()) throw new Error('shipstation_not_configured');

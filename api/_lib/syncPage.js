@@ -2,7 +2,7 @@ export function projectSyncPage(rows,{since=null,serviceAccess=false,cutoff}={})
   const more=rows.length>500,page=rows.slice(0,500),tables={};
   let latest=since?since.toISOString():null;
   for(const r of page){
-    if(!serviceAccess&&(r.tbl.startsWith('commerce_')||r.tbl==='business_reports'))continue;
+    if(!serviceAccess&&(r.tbl.startsWith('commerce_')||r.tbl==='business_reports'||r.tbl.startsWith('bi_')))continue;
     if(!serviceAccess&&['organization_merge_audits','auth_login_limits','telemetry_limits','staging_before_images','activation_tokens','commerce_agent_sessions','commerce_agent_requests'].includes(r.tbl))continue;
     const projected={...r.data};
     if(!serviceAccess&&r.tbl==='profiles')for(const key of ['password','password_hash','password_salt','password_algorithm','mfa_secret'])delete projected[key];
