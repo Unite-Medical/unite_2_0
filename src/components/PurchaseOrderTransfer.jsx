@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { db } from '../lib/db.js';
 import { readPoFile } from '../lib/poFileImport.js';
+import { InventoryEvidenceExport } from './InventoryEvidenceExport.jsx';
 
 const empty = () => ({ doc_number: '', vendor_name: '', vendor_qbo_id: '', txn_date: new Date().toISOString().slice(0, 10), currency: 'USD', line_items: [{ sku: '', name: '', qty: 1, cost: '', qbo_item_id: '' }] });
 async function request(body, page = 1) {
@@ -19,6 +20,7 @@ export function PurchaseOrderTransfer({ localOrders = [] }) {
   return <section style={{ background: '#fff', border: '1px solid #ddd', borderRadius: 8, padding: 20, marginBottom: 24 }} aria-label="Purchase order import and export">
     <h2>Import / export purchase orders</h2>
     <p>Import into Unite as a draft, or review a transfer to QuickBooks. Importing never receives stock or sends a PO to a supplier.</p>
+    <InventoryEvidenceExport />
     <fieldset disabled={busy} style={{ border: 0, padding: 0 }}>
       <button onClick={() => { setOpened(false); }}>Close</button>{' '}
       <button onClick={() => { setDraft(empty()); setRemote(null); setPreview(null); setNotice(''); }}>New PO</button>{' '}

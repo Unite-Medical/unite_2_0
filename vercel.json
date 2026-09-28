@@ -158,6 +158,9 @@
     },
     "api/admin/business-intelligence.js": {
       "maxDuration": 60
+    },
+    "api/admin/inventory-evidence.js": {
+      "maxDuration": 60
     }
   }
 }
