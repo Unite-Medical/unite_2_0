@@ -49,7 +49,7 @@ function Hero() {
         !(reducedMotion.matches || mobile.matches || connection?.saveData);
       if (requested && inView && !document.hidden) {
         if (!video.getAttribute("src"))
-          video.src = `${MEDIA}/unite-hero-${window.matchMedia("(max-width: 760px)").matches ? "720" : "1080"}.mp4`;
+          video.src = `${MEDIA}/unite-hero-logo-v2-${window.matchMedia("(max-width: 760px)").matches ? "720" : "1080"}.mp4`;
         video.play().catch(() => {
           /* Keep the poster and play control if autoplay is blocked. */
         });
