@@ -1,51 +1,20 @@
 import { useEffect, useId, useRef, useState } from "react";
+import { PARTNER_LOGOS } from "../../data/partnerLogos.js";
 import { D } from "../../tokens.js";
 import "./PartnerMarquee.css";
 
-// eslint-disable-next-line react-refresh/only-export-components
-export const DEFAULT_PARTNER_LOGOS = [
-  { slug: "restore-robotics", name: "Restore Robotics" },
-  { slug: "gopuff", name: "goPuff" },
-  { slug: "veterans-affairs", name: "U.S. Department of Veterans Affairs" },
-  { slug: "publix", name: "Publix" },
-  { slug: "henry-ford-hospital", name: "Henry Ford Hospital" },
-  { slug: "ardent-health", name: "Ardent Health" },
-  { slug: "harps-food", name: "Harps Food Stores" },
-  { slug: "uf-health", name: "UF Health" },
-  { slug: "orlando-health", name: "Orlando Health" },
-  { slug: "total-joint-specialists", name: "Total Joint Specialists" },
-];
-
-function PartnerLogo({ item, variant }) {
-  const [fallback, setFallback] = useState(0);
-  if (item.wordmark || fallback === 2) {
-    return (
-      <span className="um-partner-wordmark">
-        {item.displayName || item.name}
-      </span>
-    );
-  }
-  return (
-    <img
-      className="um-partner-logo"
-      src={
-        fallback === 1
-          ? `/logos/partners/raster-fallback/${item.slug}--${variant}.png`
-          : `/logos/partners/processed/${item.slug}--${variant}.svg`
-      }
-      alt={item.name}
-      width="176"
-      height="48"
-      loading="lazy"
-      decoding="async"
-      style={{ "--mark-width": item.width || "176px" }}
-      onError={() => setFallback((value) => Math.min(value + 1, 2))}
-    />
-  );
+function PartnerLogo({ item }) {
+  const [failed, setFailed] = useState(false);
+  if (failed) return <span className="um-partner-wordmark">{item.name}</span>;
+  return <img className="um-partner-logo" data-tone={item.tone || 'solid'}
+    src={item.src} alt={item.name} width="200" height="60"
+    loading="lazy" decoding="async"
+    style={{ '--mark-width': item.width, '--mark-height': item.height }}
+    onError={() => setFailed(true)} />;
 }
 
 export function PartnerMarquee({
-  items = DEFAULT_PARTNER_LOGOS,
+  items = PARTNER_LOGOS,
   background = D.paper,
   borderColor = D.line,
   eyebrow = "Partners and customers",
@@ -88,7 +57,7 @@ export function PartnerMarquee({
         "--partner-border": borderColor,
         "--partner-color": variant === "paper" ? D.paper : D.ink,
         "--partner-label": eyebrowColor,
-        "--partner-speed": speed === "slow" ? "70s" : "52s",
+        "--partner-speed": `${items.length * (speed === "slow" ? 6 : 4.5)}s`,
         "--partner-direction": reverse ? "reverse" : "normal",
       }}
     >
@@ -126,7 +95,7 @@ export function PartnerMarquee({
             >
               {items.map((item) => (
                 <li className="um-partner-slot" key={item.slug}>
-                  <PartnerLogo item={item} variant={variant} />
+                  <PartnerLogo item={item} />
                 </li>
               ))}
             </ul>

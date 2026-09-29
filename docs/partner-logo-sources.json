@@ -1,0 +1,120 @@
+{
+  "retrieved": "2026-09-28",
+  "treatment": "Official artwork, optically sized with SVG viewBox padding trim and CSS monochrome presentation.",
+  "logos": [
+    {
+      "slug": "ardent-health",
+      "asset": "ardent-health-mark.svg",
+      "source": "https://ardenthealth.com/sites/default/files/ArdentHealthLogo2024.png",
+      "page": "https://ardenthealth.com/"
+    },
+    {
+      "slug": "amazon-fresh",
+      "asset": "amazon-fresh-mark.svg",
+      "source": "https://m.media-amazon.com/images/G/01/AdProductsWebsite/images/ad-specs/Amazon_Fresh_Logo_Horizontal_RGB_GroceryDark_GroceryText1.png",
+      "page": "https://advertising.amazon.com/resources/ad-specs/fresh"
+    },
+    {
+      "slug": "uf-health",
+      "asset": "uf-health.svg",
+      "source": "https://ufhealth.org/dist/images/ufhealth-full.svg",
+      "page": "https://ufhealth.org/"
+    },
+    {
+      "slug": "veterans-affairs",
+      "asset": "veterans-affairs-mark.svg",
+      "source": "https://www.va.gov/img/header-logo.png",
+      "page": "https://www.va.gov/"
+    },
+    {
+      "slug": "encore-mdr",
+      "asset": "encore-mdr-mark.svg",
+      "source": "https://encoremdr.com/wp-content/uploads/2022/05/Encore-Standard-RGB_700x564.png",
+      "page": "https://encoremdr.com/"
+    },
+    {
+      "slug": "the-resource-group",
+      "asset": "the-resource-group-mark.svg",
+      "source": "https://www.theresourcegroup.com/-/media/project/microsites/the-resource-group/logos-and-graphics/the-resource-group_white-(8).png",
+      "page": "https://www.theresourcegroup.com/"
+    },
+    {
+      "slug": "wellstar",
+      "asset": "wellstar.svg",
+      "source": "https://www.wellstar.org/-/media/themes/wellstar/org/wellstarorg/wellstartheme/images/wellstar-logo.svg",
+      "page": "https://www.wellstar.org/"
+    },
+    {
+      "slug": "henry-ford-health",
+      "asset": "henry-ford-health.svg",
+      "source": "https://www.henryford.com/-/media/project/hfhs/henryford/header-logo/hfh-logo-main-(1).svg",
+      "page": "https://www.henryford.com/"
+    },
+    {
+      "slug": "cencora",
+      "asset": "cencora-mark.svg",
+      "source": "https://www.cencora.com/-/media/assets/corporate/global/logos/cencora-logo.png",
+      "page": "https://www.cencora.com/"
+    },
+    {
+      "slug": "total-joint-specialists",
+      "asset": "total-joint-specialists-mark.svg",
+      "source": "https://totaljointspecialist.com/total-joint-logo-058bbfdd.png",
+      "page": "https://totaljointspecialist.com/"
+    },
+    {
+      "slug": "gopuff",
+      "asset": "gopuff.svg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/7/73/GoPuff_logo.svg",
+      "page": "https://www.gopuff.com/"
+    },
+    {
+      "slug": "publix",
+      "asset": "publix.svg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/5/5f/PublixLogo.svg",
+      "page": "https://www.publix.com/"
+    },
+    {
+      "slug": "orlando-health",
+      "asset": "orlando-health.svg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/9/90/Orlando_Health_logo.svg",
+      "page": "https://www.orlandohealth.com/"
+    },
+    {
+      "slug": "harps",
+      "asset": "harps.svg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/0/0b/Harps_Food_Stores_logo.svg",
+      "page": "https://www.harpsfood.com/"
+    },
+    {
+      "slug": "cdc",
+      "asset": "cdc.svg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/7/71/CDC_logo_2024.svg",
+      "page": "https://www.cdc.gov/"
+    },
+    {
+      "slug": "gsa",
+      "asset": "gsa.svg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/8/89/US-GeneralServicesAdministration-Logo.svg",
+      "page": "https://www.gsa.gov/"
+    },
+    {
+      "slug": "ascension",
+      "asset": "ascension.svg",
+      "source": "https://healthcare.ascension.org/",
+      "page": "https://healthcare.ascension.org/"
+    },
+    {
+      "slug": "restore-robotics",
+      "asset": "restore-robotics-mark.svg",
+      "source": "https://le-cdn.website-editor.net/s/6bfc6d33905b4f768e4580ee02146818/dms3rep/multi/opt/RestoreRobotics-logosB_01-8d227b2a-1920w.png",
+      "page": "https://restorerobotics.com/"
+    },
+    {
+      "slug": "griffin-hospital",
+      "asset": "griffin-hospital-mark.svg",
+      "source": "https://thumb.wikimedia.org/wikipedia/en/thumb/e/ed/Griffin_Health_Logo.png/250px-Griffin_Health_Logo.png",
+      "page": "https://www.griffinhealth.org/"
+    }
+  ]
+}

@@ -11,25 +11,6 @@ import { useSEO, organizationSchema, websiteSchema } from "../lib/seo.js";
 import "./homepage.css";
 
 const MEDIA = "/media/homepage-film";
-// Restore the previous homepage's roster. Text-only source assets are rendered
-// as readable names instead of their cropped placeholder SVGs.
-const HOME_PARTNERS = [
-  {
-    slug: "veterans-affairs",
-    name: "U.S. Department of Veterans Affairs",
-    displayName: "Veterans Affairs",
-    wordmark: true,
-  },
-  { slug: "hca-healthcare", name: "HCA Healthcare", wordmark: true },
-  { slug: "kaiser-permanente", name: "Kaiser Permanente", wordmark: true },
-  { slug: "cvs-health", name: "CVS Health" },
-  { slug: "walgreens", name: "Walgreens", wordmark: true },
-  { slug: "publix", name: "Publix", wordmark: true },
-  { slug: "amazon", name: "Amazon", width: "96px" },
-  { slug: "gopuff", name: "goPuff", wordmark: true },
-  { slug: "surgery-partners", name: "Surgery Partners" },
-  { slug: "ascoa", name: "ASCOA", wordmark: true },
-];
 function Hero() {
   const videoRef = useRef(null);
   const heroRef = useRef(null);
@@ -450,7 +431,7 @@ export function Homepage() {
       <Nav overlay heroSelector=".uf-hero" />
       <main id="main">
         <Hero />
-        <PartnerMarquee items={HOME_PARTNERS} />
+        <PartnerMarquee />
         <HomepageContent />
       </main>
       <HomepageFooter />
