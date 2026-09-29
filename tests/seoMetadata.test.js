@@ -22,7 +22,7 @@ test('staging shares staging image URLs but cannot be indexed; canonical remains
  const meta=resolveMetadata('/welllink?utm_source=email',{}, {staging:true});
  assert.equal(meta.canonical,'https://unitemedical.net/welllink');
  assert.equal(meta.url,'https://staging.unitemedical.net/welllink');
- assert.equal(meta.image,'https://staging.unitemedical.net/images/social/v1/welllink.jpg');
+ assert.equal(meta.image,'https://staging.unitemedical.net/images/social/v2/welllink.jpg');
  assert.equal(meta.robots,'noindex,nofollow');
 });
 test('quote, private and missing pages are noindex and query secrets never enter tags',()=>{
