@@ -13,7 +13,7 @@ const SECTORS = [
       "Diagnostics, PPE, bracing, and everyday medical products to support your front-of-store assortment.",
     action: "Explore pharmacy supply",
     to: "/segments/pharmacy",
-    image: "/media/homepage-film/scene-3-logo-v2.webp",
+    image: "/media/homepage-film/scene-3-logo-v3.webp",
     position: "58% 35%",
   },
   {
@@ -49,7 +49,7 @@ const SECTORS = [
       "Explore Unite’s government purchasing information, business credentials, and MSPV BPA details.",
     action: "Explore government purchasing",
     to: "/government",
-    image: "/media/homepage-film/scene-2-logo-v2.webp",
+    image: "/media/homepage-film/scene-2-logo-v3.webp",
     position: "57% 35%",
   },
 ];
