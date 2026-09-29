@@ -11,6 +11,7 @@ const LINKS = [
   ['/catalog', 'Products'], ['/quote', 'Source & Quote'],
   ['/regenicool', 'RegeniCool™ Pro'], ['/services', 'Services'],
   ['/robotics', 'Restore Robotics'], ['/government', 'Government'], ['/about', 'About'],
+  ['/welllink', 'WellLink'],
 ];
 const MORE_LINKS = [
   ['/diagnostics', 'Diagnostic Tests'], ['/shortage-list', 'Shortage List Matcher'],
@@ -30,9 +31,7 @@ function accountPath(session) {
 export function Nav({ overlay = false, heroSelector }) {
   const location = useLocation(), cart = useCart(), session = auth.use();
   const commerce = commerceAccessFor(session, auth.org());
-  const links = ['admin', 'sales', 'sales_manager', 'finance', 'warehouse_operator', 'warehouse_manager'].includes(session?.role)
-    ? [...LINKS, ['/staff/welllink', 'WellLink']]
-    : LINKS;
+  const canAccessWellLinkWorkspace = ['admin', 'sales', 'sales_manager', 'finance', 'warehouse_operator', 'warehouse_manager'].includes(session?.role);
   const cartCount = cart.items.reduce((sum, item) => sum + item.qty, 0);
   const [open, setOpen] = useState(false);
   const [chrome, setChrome] = useState({ dark: overlay, top: 16 });
@@ -64,7 +63,7 @@ export function Nav({ overlay = false, heroSelector }) {
     {!overlay && <div className="un-nav-space" aria-hidden="true"/>}
     <header ref={header} className={`un-nav${chrome.dark ? ' un-nav--dark' : ''}`} style={{ '--un-nav-top': `${chrome.top}px` }}>
       <Link to="/" className="un-nav-logo" aria-label="Unite Medical home" onClick={() => setOpen(false)}><UMLogo size={28} color={chrome.dark ? '#fff' : '#16201a'}/></Link>
-      <nav className="un-nav-primary" aria-label="Primary">{navLinks(links)}</nav>
+      <nav className="un-nav-primary" aria-label="Primary">{navLinks(LINKS)}</nav>
       <div className="un-nav-actions">
         <Link className="un-nav-icon un-nav-search" to="/catalog" aria-label="Search products"><Icon.search/></Link>
         <Link className="un-nav-account" to={accountPath(session)}>{session ? 'Dashboard' : 'Sign in'}</Link>
@@ -72,11 +71,12 @@ export function Nav({ overlay = false, heroSelector }) {
         <button ref={toggle} className="un-nav-toggle" aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open} aria-controls="unite-site-menu" onClick={() => setOpen(!open)}><span/><span/><span/></button>
       </div>
       {open && <nav className="un-nav-menu" id="unite-site-menu" aria-label="Site menu">
-        <div className="un-nav-menu-main"><p>EXPLORE UNITE</p>{navLinks(links)}</div>
+        <div className="un-nav-menu-main"><p>EXPLORE UNITE</p>{navLinks(LINKS)}</div>
         <div><p>RESOURCES & SUPPORT</p>{navLinks(MORE_LINKS)}</div>
         <div className="un-nav-menu-footer">
           <Link to={accountPath(session)} onClick={() => setOpen(false)}>{session ? 'Open dashboard' : 'Sign in'} ↗</Link>
           {session?.role === 'admin' && <Link to="/admin" onClick={() => setOpen(false)}>Admin Console ↗</Link>}
+          {canAccessWellLinkWorkspace && <Link to="/staff/welllink" onClick={() => setOpen(false)}>WellLink staff workspace ↗</Link>}
           <Link to="/catalog" onClick={() => setOpen(false)}>Search products ↗</Link>
           <Link to="/quote" onClick={() => setOpen(false)}>Start a quote ↗</Link>
           <a href="tel:+18338686483">833.868.6483 ↗</a>
