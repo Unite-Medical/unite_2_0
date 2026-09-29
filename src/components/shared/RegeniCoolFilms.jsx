@@ -82,7 +82,7 @@ export function RegeniCoolFilms() {
           setMotionEnabled(true);
         }}>Enable scroll rotation <span aria-hidden="true">↕</span></button>}
         {failed && <a className="uf-regen-enable-motion" href={`${MEDIA}/product-orbit-isolated.mp4`}>Watch the product video ↗</a>}
-        <div className="uf-regen-film-bottom"><span>RegeniCool™ Pro · The red Unite model</span><span>AI-generated product visualization</span></div>
+        <div className="uf-regen-film-bottom"><span>RegeniCool™ Pro · The red Unite model</span></div>
         {!staticMode && !failed && <div className="uf-regen-orbit-track" aria-hidden="true"><span /></div>}
       </div>
     </div>

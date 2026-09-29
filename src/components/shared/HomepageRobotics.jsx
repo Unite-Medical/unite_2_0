@@ -61,7 +61,7 @@ export function HomepageRobotics() {
       </div>
       <div className="uf-robotics-bottomline">
         <span>Remanufactured &amp; certified pre-owned instruments</span>
-        <div><small>AI motion · robot &amp; instrument references</small>
+        <div>
           {!failed && <button type="button" className="uf-robotics-film-toggle"
             aria-label={playing ? "Pause Restore Robotics film" : "Play Restore Robotics film"}
             onClick={() => { preference.current = film.current.paused; sync.current(); }}>

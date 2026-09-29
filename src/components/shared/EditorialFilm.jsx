@@ -3,7 +3,7 @@ import './EditorialFilm.css';
 
 // Scroll owns the timeline. Posters remain available before loading, on errors,
 // and when a visitor requests reduced motion or reduced data usage.
-export function EditorialFilm({id,eyebrow,title,description,src,poster,alt,action,exploreHref,endTitle,endCopy,credit}) {
+export function EditorialFilm({id,eyebrow,title,description,src,poster,alt,action,exploreHref,endTitle,endCopy}) {
   const section=useRef(null),video=useRef(null),sync=useRef(null);
   const [enabled,setEnabled]=useState(false),[staticMode,setStaticMode]=useState(false),[failed,setFailed]=useState(false);
   useEffect(()=>{
@@ -37,7 +37,7 @@ export function EditorialFilm({id,eyebrow,title,description,src,poster,alt,actio
       <div className="ed-film-shade"/>
       <div className="ed-film-opening"><p className="ed-kicker">{eyebrow}</p><h1 id={`${id}-title`}>{title}</h1><p className="ed-film-description">{description}</p><a className="ed-film-cta" href={action.href}>{action.label}<span aria-hidden="true">↗</span></a></div>
       <div className="ed-film-ending" aria-hidden="true"><span className="ed-kicker">A CLOSER LOOK</span><p>{endTitle}</p><small>{endCopy}</small></div>
-      <div className="ed-film-bottom"><a href={exploreHref||action.href}>Scroll to explore <span aria-hidden="true">↓</span></a><span className="ed-film-timeline" aria-hidden="true"><i/></span><small>{credit||'AI-generated conceptual film'}</small></div>
+      <div className="ed-film-bottom"><a href={exploreHref||action.href}>Scroll to explore <span aria-hidden="true">↓</span></a><span className="ed-film-timeline" aria-hidden="true"><i/></span></div>
     </div>
   </section>;
 }
