@@ -61,3 +61,12 @@
 .wm-page .wm-status>p:not(.uc-eyebrow){max-width:780px;font-size:13px}
 @media(max-width:1440px){.wm-page .wm-status{margin-inline:56px}}
 @media(max-width:700px){.wm-page .wm-status{margin:0 24px 40px;padding:24px}.wm-page .wm-status h2{font-size:26px}}
+
+/* Keep the complete product grouping in frame at every viewport. */
+#welllink-film .ed-film-media img{object-position:right center}
+@media(max-width:700px){
+  #welllink-film .ed-film-stage{min-height:880px}
+  #welllink-film .ed-film-opening{justify-content:flex-start;padding:130px 24px 440px}
+  #welllink-film .ed-film-media img{width:225%;max-width:none;height:auto;left:-120%;top:auto;bottom:0;object-fit:contain;mask-image:linear-gradient(180deg,transparent,#000 18%)}
+  #welllink-film .ed-film-shade{background:linear-gradient(180deg,#09191266,transparent 55%)}
+}

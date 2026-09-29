@@ -33,7 +33,7 @@ export function EditorialFilm({id,eyebrow,title,description,src,poster,alt,actio
   },[]);
   return <section ref={section} id={id} className={`ed-film${staticMode||failed?' is-static':''}`} aria-labelledby={`${id}-title`}>
     <div className="ed-film-stage">
-      <div className="ed-film-media"><img src={poster} alt={alt} fetchPriority="high"/>{enabled&&!failed&&<video ref={video} src={src} poster={poster} muted playsInline preload="auto" aria-hidden="true" onLoadedData={()=>sync.current?.()} onSeeked={()=>sync.current?.()} onError={()=>setFailed(true)}/>}</div>
+      <div className="ed-film-media"><img src={poster} alt={alt} fetchPriority="high"/>{src&&enabled&&!failed&&<video ref={video} src={src} poster={poster} muted playsInline preload="auto" aria-hidden="true" onLoadedData={()=>sync.current?.()} onSeeked={()=>sync.current?.()} onError={()=>setFailed(true)}/>}</div>
       <div className="ed-film-shade"/>
       <div className="ed-film-opening"><p className="ed-kicker">{eyebrow}</p><h1 id={`${id}-title`}>{title}</h1><p className="ed-film-description">{description}</p><a className="ed-film-cta" href={action.href}>{action.label}<span aria-hidden="true">↗</span></a></div>
       <div className="ed-film-ending" aria-hidden="true"><span className="ed-kicker">A CLOSER LOOK</span><p>{endTitle}</p><small>{endCopy}</small></div>

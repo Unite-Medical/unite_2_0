@@ -27,7 +27,7 @@ export function renderRoute(baseHtml, route, options = {}, environment = {stagin
   for (const [property,content] of Object.entries(properties)) tags.push(`<meta property="${property}" content="${esc(content)}" />`);
   const schema = Object.hasOwn(options, 'jsonLd') ? options.jsonLd : routeSchema(route,meta);
   if (schema) tags.push(`<script id="um-jsonld" type="application/ld+json">${json(schema)}</script>`);
-  const hero = {'/':'/media/homepage-film/hero-poster.webp','/robotics':'/images/mobile-v1/robotics-system.webp','/welllink':'/images/mobile-v1/welllink.webp','/case-studies/tjs':'/images/mobile-v1/tjs.webp'}[route];
+  const hero = {'/':'/media/homepage-film/hero-poster.webp','/robotics':'/images/mobile-v1/robotics-system.webp','/welllink':'/images/program-films/welllink-clear-v2.webp','/case-studies/tjs':'/images/mobile-v1/tjs.webp'}[route];
   if (route === "/") tags.push('<link rel="preload" as="image" href="/images/mobile-v1/home-hero.webp" media="(max-width: 760px)" fetchpriority="high" />');
   if (hero) tags.push(`<link rel="preload" as="image" href="${hero}" ${route === "/" ? 'media="(min-width: 761px)"' : ""} fetchpriority="high" />`);
   html = html.replace('</head>',tags.join('\n')+'\n</head>');

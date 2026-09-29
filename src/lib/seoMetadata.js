@@ -16,6 +16,7 @@ export function routePath(value = '/') {
 }
 export function shareImagePath(route = '/') {
   const path = routePath(route);
+  if (path === '/welllink') return '/images/social/v2/welllink.jpg';
   return `/images/social/${SHARE_VERSION}/${path === '/' ? 'home' : path.slice(1)}.jpg`;
 }
 export function isPrivateRoute(path) {

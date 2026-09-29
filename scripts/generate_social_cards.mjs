@@ -13,7 +13,7 @@ const cutouts=JSON.parse(await readFile(path.join(root,'src/data/productCutouts.
 const art={
  '/':'/media/homepage-film/hero-poster.webp',
  '/robotics':'/images/robotics/da-vinci-xi-system.jpg',
- '/welllink':'/images/program-films/welllink-poster.jpg',
+ '/welllink':'/images/program-films/welllink-clear-v2.webp',
  '/case-studies/tjs':'/images/program-films/tjs-poster.jpg',
  '/regenicool':'/media/regenicool/red-device.webp',
  '/about':'/images/generated/ABOUT-01-v1.webp',
@@ -39,7 +39,8 @@ async function productArt(p){
 const logo=await sharp(path.join(pub,'brand/unite-medical-logo.png')).resize({width:230}).png().toBuffer();
 const cards=[...Object.entries(STATIC_ROUTES).map(([route,meta])=>({route,...meta})),{route:'/portal/quote',title:'Quick quote'},...REAL_PRODUCTS.map(p=>({route:productMetadata(p).canonical,title:p.name,product:p}))];
 const manifest=[];
-for(const c of cards){
+const selectedCards=cards.filter(c=>!process.argv[2]||c.route===process.argv[2]);
+for(const c of selectedCards){
  let photo=c.product?await productArt(c.product):art[c.route];
  if(!photo||!await exists(photo))photo=c.product?null:'/media/homepage-film/hero-poster.webp';
  const lines=wrap(headlines[c.route]||c.title,c.product?22:24), size=c.product?44:lines.length>5?38:lines.length>3?47:58, step=size*1.08;
@@ -54,4 +55,4 @@ for(const c of cards){
  const info=await sharp(output).metadata();manifest.push({route:c.route,image:shareImagePath(c.route),width:info.width,height:info.height,source:photo});
 }
 await mkdir(path.join(root,'artifacts/seo-performance'),{recursive:true});await writeFile(path.join(root,'artifacts/seo-performance/social-manifest.json'),JSON.stringify(manifest,null,2));
-console.log(`Generated ${cards.length} branded sharing images.`);
+console.log(`Generated ${selectedCards.length} branded sharing images.`);
