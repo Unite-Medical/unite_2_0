@@ -1,6 +1,8 @@
 import {CustomerTools} from './CustomerTools.jsx';
 import { Link } from 'react-router-dom';
 import '../../styles/workspace.css';
+import '../../styles/customer-account-review.css';
+import { accountContacts } from '../../lib/customerAccountPresentation.js';
 import { useState } from 'react';
 import { D } from '../../tokens.js';
 import { AdminShell } from '../../components/layout/AdminShell.jsx';
@@ -20,16 +22,16 @@ const SEGMENTS = ['asc', 'pharmacy', 'gov', 'distributors', 'ems', 'hospital'];
 
 export function AdminCustomers() {
   const { isMobile } = useViewport();
-  const padX = isMobile ? 18 : 40;
+  const profiles = db.useTable('profiles');
   const orgs = db.useTable('organizations', { orderBy: 'total_spend', dir: 'desc' }).filter(org=>!org.workspace_internal);
   const reps = db.useTable('reps');
   const repNames = [...new Set([...reps.filter(rep => !['inactive','disabled','terminated'].includes(rep.status)).map(rep => rep.name), ...orgs.map(org => org.account_rep)].filter(Boolean))].sort();
   const [search, setSearch] = useState('');
-  const visibleOrgs = orgs.filter(o=>`${o.name||''} ${o.account_rep||''}`.toLowerCase().includes(search.toLowerCase()));
+  const visibleOrgs = orgs.filter(o=>`${o.name||''} ${o.account_rep||''} ${accountContacts(profiles,o.id).map(p=>`${p.name} ${p.email}`).join(' ')}`.toLowerCase().includes(search.toLowerCase()));
   const [activeId, setActiveId] = useState(orgs[0]?.id);
   const active = db.useRow('organizations', activeId);
   const recentOrders = db.useTable('orders', { where: { customer_id: activeId }, orderBy: 'placed_at', dir: 'desc' }).slice(0, 6);
-  const teammates = db.useTable('profiles', { where: { org_id: activeId } });
+  const teammates = accountContacts(profiles, activeId);
   const addresses = db.useTable('addresses', { where: { org_id: activeId } });
   const [notice, setNotice] = useState('');
 
@@ -47,20 +49,20 @@ export function AdminCustomers() {
   return (
     <AdminShell active="customers">
       <CustomerTools/>
-      <div style={{ padding: `${isMobile ? 28 : 40}px ${padX}px ${isMobile ? 18 : 24}px`, borderBottom: `1px solid ${D.line}` }}>
+      <header className="uco-header">
         <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 12 }}>SALES · CUSTOMERS</div>
         <Link to="/admin/launch?tab=customers" style={{float:'right',color:D.plum}}>Review customer activation →</Link>
-        <h1 style={{ fontFamily: D.display, fontSize: 'clamp(34px, 5.6vw, 56px)', fontWeight: 400, letterSpacing: -1.3, lineHeight: 1.02, margin: 0 }}>Customers · {orgs.length}</h1>
-      </div>
-      <div style={{ padding: isMobile ? 20 : 32, display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '320px 1fr', gap: 20 }}>
-        <div style={{ background: D.card, borderRadius: 12, border: `1px solid ${D.line}`, overflow: 'hidden' }}>
-          <label style={{display:'grid',gap:8,padding:16,fontSize:14}}>Find a customer<input type="search" value={search} onChange={e=>setSearch(e.target.value)} placeholder="Company or account rep" style={{padding:12,fontSize:16,border:`1px solid ${D.line}`,borderRadius:5}}/></label>
+        <h1>Customer accounts <span>{orgs.length}</span></h1><p>Review access, contacts and commercial terms. Changes save immediately.</p>
+      </header>
+      <div className="uco-layout">
+        <aside className="uco-rail">
+          <label style={{display:'grid',gap:8,padding:16,fontSize:14}}>Find a customer<input type="search" value={search} onChange={e=>setSearch(e.target.value)} placeholder="Company, contact, email or rep" style={{padding:12,fontSize:16,border:`1px solid ${D.line}`,borderRadius:5}}/></label>
           {!visibleOrgs.length && <p style={{padding:16}}>No matching customers.</p>}
           {visibleOrgs.map((o) => (
             <button key={o.id} onClick={() => setActiveId(o.id)} style={{ width: '100%', textAlign: 'left', padding: '14px 16px', borderTop: `1px solid ${D.line}`, background: activeId === o.id ? 'rgba(29,92,77,.06)' : 'transparent', cursor: 'pointer', fontFamily: D.sans, color: D.ink, display: 'grid', gridTemplateColumns: '1fr auto', gap: 8 }}>
               <div>
                 <div style={{ fontSize: 13, fontWeight: 600 }}>{o.name}</div>
-                <div style={{ fontSize: 12, color: D.ink2 }}>{(o.segment || '').toUpperCase()} · {o.account_rep}</div>
+                <div className="uco-contact-preview">{accountContacts(profiles,o.id).map(p=>p.name).join(', ') || o.contact_email || 'No contact recorded'}</div><div style={{ fontSize: 12, color: D.ink2 }}>{(o.segment || '').toUpperCase()} · {o.account_rep}</div>
               </div>
               <div style={{ textAlign: 'right' }}>
                 <div style={{ fontFamily: D.display, fontSize: 16, color: D.plum }}>{fmt.short(o.total_spend)}</div>
@@ -68,21 +70,22 @@ export function AdminCustomers() {
               </div>
             </button>
           ))}
-        </div>
+        </aside>
 
-        <div style={{ background: D.card, borderRadius: 12, border: `1px solid ${D.line}`, padding: isMobile ? 22 : 28 }}>
+        <section className="uco-detail">
           {!active && <div style={{ color: D.ink3 }}>Select an organization.</div>}
           {active && (
             <>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', flexWrap: 'wrap', gap: 12 }}>
                 <div style={{ flex: '1 1 320px' }}>
                   <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.plum }}>{(active.segment || '').toUpperCase()} · TIER {active.tier}</div>
-                  <div style={{ fontFamily: D.display, fontSize: 36, letterSpacing: -0.7, lineHeight: 1.05, marginTop: 6, color: D.ink, fontWeight: 400 }}>{active.name}</div>
+                  <h2>{active.name}</h2><p className="uco-status">{(active.approval_status || 'manual_review').replaceAll('_',' ')} · {(active.terms || '').toUpperCase()}</p>
                   {notice && <div style={{ marginTop: 6, fontSize: 12, color: notice.startsWith('Not saved') ? D.terra : D.ink3 }}>{notice}</div>}
                 </div>
               </div>
 
-              <div style={{ marginTop: 18, padding: 16, background: D.paper, borderRadius: 10, border: `1px solid ${D.line}`, display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(4, 1fr)', gap: 12 }}>
+              <section className="uco-contacts" aria-label="Customer contacts"><h3>People on this account</h3>{teammates.length ? teammates.map(p=><div key={p.id}><strong>{p.name}</strong><span>{p.email}</span><small>{p.title}</small></div>) : <p>No customer contact is recorded.</p>}</section>
+              <div className="uco-policy-grid">
                 <EditField label="Approval">
                   <select value={active.approval_status || 'manual_review'} onChange={(e) => patchOrg({ approval_status: e.target.value })} style={inputStyle}>
                     <option value="manual_review">Manual review</option>
@@ -179,7 +182,7 @@ export function AdminCustomers() {
               <details className="ws-details"><summary>Email recipients</summary><NotificationsPanel org={active} /></details>
             </>
           )}
-        </div>
+        </section>
       </div>
     </AdminShell>
   );

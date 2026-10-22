@@ -9,6 +9,9 @@ import { db } from '../lib/db.js';
 import { fmt, uid } from '../lib/format.js';
 import { useViewport } from '../lib/viewport.js';
 import { useSEO } from '../lib/seo.js';
+import { postWorkspace } from '../lib/workspaceRequest.js';
+import { customerBillingSummary } from '../lib/customerAccountPresentation.js';
+import '../styles/customer-account-review.css';
 
 const TABS = ['Profile', 'Team & access', 'Saved addresses', 'Billing & terms', 'Integrations', 'Audit log'];
 
@@ -25,6 +28,10 @@ export function AccountSettings() {
   const teammates = db.useTable('profiles', { where: orgId ? { org_id: orgId } : { org_id: '__none__' } });
   const auditLog = db.useTable('audit_log', { orderBy: 'created_at', dir: 'desc', limit: 8 });
 
+  const paymentMethods = db.useTable('account_payment_methods', { where: { org_id: orgId || '__none__' } });
+  const billing = customerBillingSummary(paymentMethods, orgId);
+  const [saving, setSaving] = useState(false);
+  const [profileNotice, setProfileNotice] = useState('');
   const [tab, setTab] = useState('Profile');
   const [name, setName] = useState(profile?.name || '');
   const [title, setTitle] = useState(profile?.title || '');
@@ -32,7 +39,7 @@ export function AccountSettings() {
 
   if (!session) {
     return (
-      <div style={{ background: D.paper, fontFamily: D.sans, color: D.ink, minHeight: '100vh' }}>
+      <div className="customer-account-settings" style={{ background: D.paper, fontFamily: D.sans, color: D.ink, minHeight: '100vh' }}>
         <Nav />
         <main style={{ maxWidth: 640, margin: '0 auto', padding: '120px 24px', textAlign: 'center' }}>
           <h1 style={{ fontFamily: D.display, fontSize: 56, fontWeight: 400, letterSpacing: -1.2, lineHeight: 1, margin: 0 }}>Sign in to view settings.</h1>
@@ -42,9 +49,16 @@ export function AccountSettings() {
     );
   }
 
-  function saveProfile() {
-    db.update('profiles', session.user_id, { name, title });
-    setEditing(false);
+  async function saveProfile() {
+    setSaving(true); setProfileNotice('');
+    try {
+      const result = await postWorkspace('/api/account/profile', {name, title});
+      if (!result.ok) throw new Error(result.error || 'Profile could not be saved.');
+      await auth.bootstrap();
+      db.applyRemoteSnapshot({profiles: [{...profile, ...result.profile}]});
+      setEditing(false); setProfileNotice('Profile saved.');
+    } catch (error) { setProfileNotice(`Not saved: ${error.message}`); }
+    finally { setSaving(false); }
   }
 
   function addAddress() {
@@ -65,7 +79,7 @@ export function AccountSettings() {
   }
 
   return (
-    <div style={{ background: D.paper, fontFamily: D.sans, color: D.ink, minHeight: '100vh' }}>
+    <div className="customer-account-settings" style={{ background: D.paper, fontFamily: D.sans, color: D.ink, minHeight: '100vh' }}>
       <Nav />
       <main id="main">
         <PageHead eyebrow={`ACCOUNT · ${(org?.name || '').toUpperCase()}`} title="Settings" sub="Organization profile, team access, billing terms, and integrations — all in one pane." />
@@ -78,13 +92,14 @@ export function AccountSettings() {
 
           <div style={{ display: 'grid', gap: 18 }}>
             {tab === 'Profile' && (
-              <Card title="Your profile" action={editing ? <button onClick={saveProfile} style={{ background: D.plum, color: D.paper, border: 'none', padding: '8px 16px', borderRadius: 4, fontSize: 12, cursor: 'pointer' }}>Save</button> : <button onClick={() => setEditing(true)} style={{ background: 'transparent', color: D.plum, border: `1px solid ${D.plum}`, padding: '8px 16px', borderRadius: 4, fontSize: 12, cursor: 'pointer' }}>Edit</button>}>
+              <Card title="Your profile" action={editing ? <button onClick={saveProfile} disabled={saving} style={{ background: D.plum, color: D.paper, border: 'none', padding: '8px 16px', borderRadius: 4, fontSize: 12, cursor: 'pointer' }}>{saving ? 'Saving…' : 'Save'}</button> : <button onClick={() => {setName(profile?.name || session.name || '');setTitle(profile?.title || '');setProfileNotice('');setEditing(true);}} style={{ background: 'transparent', color: D.plum, border: `1px solid ${D.plum}`, padding: '8px 16px', borderRadius: 4, fontSize: 12, cursor: 'pointer' }}>Edit</button>}>
                 <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 20 }}>
-                  <Cell label="Name">{editing ? <Input value={name} onChange={setName} /> : (profile?.name || '—')}</Cell>
-                  <Cell label="Title">{editing ? <Input value={title} onChange={setTitle} /> : (profile?.title || '—')}</Cell>
-                  <Cell label="Email">{profile?.email}</Cell>
+                  <Cell label="Name">{editing ? <Input label="Name" value={name} onChange={setName} /> : (profile?.name || session.name || '—')}</Cell>
+                  <Cell label="Title">{editing ? <Input label="Title" value={title} onChange={setTitle} /> : (profile?.title || '—')}</Cell>
+                  <Cell label="Email">{profile?.email || session.email}</Cell>
                   <Cell label="Role">{(profile?.role || '').toUpperCase()}</Cell>
                 </div>
+                {profileNotice && <p role={profileNotice.startsWith('Not saved') ? 'alert' : 'status'}>{profileNotice}</p>}
               </Card>
             )}
 
@@ -136,8 +151,9 @@ export function AccountSettings() {
                 <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 20 }}>
                   <Cell label="Payment terms">{(org?.terms || '').toUpperCase()}</Cell>
                   <Cell label="Credit limit">{fmt.money(org?.credit_limit || 0)}</Cell>
-                  <Cell label="Method on file">ACH · CHASE 5421</Cell>
-                  <Cell label="Auto-pay">Off</Cell>
+                  <Cell label="Approved payment methods">{billing.approvedMethods}</Cell>
+                  <Cell label="Bank account">{billing.bankDetails}</Cell>
+                  <Cell label="Payment instructions">{billing.collection}</Cell>
                 </div>
               </Card>
             )}
@@ -145,10 +161,9 @@ export function AccountSettings() {
             {tab === 'Integrations' && (
               <Card title="Connected systems">
                 {[
-                  ['Billing system', 'connected', 'Last sync 4 min ago'],
-                  ['Order management', 'connected', 'Tracking auto-populates orders'],
-                  ['Stripe', 'connected', 'Card-on-file supported'],
-                  ['EDI (850 / 810 / 856)', 'available', 'Contact us to enable'],
+                  ['Invoice payments', 'check invoice', 'Use the payment options and instructions on your invoice.'],
+                  ['Order tracking', 'check order', 'Open the order to see recorded shipment and tracking details.'],
+                  ['Accounting connection', 'not shown', 'Connection health and sync times are not available on this page.'],
                 ].map(([n, st, sub], i) => (
                   <div key={n} style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 16, padding: '14px 0', borderTop: i === 0 ? 'none' : `1px solid ${D.line}`, alignItems: 'center' }}>
                     <div>
@@ -204,9 +219,11 @@ function Cell({ label, children }) {
   );
 }
 
-function Input({ value, onChange }) {
+function Input({ label, value, onChange }) {
   return (
     <input
+      aria-label={label}
+      maxLength={120}
       value={value}
       onChange={(e) => onChange(e.target.value)}
       style={{ width: '100%', padding: '8px 12px', background: D.paper, border: `1px solid ${D.line}`, borderRadius: 8, fontSize: 14, color: D.ink, outline: 'none', fontFamily: D.sans }}

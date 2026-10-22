@@ -77,7 +77,7 @@ export function Login() {
     <form onSubmit={handleSubmit}>
       <label>Work email<input name="username" type="email" autoComplete="username" placeholder="you@company.com" required value={email} onChange={e=>setEmail(e.target.value)}/></label>
       <label>Password<div className="um-password-field"><input name="password" aria-label="Password" type={showPassword?'text':'password'} autoComplete="current-password" placeholder="Enter your password" required value={password} onChange={e=>setPassword(e.target.value)}/><button type="button" aria-label={showPassword?'Hide password':'Show password'} aria-pressed={showPassword} onClick={()=>setShowPassword(v=>!v)}>{showPassword?'Hide':'Show'}</button></div></label>
-      <label className="um-remember"><input type="checkbox" checked={remember} onChange={e=>setRemember(e.target.checked)}/><span>Keep me signed in for 30 days<small>On your personal device. MFA stays verified until you sign out.</small></span></label><div className="um-signin-help"><button type="button" onClick={()=>setPasswordRecovery(true)}>Forgot password?</button></div>
+      <label className="um-remember"><input type="checkbox" checked={remember} onChange={e=>setRemember(e.target.checked)}/><span>Keep me signed in for 30 days<small>Use only on a personal device. Customer accounts sign in with email and password.</small></span></label><div className="um-signin-help"><button type="button" onClick={()=>setPasswordRecovery(true)}>Forgot password?</button></div>
       {error&&<div className="ws-error" role="alert">{error}</div>}
       <button className="ws-button primary um-signin-submit" type="submit" disabled={submitting}>{submitting?'Signing in…':'Sign in'}<WorkspaceIcon name="arrow" size={17}/></button>
     </form>
