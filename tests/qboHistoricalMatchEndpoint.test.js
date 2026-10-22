@@ -28,6 +28,17 @@ function harness(options={}){
  return {request,calls,transactions,rows:()=>rows};
 }
 const preview={action:'preview',invoice_ids:'999',capture_sha256:'a'.repeat(64)};
+test('browser form preview and apply accept Vercel-parsed form bodies without bypassing strict fields',async()=>{
+ const headers={'content-type':'application/x-www-form-urlencoded'};
+ const h=harness(),p=await h.request({...preview,view:'html'},headers);
+ assert.equal(p.status,200);assert.match(p.data,/1 confirmed; 0 ambiguous; 47 unmatched/);assert.equal(h.transactions.length,0);
+ const baseline=p.data.match(/name="baseline_sha256" value="([a-f0-9]{64})"/)[1];
+ const a=await h.request({...preview,view:'html',action:'apply',confirm:'APPLY_CONFIRMED_QBO_BALANCES',baseline_sha256:baseline},headers);
+ assert.equal(a.status,200);assert.match(a.data,/Confirmed accounting saved/);assert.equal(h.transactions.length,1);
+ const invalid=harness();assert.equal((await invalid.request({...preview,invoice_ids:['999','999']},headers)).status,400);assert.equal(invalid.calls.length,0);
+ const raw=harness();assert.equal((await raw.request(new URLSearchParams(preview).toString(),headers)).status,200);assert.equal(raw.transactions.length,0);
+ const duplicate=harness();assert.equal((await duplicate.request(new URLSearchParams(preview).toString()+'&invoice_ids=999',headers)).status,400);assert.equal(duplicate.calls.length,0);
+});
 test('only exact staging project, origin, database metadata and current admin MFA are accepted',async()=>{
  for(const options of [{env:{VERCEL_PROJECT_ID:'other'}},{live:{ok:false}},{live:{session:{role:'finance',mfa_verified:true,org_id:CATCHUP_TARGET.org}}},{identity:{triggers:1}},{identity:{rules:1}}]){
   const h=harness(options),r=await h.request(preview);assert.ok(r.status>=400);assert.equal(h.calls.length,0);assert.equal(h.transactions.length,0);

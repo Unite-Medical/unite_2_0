@@ -23,7 +23,11 @@ async function bodyOf(req){
  else for await(const chunk of req){bytes+=chunk.length;if(bytes>12000)fail('request_too_large',413);chunks.push(Buffer.from(chunk));}
  if(bytes>12000)fail('request_too_large',413);
  const raw=Buffer.concat(chunks).toString('utf8'),type=String(req.headers['content-type']||'').split(';')[0];let body;
- if(type==='application/x-www-form-urlencoded'){
+ if(!['application/x-www-form-urlencoded','application/json'].includes(type))fail('unsupported_content_type',415);
+ // Vercel may already parse either content type. Keep array-valued duplicate
+ // fields intact so the strict scalar validation below rejects them.
+ if(req.body!==null&&typeof req.body==='object'&&!Buffer.isBuffer(req.body))body=req.body;
+ else if(type==='application/x-www-form-urlencoded'){
   const params=new URLSearchParams(raw);if([...params.keys()].some(k=>params.getAll(k).length!==1))fail('duplicate_field',400);body=Object.fromEntries(params);
  }else if(type==='application/json'){try{body=JSON.parse(raw);}catch{fail('invalid_json',400);}}
  else fail('unsupported_content_type',415);
