@@ -1,3 +1,4 @@
+import { AppearanceControls } from '../../components/workspace/AppearanceControls.jsx';
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { D } from '../../tokens.js';
@@ -110,6 +111,7 @@ export function AdminSettings() {
 
       <div style={{ padding: `${isMobile ? 24 : 32}px ${padX}px ${isMobile ? 48 : 80}px`, display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.4fr 1fr', gap: 24 }}>
         <div style={{ display: 'grid', gap: 18 }}>
+          <Card title="Appearance"><AppearanceControls userId={session?.user_id}/></Card>
           <Card title="Company">
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
               <Field label="Company name"><input value={settings.company_name} onChange={(e) => patch({ company_name: e.target.value })} style={inputStyle} /></Field>

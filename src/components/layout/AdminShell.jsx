@@ -1,5 +1,9 @@
 import {Children,isValidElement,useEffect,useRef,useState} from 'react';
 import {Link,useLocation,useNavigate} from 'react-router-dom';
+import {useWorkspaceAppearance} from '../../lib/useWorkspaceAppearance.js';
+import {appearanceFontSize} from '../../lib/workspaceAppearance.js';
+import {AppearanceControls} from '../workspace/AppearanceControls.jsx';
+import '../../styles/workspace-appearance.css';
 import {auth} from '../../lib/auth.js';
 import {staffShortcuts,staffHome,teamForRole,STAFF_TEAMS} from '../../lib/staffWorkspace.js';
 import {useWebhookBridge} from '../../lib/webhookBridge.js';
@@ -21,8 +25,9 @@ export function AdminShell({active,children,unsavedChanges=false}){
  const session=auth.use(),location=useLocation(),navigate=useNavigate();
  const [open,setOpen]=useState(false),[error,setError]=useState(''),[switching,setSwitching]=useState(false),[toolSearch,setToolSearch]=useState('');
  const drawer=useRef(null),menuButton=useRef(null);
- const [theme,setTheme]=useState(()=>{try{return localStorage.getItem('um.workspace.theme')==='dark'?'dark':'light';}catch{return 'light';}});
- useEffect(()=>{try{localStorage.setItem('um.workspace.theme',theme);}catch{/* Appearance still works when browser storage is unavailable. */}document.documentElement.dataset.workspaceTheme=theme;return()=>{delete document.documentElement.dataset.workspaceTheme;};},[theme]);
+ const {preferences,update:changeAppearance}=useWorkspaceAppearance(session?.user_id),theme=preferences.theme,fontSize=appearanceFontSize(preferences);
+ const setTheme=theme=>changeAppearance({theme});
+ useEffect(()=>{document.documentElement.dataset.workspaceTheme=theme;return()=>{delete document.documentElement.dataset.workspaceTheme;};},[theme]);
  useWebhookBridge(session?.role==='admin');
  const nav=staffShortcuts(session?.role,{inquiries:String(session?.email||'').toLowerCase()==='jacobe@unitemedical.net'});
  const primaryPaths=new Set(nav.map(n=>n.path));
@@ -69,6 +74,7 @@ export function AdminShell({active,children,unsavedChanges=false}){
    <details className="uw-account-menu">
     <summary className="uw-account-trigger" aria-label="Account options"><span className="uw-avatar">{(session?.name||session?.email||'U').slice(0,1).toUpperCase()}</span><span className="uw-account-copy"><strong>{session?.name||'Unite team'}</strong><small>{session?.role==='admin'?'Administrator':STAFF_TEAMS[teamForRole(session?.role)]?.label}</small></span><WorkspaceIcon name="chevron" size={12}/></summary>
     <div className="uw-account-panel">
+     <details className="uw-personal-appearance"><summary>Appearance</summary><AppearanceControls userId={session?.user_id}/></details>
      {session?.roles?.length>1&&<label className="uw-role-label">Working role<select value={session.role} disabled={switching} onChange={e=>switchRole(e.target.value)}>{session.roles.map(r=><option key={r} value={r}>{r.replaceAll('_',' ')}</option>)}</select></label>}
      {session?.role==='admin'&&<Link to="/admin/settings" onClick={go}><WorkspaceIcon name="settings" size={16}/>Settings</Link>}
      <Link to="/" onClick={go}><WorkspaceIcon name="external" size={16}/>View website</Link>
@@ -78,6 +84,6 @@ export function AdminShell({active,children,unsavedChanges=false}){
    <button className="uw-theme-toggle" aria-label={`Switch to ${theme==='dark'?'light':'dark'} mode`} title={`Switch to ${theme==='dark'?'light':'dark'} mode`} onClick={()=>setTheme(theme==='dark'?'light':'dark')}><WorkspaceIcon name={theme==='dark'?'sun':'moon'} size={17}/></button>
   </div>
  </>;
- return <div className="uw-shell" data-theme={theme} onClickCapture={guardNavigation} onChangeCapture={()=>{if(error.startsWith('Save or discard'))setError('');}}><aside className="uw-sidebar" aria-label="Workspace navigation">{sidebar}</aside><div className="uw-main"><header className="uw-topbar"><div className="uw-breadcrumb"><button ref={menuButton} className="uw-menu-button" onClick={()=>setOpen(true)} aria-label="Open workspace menu" aria-expanded={open}><WorkspaceIcon name="menu"/></button><WorkspaceIcon name={iconFor(active)} size={18}/><strong>{pageLabel}</strong></div>{session?.role==='admin'&&<CommerceGlobal/>}<div className="uw-environment"><span/>{import.meta.env.DEV?'Local preview':import.meta.env.VITE_UNITE_ENVIRONMENT==='staging'?'Staging workspace':'Team workspace'}</div></header><div className="uw-content">{visibleError&&<p role="alert" className="uw-error" style={{margin:20}}>{visibleError}</p>}{hasMain?children:<main id="main">{children}</main>}</div></div>
+ return <div className="uw-shell" data-theme={theme} data-font-size={fontSize} style={{'--uw-interface-scale':fontSize/13}} onClickCapture={guardNavigation} onChangeCapture={()=>{if(error.startsWith('Save or discard'))setError('');}}><aside className="uw-sidebar" aria-label="Workspace navigation">{sidebar}</aside><div className="uw-main"><header className="uw-topbar"><div className="uw-breadcrumb"><button ref={menuButton} className="uw-menu-button" onClick={()=>setOpen(true)} aria-label="Open workspace menu" aria-expanded={open}><WorkspaceIcon name="menu"/></button><WorkspaceIcon name={iconFor(active)} size={18}/><strong>{pageLabel}</strong></div>{session?.role==='admin'&&<CommerceGlobal/>}<div className="uw-environment"><span/>{import.meta.env.DEV?'Local preview':import.meta.env.VITE_UNITE_ENVIRONMENT==='staging'?'Staging workspace':'Team workspace'}</div></header><div className="uw-content">{visibleError&&<p role="alert" className="uw-error" style={{margin:20}}>{visibleError}</p>}{hasMain?children:<main id="main">{children}</main>}</div></div>
  {open&&<div className="uw-mobile-layer"><div className="uw-backdrop" onClick={()=>setOpen(false)}/><aside ref={drawer} className="uw-mobile-sidebar" role="dialog" aria-modal="true" aria-label="Workspace navigation"><button className="uw-close-menu" onClick={()=>setOpen(false)} aria-label="Close workspace menu"><WorkspaceIcon name="close"/></button>{sidebar}</aside></div>}</div>;
 }
