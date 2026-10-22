@@ -158,6 +158,8 @@ html[data-workspace-theme=dark]{background:#171c19}
 .uw-shell .uw-detail :is(p,dt,dd,label),.uw-shell .uw-facts>div{font-size:13px;line-height:1.5}
 .uw-shell .uw-next-step{border:1px solid var(--uw-border);border-radius:var(--uw-radius-sm);background:var(--uw-subtle)}
 .uw-shell .uw-followup :is(input,select,textarea){border-radius:var(--uw-radius-sm)}
+.uw-shell .uw-day-heading:has(>.uw-inventory-actions){flex-wrap:wrap}
+.uw-shell .uw-inventory-actions{flex-wrap:wrap;max-width:100%;flex-shrink:0}
 .uw-shell .uw-workday .uw-setup{margin-top:16px;padding:0 16px;background:var(--uw-subtle)}
 .uw-shell .uw-setup>summary{min-height:44px;font-size:13px}
 
