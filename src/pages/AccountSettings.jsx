@@ -6,7 +6,7 @@ import { Footer } from '../components/layout/Footer.jsx';
 import { PageHead } from '../components/layout/PageHead.jsx';
 import { auth } from '../lib/auth.js';
 import { db } from '../lib/db.js';
-import { fmt, uid } from '../lib/format.js';
+import { fmt } from '../lib/format.js';
 import { useViewport } from '../lib/viewport.js';
 import { useSEO } from '../lib/seo.js';
 import { postWorkspace } from '../lib/workspaceRequest.js';
@@ -36,6 +36,10 @@ export function AccountSettings() {
   const [name, setName] = useState(profile?.name || '');
   const [title, setTitle] = useState(profile?.title || '');
   const [editing, setEditing] = useState(false);
+  const [addressDraft, setAddressDraft] = useState(null);
+  const [addressKey, setAddressKey] = useState('');
+  const [addressBusy, setAddressBusy] = useState(false);
+  const [addressNotice, setAddressNotice] = useState('');
 
   if (!session) {
     return (
@@ -62,20 +66,22 @@ export function AccountSettings() {
   }
 
   function addAddress() {
-    db.insert('addresses', {
-      id: uid('adr'),
-      org_id: orgId,
-      label: 'New location',
-      line1: '— address —',
-      city: '',
-      state: '',
-      zip: '',
-      is_default: false,
-    });
+    setAddressDraft({label:'Delivery address',recipient:profile?.name || session.name || '',company:org?.name || '',line1:'',line2:'',city:'',state:'',zip:'',country:'US'});
+    setAddressKey(crypto.randomUUID()); setAddressNotice('');
   }
-
-  function setDefault(id) {
-    addresses.forEach((a) => db.update('addresses', a.id, { is_default: a.id === id }));
+  async function saveAddress(event) {
+    event.preventDefault(); setAddressBusy(true); setAddressNotice('');
+    try {
+      const result=await postWorkspace('/api/account/addresses',{action:'create',idempotency_key:addressKey,address:addressDraft});
+      db.applyRemoteSnapshot({addresses:[result.address]}); setAddressDraft(null); setAddressNotice('Delivery address saved.');
+    } catch(error) { setAddressNotice(`Not saved: ${error.message}`); }
+    finally { setAddressBusy(false); }
+  }
+  async function setDefault(id) {
+    setAddressBusy(true); setAddressNotice('');
+    try { const result=await postWorkspace('/api/account/addresses',{action:'set_default',address_id:id}); db.applyRemoteSnapshot({addresses:result.addresses}); setAddressNotice('Default delivery address saved.'); }
+    catch(error) { setAddressNotice(`Not saved: ${error.message}`); }
+    finally { setAddressBusy(false); }
   }
 
   return (
@@ -133,13 +139,19 @@ export function AccountSettings() {
             )}
 
             {tab === 'Saved addresses' && (
-              <Card title="Addresses" action={<button onClick={addAddress} style={{ background: D.plum, color: D.paper, border: 'none', padding: '8px 16px', borderRadius: 4, fontSize: 12, cursor: 'pointer' }}>+ Add address</button>}>
+              <Card title="Addresses" action={<button disabled={addressBusy || Boolean(addressDraft)} onClick={addAddress} style={{ background: D.plum, color: D.paper, border: 'none', padding: '8px 16px', borderRadius: 4, fontSize: 12, cursor: 'pointer' }}>+ Add address</button>}>
+                {addressNotice && <p role={addressNotice.startsWith('Not saved')?'alert':'status'}>{addressNotice}</p>}
+                {addressDraft && <form onSubmit={saveAddress} className="customer-address-form">
+                  <h3>New delivery address</h3><div className="customer-address-fields">{[['label','Address label'],['recipient','Recipient'],['company','Company'],['line1','Street address'],['line2','Address line 2'],['city','City'],['state','State / province'],['zip','ZIP / postal code'],['country','Country code']].map(([key,label])=><label key={key}>{label}<input value={addressDraft[key]} required={!['company','line2'].includes(key)} maxLength={key.startsWith('line')?200:key==='country'?2:120} disabled={addressBusy} onChange={e=>setAddressDraft({...addressDraft,[key]:e.target.value})}/></label>)}</div>
+                  <div className="customer-address-actions"><button type="submit" disabled={addressBusy}>{addressBusy?'Saving…':'Save delivery address'}</button><button type="button" disabled={addressBusy} onClick={()=>setAddressDraft(null)}>Cancel</button></div>
+                </form>}
+                {!addresses.length && !addressDraft && <p>No delivery addresses yet. Add one to continue to checkout.</p>}
                 <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 12 }}>
                   {addresses.map((a) => (
-                    <button key={a.id} onClick={() => setDefault(a.id)} style={{ padding: 18, background: D.paper, borderRadius: 10, border: `${a.is_default ? 2 : 1}px solid ${a.is_default ? D.plum : D.line}`, cursor: 'pointer', textAlign: 'left', fontFamily: D.sans, color: D.ink }}>
+                    <button key={a.id} disabled={addressBusy} aria-label={`Make ${a.label} the default address`} onClick={() => setDefault(a.id)} style={{ padding: 18, background: D.paper, borderRadius: 10, border: `${a.is_default ? 2 : 1}px solid ${a.is_default ? D.plum : D.line}`, cursor: 'pointer', textAlign: 'left', fontFamily: D.sans, color: D.ink }}>
                       <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.plum }}>{(a.label || '').toUpperCase()}{a.is_default ? ' · DEFAULT' : ''}</div>
                       <div style={{ fontFamily: D.display, fontSize: 18, letterSpacing: -0.2, marginTop: 8 }}>{a.label}</div>
-                      <div style={{ fontSize: 13, color: D.ink2, marginTop: 4, lineHeight: 1.5 }}>{a.line1}<br />{a.city}, {a.state} {a.zip}</div>
+                      <div style={{ fontSize: 13, color: D.ink2, marginTop: 4, lineHeight: 1.5 }}>{a.recipient && <>{a.recipient}<br /></>}{a.line1}{a.line2 && <><br />{a.line2}</>}<br />{a.city}, {a.state} {a.zip}</div>
                     </button>
                   ))}
                 </div>

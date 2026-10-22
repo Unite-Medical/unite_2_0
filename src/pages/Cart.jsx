@@ -33,10 +33,8 @@ export function Cart() {
   });
   const items = cart.items;
   const subtotal = cart.subtotal;
-  const freight = subtotal > 500 ? 0 : 42;
-  const total = +(subtotal + freight).toFixed(2);
   const totalQty = cart.count;
-  const suggestions = db.useTable('products', { limit: 8 }).filter((p) => !items.find((i) => i.sku === p.sku)).slice(0, 3);
+
 
   if (!commerce.can_use_cart) {
     return (
@@ -104,22 +102,7 @@ export function Cart() {
               ))}
             </div>
           )}
-          {suggestions.length > 0 && (
-            <div style={{ marginTop: 24, padding: 22, border: `1px dashed ${D.line}`, borderRadius: 14, background: D.card }}>
-              <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.plum, marginBottom: 10 }}>REORDER SUGGESTIONS · FROM YOUR LAST 90 DAYS</div>
-              <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3,1fr)', gap: 12 }}>
-                {suggestions.map((p) => (
-                  <div key={p.sku} style={{ padding: 14, background: D.paper, borderRadius: 10, border: `1px solid ${D.line}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div>
-                      <div style={{ fontSize: 13, fontWeight: 600 }}>{p.name.split('·')[0].trim()}</div>
-                      <div style={{ fontSize: 11, color: D.ink3, fontFamily: D.mono, marginTop: 4 }}>{p.sku} · {fmt.money(p.price)}</div>
-                    </div>
-                    <button aria-label={`Add ${p.name}`} onClick={() => cartStore.add(p.sku)} style={{ background: D.plum, color: D.paper, border: 'none', width: 30, height: 30, borderRadius: 15, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Icon.plus /></button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
+          <p style={{fontSize:13,color:D.ink2}}>Need an unavailable product? <button onClick={()=>navigate('/quote')} style={{border:0,background:'none',color:D.plum,textDecoration:'underline',cursor:'pointer'}}>Request a sourcing quote</button>. Pricing and availability must be confirmed before ordering.</p>
         </div>
         <div>
           <div style={{ position: isMobile ? 'static' : 'sticky', top: 120 }}>
@@ -127,16 +110,16 @@ export function Cart() {
               <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1, color: D.plumSoft }}>ORDER SUMMARY</div>
               <div style={{ marginTop: 20, display: 'grid', gap: 10, fontSize: 14 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: D.plumSoft }}>Subtotal</span><span>{fmt.money(subtotal)}</span></div>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: D.plumSoft }}>Freight</span><span>{freight === 0 ? 'Free' : fmt.money(freight)}</span></div>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: D.plumSoft }}>Freight</span><span>Calculated at checkout</span></div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: D.plumSoft }}>Volume tier</span><span>{tierLabel(totalQty)}</span></div>
               </div>
               <div style={{ height: 1, background: 'rgba(255,255,255,.18)', margin: '22px 0' }} />
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'end' }}>
-                <div style={{ fontFamily: D.mono, fontSize: 11, color: D.plumSoft }}>TOTAL DUE</div>
-                <div style={{ fontFamily: D.display, fontSize: 44, letterSpacing: -1 }}>{fmt.money(total)}</div>
+                <div style={{ fontFamily: D.mono, fontSize: 11, color: D.plumSoft }}>ITEMS SUBTOTAL</div>
+                <div style={{ fontFamily: D.display, fontSize: 44, letterSpacing: -1 }}>{fmt.money(subtotal)}</div>
               </div>
               <button disabled={items.length === 0} onClick={() => navigate('/checkout')} style={{ marginTop: 22, width: '100%', background: D.paper, color: D.plum, border: 'none', padding: 14, borderRadius: 4, fontSize: 14, fontWeight: 600, cursor: items.length === 0 ? 'not-allowed' : 'pointer', opacity: items.length === 0 ? 0.5 : 1 }}>Continue to checkout</button>
-              <div style={{ marginTop: 14, fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.plumSoft, textAlign: 'center' }}>NET 30 · NET 60 · ACH · WIRE · CC</div>
+              <div style={{ marginTop: 14, fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.plumSoft, textAlign: 'center' }}>Payment options are confirmed at checkout</div>
             </div>
           </div>
         </div>

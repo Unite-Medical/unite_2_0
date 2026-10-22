@@ -45,7 +45,7 @@ export default async function handler(req, res) {
       profile: pick(profile, ['id', 'email', 'name', 'role', 'org_id', 'title', 'status']),
       organization: pick(organization, ['id', 'name', 'segment', 'tier', 'terms', 'approval_status', 'status', 'account_rep', 'contact_email', 'commerce_hold_reason', 'pricing_reconciliation_status', 'shopify_tax_exempt', 'certificate_status']),
       membership: pick(membership, ['id', 'user_id', 'org_id', 'role', 'status']),
-      addresses: addresses.filter((row) => row.org_id === organization.id).map((row) => pick(row, ['id', 'org_id', 'label', 'line1', 'line2', 'city', 'state', 'zip', 'country', 'is_default'])),
+      addresses: addresses.filter((row) => row.org_id === organization.id).map((row) => pick(row, ['id', 'org_id', 'label', 'recipient', 'company', 'line1', 'line2', 'city', 'state', 'zip', 'country', 'is_default', 'updated_at'])),
       payment_methods: paymentMethods.filter((row) => row.org_id === organization.id && row.status === 'active').map((row) => pick(row, ['id', 'org_id', 'method', 'status', 'credit_limit'])),
       orders: ownOrders.map((row) => ({ ...pick(row, ['id', 'customer_id', 'status', 'payment_status', 'subtotal', 'freight', 'shipping_cost', 'tax', 'total', 'po_number', 'payment_method', 'ship_to_address_id', 'tracking_number', 'carrier', 'placed_at', 'created_at', 'shipped_at', 'delivered_at', 'source_order_number', 'paid_amount']), shipment_plan: publicShipmentPlan(row.shipment_plan) })),
       order_items: orderItems.filter((row) => orderIds.has(row.order_id)).map((row) => pick(row, ['id', 'order_id', 'customer_id', 'sku', 'name', 'qty', 'unit_price', 'ext_price', 'status'])),

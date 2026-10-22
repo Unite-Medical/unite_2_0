@@ -102,6 +102,10 @@ const ERRORS = {
   order_changed_payment_reconciliation_required:'The order changed during payment setup. Finance must reconcile the provider invoice.',
   mfa_encryption_not_configured:'Authenticator sign-in needs server configuration.',
 
+  complete_delivery_address_required:'Complete the recipient, street, city, state, ZIP and country. US addresses need a two-letter state and valid ZIP.',
+  address_request_changed:'This address request changed. Close the form and add the address again.',
+  owned_address_required:'Choose a delivery address belonging to this account.',
+  address_not_saved:'The address was not saved. Check the details and try again.',
   authentication_required:'Please sign in again.', not_configured:'This service is not connected yet.',
   private_storage_not_configured:'Document storage is not connected yet. Please contact Unite support.',
   shopify_not_configured:'Shopify read access is not connected on staging yet.',
