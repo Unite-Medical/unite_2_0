@@ -9,6 +9,7 @@ import '../../styles/staff-workspace.css';
 import '../../styles/workspace-theme.css';
 import {CommerceGlobal} from '../commerce/CommerceGlobal.jsx';
 import '../../styles/workspace-glass.css';
+import '../../styles/staff-desktop-release.css';
 
 const TOOLS=[
  ['Orders & customers',[['Quotes','/admin/quotes','quotes'],['Sourcing','/admin/sourcing','sourcing'],['Customers','/admin/customers','customers'],['CRM','/admin/crm','crm'],['HubSpot','/admin/crm/hubspot','hubspot'],['Sales reps','/admin/reps','reps'],['Purchase orders','/admin/purchase-orders','purchase-orders']]],
