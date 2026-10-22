@@ -1,3 +1,4 @@
+import {commercePaymentEvidence} from '../../src/lib/commercePaymentStatus.js';
 import {neon} from '@neondatabase/serverless';
 import crypto from 'node:crypto';
 import {saveAuthorizedCommerce} from '../_lib/commerceMutations.js';
@@ -14,7 +15,7 @@ export default async function handler(req,res){
   if(req.query.action==='resolve_price'){const c=await readCommerce(sql,{kind:'customers',id:String(req.query.customer_id||'')});const product=await readCommerce(sql,{kind:'products',id:String(req.query.product_id||'')});if(!c||!product||product.status!=='active')throw new Error('Choose an active product and customer.');const schedules=await Promise.all((c.price_lists||[]).map(id=>readCommerce(sql,{kind:'pricing',id})));return sendJson(res,200,{ok:true,...resolveSchedulePrice(product,req.query.quantity||1,schedules)});}
   if(req.query.action==='search')return sendJson(res,200,{ok:true,groups:await searchCommerce(sql,String(req.query.q||''),req.query.category)});
   if(req.query.action==='manifest'){const s=loadSnapshot();const counts=await sql`SELECT tbl,COUNT(*)::int AS count FROM um_rows WHERE tbl IN ('commerce_customers','commerce_orders','commerce_price_lists','commerce_products') AND deleted=false GROUP BY tbl`;return sendJson(res,200,{ok:true,version:s.version,source_dates:s.source_dates,counts:s.counts,total:s.rows?.length||s.total,source_available:Boolean(s.rows),imported:counts});}
-  const data=await readCommerce(sql,req.query);if(!data)return sendJson(res,404,{error:'Record not found.'});return sendJson(res,200,{ok:true,data});
+  const data=await readCommerce(sql,req.query);if(!data)return sendJson(res,404,{error:'Record not found.'});return sendJson(res,200,{ok:true,data:req.query.kind==='orders'&&req.query.id?commercePaymentEvidence(data):data});
  }
  const origin=req.headers.origin;const host=req.headers['x-forwarded-host']||req.headers.host;if(!origin||new URL(origin).host!==host)return sendJson(res,403,{error:'Use the workspace to make changes.'});
  const body=JSON.parse((await readRawBody(req)).toString('utf8'));const actor=live.session;
@@ -34,10 +35,10 @@ export default async function handler(req,res){
  }
  if(body.action==='comment'){
   const text=String(body.text||'').trim();if(!text||text.length>5000)throw new Error('Enter a comment under 5,000 characters.');const c=await readCommerce(sql,{kind,id});if(!c)throw new Error('Record not found.');const event={id:crypto.randomUUID(),at:new Date().toISOString(),actor:actor.name||actor.email,text};
-  const result=await sql`UPDATE um_rows SET data=jsonb_set(jsonb_set(data,'{events}',COALESCE(data->'events','[]'::jsonb)||${JSON.stringify([event])}::jsonb),'{revision}',to_jsonb(COALESCE((data->>'revision')::integer,0)+1)),updated_at=now() WHERE tbl=${COMMERCE_TABLES[kind]} AND id=${id} AND deleted=false RETURNING data`;return sendJson(res,200,{ok:true,data:result[0].data});
+  const result=await sql`UPDATE um_rows SET data=jsonb_set(jsonb_set(data,'{events}',COALESCE(data->'events','[]'::jsonb)||${JSON.stringify([event])}::jsonb),'{revision}',to_jsonb(COALESCE((data->>'revision')::integer,0)+1)),updated_at=now() WHERE tbl=${COMMERCE_TABLES[kind]} AND id=${id} AND deleted=false RETURNING data`;return sendJson(res,200,{ok:true,data:kind==='orders'?commercePaymentEvidence(result[0].data):result[0].data});
  }
  if(body.action==='save'){
-  const data=await saveAuthorizedCommerce(sql,{kind,id,revision:body.revision,patch:body.patch,actor});return sendJson(res,200,{ok:true,data});
+  const data=await saveAuthorizedCommerce(sql,{kind,id,revision:body.revision,patch:body.patch,actor});return sendJson(res,200,{ok:true,data:kind==='orders'?commercePaymentEvidence(data):data});
  }
  throw new Error('Unknown action.');
  }catch(e){return sendJson(res,400,{error:e.message?.includes('password')?'Unable to save.':e.message||'Workspace unavailable.'});}

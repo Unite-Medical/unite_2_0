@@ -138,6 +138,7 @@ function mapOrder(source, context) {
   const restocked = source.fulfillment_status === 'restocked';
   const fulfillment = source.fulfillment_status ?? 'unfulfilled';
   const review = [];
+  review.push('Payment review needed: Shopify payment labels were used to advance warehouse work and do not prove settlement. Match the current QuickBooks invoice balance; no amount paid or amount owed is inferred.');
   if (!matches.length) review.push('Customer mapping pending: retain source Shopify customer identity; match to an existing verified customer. No customer profile was created.');
   if (cancelled || restocked) review.push('Historical canceled/restocked source order. Review source cancellation and refund evidence; no operational fulfillment or inventory action is created.');
   if (lines.some(line => line.current_quantity !== line.original_quantity && line.current_quantity > 0 && line.source_total_discount)) review.push('Changed quantities retain original line discount evidence; current net line amount requires source review.');
@@ -147,7 +148,8 @@ function mapOrder(source, context) {
     customer_mapping_status: matches.length ? 'matched' : 'pending', email: source.email || '',
     historical: true, draft: false, revision: 0, created_at: timestamp(source.created_at, 'source_created_at'),
     updated_at: timestamp(source.updated_at, 'source_updated_at'),
-    financial_status: source.financial_status ?? null, fulfillment_status: fulfillment,
+    financial_status: 'payment_review_needed', source_financial_status: source.financial_status ?? null,
+    payment_reconciliation_status: 'pending_quickbooks', fulfillment_status: fulfillment,
     source_fulfillment_status: source.fulfillment_status ?? null,
     cancelled_at: source.cancelled_at || null, cancel_reason: source.cancel_reason ?? null, closed_at: source.closed_at || null,
     workflow_state: cancelled || restocked ? 'archived' : fulfillment === 'fulfilled' ? 'complete' : 'needs_review',
@@ -157,11 +159,11 @@ function mapOrder(source, context) {
     tax: money(source.current_total_tax, 'current_tax'),
     shipping: money(source.total_shipping_price_set?.shop_money?.amount, 'source_shipping', true),
     discount: money(source.total_discounts, 'source_discount', true),
-    total_outstanding: money(source.total_outstanding, 'source_outstanding'),
+    total_outstanding: null, source_total_outstanding: money(source.total_outstanding, 'source_outstanding'),
     currency: source.currency, notes: source.note || '', po_number: source.po_number || '',
     tags: Array.isArray(source.tags) ? copy(source.tags) : String(source.tags || '').split(',').map(tag => tag.trim()).filter(Boolean),
     payment_method: (source.payment_gateway_names || []).join(', '),
-    payment_amount_status: 'not_inferred_from_shopify_financial_status',
+    payment_amount_status: 'awaiting_quickbooks_reconciliation',
     lines, shipping_address: address(source.shipping_address), billing_address: address(source.billing_address),
     fulfillments: fulfillments(source.fulfillments), refunds: copy(source.refunds || []),
     refund_liability: null, events: [], source: copy(source),

@@ -45,8 +45,8 @@ test('historical insert preserves source, current totals, exact identities, quan
   assert.equal(plan.ok, true); assert.equal(row.table, 'commerce_orders'); assert.equal(row.id, '1001');
   const order = row.data, line = order.lines[0];
   assert.equal(order.historical, true); assert.equal(order.draft, false); assert.equal(order.workflow_state, 'needs_review');
-  assert.equal(order.total, 45); assert.equal(order.subtotal, 40); assert.equal(order.total_outstanding, 0);
-  assert.equal(order.financial_status, 'paid'); assert.equal(order.source_fulfillment_status, null);
+  assert.equal(order.total, 45); assert.equal(order.subtotal, 40); assert.equal(order.total_outstanding, null); assert.equal(order.source_total_outstanding, 0);
+  assert.equal(order.financial_status, 'payment_review_needed'); assert.equal(order.source_financial_status, 'paid'); assert.equal(order.payment_reconciliation_status, 'pending_quickbooks'); assert.equal(order.source_fulfillment_status, null);
   assert.equal(line.id, '3001'); assert.equal(line.sku, 'HISTORIC-SKU'); assert.equal(line.catalog_sku, 'CURRENT-SKU');
   assert.equal(line.variant_id, 'gid://shopify/ProductVariant/4001'); assert.equal(line.source_product_id, '5001');
   assert.equal(line.original_quantity, 2); assert.equal(line.current_quantity, 2); assert.equal(line.unfulfilled_quantity, 2);
@@ -58,15 +58,31 @@ test('historical insert preserves source, current totals, exact identities, quan
   assert.equal(order.refund_liability, null);
 });
 
-test('newer fulfillment and all tracking evidence survive and only fulfilled orders complete', () => {
+test('newer fulfillment and tracking survive with payment reconciliation kept separate', () => {
   const f = { id: '6001', created_at: at, updated_at: at, status: 'success', tracking_company: 'Synthetic Carrier',
     tracking_number: 'A', tracking_numbers: ['A', 'B'], tracking_urls: ['https://example.test/A', 'https://example.test/B', 'https://example.test/C'], receipt: { evidence: true }, line_items: [{ id: '3001' }] };
   const order = planShopifyCatchup(options({ sourceOrders: [source('1001', { fulfillment_status: 'fulfilled', fulfillments: [f] })] })).inserts[0].data;
-  assert.equal(order.workflow_state, 'complete'); assert.equal(order.fulfillments[0].trackingInfo.length, 3);
+  assert.equal(order.workflow_state, 'complete'); assert.equal(order.financial_status, 'payment_review_needed'); assert.equal(order.fulfillment_status, 'fulfilled'); assert.equal(order.fulfillments[0].trackingInfo.length, 3);
   assert.deepEqual(order.fulfillments[0].tracking_numbers, f.tracking_numbers);
   assert.deepEqual(order.fulfillments[0].receipt, f.receipt); assert.equal(order.fulfillments[0].updatedAt, at);
   assert.equal(order.fulfillments[0].trackingInfo[2].url, 'https://example.test/C');
   for (const status of [null, 'partial', 'unfulfilled']) assert.equal(planShopifyCatchup(options({ sourceOrders: [source('1001', { fulfillment_status: status })] })).inserts[0].data.workflow_state, 'needs_review');
+});
+
+test('manual Shopify paid and zero owed are source history, never current accounting balances', () => {
+  for (const status of ['paid', 'partially_paid', 'unpaid', 'refunded']) {
+    const imported = planShopifyCatchup(options({ sourceOrders: [source('1001', { financial_status: status, fulfillment_status: 'fulfilled', payment_gateway_names: ['manual'], payment_terms: { payment_terms_name: 'Net 30' } })] })).inserts[0].data;
+    assert.equal(imported.financial_status, 'payment_review_needed');
+    assert.equal(imported.total_outstanding, null);
+    assert.equal(imported.source_total_outstanding, 0);
+    assert.equal(imported.source_financial_status, status);
+    assert.equal(imported.source.payment_terms.payment_terms_name, 'Net 30');
+    assert.equal(imported.payment_reconciliation_status, 'pending_quickbooks');
+    assert.equal(imported.workflow_state, 'complete');
+    assert.equal(imported.fulfillment_status, 'fulfilled');
+    assert.equal(Object.hasOwn(imported, 'paid_amount'), false);
+    assert.match(imported.review_note, /do not prove settlement/);
+  }
 });
 
 test('canceled/restocked orders and removed lines remain historical without implied payment/refund amounts', () => {

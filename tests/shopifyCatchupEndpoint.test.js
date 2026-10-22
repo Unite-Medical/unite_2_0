@@ -85,6 +85,7 @@ test('actual shared authorization accepts valid current MFA profile and rejects 
 test('dry-run fetches only approved 48 through GET and never writes or exposes contacts',async()=>{
   const f=fixture();f.state.sources[0].email='private@example.test';f.state.sources[0].shipping_address={address1:'Private synthetic street'};
   const plan=await dryRun(f);assert.equal(plan.counts.insert,48);assert.equal(f.state.writes,0);assert.equal(f.state.fetches.length,1);
+  assert.ok(plan.orders.every(order=>order.financial_status==='payment_review_needed'&&order.source_financial_status==='paid'&&order.total_outstanding===null));
   const remote=f.state.fetches[0];assert.equal(remote.request.method,'GET');assert.equal(remote.request.redirect,'error');assert.deepEqual(new URL(remote.url).searchParams.get('ids').split(','),CATCHUP_IDS);
   assert.ok(f.state.transactions.every(tx=>tx.readOnly));assert.equal(JSON.stringify(plan).includes('private@example.test'),false);assert.equal(JSON.stringify(plan).includes('Private synthetic street'),false);
 });
