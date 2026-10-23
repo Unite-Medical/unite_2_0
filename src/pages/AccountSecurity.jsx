@@ -1,0 +1,20 @@
+import {recoveryRequest} from '../lib/accountRecovery.js';
+import {useEffect,useState} from 'react';
+import {Link} from 'react-router-dom';
+import {auth} from '../lib/auth.js';
+import {STAFF_ROLES,staffHome} from '../lib/staffWorkspace.js';
+import {AdminShell} from '../components/layout/AdminShell.jsx';
+import {Nav} from '../components/layout/Nav.jsx';
+import {useSEO} from '../lib/seo.js';
+import {ReplacementEnrollment,RecoveryCodes} from '../components/AccountRecoveryForms.jsx';
+import '../styles/workspace.css';
+import '../styles/login.css';
+export function AccountSecurity(){
+ useSEO({title:'Account security',noindex:true});const session=auth.use();
+ const [status,setStatus]=useState(null),[password,setPassword]=useState(''),[code,setCode]=useState(''),[flow,setFlow]=useState(null),[codes,setCodes]=useState(null),[busy,setBusy]=useState(false),[error,setError]=useState('');
+ useEffect(()=>{let active=true;recoveryRequest('/api/auth/mfa-recovery').then(data=>{if(active)setStatus(data);}).catch(e=>{if(active){setError(e.message);setStatus({unavailable:true});}});return()=>{active=false;};},[]);
+ async function begin(event){event.preventDefault();setBusy(true);setError('');try{const result=await recoveryRequest('/api/auth/mfa-recovery',{action:'replace_begin',password,code});setPassword('');setCode('');setFlow(result);}catch(e){setError(e.message);}finally{setBusy(false);}}
+ async function cancel(){setBusy(true);setError('');try{await recoveryRequest('/api/auth/mfa-recovery',{action:'cancel',token:flow.token});setFlow(null);}catch(e){setError(e.message);}finally{setBusy(false);}}
+ const content=<main id="main" className="um-workspace um-security-page"><header className="ws-header"><div><h1>Account security</h1><p>{session?.email}</p></div><Link className="ws-button" to={staffHome(session?.role)}>Back to workspace</Link></header>{error&&<p className="ws-error" role="alert">{error}</p>}{codes?<RecoveryCodes codes={codes}/>:flow?<ReplacementEnrollment flow={flow} action="replace_complete" body={{token:flow.token}} onComplete={result=>{setFlow(null);setCodes(result.recovery_codes);}} onCancel={cancel}/>:<><section className="ws-card"><h2>Password</h2><p>A password reset signs out previous sessions. Staff authenticator requirements remain in place.</p><Link className="ws-button" to="/login?forgot=1">Send a password reset link</Link></section><section className="ws-card"><h2>Authenticator</h2>{!status?<p role="status">Loading security status…</p>:status.unavailable?<p>Security status could not load. Refresh this page before making changes.</p>:!status.mfa_required?<p>This account does not require an authenticator. Customer sign-in stays email and password.</p>:!status.enrolled?<p>No authenticator is enrolled. Sign out and complete normal sign-in to enroll your own device.</p>:<><p>To replace your device, verify your current password and a fresh code from your existing authenticator. Recovery codes cannot authorize replacement. Your current device stays active until the new one is verified.</p><form onSubmit={begin}><input name="username" autoComplete="username" value={session?.email||''} readOnly hidden/><label>Current password<input type="password" autoComplete="current-password" value={password} onChange={e=>setPassword(e.target.value)} required/></label><label>Current authenticator code<input autoComplete="one-time-code" inputMode="numeric" pattern="[0-9]{6}" maxLength={6} value={code} onChange={e=>setCode(e.target.value)} required/></label><button className="ws-button primary" type="submit" disabled={busy}>{busy?'Verifying…':'Verify and prepare new authenticator'}</button></form><p>Lost the device and recovery codes? Ask a different administrator to verify your identity and send recovery to your registered email.</p></>}</section>{session?.role==='admin'&&<section className="ws-card"><h2>Help a staff member recover access</h2><Link className="ws-button" to="/admin/account-recovery">Open staff account recovery</Link></section>}</> }</main>;
+ return STAFF_ROLES.includes(session?.role)?<AdminShell active="security">{content}</AdminShell>:<><Nav/>{content}</>;
+}

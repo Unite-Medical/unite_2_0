@@ -1,3 +1,5 @@
+const AccountSecurity=lazy(()=>import('./pages/AccountSecurity.jsx').then(m=>({default:m.AccountSecurity})));
+const AdminAccountRecovery=lazy(()=>import('./pages/admin/AdminAccountRecovery.jsx').then(m=>({default:m.AdminAccountRecovery})));
 const NotFound = lazy(() => import('./pages/NotFound.jsx').then(m=>({default:m.NotFound})));
 import { AnalyticsPageTracker } from './components/AnalyticsPageTracker.jsx';
 const WarehouseMobile = lazy(() => import('./pages/WarehouseMobile.jsx').then(m=>({default:m.WarehouseMobile})));
@@ -236,6 +238,8 @@ export default function App() {
           <Route path="/register" element={<SessionStartup><Register /></SessionStartup>} />
 
           <Route path="/dashboard" element={<RequireSession roles={['customer', 'distributor']}><Dashboard /></RequireSession>} />
+          <Route path="/account/security" element={<RequireSession><AccountSecurity/></RequireSession>}/>
+          <Route path="/admin/account-recovery" element={<RequireAdmin><AdminAccountRecovery/></RequireAdmin>}/>
           <Route path="/account/settings" element={<RequireSession roles={['customer', 'distributor']}><AccountSettings /></RequireSession>} />
           <Route path="/account/invoices" element={<RequireSession roles={['customer', 'distributor']}><Invoices /></RequireSession>} />
           <Route path="/account/quotes" element={<RequireSession roles={['customer', 'distributor']}><AccountQuotes /></RequireSession>} />

@@ -77,6 +77,7 @@ export function AdminShell({active,children,unsavedChanges=false}){
      <details className="uw-personal-appearance"><summary>Appearance</summary><AppearanceControls userId={session?.user_id}/></details>
      {session?.roles?.length>1&&<label className="uw-role-label">Working role<select value={session.role} disabled={switching} onChange={e=>switchRole(e.target.value)}>{session.roles.map(r=><option key={r} value={r}>{r.replaceAll('_',' ')}</option>)}</select></label>}
      {session?.role==='admin'&&<Link to="/admin/settings" onClick={go}><WorkspaceIcon name="settings" size={16}/>Settings</Link>}
+     <Link to="/account/security" onClick={go}><WorkspaceIcon name="shield" size={16}/>Account security</Link>
      <Link to="/" onClick={go}><WorkspaceIcon name="external" size={16}/>View website</Link>
      <button onClick={async()=>{if(unsavedChanges){setError('Save or discard your changes before signing out.');return;}await auth.logout();navigate('/login');}}><WorkspaceIcon name="logout" size={16}/>Sign out</button>
     </div>

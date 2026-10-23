@@ -3,11 +3,11 @@ import {neon} from '@neondatabase/serverless';
 import {readRawBody,sendJson} from '../_lib/http.js';
 import {issueSession} from '../_lib/auth.js';
 import {digestToken,openMfa,verifyTotp,requiresMfa} from '../_lib/mfa.js';
-export default async function handler(req,res){
+export function createMfaVerificationHandler({env=process.env,sqlFactory=neon}={}){return async function handler(req,res){
  res.setHeader('Cache-Control','no-store, private');
  if(req.method!=='POST')return sendJson(res,405,{error:'method_not_allowed'});
- if(!process.env.DATABASE_URL)return sendJson(res,503,{error:'not_configured'});
- const sql=neon(process.env.DATABASE_URL);
+ if(!env.DATABASE_URL)return sendJson(res,503,{error:'not_configured'});
+ const sql=sqlFactory(env.DATABASE_URL);
  try{
   const body=JSON.parse((await readRawBody(req)).toString('utf8'));
   if(!/^[A-Za-z0-9_-]{43}$/.test(body.challenge||''))return sendJson(res,401,{error:'challenge_expired_sign_in_again'});
@@ -39,3 +39,6 @@ export default async function handler(req,res){
   return sendJson(res,200,{ok:true,session,...(recoveryCodes.length?{recovery_codes:recoveryCodes}:{})});
  }catch{return sendJson(res,503,{error:'mfa_unavailable'});}
 }
+
+}
+export default createMfaVerificationHandler();

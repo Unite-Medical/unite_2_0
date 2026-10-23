@@ -46,6 +46,7 @@ export function AccountSettings() {
       <div className="customer-account-settings" style={{ background: D.paper, fontFamily: D.sans, color: D.ink, minHeight: '100vh' }}>
         <Nav />
         <main style={{ maxWidth: 640, margin: '0 auto', padding: '120px 24px', textAlign: 'center' }}>
+          <a href="/account/security">Account security &amp; password recovery</a>
           <h1 style={{ fontFamily: D.display, fontSize: 56, fontWeight: 400, letterSpacing: -1.2, lineHeight: 1, margin: 0 }}>Sign in to view settings.</h1>
           <button onClick={() => navigate('/login')} style={{ marginTop: 16, background: D.plum, color: D.paper, border: 'none', padding: '13px 22px', borderRadius: 4, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>Sign in</button>
         </main>
@@ -88,7 +89,7 @@ export function AccountSettings() {
     <div className="customer-account-settings" style={{ background: D.paper, fontFamily: D.sans, color: D.ink, minHeight: '100vh' }}>
       <Nav />
       <main id="main">
-        <PageHead eyebrow={`ACCOUNT · ${(org?.name || '').toUpperCase()}`} title="Settings" sub="Organization profile, team access, billing terms, and integrations — all in one pane." />
+        <div style={{padding:16}}><a href="/account/security">Account security &amp; password recovery</a></div><PageHead eyebrow={`ACCOUNT · ${(org?.name || '').toUpperCase()}`} title="Settings" sub="Organization profile, team access, billing terms, and integrations — all in one pane." />
         <div style={{ maxWidth: 1360, margin: '0 auto', padding: `24px ${padX}px ${isMobile ? 56 : 64}px`, display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '240px 1fr', gap: isMobile ? 18 : 32 }}>
           <nav aria-label="Settings sections" className={isMobile ? 'um-scroll-x' : ''} style={isMobile ? { display: 'flex', gap: 6, paddingBottom: 6 } : undefined}>
             {TABS.map((s) => (
