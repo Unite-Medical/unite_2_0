@@ -6,6 +6,8 @@ import { beforeVercelSend } from '../lib/analytics/vercel.js';
 
 export function AnalyticsPageTracker() {
   const { pathname, search } = useLocation();
-  useEffect(() => { captureUnitePage(); }, [pathname, search]);
+  const security=/^\/(?:login(?:\/|$)|account\/security(?:\/|$)|admin\/account-recovery(?:\/|$))/.test(pathname);
+  useEffect(() => { if(!security)captureUnitePage(); }, [pathname, search, security]);
+  if(security)return null;
   return import.meta.env.PROD ? <Analytics beforeSend={beforeVercelSend} /> : null;
 }

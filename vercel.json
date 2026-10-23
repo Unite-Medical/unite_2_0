@@ -258,6 +258,45 @@
           "value": "noindex, nofollow"
         }
       ]
+    },
+    {
+      "source": "/login/:path*",
+      "headers": [
+        {
+          "key": "Referrer-Policy",
+          "value": "no-referrer"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "no-store, private"
+        }
+      ]
+    },
+    {
+      "source": "/account/security/:path*",
+      "headers": [
+        {
+          "key": "Referrer-Policy",
+          "value": "no-referrer"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "no-store, private"
+        }
+      ]
+    },
+    {
+      "source": "/admin/account-recovery/:path*",
+      "headers": [
+        {
+          "key": "Referrer-Policy",
+          "value": "no-referrer"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "no-store, private"
+        }
+      ]
     }
   ],
   "crons": [
@@ -279,6 +318,10 @@
     },
     {
       "path": "/api/qbo/order-outbox",
+      "schedule": "*/5 * * * *"
+    },
+    {
+      "path": "/api/auth/security-notices",
       "schedule": "*/5 * * * *"
     }
   ],

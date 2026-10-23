@@ -340,6 +340,7 @@ export function configSnapshot() {
       || (env('CUSTOMERIO_WEBHOOK_USERNAME') && env('CUSTOMERIO_WEBHOOK_PASSWORD'))),
   };
   out.mfa={label:'Authenticator sign-in',configured:/^[a-f0-9]{64}$/i.test(env('MFA_ENCRYPTION_KEY'))};
+  out.account_recovery={label:'Account recovery email (configuration only)',configured:Boolean(env('UNITE_AUTH_ORIGIN')&&env('UNITE_AUTH_FROM')&&env('RESEND_API_KEY')&&env('CRON_SECRET')&&/^[a-f0-9]{64}$/i.test(env('MFA_ENCRYPTION_KEY')))};
   out.shipping_origin={label:'Verified shipping origin',configured:['UNITE_SHIP_FROM_STREET','UNITE_SHIP_FROM_CITY','UNITE_SHIP_FROM_STATE','UNITE_SHIP_FROM_ZIP'].every(k=>Boolean(env(k)))};
   out.document_scanner={label:'Private document scanner',configured:env('DOCUMENT_SCAN_URL').startsWith('https://')&&Boolean(env('DOCUMENT_SCAN_TOKEN'))};
   out.document_extraction={label:'Certificate extraction',configured:Boolean(env('ANTHROPIC_API_KEY')&&env('DOCUMENT_EXTRACTION_MODEL'))};

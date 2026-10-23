@@ -10,9 +10,9 @@ test('reset credentials enforce entropy and bounded password lengths',()=>{
  assert.equal(validRecoveryToken(token),true);
  for(const bad of ['',undefined,{},'a'.repeat(42),'a'.repeat(44),'<'.repeat(43)])assert.equal(validRecoveryToken(bad),false);
  assert.match(recoveryDigest(token),/^[a-f0-9]{64}$/);
- assert.equal(validNewPassword('a'.repeat(11)),false);assert.equal(validNewPassword('a'.repeat(12)),true);assert.equal(validNewPassword('a'.repeat(257)),false);
- assert.equal(recoveryOrigin({headers:{host:'evil.example'}}),'https://unitemedical.net');
- assert.equal(recoveryOrigin({headers:{host:'staging.unitemedical.net'}}),'https://staging.unitemedical.net');
+ assert.equal(validNewPassword('a'.repeat(11)),false);assert.equal(validNewPassword('a'.repeat(14)),false);assert.equal(validNewPassword('a'.repeat(15)),true);assert.equal(validNewPassword('a'.repeat(257)),false);
+ assert.throws(()=>recoveryOrigin({headers:{host:'evil.example'}},{}),/not_configured/);
+ assert.equal(recoveryOrigin({headers:{host:'evil.example'}},{UNITE_AUTH_ORIGIN:'https://staging.unitemedical.net',UNITE_ENVIRONMENT:'staging'}),'https://staging.unitemedical.net');
 });
 test('remembered MFA persists exactly 30 days, refresh does not extend it, revocation still wins',()=>{
  const old=process.env.SESSION_SECRET;process.env.SESSION_SECRET='test-signing-secret-that-is-long-enough';
