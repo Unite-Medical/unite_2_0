@@ -29,6 +29,7 @@ const PortalQuote = lazy(() => import('./pages/PortalQuote.jsx').then((m) => ({ 
 const AccountQuotes = lazy(() => import('./pages/AccountQuotes.jsx').then((m) => ({ default: m.AccountQuotes })));
 const AccountTeam = lazy(() => import('./pages/AccountTeam.jsx').then((m) => ({ default: m.AccountTeam })));
 const RepPortal = lazy(() => import('./pages/RepPortal.jsx').then((m) => ({ default: m.RepPortal })));
+const CustomerDirectory = lazy(() => import('./pages/CustomerDirectory.jsx').then((m) => ({ default: m.CustomerDirectory })));
 const Surplus = lazy(() => import('./pages/Surplus.jsx').then((m) => ({ default: m.Surplus })));
 const ShortageMatch = lazy(() => import('./pages/ShortageMatch.jsx').then((m) => ({ default: m.ShortageMatch })));
 const SupplyRisk = lazy(() => import('./pages/SupplyRisk.jsx').then((m) => ({ default: m.SupplyRisk })));
@@ -254,6 +255,7 @@ export default function App() {
           <Route path="/invoices/:id/print" element={<RequireSession><InvoicePrint /></RequireSession>} />
           <Route path="/portal/quote" element={<PortalQuote />} />
           <Route path="/rep" element={<RequireSession roles={['sales', 'sales_manager', 'customer_service', 'admin']}><RepPortal /></RequireSession>} />
+          <Route path="/rep/customers" element={<RequireSession roles={['sales', 'sales_manager']}><CustomerDirectory /></RequireSession>} />
 
           <Route path="/admin"           element={<RequireAdmin><AdminOverview /></RequireAdmin>} />
           <Route path="/admin/advanced-bi" element={<RequireAdmin><AdvancedBI /></RequireAdmin>} />
