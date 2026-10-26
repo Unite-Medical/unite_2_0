@@ -74,6 +74,7 @@ export function AdminPurchaseOrders() {
         <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 12 }}>OPS · PURCHASE ORDERS</div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'end', marginBottom: 22, flexWrap: 'wrap', gap: 10 }}>
           <h1 style={{ fontFamily: D.display, fontSize: 'clamp(34px, 5.6vw, 56px)', fontWeight: 400, letterSpacing: -1.3, margin: 0 }}>Purchase orders.</h1>
+          <Link className="cw-button" to="/admin/purchase-orders/new">Create purchase order</Link>
           <button
             onClick={() => act(draftFromReplenishment, 'draft-all')}
             disabled={busy === 'draft-all'}
@@ -111,7 +112,7 @@ export function AdminPurchaseOrders() {
                   return (
                     <tr key={p.id} style={{ borderTop: i === 0 ? 'none' : `1px solid ${D.line}` }}>
                       <td style={{ padding: '12px', fontFamily: D.mono, fontSize: 12 }}>
-                        <Link to={`/admin/purchase-orders/${p.id}/print`} style={{ color: D.plum }}>{p.id}</Link>
+                        <Link to={`/admin/purchase-orders/${p.id}`} style={{ color: D.plum }}>{p.id}</Link>
                       </td>
                       <td style={{ padding: '12px', fontWeight: 500 }}>
                         {p.vendor_name}
@@ -119,7 +120,7 @@ export function AdminPurchaseOrders() {
                       </td>
                       <td style={{ padding: '12px', color: D.ink2 }}>{p.line_items?.length || 0}</td>
                       <td style={{ padding: '12px', fontFamily: D.mono }}>{prog.received}/{prog.ordered}</td>
-                      <td style={{ padding: '12px', fontFamily: D.mono }}>{fmt.money(p.total_cost || 0, { cents: false })}</td>
+                      <td style={{ padding: '12px', fontFamily: D.mono }}>{p.total_cost==null?'Needs costs':fmt.money(p.total_cost, { cents: false })}</td>
                       <td style={{ padding: '12px' }}>
                         <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12, color: STATUS_COLOR[p.status] || D.ink2 }}>● {p.status}</span>
                       </td>
@@ -127,7 +128,7 @@ export function AdminPurchaseOrders() {
                         {p.status === 'draft' && <Act label="Approve" busy={busy === p.id} onClick={() => act(() => mutatePurchaseOrder(p, 'approve'), p.id)} />}
                         {p.status === 'approved' && <Act label="Send PO" busy={busy === p.id} onClick={() => act(() => sendPurchaseOrder(p), p.id)} />}
                         {p.status === 'sent' && p.vendor_response === 'changes_requested' && <Act label="Create revision" busy={busy === p.id} onClick={() => act(() => mutatePurchaseOrder(p, 'revise'), p.id)} />}
-                        {p.po_type !== 'consignment_settlement' && (p.status === 'sent' || p.status === 'partial') && <Link to="/admin/inventory/receive" style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1, color: D.plum }}>RECEIVE</Link>}
+                        {p.po_type !== 'consignment_settlement' && (p.status === 'sent' || p.status === 'partial') && <Link to={"/admin/inventory/receive?po="+encodeURIComponent(p.id)} style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1, color: D.plum }}>RECEIVE</Link>}
                         {p.po_type !== 'consignment_settlement' && p.status === 'received' && <Act label="Close" busy={busy === p.id} onClick={() => act(() => mutatePurchaseOrder(p, 'close'), p.id)} />}
                         {['draft', 'approved', 'sent'].includes(p.status) && p.vendor_response !== 'acknowledged' && <Act label="Cancel" danger busy={busy === p.id} onClick={() => act(() => mutatePurchaseOrder(p, 'cancel'), p.id)} />}
                       </td>

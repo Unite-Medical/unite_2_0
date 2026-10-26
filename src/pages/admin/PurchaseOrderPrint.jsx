@@ -108,6 +108,7 @@ export function PurchaseOrderPrint() {
           </div>
         </div>
 
+        {po.ship_to&&<div className="um-print-card" style={{marginBottom:24}}><div className="um-print-mono">DELIVER TO</div>{[po.ship_to.recipient,po.ship_to.company,po.ship_to.address1,po.ship_to.address2,[po.ship_to.city,po.ship_to.province,po.ship_to.zip].filter(Boolean).join(' '),po.ship_to.country].filter(Boolean).map((value,index)=><div key={index} style={{marginTop:4,fontSize:13}}>{value}</div>)}{po.reference&&<p>Supplier reference: {po.reference}</p>}{po.payment_terms&&<p>Payment terms: {po.payment_terms}</p>}{po.source==='manual_composer'&&po.notes&&<p style={{whiteSpace:'pre-wrap'}}>Supplier notes: {po.notes}</p>}</div>}
         {/* LINES */}
         <table className="um-print-table">
           <thead>
@@ -124,19 +125,19 @@ export function PurchaseOrderPrint() {
             {lines.length === 0 && <tr><td colSpan={anyReceived ? 6 : 5} style={{ color: D.ink3, padding: 24, textAlign: 'center' }}>No line items.</td></tr>}
             {lines.map((l) => (
               <tr key={l.sku}>
-                <td style={{ fontWeight: 500 }}>{l.name}</td>
+                <td style={{ fontWeight: 500 }}>{l.name}{l.supplier_sku&&<div style={{fontSize:11,marginTop:4}}>Supplier SKU: {l.supplier_sku}</div>}</td>
                 <td style={{ fontFamily: D.mono, fontSize: 12 }}>{l.sku}</td>
                 <td style={{ textAlign: 'right', fontFamily: D.mono }}>{fmt.number(l.qty)}</td>
                 {anyReceived && <td style={{ textAlign: 'right', fontFamily: D.mono, color: (l.received_qty || 0) >= l.qty ? '#2d6a4f' : '#9a7b1e' }}>{fmt.number(l.received_qty || 0)}</td>}
-                <td style={{ textAlign: 'right', fontFamily: D.mono }}>{fmt.money(l.cost || 0)}</td>
-                <td style={{ textAlign: 'right', fontFamily: D.mono, fontWeight: 600, color: D.plum }}>{fmt.money((l.qty || 0) * (l.cost || 0))}</td>
+                <td style={{ textAlign: 'right', fontFamily: D.mono }}>{l.cost==null?'Not priced':fmt.money(l.cost)}</td>
+                <td style={{ textAlign: 'right', fontFamily: D.mono, fontWeight: 600, color: D.plum }}>{l.qty==null||l.cost==null?'Not priced':fmt.money(l.qty*l.cost)}</td>
               </tr>
             ))}
           </tbody>
           <tfoot>
             <tr style={{ borderTop: `2px solid ${D.ink}` }}>
               <td colSpan={anyReceived ? 5 : 4} style={{ paddingTop: 14, fontWeight: 600 }}>Total ({lines.length} lines)</td>
-              <td style={{ textAlign: 'right', paddingTop: 14, fontFamily: D.display, fontSize: 20, color: D.plum }}>{fmt.money(po.total_cost || 0)}</td>
+              <td style={{ textAlign: 'right', paddingTop: 14, fontFamily: D.display, fontSize: 20, color: D.plum }}>{po.total_cost==null?'Needs costs':fmt.money(po.total_cost)}</td>
             </tr>
           </tfoot>
         </table>
@@ -144,7 +145,7 @@ export function PurchaseOrderPrint() {
         <div style={{ marginTop: 28, padding: 18, background: D.plum, color: D.paper, borderRadius: 8 }}>
           <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.plumSoft || 'rgba(255,255,255,.7)' }}>TERMS</div>
           <div style={{ fontSize: 14, marginTop: 8, lineHeight: 1.6 }}>
-            Please confirm receipt and expected ship date. Reference PO {po.id} on all shipping documents and invoices. Deliver to the Lithia Springs address above unless otherwise instructed.
+            Please confirm receipt and expected ship date. Reference PO {po.doc_number||po.id} on all shipping documents and invoices. Deliver to the receiving address on this PO; contact Unite if it is missing.
           </div>
         </div>
       </div>

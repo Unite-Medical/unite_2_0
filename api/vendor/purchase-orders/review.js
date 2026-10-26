@@ -23,12 +23,18 @@ export function sanitizePurchaseOrderForVendor(po = {}) {
   return {
     id: po.id,
     vendor_name: po.vendor_name || null,
+    doc_number: po.doc_number || null,
+    reference: po.source==='manual_composer'?po.reference||null:null,
+    payment_terms: po.source==='manual_composer'?po.payment_terms||null:null,
+    supplier_notes: po.source==='manual_composer'?po.notes||null:null,
+    ship_to: po.source==='manual_composer'&&po.ship_to?Object.fromEntries(['recipient','company','address1','address2','city','province','zip','country','phone'].map(key=>[key,String(po.ship_to[key]||'')])):null,
     status: po.status,
     revision: po.revision || 1,
     expected_delivery: po.expected_delivery || null,
     warehouse_delivery: po.vendor_delivery_instructions || null,
     line_items: (po.line_items || []).map((line) => ({
       sku: line.sku,
+      supplier_sku: po.source==='manual_composer'?line.supplier_sku||null:null,
       name: line.name || line.sku,
       qty: Number(line.qty || 0),
       cost: Number(line.cost || 0),

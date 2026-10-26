@@ -13,8 +13,13 @@ function localView(po) {
     status: po.status,
     revision: po.revision || 1,
     expected_delivery: po.expected_delivery || null,
+    doc_number: po.doc_number || null,
+    reference: po.source==='manual_composer'?po.reference||null:null,
+    payment_terms: po.source==='manual_composer'?po.payment_terms||null:null,
+    supplier_notes: po.source==='manual_composer'?po.notes||null:null,
+    ship_to: po.source==='manual_composer'?po.ship_to||null:null,
     line_items: (po.line_items || []).map((line) => ({
-      sku: line.sku, name: line.name || line.sku,
+      supplier_sku: po.source==='manual_composer'?line.supplier_sku||null:null, sku: line.sku, name: line.name || line.sku,
       qty: Number(line.qty || 0), cost: Number(line.cost || 0),
     })),
     total_cost: Number(po.total_cost || 0),
@@ -128,16 +133,17 @@ export function VendorPurchaseOrderReview() {
       <div style={{ display: 'flex', justifyContent: 'space-between', gap: 20, flexWrap: 'wrap', alignItems: 'start' }}>
         <div>
           <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1.2, color: D.plum }}>SUPPLIER PURCHASE ORDER · REV {po.revision}</div>
-          <h1 style={title}>{po.id}</h1>
+          <h1 style={title}>{po.doc_number||po.id}</h1>
           <div style={{ color: D.ink2 }}>{po.vendor_name}{po.expected_delivery ? ` · requested delivery ${fmt.date(po.expected_delivery, { year: true })}` : ''}</div>
         </div>
         <div style={{ padding: '7px 11px', border: `1px solid ${D.line}`, borderRadius: 6, fontFamily: D.mono, fontSize: 10 }}>{String(po.vendor_response || po.status).replaceAll('_', ' ').toUpperCase()}</div>
       </div>
 
+      {po.ship_to&&<section aria-label="Receiving address and PO terms" style={{marginTop:24,padding:18,border:`1px solid ${D.line}`,borderRadius:8}}><h2 style={{fontSize:16}}>Deliver to</h2>{[po.ship_to.recipient,po.ship_to.company,po.ship_to.address1,po.ship_to.address2,[po.ship_to.city,po.ship_to.province,po.ship_to.zip].filter(Boolean).join(' '),po.ship_to.country].filter(Boolean).map((value,index)=><div key={index}>{value}</div>)}{po.reference&&<p>Supplier reference: {po.reference}</p>}{po.payment_terms&&<p>Payment terms: {po.payment_terms}</p>}{po.supplier_notes&&<p style={{whiteSpace:'pre-wrap'}}>Notes: {po.supplier_notes}</p>}</section>}
       <div style={{ marginTop: 28, border: `1px solid ${D.line}`, borderRadius: 10, overflow: 'hidden' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
           <thead><tr style={{ background: D.paperAlt, fontFamily: D.mono, fontSize: 10, color: D.ink3 }}>{['SKU', 'PRODUCT', 'QTY', 'UNIT COST', 'EXTENDED'].map((heading) => <th key={heading} style={{ padding: 11, textAlign: 'left' }}>{heading}</th>)}</tr></thead>
-          <tbody>{po.line_items.map((line, index) => <tr key={`${line.sku}-${index}`} style={{ borderTop: `1px solid ${D.line}` }}><td style={{ padding: 11, fontFamily: D.mono }}>{line.sku}</td><td style={{ padding: 11 }}>{line.name}</td><td style={{ padding: 11 }}>{line.qty}</td><td style={{ padding: 11 }}>{fmt.money(line.cost)}</td><td style={{ padding: 11 }}>{fmt.money(line.qty * line.cost)}</td></tr>)}</tbody>
+          <tbody>{po.line_items.map((line, index) => <tr key={`${line.sku}-${index}`} style={{ borderTop: `1px solid ${D.line}` }}><td style={{ padding: 11, fontFamily: D.mono }}>{line.sku}</td><td style={{ padding: 11 }}>{line.name}{line.supplier_sku&&<small style={{display:'block',marginTop:4}}>Supplier SKU: {line.supplier_sku}</small>}</td><td style={{ padding: 11 }}>{line.qty}</td><td style={{ padding: 11 }}>{fmt.money(line.cost)}</td><td style={{ padding: 11 }}>{fmt.money(line.qty * line.cost)}</td></tr>)}</tbody>
           <tfoot><tr style={{ borderTop: `2px solid ${D.ink}` }}><td colSpan={4} style={{ padding: 12, fontWeight: 600 }}>Total</td><td style={{ padding: 12, fontFamily: D.display, fontSize: 20 }}>{fmt.money(po.total_cost)}</td></tr></tfoot>
         </table>
       </div>
