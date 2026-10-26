@@ -4,7 +4,7 @@ export const CUSTOMER_WORKSPACE_ROLES = ['admin', 'sales', 'sales_manager', 'cus
 export const CUSTOMER_WORKSPACE_TABLES = ['organizations', 'orders', 'quotes', 'backorders', 'reps'];
 
 // Explicit assignments take precedence over the older name-based rep attribution.
-export function buildCustomerWorkspace(tables, session) {
+export function buildCustomerWorkspace(tables, session, { readAllCustomers = false } = {}) {
   if (!CUSTOMER_WORKSPACE_ROLES.includes(session?.role)) return { ok: false, error: 'forbidden' };
   const who = clean(session.email), userId = session.user_id;
   const roster = (tables.reps || []).filter(rep => who && clean(rep.email) === who && !['inactive', 'disabled', 'terminated'].includes(rep.status));
@@ -12,7 +12,7 @@ export function buildCustomerWorkspace(tables, session) {
   const ids = new Set(roster.map(rep => rep.id).filter(Boolean));
   const organizations = (tables.organizations || []).filter(org => {
     if (org.workspace_internal || org.status === 'merged') return false;
-    if (session.role === 'admin') return true;
+    if (session.role === 'admin' || readAllCustomers) return true;
     const ownerEmail = clean(org.account_owner_email || org.owner_email);
     const ownerId = org.account_owner_id || org.owner_id;
     if (ownerEmail || ownerId) return Boolean((who && ownerEmail === who) || (userId && ownerId === userId));
@@ -29,5 +29,5 @@ export function buildCustomerWorkspace(tables, session) {
       backorders: (tables.backorders || []).filter(belongs).filter(row => !['closed', 'resolved', 'cancelled', 'fulfilled'].includes(row.status)).map(row => pick(row, ['id', 'order_id', 'sku', 'status', 'due_at', 'expected_at'])),
     };
   }).sort((a, b) => String(a.name || a.id).localeCompare(String(b.name || b.id)));
-  return { ok: true, accounts, scope: session.role === 'admin' ? 'all' : 'assigned', generated_at: new Date().toISOString() };
+  return { ok: true, accounts, scope: session.role === 'admin' || readAllCustomers ? 'all' : 'assigned', generated_at: new Date().toISOString() };
 }
