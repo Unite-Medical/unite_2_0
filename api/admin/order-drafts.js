@@ -1,4 +1,5 @@
 import crypto from 'node:crypto';
+import {readLatestOrderShipping} from '../_lib/orderShippingDefault.js';
 import {neon} from '@neondatabase/serverless';
 import {authorizeLiveRequest} from '../_lib/auth.js';
 import {readRawBody,sendJson} from '../_lib/http.js';
@@ -13,6 +14,7 @@ export default async function handler(req,res){
  try{
   const sql=neon(process.env.DATABASE_URL),live=await authorizeLiveRequest(req,sql,{roles:['admin']});if(!live.ok)return sendJson(res,403,{error:'Sign in to the admin workspace.'});
   if(req.method==='GET'){
+   if(req.query.customer_id){const customerId=String(req.query.customer_id);if(customerId.length>200)return sendJson(res,400,{error:'Choose a valid customer.'});return sendJson(res,200,{data:await readLatestOrderShipping(sql,customerId)});}
    const id=String(req.query.id||''),source=await readCommerce(sql,{kind:'orders',id});if(!source)return sendJson(res,404,{error:'Order not found.'});
    const orderId=source.operational_order_id;
    const operational=orderId?(await sql`SELECT data FROM um_rows WHERE tbl='orders' AND id=${orderId} AND deleted=false`)[0]?.data:null;
@@ -35,7 +37,7 @@ export default async function handler(req,res){
   const input={...body.draft,id},customer=input.customer_id?await readCommerce(sql,{kind:'customers',id:String(input.customer_id)}):null;
   const products=await Promise.all([...new Set((input.lines||[]).map(l=>l.product_id))].map(id=>readCommerce(sql,{kind:'products',id:String(id)})));
   const schedules=await Promise.all((customer?.price_lists||[]).map(id=>readCommerce(sql,{kind:'pricing',id})));
-  const draft=normalizeAdminDraft({input,existing,customer,products:products.filter(Boolean),schedules,actor:live.session});
+  const draft=normalizeAdminDraft({input,existing,customer,products:products.filter(Boolean),schedules,actor:live.session,allowPricingReview:body.action!=='submit'});
   const issues=draftSubmissionIssues(draft,customer);
   if(body.action==='preview')return sendJson(res,200,{ok:true,data:draft,issues});
   if(body.action==='save'){

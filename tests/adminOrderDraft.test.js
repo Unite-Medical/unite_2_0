@@ -18,3 +18,28 @@ const mapping={customer_id:'42',items:{SKU1:'9'},shipping_item_id:'10'};
 test('QuickBooks invoice matches total and fails closed on absent customer or item mapping',()=>{const {order,items}=plan();const invoice=buildOrderInvoice(order,items,mapping);assert.equal(invoice.Line.reduce((s,l)=>s+l.Amount,0),170);assert.equal(invoice.CustomerRef.value,'42');assert.equal(invoice.EmailStatus,'NotSet');assert.throws(()=>buildOrderInvoice(order,items,{...mapping,items:{}}),/Match every product/);assert.throws(()=>buildOrderInvoice({...order,total:171},items,mapping),/total/);});
 test('QuickBooks retry reuses existing invoice, never posts a duplicate',async()=>{const {order,items}=plan(),payload=buildOrderInvoice(order,items,mapping),calls=[];const result=await postOrderInvoice({order,items,mapping,context:{realmId:'1',environment:'sandbox',accessToken:'fake'},fetchImpl:async(url,options)=>{calls.push(options.method);return {ok:true,json:async()=>({QueryResponse:{Invoice:[{Id:'12',PrivateNote:payload.PrivateNote,CustomerRef:payload.CustomerRef,TotalAmt:170,Balance:170}]}})};}});assert.equal(result.id,'12');assert.deepEqual(calls,['GET']);});
 test('QuickBooks creation is idempotent and tax mismatch cannot be reported as synced',async()=>{const {order,items}=plan(),calls=[];await assert.rejects(()=>postOrderInvoice({order,items,mapping,context:{realmId:'1',environment:'sandbox',accessToken:'fake'},fetchImpl:async(url,options)=>{calls.push({url,options});return {ok:true,json:async()=>options.method==='GET'?{QueryResponse:{}}:{Invoice:{Id:'12',TotalAmt:171}}};}}),/different total/);assert.equal(calls.length,2);assert.match(calls[1].url,/requestid=[a-f0-9]{40}/);assert.equal(JSON.parse(calls[1].options.body).EmailStatus,'NotSet');});
+
+test('missing cost keeps a reviewable draft with correct totals but cannot submit',()=>{
+ const patch={lines:[{...input.lines[0],manual_price:true,unit_price:43.895,quantity:400}]};
+ const pending=draft(patch,{products:[{...products[0],cost:null}],allowPricingReview:true});
+ assert.equal(pending.subtotal,17560);assert.equal(pending.total,17570);
+ assert.equal(pending.lines[0].pricing_source,'Price needs review');
+ assert.match(pending.pricing_issues[0],/SKU1.*verified product cost/);
+ assert.throws(()=>planAdminOrderSubmission(pending,customer,actor),/verified product cost/);
+ assert.throws(()=>draft({...patch,pricing_issues:[]},{products:[{...products[0],cost:null}]}),/verified product cost/);
+ const approved=draft(patch);assert.equal(approved.pricing_issues.length,0);assert.equal(approved.lines[0].pricing_approval.approved_by,actor.email);
+});
+test('retaining an existing agreed price is not new pricing even with no imported cost',()=>{
+ const result=draft({lines:[{...input.lines[0],manual_price:true,unit_price:80}]},{products:[{...products[0],cost:null}]});
+ assert.equal(result.pricing_issues.length,0);assert.equal(result.lines[0].pricing_source,'Agreement');
+});
+test('review drafts do not bypass authority, margin or malformed-price checks',()=>{
+ const patch={lines:[{...input.lines[0],manual_price:true,unit_price:50}]};
+ const jacobe={role:'sales',email:'jacobe@unitemedical.net'};
+ const pending=draft(patch,{actor:jacobe,allowPricingReview:true});
+ assert.match(pending.pricing_issues[0],/Damon.*35%/);
+ assert.throws(()=>draft(patch,{actor:jacobe}),/Damon/);
+ assert.match(draft(patch,{actor:{role:'admin',email:'other@example.test'},allowPricingReview:true}).pricing_issues[0],/Jacobe/);
+ for(const value of [0,-1,'',null,'abc',Infinity])assert.throws(()=>draft({lines:[{...input.lines[0],manual_price:true,unit_price:value}]},{allowPricingReview:true}));
+ assert.equal(draft({lines:[{...input.lines[0],manual_price:true,unit_price:'75.25'}]}).subtotal,150.5);
+});
