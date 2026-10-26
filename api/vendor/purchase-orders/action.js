@@ -1,4 +1,5 @@
 import crypto from 'node:crypto';
+import {purchaseEditorIssues,purchaseEditorRelated} from '../../_lib/purchaseOrderEditor.js';
 import { neon } from '@neondatabase/serverless';
 import { authorizeLiveRequest } from '../../_lib/auth.js';
 import { readRawBody, sendJson } from '../../_lib/http.js';
@@ -16,6 +17,10 @@ export function planPurchaseOrderAction(po, { action, actorId, reason = null, no
   const at = (now instanceof Date ? now : new Date(now)).toISOString();
   if (action === 'approve') {
     if (po.status !== 'draft') return { ok: false, reason: `cannot_approve_from_${po.status}` };
+    if (po.source === 'manual_composer') {
+      const issues = purchaseEditorIssues(po, related.editor || {});
+      if (issues.length) return { ok: false, reason: 'purchase_order_review_required', issues };
+    }
     return { ok: true, purchase_order: { ...po, status: 'approved', revision: Number(po.revision || 1), approved_at: at, approved_by: actorId, updated_at: at } };
   }
   if (action === 'cancel') {
@@ -85,10 +90,11 @@ export default async function handler(req, res) {
       sql`SELECT data FROM um_rows WHERE tbl='vendor_bills' AND deleted=false AND data->>'po_id'=${poId}`,
       sql`SELECT data FROM um_rows WHERE tbl='vendor_bill_variances' AND deleted=false AND data->>'po_id'=${poId}`,
     ]);
+    const editor = po?.source === 'manual_composer' && action === 'approve' ? await purchaseEditorRelated(sql, po) : null;
     const plan = planPurchaseOrderAction(po, {
       action, actorId: live.session.user_id, reason: body.reason,
-    }, { vendor_bills: bills.map((row) => row.data), variances: variances.map((row) => row.data) });
-    if (!plan.ok) return sendJson(res, 409, { error: plan.reason });
+    }, { vendor_bills: bills.map((row) => row.data), variances: variances.map((row) => row.data), editor });
+    if (!plan.ok) return sendJson(res, 409, { error: plan.reason, ...(plan.issues ? { issues: plan.issues } : {}) });
     const actionPatch = Object.fromEntries(Object.entries(plan.purchase_order)
       .filter(([key, value]) => JSON.stringify(value) !== JSON.stringify(po?.[key])));
     const audit = {
