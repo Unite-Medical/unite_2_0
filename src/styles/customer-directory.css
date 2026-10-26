@@ -1,0 +1,7 @@
+.uw-shell .uw-customer-directory{box-sizing:border-box;width:100%;min-width:0}
+.uw-customer-directory .uw-directory-search{margin-bottom:18px;flex-wrap:wrap}
+.uw-customer-directory .uw-directory-pages{padding:14px 18px;flex-wrap:wrap}
+.uw-customer-directory .uw-work-grid.has-detail{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr)}
+.uw-customer-directory .uw-row-copy{min-width:0;overflow-wrap:anywhere}
+.uw-customer-directory .uw-detail{overflow-wrap:anywhere}
+@media(max-width:1200px){.uw-customer-directory .uw-work-grid.has-detail{grid-template-columns:minmax(0,1fr)}}
