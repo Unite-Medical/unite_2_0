@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {normalizePurchaseEditorDraft,purchaseEditorIssues,supplierEditorDraft,supplierEditorView,warehouseEditorView,productEditorView,purchaseEditorView,purchaseEditorFingerprint,requestIdentity,purchaseEditorRelated,purchaseEditorCatalog} from '../api/_lib/purchaseOrderEditor.js';
 import {planPurchaseOrderAction} from '../api/vendor/purchase-orders/action.js';
+import {planPurchaseOrderReceipt} from '../api/wms/receive.js';
 import {createPurchaseOrderEditorHandler} from '../api/admin/purchase-order-editor.js';
 const now=new Date('2026-10-26T21:00:00Z');
 const actor={user_id:'qa-admin',role:'admin',email:'admin@example.test'};
@@ -133,4 +134,21 @@ test('new supplier creation serializes duplicate names and writes only pending v
  assert.equal(res.statusCode,201);assert.equal(res.body.data.status,'pending');assert.equal(res.body.data.role,undefined);assert.equal(db.commands.length,3);assert.match(db.commands[0].query,/pg_advisory_xact_lock/);assert.match(db.commands[1].query,/NOT EXISTS.*name_key/);assert.match(db.commands[2].query,/SELECT 'audit_log'/);
  const stored=JSON.parse(db.commands[1].values[1]);assert.equal(stored.status,'pending');assert.equal(stored.created_by,actor.user_id);assert.equal(stored.name_key,'synthetic supplier');assert.equal(stored.role,undefined);
  const conflictDb=captureDatabase({supplierInsert:false}),conflictHandler=createPurchaseOrderEditorHandler({getSql:()=>conflictDb.sql,authorize:allowed,now:()=>now}),conflict=responseRecorder();await conflictHandler(req('POST',{}, {action:'save_supplier',supplier,request_id:'other-supplier-request-123'}),conflict);assert.equal(conflict.statusCode,409);assert.equal(conflict.body.existing_id,vendor.id);
+});
+
+
+test('new composer PO preserves partial receiving and stable line identity in existing warehouse planner',()=>{
+ const po=normalize();
+ const body={warehouse_id:warehouse.id,ref_type:'purchase_order',ref_id:po.id,idempotency_key:'synthetic_receipt_123',lines:[{sku:product.sku,qty:2,lot_number:'SYNTHETIC-LOT',expiration_date:'2029-01-31',capture_method:'scan'}]};
+ const receiver={user_id:'synthetic-warehouse',role:'warehouse_operator'};
+ assert.equal(planPurchaseOrderReceipt({po,products:[product],body,session:receiver,now}).reason,'po_not_receivable');
+ const plan=planPurchaseOrderReceipt({po:{...po,status:'sent'},products:[product],body,session:receiver,now});
+ assert.equal(plan.ok,true,plan.reason);
+ assert.equal(plan.updated_po.status,'partial');
+ assert.equal(plan.updated_po.line_items[0].id,po.line_items[0].id);
+ assert.equal(plan.updated_po.line_items[0].accepted_qty,2);
+ assert.equal(plan.updated_po.line_items[0].vendor_backorder_qty,4);
+ assert.equal(plan.updated_po.line_items[0].billed_qty,0);
+ assert.equal(plan.updated_po.warehouse_id,warehouse.id);
+ assert.equal(plan.updated_po.received_at,null);
 });

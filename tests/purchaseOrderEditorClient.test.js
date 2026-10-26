@@ -19,11 +19,21 @@ test('save payload cannot carry lifecycle, receiving or accounting fields',()=>{
  const payload=purchaseDraftPayload(draft);assert.equal(payload.status,undefined);assert.equal(payload.received_qty,undefined);assert.equal(payload.line_items[0].received_qty,undefined);assert.equal(payload.line_items[0].id,'stable-line');
 });
 test('warehouse address is sourced, not fabricated, and saved overrides can be detected',()=>{
- const address=warehousePurchaseAddress({id:'w',name:'QA warehouse',ship_to:{address1:'2 Test Road',city:'Test',country:'US'}});
- assert.equal(address.address1,'2 Test Road');assert.equal(address.zip,'');assert.equal(warehousePurchaseAddress({}).country,'');assert.equal(samePurchaseAddress(address,{...address,address1:'Manual edited address'}),false);assert.equal(samePurchaseAddress(address,{...address,address1:' 2 Test Road '}),true);
+ const address=warehousePurchaseAddress({id:'w',name:'QA warehouse',ship_to:{recipient:'Receiving desk',address1:'2 Test Road',city:'Test',country:'US'}});
+ assert.equal(address.recipient,'Receiving desk');assert.equal(address.address1,'2 Test Road');assert.equal(address.zip,'');assert.equal(warehousePurchaseAddress({}).country,'');assert.equal(samePurchaseAddress(address,{...address,address1:'Manual edited address'}),false);assert.equal(samePurchaseAddress(address,{...address,address1:' 2 Test Road '}),true);
 });
 test('supplier projection carries only intended PO context, never historical internal notes',()=>{
  const po={...draft,source:'manual_composer',doc_number:'PO-QA',internal_margin:55,ship_to:{address1:'QA warehouse',secret:'never'},line_items:[{sku:'QA-BOX',supplier_sku:'SUP-BOX',qty:10,cost:4}]};
  const view=sanitizePurchaseOrderForVendor(po);assert.equal(view.reference,'supplier-a-quote');assert.equal(view.payment_terms,'Net 30');assert.equal(view.supplier_notes,'Supplier A note');assert.equal(view.ship_to.secret,undefined);assert.equal(view.internal_margin,undefined);assert.equal(view.line_items[0].supplier_sku,'SUP-BOX');
  const historic=sanitizePurchaseOrderForVendor({...po,source:'import',notes:'Internal customer discussion'});assert.equal(historic.supplier_notes,null);assert.equal(historic.ship_to,null);
+});
+
+test('approval readiness follows current edits rather than stale last-save issues',async()=>{
+ const {purchaseDraftReadiness}=await import('../src/lib/purchaseOrderEditorClient.js');
+ const draft={vendor_id:'a',warehouse_id:'w',ship_to:{recipient:'Receiving',address1:'1 Example Way',city:'Test',zip:'10001',country:'US'},payment_terms:'Net 30',line_items:[{sku:'SYNTHETIC',qty:'3',cost:'0'}]};
+ const context={vendor:{id:'a',status:'approved'},warehouses:[{id:'w'}]};
+ assert.deepEqual(purchaseDraftReadiness(draft,context),[]);
+ assert.match(purchaseDraftReadiness({...draft,line_items:[{sku:'SYNTHETIC',qty:'3',cost:''}]},context).join(' '),/unit cost/);
+ assert.match(purchaseDraftReadiness(draft,{...context,vendor:{id:'a',status:'pending'}}).join(' '),/supplier needs approval/);
+ assert.equal(purchaseDraftReadiness({line_items:[]},{}).length,5);
 });

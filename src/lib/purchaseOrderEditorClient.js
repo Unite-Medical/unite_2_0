@@ -18,7 +18,24 @@ export function purchaseDraftTotals(lines=[]){
 }
 export function warehousePurchaseAddress(warehouse={}){
  const address=warehouse.ship_to||(typeof warehouse.address==='object'&&warehouse.address?warehouse.address:warehouse);
- return {recipient:warehouse.name||'',company:address.company||'',address1:address.address1||address.line1||(typeof warehouse.address==='string'?warehouse.address:''),address2:address.address2||address.line2||'',city:address.city||'',province:address.province||address.state||'',zip:address.zip||address.postal_code||'',country:address.country||address.country_code||'',phone:address.phone||warehouse.phone||''};
+ return {recipient:address.recipient||warehouse.name||'',company:address.company||'',address1:address.address1||address.line1||(typeof warehouse.address==='string'?warehouse.address:''),address2:address.address2||address.line2||'',city:address.city||'',province:address.province||address.state||'',zip:address.zip||address.postal_code||'',country:address.country||address.country_code||'',phone:address.phone||warehouse.phone||''};
 }
 
 export function samePurchaseAddress(a={},b={}){return ['recipient','company','address1','address2','city','province','zip','country','phone'].every(key=>String(a[key]||'').trim()===String(b[key]||'').trim());}
+
+export function purchaseDraftReadiness(draft,{vendor,warehouses=[]}={}){
+ const issues=[];
+ if(!draft.vendor_id)issues.push('Choose a supplier.');
+ else if(vendor?.id!==draft.vendor_id)issues.push('Wait for the selected supplier details to load.');
+ else if(vendor.status!=='approved')issues.push('This supplier needs approval in the existing supplier review workflow.');
+ if(!warehouses.some(row=>row.id===draft.warehouse_id))issues.push('Choose the receiving warehouse.');
+ const a=draft.ship_to||{};
+ if(!a.address1||!a.city||!a.zip||!a.country||!(a.recipient||a.company))issues.push('Complete the receiving address.');
+ if(!draft.line_items?.length)issues.push('Add at least one product.');
+ for(const line of draft.line_items||[]){
+  if(!Number.isInteger(Number(line.qty))||Number(line.qty)<=0)issues.push((line.sku||'Product')+': enter the ordered quantity.');
+  if(line.cost==null||String(line.cost).trim()===''||!Number.isFinite(Number(line.cost))||Number(line.cost)<0)issues.push((line.sku||'Product')+': enter the supplier’s unit cost.');
+ }
+ if(!String(draft.payment_terms||'').trim())issues.push('Enter the agreed supplier payment terms.');
+ return issues;
+}
