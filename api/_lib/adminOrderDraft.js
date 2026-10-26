@@ -20,7 +20,7 @@ export function normalizeAdminDraft({input,customer,products=[],schedules=[],act
   if((line.manual_price||discount)&&changedPrice){
    const check=canSetNewPrice(actor,unit,Number(product.cost));
    if(!check.ok){
-    const reason=check.reason==='pricing_authority_required'?'Damon or Jacobe’s approval is required for this new price.':check.reason==='damon_approval_required'?'Damon must approve this price below the 35% margin.':'Enter a verified product cost in Catalog review before approving this price.';
+    const reason=check.reason==='pricing_authority_required'?'Damon or Jacobe’s approval is required for this new price.':check.reason==='damon_approval_required'?'Damon must approve this price below the 35% margin.':'Enter a verified product cost in this item’s Price & internal cost panel before approving this price.';
     const message=(product.sku||product.name)+': '+reason;
     if(!allowPricingReview)throw new Error(message);
     pricingIssues.push(message);
@@ -28,7 +28,7 @@ export function normalizeAdminDraft({input,customer,products=[],schedules=[],act
   }
 
   if(unit<=0)throw new Error('Each item needs a confirmed price greater than zero.');
-  return {id:text(line.id||'line-'+(index+1),100),product_id:product.id,variant_id:product.variant_id,sku:product.sku,name:product.name,variant:product.variant,image:product.image||'',quantity,unit_price:unit,retail:product.retail,manual_price:!!line.manual_price,requested_unit_price:line.manual_price?amount(line.unit_price,'unit price'):null,pricing_source:changedPrice&&(line.manual_price||discount)?(pricingApproval?'Approved manual price':'Price needs review'):resolved.source,pricing_approval:pricingApproval,discount_percent:discount,mapping_status:'matched',removed:false,unfulfilled_quantity:quantity,qbo_item_id:product.qbo_item_id||null,ext_price:amount(unit*quantity,'line total')};
+  return {id:text(line.id||'line-'+(index+1),100),product_id:product.id,variant_id:product.variant_id,sku:product.sku,name:product.name,variant:product.variant,image:product.image||'',quantity,unit_price:unit,catalog_unit_price:amount(resolved.unit_price,'catalog price'),retail:product.retail,manual_price:!!line.manual_price,requested_unit_price:line.manual_price?amount(line.unit_price,'unit price'):null,pricing_source:changedPrice&&(line.manual_price||discount)?(pricingApproval?'Approved manual price':'Price needs review'):resolved.source,pricing_approval:pricingApproval,discount_percent:discount,mapping_status:'matched',removed:false,unfulfilled_quantity:quantity,qbo_item_id:product.qbo_item_id||null,ext_price:amount(unit*quantity,'line total')};
  });
  if(new Set(lines.map(l=>l.id)).size!==lines.length)throw new Error('Duplicate order items need distinct line references.');
  const subtotal=amount(lines.reduce((n,l)=>n+l.ext_price,0),'subtotal'),shipping=amount(input.shipping||0,'shipping'),tax=customer?.tax_exempt?0:amount(input.tax||0,'tax');
