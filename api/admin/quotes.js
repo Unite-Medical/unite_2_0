@@ -1,3 +1,4 @@
+import {quoteCustomerContext} from '../_lib/quoteCustomerContext.js';
 import crypto from 'node:crypto';
 import {neon} from '@neondatabase/serverless';
 import {authorizeLiveRequest} from '../_lib/auth.js';
@@ -6,7 +7,7 @@ import {isDamon,isJacobe} from '../_lib/launchPolicy.js';
 import {atomicTransition} from '../_lib/atomicTransition.js';
 import {catalogProduct,planQuotePrices} from '../_lib/quotePricing.js';
 import {resolveAuthoritativePrice} from '../_lib/commerce.js';
-const TABLES=['quotes','quote_items','products','organizations','pricing','customer_contract_prices','volume_breaks'];
+const TABLES=['quotes','quote_items','products','organizations','pricing','customer_contract_prices','volume_breaks','commerce_customers'];
 const pick=(r,keys)=>Object.fromEntries(keys.filter(k=>Object.hasOwn(r,k)).map(k=>[k,r[k]]));
 export default async function handler(req,res){
   res.setHeader('Cache-Control','no-store, private');
@@ -17,7 +18,7 @@ export default async function handler(req,res){
     if(!live.ok)return sendJson(res,live.reason==='authentication_required'?401:403,{error:live.reason});
     if(!isDamon(live.session)&&!isJacobe(live.session))return sendJson(res,403,{error:'pricing_authority_required'});
     const rows=await sql`SELECT tbl,data FROM um_rows WHERE tbl=ANY(${TABLES}) AND deleted=false`,table=t=>rows.filter(r=>r.tbl===t).map(r=>r.data);
-    if(req.method==='GET')return sendJson(res,200,{ok:true,quotes:table('quotes').map(q=>pick(q,['id','customer_id','customer_name','contact_email','status','revision','subtotal','total','shipping_cost','tax','valid_until','totals_verified'])),items:table('quote_items').map(i=>pick(i,['id','quote_id','sku','name','target_qty','qty','sell_per_unit','unit_price','ext_sell','ext_price','counter_price'])),organizations:table('organizations').filter(o=>o.status==='active').map(o=>pick(o,['id','name','billing_email','contact_email'])),can_override_below_margin:isDamon(live.session)});
+    if(req.method==='GET')return sendJson(res,200,{ok:true,customer_context:quoteCustomerContext(String(req.query?.customer||''),table('organizations'),table('commerce_customers')),quotes:table('quotes').map(q=>pick(q,['id','customer_id','customer_name','contact_email','status','revision','subtotal','total','shipping_cost','tax','valid_until','totals_verified'])),items:table('quote_items').map(i=>pick(i,['id','quote_id','sku','name','target_qty','qty','sell_per_unit','unit_price','ext_sell','ext_price','counter_price'])),organizations:table('organizations').filter(o=>o.status==='active').map(o=>pick(o,['id','name','billing_email','contact_email'])),can_override_below_margin:isDamon(live.session)});
     const input=JSON.parse((await readRawBody(req)).toString('utf8')),checks=[],writes=[];
     let next,items;
     if(input.action==='create'){

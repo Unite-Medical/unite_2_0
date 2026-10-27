@@ -22,11 +22,11 @@ test('invalid discounts cannot create negative/free/unsupported item prices',()=
  for(const discount of [[],10,'10',{type:'percent',value:100},{type:'percent',value:-1},{type:'amount',value:100},{type:'amount',value:101},{type:'amount',value:'bad'},{type:'unknown',value:10}])assert.throws(()=>calculateSalesLinePrice(100,discount));
  assert.equal(calculateSalesLinePrice(100,{type:'amount',value:0}).unit_price,100);
 });
-test('item discounts preserve verified cost, margin and identity permissions',()=>{
+test('item discounts preserve known margin and identity permissions while cost stays optional',()=>{
  const lines=[{id:'one',product_id:'p1',quantity:1,line_discount:{type:'percent',value:50}}];
  assert.throws(()=>normalize({lines},{actor:{role:'admin',email:'jacobe@unitemedical.net'}}),/Damon.*35%/);
  assert.throws(()=>normalize({lines},{actor:{role:'admin',email:'other@example.test'}}),/approval/);
- assert.throws(()=>normalize({lines},{products:[{...products[0],cost:null}]}),/verified product cost/);
+ assert.equal(normalize({lines},{products:[{...products[0],cost:null}]}).lines[0].pricing_approval.gross_margin,null);
  assert.equal(normalize({lines}).lines[0].pricing_approval.approved_by,actor.email);
 });
 test('draft reopen does not apply discounts twice and clearing an item discount restores base',()=>{

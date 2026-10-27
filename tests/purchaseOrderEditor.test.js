@@ -66,9 +66,9 @@ test('fingerprints are stable across object key order and bind changed order dat
 function responseRecorder(){return {statusCode:0,headers:{},setHeader(key,value){this.headers[key]=value;},end(body){this.body=JSON.parse(body);}};}
 const req=(method='GET',query={},body)=>({method,url:'/?'+new URLSearchParams(query),query,headers:{host:'staging.example.test',origin:'https://staging.example.test','content-type':'application/json'},body});
 const allowed=async()=>({ok:true,session:actor});
-test('endpoint enforces live admin authorization and same-origin writes before data changes',async()=>{
+test('endpoint enforces live operational authorization and same-origin writes before data changes',async()=>{
  let transactions=0;const sql=async()=>{throw new Error('No read expected.');};sql.transaction=async()=>{transactions++;};
- const denied=createPurchaseOrderEditorHandler({getSql:()=>sql,authorize:async(_req,_sql,options)=>{assert.deepEqual(options.roles,['admin']);return {ok:false,reason:'forbidden'};}});let res=responseRecorder();await denied(req('POST',{},{}),res);assert.equal(res.statusCode,403);assert.equal(transactions,0);
+ const denied=createPurchaseOrderEditorHandler({getSql:()=>sql,authorize:async(_req,_sql,options)=>{assert.deepEqual(options.roles,['admin','sales','sales_manager']);return {ok:false,reason:'forbidden'};}});let res=responseRecorder();await denied(req('POST',{},{}),res);assert.equal(res.statusCode,403);assert.equal(transactions,0);
  const handler=createPurchaseOrderEditorHandler({getSql:()=>sql,authorize:allowed});const bad=req('POST',{},{});bad.headers.origin='https://other.example.test';res=responseRecorder();await handler(bad,res);assert.equal(res.statusCode,403);assert.equal(transactions,0);
 });
 test('exact supplier lookup is not confused with a PO ID and bypasses list truncation',async()=>{
@@ -151,4 +151,10 @@ test('new composer PO preserves partial receiving and stable line identity in ex
  assert.equal(plan.updated_po.line_items[0].billed_qty,0);
  assert.equal(plan.updated_po.warehouse_id,warehouse.id);
  assert.equal(plan.updated_po.received_at,null);
+});
+test('Sales saves a PO draft and pending supplier without approval, receipt, accounting or email effects',async()=>{
+ const salesActor={user_id:'qa-sales',email:'sales@example.test',role:'sales'},authorize=async(_req,_sql,{roles})=>({ok:roles.includes(salesActor.role),session:salesActor});
+ const db=captureDatabase(),handler=createPurchaseOrderEditorHandler({getSql:()=>db.sql,authorize,now:()=>now}),out=responseRecorder();
+ await handler(req('POST',{}, {action:'save_draft',draft:input,revision:0,request_id:'sales-save-request-123'}),out);assert.equal(out.statusCode,201);assert.equal(out.body.data.status,'draft');assert.equal(out.body.data.created_by,salesActor.user_id);
+ const rejected=responseRecorder();await handler(req('POST',{}, {action:'approve',draft:input,revision:0,request_id:'sales-approve-request-123'}),rejected);assert.equal(rejected.statusCode,400);
 });

@@ -1,4 +1,6 @@
+import {operationalCustomerScope,customerInScope,draftInScope} from '../_lib/operationalScope.js';
 import crypto from 'node:crypto';
+import {ORDER_ENTRY_ROLES,canUseOrderAction} from '../../src/lib/operationalAccess.js';
 import {readLatestOrderShipping} from '../_lib/orderShippingDefault.js';
 import {neon} from '@neondatabase/serverless';
 import {authorizeLiveRequest} from '../_lib/auth.js';
@@ -7,29 +9,32 @@ import {readCommerce} from '../_lib/commerceWorkspace.js';
 import {normalizeAdminDraft,draftSubmissionIssues,planAdminOrderSubmission} from '../_lib/adminOrderDraft.js';
 import {accountingChoices,saveAccountingMappings} from '../_lib/orderAccountingMappings.js';
 import {syncOrderAccounting} from '../_lib/orderAccounting.js';
-export default async function handler(req,res){
+export function createOrderDraftHandler({getSql=()=>process.env.DATABASE_URL?neon(process.env.DATABASE_URL):null,authorize=authorizeLiveRequest,syncAccounting=syncOrderAccounting,scopeFor=operationalCustomerScope}={}){
+return async function handler(req,res){
  res.setHeader('Cache-Control','no-store, private');
  if(!['GET','POST'].includes(req.method))return sendJson(res,405,{error:'Method not allowed.'});
- if(!process.env.DATABASE_URL)return sendJson(res,503,{error:'Workspace unavailable.'});
  try{
-  const sql=neon(process.env.DATABASE_URL),live=await authorizeLiveRequest(req,sql,{roles:['admin']});if(!live.ok)return sendJson(res,403,{error:'Sign in to the admin workspace.'});
+  const sql=getSql();if(!sql)return sendJson(res,503,{error:'Workspace unavailable.'});const live=await authorize(req,sql,{roles:ORDER_ENTRY_ROLES});if(!live.ok)return sendJson(res,live.reason==='authentication_required'?401:403,{error:'Sign in with an order-entry role.'});
+  const scope=await scopeFor(sql,live.session,req);
   if(req.method==='GET'){
-   if(req.query.customer_id){const customerId=String(req.query.customer_id);if(customerId.length>200)return sendJson(res,400,{error:'Choose a valid customer.'});return sendJson(res,200,{data:await readLatestOrderShipping(sql,customerId)});}
-   const id=String(req.query.id||''),source=await readCommerce(sql,{kind:'orders',id});if(!source)return sendJson(res,404,{error:'Order not found.'});
+   if(req.query.customer_id){const customerId=String(req.query.customer_id);if(!customerInScope(scope,customerId))return sendJson(res,404,{error:'Customer not found in your scope.'});if(customerId.length>200)return sendJson(res,400,{error:'Choose a valid customer.'});return sendJson(res,200,{data:await readLatestOrderShipping(sql,customerId)});}
+   const id=String(req.query.id||''),source=await readCommerce(sql,{kind:'orders',id});if(!source||!draftInScope(scope,source,live.session))return sendJson(res,404,{error:'Order not found.'});
    const orderId=source.operational_order_id;
    const operational=orderId?(await sql`SELECT data FROM um_rows WHERE tbl='orders' AND id=${orderId} AND deleted=false`)[0]?.data:null;
    const accounting=orderId?(await sql`SELECT data FROM um_rows WHERE tbl='accounting_jobs' AND id=${'qbo-invoice-'+orderId} AND deleted=false`)[0]?.data:null;
-   return sendJson(res,200,{data:source,operational,accounting});
+   return sendJson(res,200,{data:source,operational,accounting:live.session.role==='admin'?accounting:accounting?{status:accounting.status}:null});
   }
   const origin=req.headers.origin;if(!origin||new URL(origin).host!==(req.headers['x-forwarded-host']||req.headers.host))return sendJson(res,403,{error:'Use the workspace to save orders.'});
   const raw=await readRawBody(req);if(raw.length>500000)throw new Error('This order is too large.');const body=JSON.parse(raw.toString('utf8'));
+  if(!canUseOrderAction(live.session,body.action))return sendJson(res,403,{error:'This accounting action requires an administrator.'});
   const id=String(body.id||body.draft?.id||'');if(!/^[0-9a-f-]{36}$/i.test(id))throw new Error('Reload the order form.');
   const existing=await readCommerce(sql,{kind:'orders',id});
+  if((existing&&!draftInScope(scope,existing,live.session))||(body.draft?.customer_id&&!customerInScope(scope,body.draft.customer_id)))return sendJson(res,404,{error:'Customer or draft not found in your scope.'});
   if(body.action==='accounting_choices')return sendJson(res,200,{ok:true,choices:await accountingChoices(sql)});
   if(body.action==='save_accounting_mappings'){if(!existing)throw new Error('Order not found.');return sendJson(res,200,await saveAccountingMappings(sql,existing,body.draft,live.session));}
   if(body.action==='sync_accounting'){
    if(!existing?.operational_order_id)throw new Error('Create the order before sending it to accounting.');
-   return sendJson(res,200,{ok:true,accounting:await syncOrderAccounting(sql,existing.operational_order_id)});
+   return sendJson(res,200,{ok:true,accounting:await syncAccounting(sql,existing.operational_order_id)});
   }
   if(!['preview','save','submit'].includes(body.action))throw new Error('Unknown order action.');
   if(body.action==='submit'&&existing?.operational_order_id)return sendJson(res,200,{ok:true,data:existing,duplicate:true});
@@ -52,7 +57,10 @@ export default async function handler(req,res){
    ...rows.map(([table,row])=>tx`INSERT INTO um_rows(tbl,id,data) SELECT ${table},${row.id},${JSON.stringify(row)}::jsonb WHERE EXISTS (SELECT 1 FROM um_rows WHERE tbl='commerce_orders' AND id=${id} AND data->>'submission_nonce'=${nonce}) ON CONFLICT(tbl,id) DO NOTHING`),
   ]);
   if(!result[0]?.length)throw new Error('This draft changed. Refresh to see its current status.');
-  const accounting=await syncOrderAccounting(sql,plan.order.id);
+  const accounting=await syncAccounting(sql,plan.order.id);
   return sendJson(res,201,{ok:true,data:plan.source,operational:plan.order,accounting});
  }catch(error){return sendJson(res,400,{error:error.message||'Unable to save the order.'});}
 }
+
+}
+export default createOrderDraftHandler();

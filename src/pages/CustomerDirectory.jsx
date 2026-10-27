@@ -15,7 +15,7 @@ function CustomerDetails({ customer, close }) {
     <section><h3>Addresses ({customer.addresses.length})</h3>{customer.addresses.length ? customer.addresses.map((address,index) => <div className="uw-customer-records" key={address.id || index}>{address.is_default && <strong>Default address</strong>}<p>{[address.recipient,address.company,address.address1,address.address2,[address.city,address.province,address.zip].filter(Boolean).join(', '),address.country,address.phone].filter(Boolean).map((line,i) => <span key={i} style={{display:'block'}}>{line}</span>)}</p></div>) : <p>No saved addresses.</p>}</section>
     {customer.tags?.length > 0 && <section><h3>Tags</h3><p>{customer.tags.join(', ')}</p></section>}
     {customer.notes && <section><h3>Notes</h3><p style={{whiteSpace:'pre-wrap'}}>{customer.notes}</p></section>}
-    <Link className="uw-button" to="/admin/quotes">View quotes</Link>
+    <div className="uw-detail-actions"><Link className="uw-button primary" to={'/sales/orders/new?customer='+encodeURIComponent(customer.id)}>Create order</Link><Link className="uw-button" to={'/admin/quotes?customer='+encodeURIComponent(customer.id)}>View quotes</Link><Link className="uw-button" to={'/admin/quotes?new=1&customer='+encodeURIComponent(customer.id)}>Prepare quote</Link></div>
   </aside>;
 }
 export function CustomerDirectory() {

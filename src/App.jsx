@@ -1,3 +1,5 @@
+const SalesOrders=lazy(()=>import('./pages/SalesOperations.jsx').then(m=>({default:m.SalesOrders})));
+const SalesPurchases=lazy(()=>import('./pages/SalesOperations.jsx').then(m=>({default:m.SalesPurchases})));
 const NotFound = lazy(() => import('./pages/NotFound.jsx').then(m=>({default:m.NotFound})));
 import { AnalyticsPageTracker } from './components/AnalyticsPageTracker.jsx';
 const WarehouseMobile = lazy(() => import('./pages/WarehouseMobile.jsx').then(m=>({default:m.WarehouseMobile})));
@@ -281,6 +283,12 @@ export default function App() {
           <Route path="/admin/sourcing"  element={<RequireAdmin><AdminSourcing /></RequireAdmin>} />
           <Route path="/admin/orders" element={<RequireAdmin><CommerceOrders /></RequireAdmin>} />
           <Route path="/admin/chat" element={<RequireAdmin><CommerceChat /></RequireAdmin>} />
+          <Route path="/sales/orders" element={<RequireSession roles={['admin','sales','sales_manager']}><SalesOrders /></RequireSession>} />
+          <Route path="/sales/orders/new" element={<RequireSession roles={['admin','sales','sales_manager']}><CommerceOrderCreate /></RequireSession>} />
+          <Route path="/sales/orders/:id" element={<RequireSession roles={['admin','sales','sales_manager']}><SalesOrders /></RequireSession>} />
+          <Route path="/sales/purchase-orders" element={<RequireSession roles={['admin','sales','sales_manager']}><SalesPurchases /></RequireSession>} />
+          <Route path="/sales/purchase-orders/new" element={<RequireSession roles={['admin','sales','sales_manager']}><PurchaseOrderCreate /></RequireSession>} />
+          <Route path="/sales/purchase-orders/:id" element={<RequireSession roles={['admin','sales','sales_manager']}><PurchaseOrderCreate /></RequireSession>} />
           <Route path="/admin/orders/new" element={<RequireAdmin><CommerceOrderCreate /></RequireAdmin>} />
           <Route path="/admin/orders/:id" element={<RequireAdmin><CommerceOrders /></RequireAdmin>} />
           <Route path="/admin/order-operations" element={<RequireAdmin><AdminOrders /></RequireAdmin>} />

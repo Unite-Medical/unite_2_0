@@ -2,7 +2,7 @@ import crypto from 'node:crypto';
 import {reviewedSalesShipping} from '../../src/lib/salesOrderShipping.js';
 import {calculateSalesLinePrice} from '../../src/lib/salesOrderPricing.js';
 import {resolveSchedulePrice} from './commerceWorkspace.js';
-import {canSetNewPrice} from './launchPolicy.js';
+import {canSetCustomerOrderPrice} from './orderPricingAuthority.js';
 const amount=(value,name)=>{const n=Number(value);if(!Number.isFinite(n)||n<0||n>100000000)throw new Error('Enter a valid '+name+'.');return Math.round(n*100)/100;};
 const text=(value,max=2000)=>String(value||'').trim().slice(0,max);
 export function normalizeAdminDraft({input,customer,products=[],schedules=[],actor,existing=null,now=new Date(),allowPricingReview=false}){
@@ -20,13 +20,13 @@ export function normalizeAdminDraft({input,customer,products=[],schedules=[],act
   const changedPrice=unit!==amount(resolved.unit_price,'catalog price');
   let pricingApproval=null;
   if((line.manual_price||discount||itemDiscount)&&changedPrice){
-   const check=canSetNewPrice(actor,unit,Number(product.cost));
+   const check=canSetCustomerOrderPrice(actor,unit,product.cost);
    if(!check.ok){
-    const reason=check.reason==='pricing_authority_required'?'Damon or Jacobe’s approval is required for this new price.':check.reason==='damon_approval_required'?'Damon must approve this price below the 35% margin.':'Enter a verified product cost in this item’s Price & internal cost panel before approving this price.';
+    const reason=check.reason==='pricing_authority_required'?'Damon or Jacobe’s approval is required for this new price.':check.reason==='damon_approval_required'?'Damon must approve this price below the 35% margin.':'Enter a valid selling price greater than zero.';
     const message=(product.sku||product.name)+': '+reason;
     if(!allowPricingReview)throw new Error(message);
     pricingIssues.push(message);
-   }else pricingApproval={approved_by:check.approved_by,gross_margin:check.gross_margin};
+   }else pricingApproval={approved_by:check.approved_by,gross_margin:check.gross_margin,cost_available:check.cost_available};
   }
 
   if(unit<=0)throw new Error('Each item needs a confirmed price greater than zero.');
@@ -39,7 +39,7 @@ export function normalizeAdminDraft({input,customer,products=[],schedules=[],act
  if(/^net/.test(payment_method)&&customer?.terms!==payment_method)throw new Error('Confirm this customer’s payment terms before using credit.');
  const address=value=>Object.fromEntries(['id','recipient','company','address1','address2','city','province','zip','country','phone'].map(k=>[k,text(value?.[k],250)]));
  const at=now.toISOString(),id=existing?.id||input.id;
- return {pricing_issues:pricingIssues,id,number:existing?.number||'D-'+id.slice(0,8).toUpperCase(),customer_id:customer?.id||'',customer_name:customer?.name||'',email:customer?.email||'',draft:true,historical:false,revision:Number(existing?.revision||0)+1,lines,items_subtotal,item_discount_total,order_discount_total,subtotal,shipping,tax,total:amount(subtotal+shipping+tax,'total'),currency:'USD',discount_percent:discount,payment_method,payment_terms:payment_method,po_number:text(input.po_number,150),notes:text(input.notes,5000),tags:[...new Set((input.tags||[]).map(t=>text(t,100)).filter(Boolean))].slice(0,50),shipping_address:address(input.shipping_address),billing_address:address(input.billing_address||input.shipping_address),...reviewedSalesShipping(input),shipping_confirmed:input.shipping_confirmed===true,tax_confirmed:customer?.tax_exempt===true||input.tax_confirmed===true,tax_exempt:customer?.tax_exempt===true,tax_note:text(input.tax_note,300),financial_status:'unpaid',fulfillment_status:'unfulfilled',workflow_state:'needs_review',created_at:existing?.created_at||at,updated_at:at,events:[...(existing?.events||[]),{id:crypto.randomUUID(),at,actor:actor.email,text:existing?'Draft updated':'Draft created'}]};
+ return {pricing_issues:pricingIssues,id,number:existing?.number||'D-'+id.slice(0,8).toUpperCase(),customer_id:customer?.id||'',customer_name:customer?.name||'',email:customer?.email||'',draft:true,historical:false,revision:Number(existing?.revision||0)+1,lines,items_subtotal,item_discount_total,order_discount_total,subtotal,shipping,tax,total:amount(subtotal+shipping+tax,'total'),currency:'USD',discount_percent:discount,payment_method,payment_terms:payment_method,po_number:text(input.po_number,150),notes:text(input.notes,5000),tags:[...new Set((input.tags||[]).map(t=>text(t,100)).filter(Boolean))].slice(0,50),shipping_address:address(input.shipping_address),billing_address:address(input.billing_address||input.shipping_address),...reviewedSalesShipping(input),shipping_confirmed:input.shipping_confirmed===true,tax_confirmed:customer?.tax_exempt===true||input.tax_confirmed===true,tax_exempt:customer?.tax_exempt===true,tax_note:text(input.tax_note,300),financial_status:'unpaid',fulfillment_status:'unfulfilled',workflow_state:'needs_review',created_at:existing?.created_at||at,created_by:existing?.created_by||actor.user_id,updated_by:actor.user_id,updated_at:at,events:[...(existing?.events||[]),{id:crypto.randomUUID(),at,actor:actor.email,text:existing?'Draft updated':'Draft created'}]};
 }
 export function draftSubmissionIssues(draft,customer){
  const issues=[...(draft.pricing_issues||[])];if(!customer||!draft.customer_id)issues.push('Choose a customer.');if(!draft.lines.length)issues.push('Add at least one product.');

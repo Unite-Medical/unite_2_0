@@ -7,7 +7,7 @@ const product={id:'p1',variant_id:'v1',name:'Synthetic product',variant:'Case of
 const actor={user_id:'qa-admin',email:'damon@unitemedical.net',role:'admin'};
 test('a price for this order never silently edits catalog cost',()=>{
  assert.equal(orderPriceChange({price:'75.50',cost:'',product}).costPatch,null);
- assert.throws(()=>orderPriceChange({price:'75.50',cost:'35',product}),/Confirm the catalog cost update/);
+ assert.equal(orderPriceChange({price:'75.50',cost:'35',product}).costPatch,null);
  assert.deepEqual(orderPriceChange({price:'75.50',cost:'35',product,updateCatalogCost:true}).costPatch,{cost:35});
 });
 test('unchanged formatted cost needs no catalog mutation or scope confirmation',()=>{
@@ -22,10 +22,10 @@ test('displayed margin uses the discounted, cent-rounded selling price',()=>{
  assert.equal(result.unit_price,100);assert.equal(result.effective_price,90);assert.equal(result.gross_margin,50/90);assert.equal(result.costPatch,null);
  for(const discount of [-1,100,Infinity,'abc'])assert.throws(()=>orderPriceChange({price:100,cost:40,product:{...product,cost:40},discount}));
 });
-test('missing cost remains a draft issue; verified cost permits Damon without a second approver',()=>{
+test('missing cost is optional; known-cost margin and identity approvals remain intact',()=>{
  const input={id:'12345678-1234-1234-1234-123456789012',customer_id:'c',lines:[{id:'l',product_id:'p1',manual_price:true,unit_price:60,quantity:400}],shipping:0,shipping_confirmed:true,tax:0,tax_confirmed:true,shipping_address:{recipient:'QA buyer',address1:'1 Test Road',city:'Test',zip:'10001',country:'US'}};
  const customer={id:'c',status:'active',name:'QA buyer'};
- const pending=normalizeAdminDraft({input,customer,products:[product],actor,allowPricingReview:true});assert.equal(pending.total,24000);assert.ok(draftSubmissionIssues(pending,customer).some(issue=>issue.includes('verified product cost')));
+ const pending=normalizeAdminDraft({input,customer,products:[product],actor,allowPricingReview:true});assert.equal(pending.total,24000);assert.deepEqual(draftSubmissionIssues(pending,customer),[]);assert.equal(pending.lines[0].pricing_approval.gross_margin,null);
  const cost=orderPriceChange({price:60,cost:40,product,updateCatalogCost:true}).costPatch;
  const approved=normalizeAdminDraft({input,customer,products:[{...product,...cost}],actor});assert.deepEqual(draftSubmissionIssues(approved,customer),[]);assert.equal(approved.lines[0].pricing_approval.approved_by,actor.email);
  assert.throws(()=>normalizeAdminDraft({input,customer,products:[{...product,...cost}],actor:{role:'admin',email:'jacobe@unitemedical.net'}}),/Damon.*35%/);
@@ -46,6 +46,21 @@ test('zero catalog cost is missing for draft review, without silently deleting i
  const zero={...product,cost:0};
  assert.equal(orderPriceChange({price:60,cost:'',product:zero}).costPatch,null);
  assert.equal(zero.cost,0);
- assert.throws(()=>orderPriceChange({price:60,cost:40,product:zero}),/Confirm/);
+ assert.equal(orderPriceChange({price:60,cost:40,product:zero}).costPatch,null);
  assert.deepEqual(orderPriceChange({price:60,cost:40,product:zero,updateCatalogCost:true}).costPatch,{cost:40});
+});
+
+test('selling price can be applied while optional cost information is unavailable',()=>{
+ const result=orderPriceChange({price:43.89,cost:'',product:null,catalogPrice:100});
+ assert.equal(result.unit_price,43.89);assert.equal(result.manual_price,true);
+ assert.equal(result.costPatch,null);assert.equal(result.gross_margin,null);
+});
+
+test('unconfirmed optional cost edits never block the selling price or alter catalog cost',()=>{
+ const current={...product,cost:35};
+ for(const cost of ['',0,-1,'bad',Infinity,100000001]){
+  const result=orderPriceChange({price:60,cost,product:current});
+  assert.equal(result.costPatch,null);assert.equal(result.gross_margin,25/60);
+ }
+ assert.equal(current.cost,35);
 });

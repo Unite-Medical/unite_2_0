@@ -9,7 +9,7 @@ const schedules=[{id:'s1',name:'Agreement',status:'active',rows:[{id:'tier1',var
 const input={id:'12345678-1234-1234-1234-123456789012',customer_id:'c1',lines:[{id:'l1',product_id:'p1',quantity:2,unit_price:.01}],shipping:10,shipping_confirmed:true,tax:0,tax_confirmed:true,shipping_address:{recipient:'Test customer',address1:'1 Test St',city:'Test',province:'NY',zip:'10001',country:'US'}};
 const draft=(patch={},extra={})=>normalizeAdminDraft({input:{...input,...patch},customer,products,schedules,actor,...extra});
 test('server prices override supplied price and respond to quantity tiers',()=>{assert.equal(draft().total,170);assert.equal(draft({lines:[{...input.lines[0],quantity:10}]}).total,660);});
-test('manual prices require authority and verified costs',()=>{assert.throws(()=>draft({lines:[{...input.lines[0],manual_price:true,unit_price:50}]},{actor:{role:'admin',email:'someone@example.test'}}),/approval/);assert.throws(()=>draft({discount_percent:10},{products:[{...products[0],cost:null}]}),/cost/);assert.equal(draft({lines:[{...input.lines[0],manual_price:true,unit_price:50}]}).total,110);});
+test('manual prices retain authority without requiring catalog cost',()=>{assert.throws(()=>draft({lines:[{...input.lines[0],manual_price:true,unit_price:50}]},{actor:{role:'admin',email:'someone@example.test'}}),/approval/);assert.equal(draft({discount_percent:10},{products:[{...products[0],cost:null}]}).pricing_issues.length,0);assert.equal(draft({lines:[{...input.lines[0],manual_price:true,unit_price:50}]}).total,110);});
 test('missing shipping, tax and invalid credit terms cannot become live orders',()=>{const incomplete=draft({shipping_confirmed:false,tax_confirmed:false});assert.equal(draftSubmissionIssues(incomplete,customer).length,2);assert.throws(()=>planAdminOrderSubmission(incomplete,customer,actor),/shipping/);assert.throws(()=>draft({payment_method:'net30'}),/terms/);});
 test('historical or submitted orders are immutable through draft editor',()=>{for(const existing of [{historical:true},{draft:false}])assert.throws(()=>draft({}, {existing}),/unsubmitted/);});
 test('submission carries matching totals, address and stable IDs to operations, finance and outbox',()=>{const a=planAdminOrderSubmission(draft(),customer,actor),b=planAdminOrderSubmission(draft(),customer,actor);assert.equal(a.order.id,b.order.id);assert.equal(a.invoice.order_id,a.order.id);assert.equal(a.job.order_id,a.order.id);assert.equal(a.invoice.amount,a.order.total);assert.equal(a.address.id,a.order.ship_to_address_id);assert.equal(a.address.line1,'1 Test St');assert.equal(a.items[0].qty,2);assert.equal(a.items[0].unfulfilled_quantity,2);assert.equal(a.order.status,'payment_pending');assert.equal(a.source.draft,false);assert.equal(a.order.payment_status,'unpaid');assert.equal(a.job.status,'queued');});
@@ -19,15 +19,30 @@ test('QuickBooks invoice matches total and fails closed on absent customer or it
 test('QuickBooks retry reuses existing invoice, never posts a duplicate',async()=>{const {order,items}=plan(),payload=buildOrderInvoice(order,items,mapping),calls=[];const result=await postOrderInvoice({order,items,mapping,context:{realmId:'1',environment:'sandbox',accessToken:'fake'},fetchImpl:async(url,options)=>{calls.push(options.method);return {ok:true,json:async()=>({QueryResponse:{Invoice:[{Id:'12',PrivateNote:payload.PrivateNote,CustomerRef:payload.CustomerRef,TotalAmt:170,Balance:170}]}})};}});assert.equal(result.id,'12');assert.deepEqual(calls,['GET']);});
 test('QuickBooks creation is idempotent and tax mismatch cannot be reported as synced',async()=>{const {order,items}=plan(),calls=[];await assert.rejects(()=>postOrderInvoice({order,items,mapping,context:{realmId:'1',environment:'sandbox',accessToken:'fake'},fetchImpl:async(url,options)=>{calls.push({url,options});return {ok:true,json:async()=>options.method==='GET'?{QueryResponse:{}}:{Invoice:{Id:'12',TotalAmt:171}}};}}),/different total/);assert.equal(calls.length,2);assert.match(calls[1].url,/requestid=[a-f0-9]{40}/);assert.equal(JSON.parse(calls[1].options.body).EmailStatus,'NotSet');});
 
-test('missing cost keeps a reviewable draft with correct totals but cannot submit',()=>{
- const patch={lines:[{...input.lines[0],manual_price:true,unit_price:43.895,quantity:400}]};
- const pending=draft(patch,{products:[{...products[0],cost:null}],allowPricingReview:true});
- assert.equal(pending.subtotal,17560);assert.equal(pending.total,17570);
- assert.equal(pending.lines[0].pricing_source,'Price needs review');
- assert.match(pending.pricing_issues[0],/SKU1.*verified product cost/);
- assert.throws(()=>planAdminOrderSubmission(pending,customer,actor),/verified product cost/);
- assert.throws(()=>draft({...patch,pricing_issues:[]},{products:[{...products[0],cost:null}]}),/verified product cost/);
- const approved=draft(patch);assert.equal(approved.pricing_issues.length,0);assert.equal(approved.lines[0].pricing_approval.approved_by,actor.email);
+test('missing cost permits creation at the entered selling price without cost mutation',()=>{
+ const patch={lines:[{...input.lines[0],manual_price:true,unit_price:43.89,quantity:400}]};
+ for(const cost of [null,undefined,0,'',NaN,-1]){
+  const catalog=[{...products[0],cost}],before=structuredClone(catalog);
+  const approved=draft(patch,{products:catalog,allowPricingReview:true});
+  assert.equal(approved.subtotal,17556);assert.equal(approved.total,17566);
+  assert.equal(approved.lines[0].pricing_source,'Approved manual price');
+  assert.deepEqual(approved.pricing_issues,[]);
+  assert.equal(approved.lines[0].pricing_approval.gross_margin,null);
+  assert.equal(approved.lines[0].pricing_approval.cost_available,false);
+  const plan=planAdminOrderSubmission(approved,customer,actor);
+  assert.equal(plan.order.subtotal,17556);assert.equal(plan.items[0].unit_price,43.89);
+  assert.equal(plan.items[0].pricing_approval.approved_by,actor.email);
+  assert.equal(plan.source.draft,false);assert.deepEqual(catalog,before);
+  assert.equal(draft(patch,{products:catalog}).pricing_issues.length,0);
+ }
+});
+test('missing cost does not skip shipping tax address or unauthorized pricing checks',()=>{
+ const patch={lines:[{...input.lines[0],manual_price:true,unit_price:43.89,quantity:400}],shipping_confirmed:false,tax_confirmed:false};
+ const pending=draft(patch,{products:[{...products[0],cost:null}]});
+ assert.deepEqual(draftSubmissionIssues(pending,customer),['Confirm the shipping charge.','Review and confirm tax.']);
+ assert.throws(()=>planAdminOrderSubmission(pending,customer,actor),/shipping.*tax/);
+ assert.throws(()=>planAdminOrderSubmission({...pending,shipping_address:{}},customer,actor),/shipping address/);
+ for(const role of ['admin','sales','customer','finance'])assert.throws(()=>draft(patch,{products:[{...products[0],cost:null}],actor:{role,email:'other@example.test'}}),/approval/);
 });
 test('retaining an existing agreed price is not new pricing even with no imported cost',()=>{
  const result=draft({lines:[{...input.lines[0],manual_price:true,unit_price:80}]},{products:[{...products[0],cost:null}]});

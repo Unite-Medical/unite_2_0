@@ -1,3 +1,4 @@
+import {PURCHASE_DRAFT_ROLES} from '../../src/lib/operationalAccess.js';
 import {neon} from '@neondatabase/serverless';
 import {authorizeLiveRequest} from '../_lib/auth.js';
 import {readRawBody,sendJson} from '../_lib/http.js';
@@ -14,11 +15,12 @@ export function createPurchaseOrderEditorHandler({getSql=()=>process.env.DATABAS
   if(!['GET','POST'].includes(req.method))return sendJson(res,405,{error:'Method not allowed.'});
   try{
    const sql=getSql();if(!sql)return sendJson(res,503,{error:'Purchase order workspace is unavailable.'});
-   const live=await authorize(req,sql,{roles:['admin']});if(!live.ok)return sendJson(res,live.reason==='authentication_required'?401:403,{error:'Sign in to the admin workspace.'});
+   const live=await authorize(req,sql,{roles:PURCHASE_DRAFT_ROLES});if(!live.ok)return sendJson(res,live.reason==='authentication_required'?401:403,{error:'Sign in with a purchase-draft role.'});
    const params=new URL(req.url,'https://local').searchParams;
    if(req.method==='GET'){
     const id=String(req.query?.id||params.get('id')||'').slice(0,200),kind=String(req.query?.kind||params.get('kind')||'');
-    if(id&&!kind){const po=await row(sql,'purchase_orders',id);if(!po)return sendJson(res,404,{error:'Purchase order not found.'});return sendJson(res,200,response(po,await purchaseEditorRelated(sql,po)));}
+    if(id&&!kind){const po=await row(sql,'purchase_orders',id);if(!po||live.session.role!=='admin'&&po.source!=='manual_composer')return sendJson(res,404,{error:'Purchase order not found in this draft workspace.'});return sendJson(res,200,response(po,await purchaseEditorRelated(sql,po)));}
+    if(kind==='drafts'){const rows=await sql`SELECT data FROM um_rows WHERE tbl='purchase_orders' AND deleted=false AND data->>'source'='manual_composer' ORDER BY updated_at DESC LIMIT 100`;return sendJson(res,200,{data:{rows:rows.map(({data})=>purchaseEditorView(data)),limit:100}});}
     const q=String(req.query?.q||params.get('q')||'').trim().toLowerCase().slice(0,150);
     let choices;
     if(kind==='suppliers')choices=(await sql`SELECT data FROM um_rows WHERE tbl='vendors' AND deleted=false`).map(({data})=>supplierEditorView(data));
