@@ -5,7 +5,7 @@ import { buildCustomerWorkspace } from '../api/_lib/customerWorkspace.js';
 import { canSetNewPrice } from '../api/_lib/launchPolicy.js';
 const env = { VERCEL_PROJECT_ID: 'prj_PL5BOZooLBtLiPQlrn34SyC0MRKS', PUBLIC_APP_ORIGIN: 'https://staging.unitemedical.net' };
 const host = 'staging.unitemedical.net';
-const actor = { user_id: 'usr_shopify_7337833922726', email: 'jacobe@unitemedical.net', role: 'sales' };
+const actor = { user_id: "usr_shopify_'7337833922726", email: 'jacobe@unitemedical.net', role: 'sales' };
 const data = { organizations: [
   { id: 'assigned', account_owner_email: actor.email },
   { id: 'other', account_owner_email: 'other@unitemedical.net' },

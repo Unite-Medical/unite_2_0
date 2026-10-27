@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { createCustomerDirectoryHandler, customerDirectoryRecord } from '../api/account/customer-directory.js';
 import { approvedCustomerDatabase } from '../api/_lib/customerReadAccess.js';
 import { staffShortcuts } from '../src/lib/staffWorkspace.js';
-const actor = {user_id:'usr_shopify_7337833922726',email:'jacobe@unitemedical.net',role:'sales'};
+const actor = {user_id:"usr_shopify_'7337833922726",email:'jacobe@unitemedical.net',role:'sales'};
 const env = {DATABASE_URL:'postgres://test:test@example.test/test',VERCEL_PROJECT_ID:'prj_PL5BOZooLBtLiPQlrn34SyC0MRKS',PUBLIC_APP_ORIGIN:'https://staging.unitemedical.net'};
 const record = {id:'real',name:'Company',email:'contact@example.test',source:{private:'hidden'},credit_limit:999,payment_token:'hidden',events:[{text:'hidden'}],addresses:[{id:'ship',address1:'123 Main',source_orders:['hidden'],private:'hidden'},{id:'old',archived:true}]};
 function fixture({session=actor,authenticated=true,database=true,environment=env}={}) {
