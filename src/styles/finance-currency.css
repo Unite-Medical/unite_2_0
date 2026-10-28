@@ -1,0 +1,16 @@
+.uw-currency-metrics .uw-currency-total {
+  display: block;
+  font: inherit;
+  color: inherit;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 650px) {
+  .uw-finance-metrics.uw-currency-metrics { grid-template-columns: 1fr; }
+  .uw-currency-metrics > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+  }
+  .uw-currency-metrics strong { text-align: right; min-width: 0; }
+}
