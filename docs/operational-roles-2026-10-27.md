@@ -1,8 +1,8 @@
-# Operational role candidate — October 27, 2026
+# Operational workflows and role guide — October 28, 2026
 
-Status: local candidate on `codex/operational-role-workflows-2026-10-27`, based on deployed `84c93b3`. Not pushed or deployed. No live role records, credentials, orders, purchase orders or accounting records were changed. The reused no-cost policy patch is `d2501a8`.
+Status: local candidate on `codex/operational-role-workflows-2026-10-27`, based on deployed `84c93b3`. Publication and deployed acceptance are recorded separately in the release evidence. No live role records, credentials, orders, purchase orders or accounting records were changed. The reused no-cost policy patch is `d2501a8`.
 
-## Proposed operational permissions
+## Approved operational permissions
 
 Sales and Sales manager may read their scoped customer/order workspace, prepare/save/reopen customer order drafts and create customer orders. Ordinary Sales stays assignment scoped. Jacobe's existing exact-ID customer-book exception remains restricted to the verified staging project/host/database; the literal ID is not normalized. Authentication, active-profile/revision checks and staff MFA rules remain in the existing live authorizer.
 
@@ -54,6 +54,19 @@ Use the existing Unite feedback channel Alex provides. Include your role, page U
 
 ## Validation and remaining gates
 
-Final local evidence: 748 tests passed, 3 existing skips; lint/build/prerender/assistant connection verification passed. Twenty synthetic clickable workflow checks plus six 1280/1440 desktop layout checks passed. No live providers were called or orders submitted by the browser harness. Backend tests inject an isolated accounting stub to verify unpaid order/job behavior and idempotency.
+Final local evidence: 750 tests passed, 3 existing skips. Twenty synthetic sales/PO workflow checks, fifteen queue/navigation/interruption/layout checks, five dark-mode maximum-size checks, and six desktop layout checks passed. Lint/build/prerender and connection checks are recorded with the release. No live providers were called or orders submitted by the browser harness. Backend tests inject an isolated accounting stub to verify unpaid order/job behavior and idempotency.
 
 Fresh live roster request to `/api/admin/roles` returned `authentication_required`. No new login was attempted; the temporary tab was closed and the prior Dia page restored. Required next step: normal owner/Admin sign-in and own-session acceptance for each staff member. Current assignments, missing quote mappings, Ashley MFA owner, Jarrod's intended role, credential delivery, real provider/reconciliation acceptance and deployment remain separate unresolved gates. Source tests and synthetic screenshots do not prove them.
+
+
+## Cleaner operational pages
+
+Home provides three task shortcuts for the current role. Sales can open orders or supplier POs even when the assigned activity list is empty. Warehouse links open receiving, warehouse tasks and split shipments. Finance links open invoices, decisions and shipment context. Empty activity is not described as proof that all work is complete.
+
+Customer orders has server-filtered All orders, Drafts, Ready, Waiting on stock and Needs review views. Search is retained when opening a record and returning to the list. Payment, fulfillment and next step have separate columns. Refresh/retry and clear-filter actions remain available when a query returns no records or fails.
+
+The order form has four clickable preparation steps: Customer, Products, Shipping and Tax. They open the existing contextual editors. Shipping and tax readiness still use the authoritative preview. Internal notes, customer PO number and tags are grouped. Save draft leaves the financial submission for later. Cancel offers Keep editing or Discard unsaved changes; sidebar navigation and role changes cannot silently discard unsaved edits.
+
+Supplier POs provides search and status views over the most recent 100 manually prepared POs, with unknown costs shown as Needs costs. It uses the PO API's actual response contract. No new approval, sending or receiving authority is implied by a readable queue.
+
+The dark theme and 18px maximum appearance setting were exercised on the order queue, PO queue, both composers and quote context. Wide tables scroll inside their panel when the available width is smaller than their columns. Synthetic screenshots are illustrations, not evidence of live staff login or current business records.

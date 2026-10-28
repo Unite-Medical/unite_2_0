@@ -37,3 +37,17 @@ test('approval readiness follows current edits rather than stale last-save issue
  assert.match(purchaseDraftReadiness(draft,{...context,vendor:{id:'a',status:'pending'}}).join(' '),/supplier needs approval/);
  assert.equal(purchaseDraftReadiness({line_items:[]},{}).length,5);
 });
+
+
+test('purchase queue accepts the actual data-only API response and forwards cancellation',async t=>{
+ const {purchaseEditorRequest}=await import('../src/lib/purchaseOrderEditorClient.js');
+ const controller=new AbortController();let captured;
+ t.mock.method(globalThis,'fetch',async(url,options)=>{captured={url,options};return new Response(JSON.stringify({data:{rows:[{id:'po-synthetic',status:'draft'}]}}),{status:200,headers:{'Content-Type':'application/json'}});});
+ const result=await purchaseEditorRequest({kind:'drafts'},undefined,{signal:controller.signal});
+ assert.equal(result.data.rows[0].id,'po-synthetic');assert.equal(captured.url,'/api/admin/purchase-order-editor?kind=drafts');assert.equal(captured.options.signal,controller.signal);assert.equal(captured.options.credentials,'include');assert.equal(captured.options.method,undefined);
+});
+test('purchase queue does not treat denied access as an empty result',async t=>{
+ const {purchaseEditorRequest}=await import('../src/lib/purchaseOrderEditorClient.js');
+ t.mock.method(globalThis,'fetch',async()=>new Response(JSON.stringify({error:'Sign in with a purchase-draft role.'}),{status:403}));
+ await assert.rejects(purchaseEditorRequest({kind:'drafts'}),/purchase-draft role/);
+});

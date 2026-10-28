@@ -1,5 +1,5 @@
-export async function purchaseEditorRequest(query={},body){
- const response=await fetch('/api/admin/purchase-order-editor?'+new URLSearchParams(query),{credentials:'include',...(body?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}:{})});
+export async function purchaseEditorRequest(query={},body,{signal}={}){
+ const response=await fetch('/api/admin/purchase-order-editor?'+new URLSearchParams(query),{credentials:'include',signal,...(body?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}:{})});
  const result=await response.json().catch(()=>({error:'Could not read the purchase order response. Your entries are still here.'}));
  if(!response.ok)throw new Error(result.error||'Could not save. Your entries are still here.');
  return result;
