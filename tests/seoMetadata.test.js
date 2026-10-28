@@ -43,3 +43,14 @@ test('HTML and JSON-LD escape injection and 404 schema can be omitted',()=>{
  assert(html.includes('\\u003c/script>'));
  assert(!renderRoute(base,'/404',{noindex:true,jsonLd:null}).includes('application/ld+json'));
 });
+
+test('Sales deep links and reloads use the protected workspace shell, not the public 404 document',async()=>{
+ const config=JSON.parse(await readFile(new URL('../vercel.json',import.meta.url),'utf8'));
+ for(const path of ['/sales/orders','/sales/orders/new','/sales/orders/qa-order','/sales/purchase-orders','/sales/purchase-orders/new','/sales/purchase-orders/qa-po']){
+  const route=config.rewrites.find(rule=>rule.source.endsWith('/:path*')&&(path===rule.source.slice(0,-8)||path.startsWith(rule.source.slice(0,-7))));
+  assert.equal(route?.destination,'/workspace.html',path);
+  assert.equal(resolveMetadata(path).robots,'noindex,nofollow',path);
+  assert(config.headers.some(rule=>new RegExp('^'+rule.source+'$').test(path)&&rule.headers.some(h=>h.key==='X-Robots-Tag'&&h.value==='noindex, nofollow')),path);
+ }
+ assert(!config.rewrites.some(rule=>rule.source==='/api/:path*'));
+});

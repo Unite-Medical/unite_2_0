@@ -20,7 +20,7 @@ export function shareImagePath(route = '/') {
   return `/images/social/${SHARE_VERSION}/${path === '/' ? 'home' : path.slice(1)}.jpg`;
 }
 export function isPrivateRoute(path) {
-  return /^\/(?:admin|staff|account|dashboard|cart|checkout|orders|invoices|quotes|q|vendor|rep|warehouse|work|distributor|activate|login|register)(?:\/|$)/.test(path)
+  return /^\/(?:admin|staff|account|dashboard|cart|checkout|orders|invoices|quotes|q|vendor|sales|rep|warehouse|work|distributor|activate|login|register)(?:\/|$)/.test(path)
     || path === '/quote/engine' || path === '/quote/new';
 }
 export function productMetadata(product) {

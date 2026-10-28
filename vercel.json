@@ -51,6 +51,10 @@
       "destination": "/workspace.html"
     },
     {
+      "source": "/sales/:path*",
+      "destination": "/workspace.html"
+    },
+    {
       "source": "/rep/:path*",
       "destination": "/workspace.html"
     },
@@ -242,7 +246,7 @@
       ]
     },
     {
-      "source": "/(admin|staff|account|dashboard|cart|checkout|orders|invoices|quotes|q|vendor|rep|warehouse|work|distributor|activate|login|register)(.*)",
+      "source": "/(admin|staff|account|dashboard|cart|checkout|orders|invoices|quotes|q|vendor|sales|rep|warehouse|work|distributor|activate|login|register)(.*)",
       "headers": [
         {
           "key": "X-Robots-Tag",
