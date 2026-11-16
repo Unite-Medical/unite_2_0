@@ -588,7 +588,7 @@
       "permanent": true
     },
     {
-      "source": "/products/medava®-usa-nitrile-gloves-200-box",
+      "source": "/products/medava%C2%AE-usa-nitrile-gloves-200-box",
       "destination": "/products/USAM200C-XS",
       "permanent": true
     },
@@ -613,7 +613,7 @@
       "permanent": true
     },
     {
-      "source": "/products/medava®-usa-nitrile-gloves-100-box",
+      "source": "/products/medava%C2%AE-usa-nitrile-gloves-100-box",
       "destination": "/products/USAM100C-XS",
       "permanent": true
     },
@@ -623,12 +623,12 @@
       "permanent": true
     },
     {
-      "source": "/products/medava®-surgical-mask-astm-level-3",
+      "source": "/products/medava%C2%AE-surgical-mask-astm-level-3",
       "destination": "/products/AM350",
       "permanent": true
     },
     {
-      "source": "/products/medava®-surgical-4-ply-mask-astm-level-3",
+      "source": "/products/medava%C2%AE-surgical-4-ply-mask-astm-level-3",
       "destination": "/products/USAM350",
       "permanent": true
     },

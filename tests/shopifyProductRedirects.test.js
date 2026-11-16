@@ -8,10 +8,11 @@ test('every legacy Shopify product handle permanently redirects to its SKU produ
   const bySource = new Map(config.redirects.map(rule => [rule.source, rule]));
   for (const product of PUBLIC_CATALOG.products) {
     if (!product.handle || product.handle === product.sku) continue;
-    const rule = bySource.get(`/products/${product.handle}`);
+    const rule = bySource.get(`/products/${encodeURI(product.handle)}`);
     assert.equal(rule?.destination, `/products/${encodeURIComponent(product.sku)}`, product.handle);
     assert.equal(rule.permanent, true, product.handle);
   }
+  assert(!config.redirects.some(rule => /[^\u0020-\u007e]/.test(rule.source)), 'redirect sources must be percent-encoded as browsers send them');
   const skus = new Set(PUBLIC_CATALOG.products.map(product => `/products/${encodeURIComponent(product.sku)}`));
   assert(!config.redirects.some(rule => skus.has(rule.source)), 'a redirect must never shadow a SKU page');
 });
