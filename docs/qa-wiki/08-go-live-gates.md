@@ -48,7 +48,7 @@ Status legend: 🔴 blocking launch · 🟠 needs decision · 🟢 done/verified
 | # | Gate | Status | Notes |
 |---|---|---|---|
 | E1 | Content & legal sign-off (PUB-03/04) | 🔴 | Open items in `docs/ALEX_THINGS.md`: SKU count, warehouse sq ft, partner logos, coverage map, compliance badge, blog content (Jill), document-request buttons. |
-| E2 | Shopify URL redirects cover top-traffic URLs | 🟠 | Pull top 200 URLs from Shopify/GA and test each (PUB-14). |
+| E2 | Shopify URL redirects cover top-traffic URLs | 🟠 | Catalog-product handles are redirected by PR #12 (118 products). Shopify handles not in the launch catalog still 404, so their destination needs a decision. Pull the top 200 URLs from Shopify/GA and test each one (PUB-14). |
 | E3 | DNS: point `unitemedical.net` + `www` to Vercel (via Cloudflare) | 🔴 | Last step. Keep Shopify running read-only for rollback. |
 | E4 | Production must be indexable; staging stays `noindex`; submit sitemap in Search Console | 🔴 | |
 | E5 | Analytics (PostHog / GA4) live on production only | 🟠 | |
@@ -56,6 +56,44 @@ Status legend: 🔴 blocking launch · 🟠 needs decision · 🟢 done/verified
 ## F. Business decisions still open
 
 From `docs/ALEX_ACTIONS.md`: margin policy per tier, quote validity (default 14 days), customer-facing margin disclosure, vendor scoring, high-watch countries, Class III policy, rep commissions & reassignment, self-serve quote gating, call-recording consent / privacy policy, data retention, surplus offer % and pickup logistics, warehouse scanner hardware.
+
+## G. QA run log
+
+### 2026-11-16: signed-out run on staging (baseline `27e6919`)
+
+Covered desktop (1440px) and mobile (390px). Nothing was submitted, paid for or emailed.
+
+| Sev | Finding | Status |
+|---|---|---|
+| P1 | Two signed-out tabs loop on `/api/auth/session` (188 requests with 401 responses in 10 s) | Fix in PR #11 |
+| P2 | Legacy Shopify product handle (e.g. `/products/medava-level-1-face-mask`) returns 404 instead of the SKU page | Fix in PR #12 |
+| P2 | 6 catalog products show photo placeholders (incl. GuardianScreen) | Needs photography |
+| P2 | Catalog has no sort control (PUB-05 expectation) | Scope decision |
+| P2 | `/surplus` is intake-only, no listings (PUB-10 expectation) | Scope decision |
+| P3 | Blog is "coming soon"; no article for PUB-03 | Needs content |
+
+**Passed:**
+- Catalog filters, search and reset.
+- SKU search.
+- Pricing CTAs show no contract prices on 5 categories.
+- Quick-quote handoff.
+- 17 header/footer links.
+- 271 internal link targets and 154 sitemap URLs resolve.
+- 33 protected routes redirect to login with `next`.
+- Admin GET endpoints return 401/403.
+- Generic login error.
+- Form validation.
+- Canonical URLs and staging `noindex`.
+- Branded 404 page.
+- No horizontal overflow on 26 surfaces.
+- Skip link works.
+
+**Not covered:**
+- All signed-in roles.
+- Email, reset and activation lifecycle.
+- Live integrations.
+- Real Safari/Android/Edge devices.
+- Lighthouse and full accessibility audit.
 
 ## Rollback plan (to fill in before E3)
 
