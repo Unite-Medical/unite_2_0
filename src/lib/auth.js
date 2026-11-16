@@ -24,8 +24,14 @@ if (typeof window !== 'undefined') {
 
 const subs = new Set();
 const notify = () => {
-  try { localStorage.setItem(SESSION_KEY, JSON.stringify(session)); } catch (e) { void e; }
-  if (!session) try { localStorage.removeItem(SESSION_KEY); } catch (e) { void e; }
+  // Unchanged values must not be rewritten: every write fires `storage` in other tabs, which re-bootstrap.
+  try {
+    const next = session ? JSON.stringify(session) : null;
+    if (localStorage.getItem(SESSION_KEY) !== next) {
+      if (next === null) localStorage.removeItem(SESSION_KEY);
+      else localStorage.setItem(SESSION_KEY, next);
+    }
+  } catch (e) { void e; }
   subs.forEach((fn) => fn());
 };
 if (typeof window !== 'undefined') {
