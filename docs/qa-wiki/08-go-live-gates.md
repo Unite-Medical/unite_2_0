@@ -95,6 +95,38 @@ Covered desktop (1440px) and mobile (390px). Nothing was submitted, paid for or 
 - Real Safari/Android/Edge devices.
 - Lighthouse and full accessibility audit.
 
+### Run 2 — signed-in admin (Damon), read-only — 2026-11-16
+
+Staging `27e6919`, Damon's existing MFA session, Chrome desktop at 1440px plus a 390px warehouse check. No intentional write controls were used, and nothing was emailed, paid, labelled or synced.
+
+| Sev | Finding | Status |
+|---|---|---|
+| P2 | ⌘K global search fails for any query ("Choose customers, products, orders or pricing"). Data review fails to load its manifest. Order-line `resolve_price` is affected too. Cause: since 03fef55, every action-based GET is sent to `/api/staff/order-workspace` | Fix in PR #13 |
+| P2 | UDI marks the Medava medical GS1 prefix `0850058304` **OK** although it expired 2026-10-31. New Medava DIs would still be issued from it | Fix in PR #14. The business must renew the prefix and update the expiry |
+| P2 | Opening `/admin/udi` seeds missing `gs1_prefixes` reference rows (`ensurePrefixRegistry`) and emits `POST /api/db/sync` | Needs owner audit. Treat UDI as not read-only |
+| P2 | `/admin/analytics` shows $0 and `/admin/order-operations` is empty, while `/admin/orders` lists 2,103 orders | Decide whether to connect, retire or label the legacy surfaces |
+| P2 | `/admin/replenishment` says every SKU is above its reorder point, but 43 forecast requests return 503 (forecast sidecar not configured). It is running on the run-rate fallback without saying so clearly | Needs a verified stock baseline |
+
+**Passed:**
+- Home team filters (counts 4/3/1/0/0).
+- Assistant opens without acting.
+- Saved Advanced BI report is internally consistent.
+- Customer and QA-quote detail pages.
+- New-PO form renders.
+- Testing checklist.
+- Staff list reads.
+- Admin is refused on `/dashboard` and `/distributor` (403).
+- Warehouse at 390px, including search.
+- `/admin/integrations` matches `/api/health`.
+- 53 admin routes render with no JS exceptions or overflow.
+- No signed-in `/api/auth/session` storm across two tabs in 10 s.
+
+**Blocked:**
+- Existing PO detail and print view: there are zero POs.
+- Finance and approvals: the queues are empty.
+- Every mutation: roles, orders, quotes, POs, warehouse postings, payments, refunds, QBO, webhooks, CMS and UDI assignment.
+- Stripe mode is still unknown.
+
 ## Rollback plan (to fill in before E3)
 
 1. Keep Shopify store live and unchanged until 7 days after cutover.
