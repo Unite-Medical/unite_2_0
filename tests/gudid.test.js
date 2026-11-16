@@ -224,3 +224,20 @@ test('intake template workbook: builds with all core fields present', async () =
   // check the count matches Damon's workbook (21 core rows).
   assert.equal(GUDID_CORE_FIELDS.length, 21);
 });
+
+test('expired prefixes are flagged and never issue DIs', () => {
+  ensurePrefixRegistry();
+  const p = db.list('gs1_prefixes', { where: { prefix: '0850089282' } })[0];
+  const before = p.expires;
+  db.update('gs1_prefixes', p.id, { expires: '2026-10-31' });
+  try {
+    const now = Date.parse('2026-11-16T12:00:00Z');
+    assert.equal(prefixStatus(now).find((x) => x.prefix === '0850089282').expired, true);
+    assert.equal(prefixStatus(Date.parse('2026-10-31T12:00:00Z')).find((x) => x.prefix === '0850089282').expired, false);
+    const res = assignDi({ labeler: 'unite', now });
+    assert.equal(res.ok, false);
+    assert.equal(res.reason, 'no_medical_capacity');
+  } finally {
+    db.update('gs1_prefixes', p.id, { expires: before });
+  }
+});
