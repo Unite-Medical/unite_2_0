@@ -191,6 +191,596 @@
       "source": "/solutions/ems",
       "destination": "/segments/ems",
       "permanent": true
+    },
+    {
+      "source": "/products/synguard-blue-nitrile-exam-gloves-3-5-mil-100-box-1000-case-x-small",
+      "destination": "/products/NGPF7000",
+      "permanent": true
+    },
+    {
+      "source": "/products/medava-level-1-face-mask",
+      "destination": "/products/AM150",
+      "permanent": true
+    },
+    {
+      "source": "/products/guardian-drug-screening-cup",
+      "destination": "/products/UM-GS15-UNIT",
+      "permanent": true
+    },
+    {
+      "source": "/products/3m-bair-hugger-plus-warming-gown-x-large-81202",
+      "destination": "/products/81202",
+      "permanent": true
+    },
+    {
+      "source": "/products/3m-bair-hugger-warming-gown-x-large-81201",
+      "destination": "/products/81201",
+      "permanent": true
+    },
+    {
+      "source": "/products/3m-bair-hugger-flex-warming-gown-81003",
+      "destination": "/products/81003",
+      "permanent": true
+    },
+    {
+      "source": "/products/3m-bair-hugger-warming-gown-81001",
+      "destination": "/products/81001",
+      "permanent": true
+    },
+    {
+      "source": "/products/3m-ranger-blood-and-fluid-warming-standard-flow-set-24200-case-of-10-copy-2",
+      "destination": "/products/24250",
+      "permanent": true
+    },
+    {
+      "source": "/products/3m-ranger-blood-fluid-warming-standard-flow-set-24200",
+      "destination": "/products/24200",
+      "permanent": true
+    },
+    {
+      "source": "/products/3m-bair-hugger-large-pediatric-underbody-warming-blanket-55001",
+      "destination": "/products/55001",
+      "permanent": true
+    },
+    {
+      "source": "/products/3m-bair-hugger-pediatric-underbody-warming-blanket-55502",
+      "destination": "/products/55502",
+      "permanent": true
+    },
+    {
+      "source": "/products/3m-bair-hugger-adult-underbody-warming-blanket-54501",
+      "destination": "/products/54501",
+      "permanent": true
+    },
+    {
+      "source": "/products/3m-bair-hugger-multi-position-upper-body-warming-blanket-62200",
+      "destination": "/products/62200",
+      "permanent": true
+    },
+    {
+      "source": "/products/3m-bair-hugger-full-access-underbody-warming-blanket-63501",
+      "destination": "/products/63501",
+      "permanent": true
+    },
+    {
+      "source": "/products/3m-bair-hugger-lower-body-warming-blanket-52500",
+      "destination": "/products/52500",
+      "permanent": true
+    },
+    {
+      "source": "/products/ray-cot-neurosurgical-patties",
+      "destination": "/products/60-22",
+      "permanent": true
+    },
+    {
+      "source": "/products/genabio-covid-19-rapid-self-test-kit-2-pack",
+      "destination": "/products/UMRA9-E02802",
+      "permanent": true
+    },
+    {
+      "source": "/products/neuro-sponge-x-ray-detectable",
+      "destination": "/products/35501110",
+      "permanent": true
+    },
+    {
+      "source": "/products/welllife-influenza-rapid-antigen-test-professional-25",
+      "destination": "/products/WFLUAB-POC-25",
+      "permanent": true
+    },
+    {
+      "source": "/products/avina-pure-4-mil-blue-nitrile-examination-gloves",
+      "destination": "/products/APN%203001",
+      "permanent": true
+    },
+    {
+      "source": "/products/genacheck-covid-flu-ab-rapid-self-test",
+      "destination": "/products/RA2-E02401",
+      "permanent": true
+    },
+    {
+      "source": "/products/binaxnow-covid-flu-ab-combo-self-test",
+      "destination": "/products/Binax-COV%2FFLU",
+      "permanent": true
+    },
+    {
+      "source": "/products/ihealth-4-in-1-flu-covid-rsv-test",
+      "destination": "/products/CFR-1",
+      "permanent": true
+    },
+    {
+      "source": "/products/welllife-covid-flu-ab-home-test",
+      "destination": "/products/WCOVFLU-OTC",
+      "permanent": true
+    },
+    {
+      "source": "/products/welllife-flu-ab-home-test",
+      "destination": "/products/WFLUAB-OTC-2",
+      "permanent": true
+    },
+    {
+      "source": "/products/osom-flu-covid-combo-home-test",
+      "destination": "/products/OSOM-Flu-SARS-CoV-2",
+      "permanent": true
+    },
+    {
+      "source": "/products/caresuperb-covid-flu-ab-combo-test",
+      "destination": "/products/RCUM-00171",
+      "permanent": true
+    },
+    {
+      "source": "/products/cordx-tyfast-flu-covid-test",
+      "destination": "/products/ACT21002-1-OTC",
+      "permanent": true
+    },
+    {
+      "source": "/products/quick-product-setup-copy",
+      "destination": "/products/CKW-L",
+      "permanent": true
+    },
+    {
+      "source": "/products/flowflex-covid-19-flu-home-test",
+      "destination": "/products/L03A-R0645",
+      "permanent": true
+    },
+    {
+      "source": "/products/flowflex-rsv-flu-covid-home-test",
+      "destination": "/products/L03A-R1445",
+      "permanent": true
+    },
+    {
+      "source": "/products/reinforced-surgical-gown-aami-level-3-sterile",
+      "destination": "/products/7678383",
+      "permanent": true
+    },
+    {
+      "source": "/products/genabio-genacheck-covid-flu-4-test-pack",
+      "destination": "/products/RA9-E02404",
+      "permanent": true
+    },
+    {
+      "source": "/products/genabio-genacheck-covid-19-flu-2-pack",
+      "destination": "/products/RA9-E02402",
+      "permanent": true
+    },
+    {
+      "source": "/products/welllife-covid-19-influenza-test-point-of-care",
+      "destination": "/products/WCOVFLU-POC-25",
+      "permanent": true
+    },
+    {
+      "source": "/products/vero-ankle-brace",
+      "destination": "/products/VA1S50S",
+      "permanent": true
+    },
+    {
+      "source": "/products/bonefoam-knee-buddy",
+      "destination": "/products/BF-KB",
+      "permanent": true
+    },
+    {
+      "source": "/products/bonefoam-zero-degree-knee",
+      "destination": "/products/BF-ZDK",
+      "permanent": true
+    },
+    {
+      "source": "/products/megapre-dairy-free-prebiotic",
+      "destination": "/products/11060527362",
+      "permanent": true
+    },
+    {
+      "source": "/products/restorflora-probiotic-21ct",
+      "destination": "/products/6935299",
+      "permanent": true
+    },
+    {
+      "source": "/products/digestmate-enzyme-probiotic-blend",
+      "destination": "/products/6935258",
+      "permanent": true
+    },
+    {
+      "source": "/products/vaginal-balance-probiotic-women",
+      "destination": "/products/6935305",
+      "permanent": true
+    },
+    {
+      "source": "/products/mega-lgg2000-gut-immune-support",
+      "destination": "/products/18010475496",
+      "permanent": true
+    },
+    {
+      "source": "/products/megamarine-omega-3-fish-oil",
+      "destination": "/products/18065476592",
+      "permanent": true
+    },
+    {
+      "source": "/products/megapre-precision-gut-prebiotic",
+      "destination": "/products/11023528963",
+      "permanent": true
+    },
+    {
+      "source": "/products/sereneskin-gut-skin-support",
+      "destination": "/products/6935286",
+      "permanent": true
+    },
+    {
+      "source": "/products/megamucosa-intestinal-support",
+      "destination": "/products/18024527461",
+      "permanent": true
+    },
+    {
+      "source": "/products/megaguard-digestive-support",
+      "destination": "/products/6935296",
+      "permanent": true
+    },
+    {
+      "source": "/products/zenbiome-cope-probiotic",
+      "destination": "/products/6935209",
+      "permanent": true
+    },
+    {
+      "source": "/products/zenbiome-sleep-probiotic",
+      "destination": "/products/6935208",
+      "permanent": true
+    },
+    {
+      "source": "/products/megasporebiotic-gummies-adults",
+      "destination": "/products/6935256",
+      "permanent": true
+    },
+    {
+      "source": "/products/megasporebiotic-gummies-kids",
+      "destination": "/products/6935309",
+      "permanent": true
+    },
+    {
+      "source": "/products/megaquin-k2-d3-vitamin-supplement",
+      "destination": "/products/6935297",
+      "permanent": true
+    },
+    {
+      "source": "/products/restorflora-60-count",
+      "destination": "/products/6935298",
+      "permanent": true
+    },
+    {
+      "source": "/products/megasporebiotic-60-count",
+      "destination": "/products/6935153",
+      "permanent": true
+    },
+    {
+      "source": "/products/postday-one-step-emergency-contraceptive",
+      "destination": "/products/PD00525",
+      "permanent": true
+    },
+    {
+      "source": "/products/50-60-ml-luer-lock-syringe-without-needle",
+      "destination": "/products/21IN-5023000001-B",
+      "permanent": true
+    },
+    {
+      "source": "/products/20-ml-luer-lock-syringe-without-needle",
+      "destination": "/products/21IN-2003000002-B",
+      "permanent": true
+    },
+    {
+      "source": "/products/10-ml-luer-lock-syringe-without-needle",
+      "destination": "/products/21IN-1003000008-B",
+      "permanent": true
+    },
+    {
+      "source": "/products/5-ml-luer-lock-syringe-without-needle",
+      "destination": "/products/21IN-0503000010-B",
+      "permanent": true
+    },
+    {
+      "source": "/products/3-ml-luer-lock-syringe-without-needle",
+      "destination": "/products/21IN-0303000002-B",
+      "permanent": true
+    },
+    {
+      "source": "/products/1-ml-luer-lock-syringe-without-needle",
+      "destination": "/products/21IN-0103000012-B",
+      "permanent": true
+    },
+    {
+      "source": "/products/genacheck-self-test-for-uti",
+      "destination": "/products/RA9-E01802B",
+      "permanent": true
+    },
+    {
+      "source": "/products/genacheck-self-test-for-fob",
+      "destination": "/products/RA9-E01701B",
+      "permanent": true
+    },
+    {
+      "source": "/products/genacheck-fentanyl-home-test",
+      "destination": "/products/RA9-E02501B",
+      "permanent": true
+    },
+    {
+      "source": "/products/genacheck-vaginal-health-ph-screening",
+      "destination": "/products/RA9-E02303B",
+      "permanent": true
+    },
+    {
+      "source": "/products/genacheck-self-test-for-twelve-drugs",
+      "destination": "/products/RA9-E01902B",
+      "permanent": true
+    },
+    {
+      "source": "/products/genacheck-rapid-test-five-5-drugs",
+      "destination": "/products/RA9-E02105B",
+      "permanent": true
+    },
+    {
+      "source": "/products/genacheck-self-test-cannabis",
+      "destination": "/products/RA9-E02005B",
+      "permanent": true
+    },
+    {
+      "source": "/products/speedy-swab-rapid-covid-19-flu-antigen-test",
+      "destination": "/products/LFA0462-25N",
+      "permanent": true
+    },
+    {
+      "source": "/products/tall-walking-boot-pneumatic",
+      "destination": "/products/PWB6061-XS-T",
+      "permanent": true
+    },
+    {
+      "source": "/products/short-walking-boot-pneumatic",
+      "destination": "/products/PWB6061-XS-S",
+      "permanent": true
+    },
+    {
+      "source": "/products/oraquick-in-home-hiv-test",
+      "destination": "/products/1001-0340",
+      "permanent": true
+    },
+    {
+      "source": "/products/speedy-swab-covid-19-flu-self-test-2-pack",
+      "destination": "/products/LFA0462-2V6-BIO",
+      "permanent": true
+    },
+    {
+      "source": "/products/speedyswab-covid-19-flu-self-test",
+      "destination": "/products/LFA0462-1V10-BIO",
+      "permanent": true
+    },
+    {
+      "source": "/products/ihealth-rapid-covid-flu-test",
+      "destination": "/products/COV-FLU-2",
+      "permanent": true
+    },
+    {
+      "source": "/products/cordx-flu-covid-test",
+      "destination": "/products/ACT21002-1%20OTC%201",
+      "permanent": true
+    },
+    {
+      "source": "/products/status-covid-19-flu-rapid-test",
+      "destination": "/products/Status-33225%20(B25)",
+      "permanent": true
+    },
+    {
+      "source": "/products/irrigation-warming-set",
+      "destination": "/products/24750",
+      "permanent": true
+    },
+    {
+      "source": "/products/medava®-usa-nitrile-gloves-200-box",
+      "destination": "/products/USAM200C-XS",
+      "permanent": true
+    },
+    {
+      "source": "/products/medava-n95-niosh-respirator-fold-style",
+      "destination": "/products/USAMN95F50",
+      "permanent": true
+    },
+    {
+      "source": "/products/medava-3-ply-mask-astm-level-1",
+      "destination": "/products/USAM150",
+      "permanent": true
+    },
+    {
+      "source": "/products/medava-surgical-mask-with-ties",
+      "destination": "/products/USAM350T",
+      "permanent": true
+    },
+    {
+      "source": "/products/medava-shoe-covers",
+      "destination": "/products/USAM100SC",
+      "permanent": true
+    },
+    {
+      "source": "/products/medava®-usa-nitrile-gloves-100-box",
+      "destination": "/products/USAM100C-XS",
+      "permanent": true
+    },
+    {
+      "source": "/products/medava-softtouch-medical-gloves",
+      "destination": "/products/AMC200-XS",
+      "permanent": true
+    },
+    {
+      "source": "/products/medava®-surgical-mask-astm-level-3",
+      "destination": "/products/AM350",
+      "permanent": true
+    },
+    {
+      "source": "/products/medava®-surgical-4-ply-mask-astm-level-3",
+      "destination": "/products/USAM350",
+      "permanent": true
+    },
+    {
+      "source": "/products/medava-surgical-3-ply-mask-astm-level-2",
+      "destination": "/products/USAM250",
+      "permanent": true
+    },
+    {
+      "source": "/products/surgilock-instrument-platform",
+      "destination": "/products/UMSL1016",
+      "permanent": true
+    },
+    {
+      "source": "/products/basic-vinyl-synthetic-exam-gloves",
+      "destination": "/products/VGPF3002",
+      "permanent": true
+    },
+    {
+      "source": "/products/genabio-covid-19-at-home-tests-2-pack",
+      "destination": "/products/UMRA9-E00302",
+      "permanent": true
+    },
+    {
+      "source": "/products/baby-cradle-back-support-bc3449",
+      "destination": "/products/BC3349-1",
+      "permanent": true
+    },
+    {
+      "source": "/products/lumbar-orthosis-back-brace",
+      "destination": "/products/LO2742",
+      "permanent": true
+    },
+    {
+      "source": "/products/heel-cup-stabilizer",
+      "destination": "/products/HS3170-S",
+      "permanent": true
+    },
+    {
+      "source": "/products/shoulder-abduction-orthosis-l3960",
+      "destination": "/products/SEWH3960",
+      "permanent": true
+    },
+    {
+      "source": "/products/afo-extender-panel-adjustable-support",
+      "destination": "/products/AFO71-Panel",
+      "permanent": true
+    },
+    {
+      "source": "/products/lumbar-sacral-orthosis-3",
+      "destination": "/products/LSO3148",
+      "permanent": true
+    },
+    {
+      "source": "/products/lumbar-sacral-orthosis-2",
+      "destination": "/products/LSO3750",
+      "permanent": true
+    },
+    {
+      "source": "/products/wrist-hand-finger-orthosis",
+      "destination": "/products/WHFO0709L",
+      "permanent": true
+    },
+    {
+      "source": "/products/bilateral-hip-orthosis",
+      "destination": "/products/HO1690",
+      "permanent": true
+    },
+    {
+      "source": "/products/cervical-collar",
+      "destination": "/products/CC180",
+      "permanent": true
+    },
+    {
+      "source": "/products/cryo-pneumatic-shoulder",
+      "destination": "/products/Cryo3670",
+      "permanent": true
+    },
+    {
+      "source": "/products/cryo-pneumatic-rom-knee-brace",
+      "destination": "/products/Cryo3233",
+      "permanent": true
+    },
+    {
+      "source": "/products/cryo-pneumatic-ankle-brace",
+      "destination": "/products/CryoAnkle",
+      "permanent": true
+    },
+    {
+      "source": "/products/cryo-pneumatic-elbow-brace",
+      "destination": "/products/CryoElbow",
+      "permanent": true
+    },
+    {
+      "source": "/products/hip-orthosis",
+      "destination": "/products/HO1686",
+      "permanent": true
+    },
+    {
+      "source": "/products/telescoping-rom-elbow-brace",
+      "destination": "/products/EO6061L",
+      "permanent": true
+    },
+    {
+      "source": "/products/ankle-foot-orthosis-1",
+      "destination": "/products/AFO0671L-S",
+      "permanent": true
+    },
+    {
+      "source": "/products/double-upright-knee-orthosis",
+      "destination": "/products/KO4552L-S",
+      "permanent": true
+    },
+    {
+      "source": "/products/wrist-hand-orthosis-1",
+      "destination": "/products/WHO1615-SM",
+      "permanent": true
+    },
+    {
+      "source": "/products/post-operative-knee-brace",
+      "destination": "/products/KO3233-PO",
+      "permanent": true
+    },
+    {
+      "source": "/products/suspension-sleeve-1",
+      "destination": "/products/SS2397",
+      "permanent": true
+    },
+    {
+      "source": "/products/single-upright-knee-orthosis-1",
+      "destination": "/products/KO4351L",
+      "permanent": true
+    },
+    {
+      "source": "/products/sized-rom-knee-brace",
+      "destination": "/products/KO3233-SM",
+      "permanent": true
+    },
+    {
+      "source": "/products/deluxe-universal-rom-knee-brace-1",
+      "destination": "/products/KO3233-1",
+      "permanent": true
+    },
+    {
+      "source": "/products/universal-rom-knee-brace",
+      "destination": "/products/KO3233",
+      "permanent": true
+    },
+    {
+      "source": "/products/regenicool-pro-cold-compression-therapy-system",
+      "destination": "/products/REGENICOOL-PRO",
+      "permanent": true
     }
   ],
   "headers": [
