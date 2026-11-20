@@ -186,7 +186,7 @@ Founder, Unite Medical`,
         </div>
 
         <div style={{ background: D.card, borderRadius: 12, border: `1px solid ${D.line}`, padding: isMobile ? 22 : 28 }}>
-          {!active && <div style={{ color: D.ink3 }}>Select a submission to review.</div>}
+          {!active && <div style={{ color: D.ink3 }}>Choose a submission to review its lines and send an offer.</div>}
           {active && (
             <>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', flexWrap: 'wrap', gap: 12 }}>

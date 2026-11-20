@@ -36,7 +36,7 @@ export function AdminLots() {
   const live = useMemo(() => lots.filter((l) => Number(l.qty_remaining) > 0), [lots]);
 
   return (
-    <AdminShell active="inventory">
+    <AdminShell active="lots">
       <div style={{ padding: `${isMobile ? 28 : 40}px ${padX}px 64px` }}>
         <div style={{ fontSize: 12, fontWeight: 600, color: D.ink2, marginBottom: 12 }}>Operations</div>
         <h1 style={{ fontFamily: D.display, fontSize: 28, fontWeight: 600, letterSpacing: -0.4, margin: '0 0 22px' }}>Lots</h1>
