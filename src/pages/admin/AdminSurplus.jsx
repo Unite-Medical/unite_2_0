@@ -198,7 +198,7 @@ Founder, Unite Medical`,
                   {active.pickup_location && <div style={{ fontSize: 12, color: D.ink3, marginTop: 4 }}>Pickup: {active.pickup_location}</div>}
                 </div>
                 <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>OFFER TOTAL</div>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: D.ink3 }}>Offer total</div>
                   <div style={{ fontFamily: D.display, fontSize: 36, color: D.plum, letterSpacing: -0.5 }}>{fmt.money(Number(active.offer_total) || 0)}</div>
                   <div style={{ fontSize: 11, color: D.ink3 }}>est. retail {fmt.money(Number(active.estimated_value) || 0)}</div>
                 </div>

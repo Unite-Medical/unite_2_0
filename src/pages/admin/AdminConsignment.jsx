@@ -50,7 +50,7 @@ export function AdminConsignment() {
 
       <div style={{ padding: isMobile ? 20 : 32, display: 'grid', gap: 20 }}>
         <div style={{ background: D.card, border: `1px solid ${D.line}`, borderRadius: 12, padding: 18 }}>
-          <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3, marginBottom: 10 }}>SHIPPING MARKUP</div>
+          <div style={{ fontSize: 12, fontWeight: 600, color: D.ink3, marginBottom: 10 }}>Shipping markup</div>
           <div style={{ display: 'flex', gap: 18, flexWrap: 'wrap', alignItems: 'center' }}>
             <label style={{ fontSize: 13, color: D.ink2, display: 'flex', alignItems: 'center', gap: 8 }}>
               Global default

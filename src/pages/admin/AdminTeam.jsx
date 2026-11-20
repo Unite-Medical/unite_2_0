@@ -92,7 +92,7 @@ export function AdminTeam() {
             </>
           )}
 
-          <div style={{ marginTop: 26, fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>RECENT DENIED ATTEMPTS</div>
+          <div style={{ marginTop: 26, fontSize: 12, fontWeight: 600, color: D.ink3 }}>Recent denied attempts</div>
           {denials.length === 0 && <div style={{ fontSize: 12, color: D.ink3, marginTop: 8 }}>None — no rep has exceeded their authority.</div>}
           {denials.map((a) => (
             <div key={a.id} style={{ fontSize: 12, color: D.ink2, marginTop: 8, fontFamily: D.mono }}>
