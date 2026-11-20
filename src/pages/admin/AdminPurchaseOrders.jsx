@@ -1,23 +1,22 @@
+import { Plus, Sparkles, Truck } from 'lucide-react';
+import { Button, ButtonLink } from '../../components/ui/button.jsx';
+import { Card as UiCard } from '../../components/ui/card.jsx';
+import { Table, THead, TRow, TH, TD } from '../../components/ui/table.jsx';
+import { EmptyState } from '../../components/ui/empty-state.jsx';
+import { StatusBadge } from '../../components/ui/status-badge.jsx';
+import { cn } from '../../lib/cn.js';
+import '../../styles/ui.css';
 import { useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { D } from '../../tokens.js';
 import { AdminShell } from '../../components/layout/AdminShell.jsx';
 import { AdminCard } from '../../components/layout/AdminCard.jsx';
 import { db } from '../../lib/db.js';
 import { fmt } from '../../lib/format.js';
-import { useViewport } from '../../lib/viewport.js';
 import { purchaseOrders } from '../../lib/wms/purchaseOrders.js';
 import { draftServerPurchaseOrders, mutatePurchaseOrder } from '../../lib/serverPurchaseOrders.js';
 import { PurchaseOrderTransfer } from '../../components/PurchaseOrderTransfer.jsx';
 
-const STATUS_COLOR = {
-  draft: D.ink3, approved: '#b8a04a', sent: '#4a78b8', partial: '#b8a04a',
-  received: '#3b8760', closed: D.ink2, cancelled: D.terra,
-};
-
 export function AdminPurchaseOrders() {
-  const { isMobile } = useViewport();
-  const padX = isMobile ? 18 : 40;
   const pos = db.useTable('purchase_orders', { orderBy: 'created_at', dir: 'desc' });
   const [busy, setBusy] = useState(null);
   const [filter, setFilter] = useState('all');
@@ -70,88 +69,64 @@ export function AdminPurchaseOrders() {
 
   return (
     <AdminShell active="replenish">
-      <div style={{ padding: `${isMobile ? 28 : 40}px ${padX}px 64px` }}>
-        <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 12 }}>OPS · PURCHASE ORDERS</div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'end', marginBottom: 22, flexWrap: 'wrap', gap: 10 }}>
-          <h1 style={{ fontFamily: D.display, fontSize: 'clamp(34px, 5.6vw, 56px)', fontWeight: 400, letterSpacing: -1.3, margin: 0 }}>Purchase orders.</h1>
-          <Link className="cw-button" to="/admin/purchase-orders/new">Create purchase order</Link>
-          <button
-            onClick={() => act(draftFromReplenishment, 'draft-all')}
-            disabled={busy === 'draft-all'}
-            style={{ background: D.plum, color: D.paper, border: 'none', padding: '11px 18px', borderRadius: 4, cursor: 'pointer', fontSize: 13, fontWeight: 600 }}
-          >
-            {busy === 'draft-all' ? 'Drafting…' : 'Draft POs from replenishment'}
-          </button>
-        </div>
-
-        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 18 }}>
-          {['all', 'draft', 'approved', 'sent', 'partial', 'received', 'closed', 'cancelled'].map((s) => (
-            <button key={s} onClick={() => setFilter(s)} style={{
-              fontFamily: D.mono, fontSize: 11, letterSpacing: 0.6, padding: '7px 12px', borderRadius: 4, cursor: 'pointer',
-              border: `1px solid ${filter === s ? D.plum : D.line}`, background: filter === s ? D.plum : D.card, color: filter === s ? D.paper : D.ink2,
-            }}>{s.toUpperCase()}{s !== 'all' && counts[s] ? ` · ${counts[s]}` : ''}</button>
-          ))}
-        </div>
-
-        {notice && <div style={{ marginBottom: 14, padding: '11px 14px', background: D.paperAlt, border: `1px solid ${D.line}`, borderRadius: 8, fontSize: 13 }}>{notice}</div>}
-
-        <PurchaseOrderTransfer localOrders={pos} />
-        <AdminCard title={`${filtered.length} purchase order(s)`}>
-          <div className="um-scroll-x">
-            <table style={{ width: '100%', minWidth: 760, borderCollapse: 'collapse', fontSize: 13 }}>
-              <thead>
-                <tr style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>
-                  {['PO', 'VENDOR', 'LINES', 'UNITS (RCVD/ORD)', 'TOTAL', 'STATUS', 'ACTIONS'].map((h) => (
-                    <th key={h} style={{ padding: '10px 12px', textAlign: 'left', borderBottom: `1px solid ${D.line}` }}>{h}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.map((p, i) => {
-                  const prog = purchaseOrders.progress(p.id) || { ordered: 0, received: 0 };
-                  return (
-                    <tr key={p.id} style={{ borderTop: i === 0 ? 'none' : `1px solid ${D.line}` }}>
-                      <td style={{ padding: '12px', fontFamily: D.mono, fontSize: 12 }}>
-                        <Link to={`/admin/purchase-orders/${p.id}`} style={{ color: D.plum }}>{p.id}</Link>
-                      </td>
-                      <td style={{ padding: '12px', fontWeight: 500 }}>
-                        {p.vendor_name}
-                        {p.vendor_response && <div style={{ marginTop: 3, fontFamily: D.mono, fontSize: 9, color: p.vendor_response === 'acknowledged' ? '#3b8760' : D.ink3 }}>{p.vendor_response.toUpperCase()}</div>}
-                      </td>
-                      <td style={{ padding: '12px', color: D.ink2 }}>{p.line_items?.length || 0}</td>
-                      <td style={{ padding: '12px', fontFamily: D.mono }}>{prog.received}/{prog.ordered}</td>
-                      <td style={{ padding: '12px', fontFamily: D.mono }}>{p.total_cost==null?'Needs costs':fmt.money(p.total_cost, { cents: false })}</td>
-                      <td style={{ padding: '12px' }}>
-                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12, color: STATUS_COLOR[p.status] || D.ink2 }}>● {p.status}</span>
-                      </td>
-                      <td style={{ padding: '12px', display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-                        {p.status === 'draft' && <Act label="Approve" busy={busy === p.id} onClick={() => act(() => mutatePurchaseOrder(p, 'approve'), p.id)} />}
-                        {p.status === 'approved' && <Act label="Send PO" busy={busy === p.id} onClick={() => act(() => sendPurchaseOrder(p), p.id)} />}
-                        {p.status === 'sent' && p.vendor_response === 'changes_requested' && <Act label="Create revision" busy={busy === p.id} onClick={() => act(() => mutatePurchaseOrder(p, 'revise'), p.id)} />}
-                        {p.po_type !== 'consignment_settlement' && (p.status === 'sent' || p.status === 'partial') && <Link to={"/admin/inventory/receive?po="+encodeURIComponent(p.id)} style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1, color: D.plum }}>RECEIVE</Link>}
-                        {p.po_type !== 'consignment_settlement' && p.status === 'received' && <Act label="Close" busy={busy === p.id} onClick={() => act(() => mutatePurchaseOrder(p, 'close'), p.id)} />}
-                        {['draft', 'approved', 'sent'].includes(p.status) && p.vendor_response !== 'acknowledged' && <Act label="Cancel" danger busy={busy === p.id} onClick={() => act(() => mutatePurchaseOrder(p, 'cancel'), p.id)} />}
-                      </td>
-                    </tr>
-                  );
-                })}
-                {filtered.length === 0 && (
-                  <tr><td colSpan={7} style={{ padding: '28px 12px', textAlign: 'center', color: D.ink3 }}>No purchase orders in this view.</td></tr>
-                )}
-              </tbody>
-            </table>
+      <main id="main" className="ui-root mx-auto w-full max-w-[1500px] px-4 py-6 font-sans text-sm text-ink md:px-8"><div className="flex flex-col gap-5">
+        <header className="flex flex-wrap items-end justify-between gap-4">
+          <div><h1 className="m-0 font-display text-2xl font-semibold text-ink">Purchase orders</h1><p className="mt-1 text-sm text-ink-2">Buy from suppliers, track acknowledgments and receive deliveries.</p></div>
+          <div className="flex flex-wrap gap-2">
+            <Button onClick={() => act(draftFromReplenishment, 'draft-all')} disabled={busy === 'draft-all'}><Sparkles className="h-4 w-4"/>{busy === 'draft-all' ? 'Drafting…' : 'Draft from replenishment'}</Button>
+            <ButtonLink variant="primary" to="/admin/purchase-orders/new"><Plus className="h-4 w-4"/>Create purchase order</ButtonLink>
           </div>
-        </AdminCard>
-      </div>
+        </header>
+        {notice && <p className="m-0 rounded-lg border border-line bg-paper px-4 py-3 text-sm" role="status">{notice}</p>}
+        <PurchaseOrderTransfer localOrders={pos} />
+        <UiCard className="overflow-hidden">
+          <div role="tablist" aria-label="Purchase order status" className="flex gap-1 overflow-x-auto border-b border-line px-4 py-3 [scrollbar-width:none]">
+            {['all', 'draft', 'approved', 'sent', 'partial', 'received', 'closed', 'cancelled'].map((st) => (
+              <button key={st} role="tab" aria-selected={filter === st} onClick={() => setFilter(st)} className={cn('min-h-11 rounded-lg px-3 text-sm font-medium whitespace-nowrap capitalize md:min-h-10', filter === st ? 'bg-paper text-ink' : 'text-ink-2 hover:bg-paper/60')}>{st}{st !== 'all' && counts[st] ? <span className="ml-1.5 text-xs text-ink-3">{counts[st]}</span> : null}</button>
+            ))}
+          </div>
+          {filtered.length === 0 ? (
+            <EmptyState icon={Truck} title={filter === 'all' ? 'No purchase orders yet' : `No ${filter} purchase orders`} description={filter === 'all' ? 'Create one for a supplier, or draft them from replenishment suggestions.' : 'Try another status.'} action={filter === 'all' ? <ButtonLink variant="primary" to="/admin/purchase-orders/new"><Plus className="h-4 w-4"/>Create purchase order</ButtonLink> : <Button onClick={() => setFilter('all')}>Show all</Button>}/>
+          ) : <>
+            <ul className="m-0 list-none divide-y divide-line p-0 md:hidden">
+              {filtered.map((p) => { const prog = purchaseOrders.progress(p.id) || { ordered: 0, received: 0 }; return (
+                <li key={p.id} className="flex flex-col gap-2 px-4 py-3">
+                  <Link to={`/admin/purchase-orders/${p.id}`} className="flex flex-col gap-1 text-ink no-underline">
+                    <span className="flex items-center justify-between gap-3"><span className="font-mono font-semibold">{p.id}</span><StatusBadge value={p.status}/></span>
+                    <span className="flex items-center justify-between gap-3 text-xs text-ink-2"><span className="truncate">{p.vendor_name}</span><span className="font-mono">{prog.received}/{prog.ordered} units · {p.total_cost == null ? 'Needs costs' : fmt.money(p.total_cost, { cents: false })}</span></span>
+                  </Link>
+                  <RowActions p={p} busy={busy} act={act} sendPurchaseOrder={sendPurchaseOrder}/>
+                </li>); })}
+            </ul>
+            <div className="hidden md:block"><Table><THead><tr><TH>PO</TH><TH>Supplier</TH><TH className="text-right">Lines</TH><TH className="text-right">Received / ordered</TH><TH className="text-right">Total</TH><TH>Status</TH><TH><span className="sr-only">Actions</span></TH></tr></THead><tbody>
+              {filtered.map((p) => { const prog = purchaseOrders.progress(p.id) || { ordered: 0, received: 0 }; return (
+                <TRow key={p.id}>
+                  <TD><Link className="font-mono font-semibold text-ink hover:text-brand" to={`/admin/purchase-orders/${p.id}`}>{p.id}</Link></TD>
+                  <TD><div className="font-medium">{p.vendor_name}</div>{p.vendor_response && <div className="text-xs capitalize text-ink-2">{p.vendor_response.replace(/_/g, ' ')}</div>}</TD>
+                  <TD className="text-right tabular-nums">{p.line_items?.length || 0}</TD>
+                  <TD className="text-right font-mono tabular-nums">{prog.received}/{prog.ordered}</TD>
+                  <TD className="text-right font-mono tabular-nums">{p.total_cost == null ? <span className="text-warn">Needs costs</span> : fmt.money(p.total_cost, { cents: false })}</TD>
+                  <TD><StatusBadge value={p.status}/></TD>
+                  <TD><RowActions p={p} busy={busy} act={act} sendPurchaseOrder={sendPurchaseOrder}/></TD>
+                </TRow>); })}
+            </tbody></Table></div>
+          </>}
+        </UiCard>
+      </div></main>
     </AdminShell>
   );
 }
 
-function Act({ label, onClick, busy, danger }) {
+function RowActions({ p, busy, act, sendPurchaseOrder }) {
+  const b = busy === p.id;
   return (
-    <button onClick={onClick} disabled={busy} style={{
-      background: 'transparent', border: 'none', cursor: busy ? 'wait' : 'pointer', padding: 0,
-      fontFamily: D.mono, fontSize: 11, letterSpacing: 1, color: danger ? D.terra : D.plum,
-    }}>{busy ? '…' : label.toUpperCase()}</button>
+    <div className="flex flex-wrap items-center justify-end gap-2">
+      {p.status === 'draft' && <Button size="sm" disabled={b} onClick={() => act(() => mutatePurchaseOrder(p, 'approve'), p.id)}>Approve</Button>}
+      {p.status === 'approved' && <Button size="sm" variant="primary" disabled={b} onClick={() => act(() => sendPurchaseOrder(p), p.id)}>Send PO</Button>}
+      {p.status === 'sent' && p.vendor_response === 'changes_requested' && <Button size="sm" disabled={b} onClick={() => act(() => mutatePurchaseOrder(p, 'revise'), p.id)}>Create revision</Button>}
+      {p.po_type !== 'consignment_settlement' && (p.status === 'sent' || p.status === 'partial') && <ButtonLink size="sm" to={'/admin/inventory/receive?po=' + encodeURIComponent(p.id)}>Receive</ButtonLink>}
+      {p.po_type !== 'consignment_settlement' && p.status === 'received' && <Button size="sm" disabled={b} onClick={() => act(() => mutatePurchaseOrder(p, 'close'), p.id)}>Close</Button>}
+      {['draft', 'approved', 'sent'].includes(p.status) && p.vendor_response !== 'acknowledged' && <Button size="sm" variant="ghost" className="text-warn" disabled={b} onClick={() => act(() => mutatePurchaseOrder(p, 'cancel'), p.id)}>Cancel</Button>}
+    </div>
   );
 }
