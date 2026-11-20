@@ -1,0 +1,22 @@
+/* Staff UI kit (shadcn / Untitled UI). Preflight is omitted so existing pages and the public site keep their styles. */
+@layer theme, base, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+@theme {
+  --color-paper: #f3f2eb;
+  --color-paper-alt: #e9e7dc;
+  --color-card: #fcfbf6;
+  --color-ink: #16201a;
+  --color-ink-deep: #0e1713;
+  --color-ink-2: #57635a;
+  --color-ink-3: #8b968d;
+  --color-line: #dbd9cc;
+  --color-brand: #1d5c4d;
+  --color-brand-soft: #9dbcae;
+  --color-warn: #b3592b;
+  --color-warn-soft: #dcc0a8;
+  --font-display: "Unite Manrope", "Helvetica Neue", Arial, sans-serif;
+  --font-sans: "Archivo", -apple-system, "Helvetica Neue", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+}
