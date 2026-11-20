@@ -12,7 +12,7 @@ import { wmsCan } from '../../lib/wms/access.js';
 import { isNotApplicable, trackingPolicyForSku } from '../../lib/productTracking.js';
 
 const INPUT = { padding: '12px 14px', borderRadius: 10, border: `1px solid ${D.line}`, fontFamily: D.sans, fontSize: 15, color: D.ink, background: D.card, width: '100%', boxSizing: 'border-box' };
-const LABEL = { fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3, marginBottom: 6, display: 'block' };
+const LABEL = { fontSize: 12, fontWeight: 600, color: D.ink2, marginBottom: 6, display: 'block' };
 
 const STATE_COLOR = { exact: '#3b8760', short: D.terra || '#b8553a', over: '#b8a04a', unexpected: '#9a2b2b' };
 const newReceiptKey = () => globalThis.crypto?.randomUUID?.() || `receipt_${Date.now()}_${Math.random().toString(36).slice(2)}`;
@@ -165,7 +165,7 @@ export function AdminReceiving() {
         <AdminCard title="01 · Against which order?">
           <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 200px', gap: 12 }}>
             <div>
-              <label style={LABEL}>OPEN PURCHASE ORDER</label>
+              <label style={LABEL}>Open purchase order</label>
               <select aria-label="Open purchase order" disabled={queue.length>0||busy} value={poId} onChange={(e) => { setPoId(e.target.value); setPending(null); setQueue([]); setReceiptKey(newReceiptKey()); }} style={INPUT}>
                 <option value="">Select an open purchase order…</option>
                 {po&&!receivable&&<option value={po.id} disabled>{po.id} · {po.status} · receiving complete</option>}
@@ -173,7 +173,7 @@ export function AdminReceiving() {
               </select>
             </div>
             <div>
-              <label style={LABEL}>WAREHOUSE</label>
+              <label style={LABEL}>Warehouse</label>
               <select aria-label="Warehouse" disabled={queue.length>0||busy} value={warehouse} onChange={(e) => setWarehouse(e.target.value)} style={INPUT}>
                 <option value="wh_unite">Unite Medical Warehouse (wh_unite)</option>
               </select>
@@ -187,7 +187,7 @@ export function AdminReceiving() {
         <AdminCard title="02 · Scan a carton">
           <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 120px 120px', gap: 12, alignItems: 'end' }}>
             <div>
-              <label style={LABEL}>SCAN UPC / GTIN / BARCODE</label>
+              <label style={LABEL}>Scan UPC / GTIN / barcode</label>
               <input
                 aria-label="Scan UPC GTIN or barcode" ref={scanRef}
                 autoFocus
@@ -214,19 +214,19 @@ export function AdminReceiving() {
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 10, marginTop: 10 }}>
                 <div>
-                  <label style={LABEL}>LOT NUMBER · ACTUAL OR N/A</label>
+                  <label style={LABEL}>Lot number · actual or N/A</label>
                   <input aria-label="Lot number" value={manualLot} onChange={(e) => setManualLot(e.target.value)} placeholder="Scan/type lot number" style={INPUT} />
                   {trackingPolicyForSku(pending.sku).lot !== 'required' && <button type="button" onClick={() => setManualLot('N/A')} style={{ marginTop: 5, border: 'none', background: 'transparent', color: D.plum, cursor: 'pointer', fontSize: 11 }}>Attest lot N/A</button>}
                 </div>
                 <div>
-                  <label style={LABEL}>EXPIRATION · ACTUAL OR N/A</label>
+                  <label style={LABEL}>Expiration · actual or N/A</label>
                   <input aria-label="Expiration date" value={manualExpiration} onChange={(e) => setManualExpiration(e.target.value)} placeholder="YYYY-MM-DD or N/A" style={INPUT} />
                   {trackingPolicyForSku(pending.sku).expiration !== 'required' && <button type="button" onClick={() => setManualExpiration('N/A')} style={{ marginTop: 5, border: 'none', background: 'transparent', color: D.plum, cursor: 'pointer', fontSize: 11 }}>Attest expiration N/A</button>}
                 </div>
               </div>
               {(isNotApplicable(manualLot) || isNotApplicable(manualExpiration)) && (
                 <label style={{ display: 'block', marginTop: 10 }}>
-                  <span style={LABEL}>N/A ATTESTATION REASON</span>
+                  <span style={LABEL}>N/A attestation reason</span>
                   <select value={notApplicableReason} onChange={(e) => setNotApplicableReason(e.target.value)} style={INPUT}>
                     <option value="">Select reason…</option>
                     <option value="manufacturer_does_not_assign">Manufacturer does not assign this value</option>
@@ -253,7 +253,7 @@ export function AdminReceiving() {
                   <span style={{ fontFamily: D.mono, fontSize: 12 }}>{r.sku}{r.name && r.name !== r.sku ? ` · ${r.name}` : ''}{r.lot_number ? ` · lot ${r.lot_number}` : ''}{r.expiration_date ? ` · exp ${r.expiration_date}` : ''}</span>
                   <span style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
                     <span>× {r.qty}</span>
-                    <button onClick={() => removeLine(i)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: D.ink3, fontFamily: D.mono, fontSize: 11 }}>REMOVE</button>
+                    <button onClick={() => removeLine(i)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: D.ink2, fontSize: 12, fontWeight: 600, padding: '8px 4px', minHeight: 34 }}>Remove</button>
                   </span>
                 </div>
               ))}
@@ -282,9 +282,9 @@ export function AdminReceiving() {
                     <tr style={{ textAlign: 'left', fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>
                       <th style={{ padding: '8px 12px' }}>SKU</th>
                       <th style={{ padding: '8px 12px' }}>ITEM</th>
-                      <th style={{ padding: '8px 12px', textAlign: 'right' }}>ORDERED</th>
-                      <th style={{ padding: '8px 12px', textAlign: 'right' }}>RECEIVED</th>
-                      <th style={{ padding: '8px 12px', textAlign: 'right' }}>VARIANCE</th>
+                      <th style={{ padding: '8px 12px', textAlign: 'right' }}>Ordered</th>
+                      <th style={{ padding: '8px 12px', textAlign: 'right' }}>Received</th>
+                      <th style={{ padding: '8px 12px', textAlign: 'right' }}>Variance</th>
                       <th style={{ padding: '8px 12px' }}>STATE</th>
                     </tr>
                   </thead>
