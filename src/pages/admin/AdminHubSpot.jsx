@@ -135,9 +135,9 @@ export function AdminHubSpot() {
   return (
     <AdminShell active="hubspot">
       <div style={{ padding: `${isMobile ? 28 : 40}px ${padX}px ${isMobile ? 48 : 64}px` }}>
-        <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 12 }}>SALES · HUBSPOT (LIVE)</div>
+        <div style={{ fontSize: 12, fontWeight: 600, color: D.ink2, marginBottom: 12 }}>Sales</div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: isMobile ? 'flex-start' : 'end', marginBottom: 22, flexDirection: isMobile ? 'column' : 'row', gap: 10 }}>
-          <h1 style={{ fontFamily: D.display, fontSize: 'clamp(34px, 5.6vw, 56px)', fontWeight: 400, letterSpacing: -1.3, lineHeight: 1.02, margin: 0 }}>HubSpot CRM.</h1>
+          <h1 style={{ fontFamily: D.display, fontSize: 28, fontWeight: 600, letterSpacing: -0.4, lineHeight: 1.02, margin: 0 }}>HubSpot CRM</h1>
           <button
             onClick={() => syncTab(tab)}
             disabled={syncing}
@@ -172,7 +172,7 @@ export function AdminHubSpot() {
         <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(4,1fr)', gap: 12, marginBottom: 18 }}>
           {tiles.map(([b, s, sub]) => (
             <div key={s} style={{ padding: isMobile ? 16 : 22, background: D.card, borderRadius: 14, border: `1px solid ${D.line}` }}>
-              <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>{s.toUpperCase()}</div>
+              <div style={{ fontSize: 12, fontWeight: 600, color: D.ink2 }}>{s.toUpperCase()}</div>
               <div style={{ fontFamily: D.display, fontSize: isMobile ? 24 : 36, color: D.ink, letterSpacing: -0.6, marginTop: 8 }}>{b}</div>
               <div style={{ fontSize: 12, color: D.ink2, marginTop: 4 }}>{sub}</div>
             </div>
@@ -234,7 +234,7 @@ function btn(d, variant, busy) {
   };
 }
 
-const TH = { textAlign: 'left', fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3, padding: '0 14px 10px 0', whiteSpace: 'nowrap' };
+const TH = { textAlign: 'left', fontSize: 12, fontWeight: 600, color: D.ink2, padding: '0 14px 10px 0', whiteSpace: 'nowrap' };
 const TD = { fontSize: 13, color: D.ink, padding: '11px 14px 11px 0', borderTop: `1px solid ${D.line}`, whiteSpace: 'nowrap' };
 
 function ContactTable({ rows }) {

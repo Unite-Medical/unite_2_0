@@ -302,8 +302,8 @@ export function AdminIntegrations() {
   return (
     <AdminShell active="settings">
       <div style={{ padding: `${isMobile ? 28 : 40}px ${padX}px ${isMobile ? 18 : 24}px`, borderBottom: `1px solid ${D.line}` }}>
-        <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 12 }}>PLATFORM · INTEGRATIONS</div>
-        <h1 style={{ fontFamily: D.display, fontSize: 'clamp(32px, 5vw, 52px)', fontWeight: 400, letterSpacing: -1.2, lineHeight: 1.02, margin: 0 }}>Integrations.</h1>
+        <div style={{ fontSize: 12, fontWeight: 600, color: D.ink2, marginBottom: 12 }}>Integrations</div>
+        <h1 style={{ fontFamily: D.display, fontSize: 28, fontWeight: 600, letterSpacing: -0.4, lineHeight: 1.02, margin: 0 }}>Integrations</h1>
         <p style={{ fontSize: 14, color: D.ink2, marginTop: 10, maxWidth: 720, lineHeight: 1.55 }}>
           Every external service the platform talks to. Each row shows whether credentials are configured (Vercel/Doppler env vars), the last server event we received, and a button to ping the upstream.
         </p>
@@ -329,25 +329,25 @@ export function AdminIntegrations() {
               <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'minmax(0, 1fr) 280px', gap: 24, alignItems: 'start' }}>
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
-                    <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, padding: '4px 10px', borderRadius: 4, background: `${color}20`, color }}>{label}</span>
+                    <span style={{ fontSize: 12, fontWeight: 600, padding: '4px 10px', borderRadius: 4, background: `${color}20`, color }}>{label}</span>
                     <span style={{ fontFamily: D.mono, fontSize: 11, color: D.ink3 }}>{it.prd}</span>
-                    <a href={it.docsUrl} target="_blank" rel="noreferrer" style={{ marginLeft: 'auto', fontFamily: D.mono, fontSize: 11, color: D.plum, textDecoration: 'underline' }}>docs ↗</a>
+                    <a href={it.docsUrl} target="_blank" rel="noreferrer" style={{ marginLeft: 'auto', fontSize: 12, fontWeight: 500, color: D.plum, textDecoration: 'underline', padding: '8px 0', display: 'inline-block' }}>Documentation<span aria-hidden="true"> ↗</span></a>
                   </div>
-                  <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3, marginTop: 12, marginBottom: 4 }}>ENV VARS</div>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: D.ink2, marginTop: 12, marginBottom: 4 }}>Environment variables</div>
                   <div style={{ fontSize: 12, color: D.ink2, fontFamily: D.mono, lineHeight: 1.7 }}>{it.envVars.join(' · ')}</div>
 
                   {it.tablesWatched.length > 0 && (
-                    <>
-                      <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3, marginTop: 14, marginBottom: 4 }}>MIRRORED TABLES</div>
-                      <div style={{ fontSize: 12, color: D.ink2, fontFamily: D.mono }}>
+                    <details style={{ marginTop: 14 }}>
+                      <summary style={{ fontSize: 12, color: D.ink2, cursor: 'pointer' }}>Synced data</summary>
+                      <div style={{ fontSize: 12, color: D.ink2, fontFamily: D.mono, marginTop: 4 }}>
                         {it.tablesWatched.map((t) => `${t} (${db.count(t)})`).join(' · ')}
                       </div>
-                    </>
+                    </details>
                   )}
 
                   {evt && (
                     <>
-                      <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3, marginTop: 14, marginBottom: 4 }}>LAST EVENT</div>
+                      <div style={{ fontSize: 12, fontWeight: 600, color: D.ink2, marginTop: 14, marginBottom: 4 }}>Last event</div>
                       <div style={{ fontSize: 12, color: D.ink2 }}>{evt.kind} · {fmt.ago(evt.created_at)}</div>
                     </>
                   )}

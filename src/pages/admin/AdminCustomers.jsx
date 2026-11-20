@@ -50,7 +50,7 @@ export function AdminCustomers() {
     <AdminShell active="customers">
       <CustomerTools/>
       <header className="uco-header">
-        <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 12 }}>SALES · CUSTOMERS</div>
+        <div style={{ fontSize: 12, fontWeight: 600, color: D.ink2, marginBottom: 12 }}>Sales</div>
         <Link to="/admin/launch?tab=customers" style={{float:'right',color:D.plum}}>Review customer activation →</Link>
         <h1>Customer accounts <span>{orgs.length}</span></h1><p>Review access, contacts and commercial terms. Changes save immediately.</p>
       </header>
@@ -156,7 +156,7 @@ export function AdminCustomers() {
                 ))}
               </div>
 
-              <div style={{ marginTop: 24, fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>RECENT ORDERS</div>
+              <div style={{ marginTop: 24, fontSize: 12, fontWeight: 600, color: D.ink3 }}>Recent orders</div>
               <div className="um-scroll-x">
               <table style={{ width: '100%', minWidth: 480, borderCollapse: 'collapse', fontSize: 13, marginTop: 8 }}>
                 <thead>
@@ -245,15 +245,15 @@ function ContractPricingPanel({ org, isMobile }) {
       {notice && <div style={{ marginTop: 8, fontSize: 12, color: notice.startsWith('Not') ? D.terra : D.ink3 }}>{notice}</div>}
       <div style={{ marginTop: 12, display: 'flex', flexWrap: 'wrap', gap: 8, alignItems: 'end' }}>
         <label style={{ flex: '1 1 160px' }}>
-          <div style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, color: D.ink3, marginBottom: 4 }}>SKU</div>
+          <div style={{ fontSize: 12, fontWeight: 600, color: D.ink3, marginBottom: 4 }}>SKU</div>
           <input value={sku} onChange={(e) => setSku(e.target.value)} placeholder="e.g. UM-0001" style={inputStyle} />
         </label>
         <label style={{ flex: '0 1 110px' }}>
-          <div style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, color: D.ink3, marginBottom: 4 }}>MIN QTY</div>
+          <div style={{ fontSize: 12, fontWeight: 600, color: D.ink3, marginBottom: 4 }}>Min qty</div>
           <input type="number" min="1" value={minQty} onChange={(e) => setMinQty(e.target.value)} style={inputStyle} />
         </label>
         <label style={{ flex: '0 1 130px' }}>
-          <div style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, color: D.ink3, marginBottom: 4 }}>UNIT PRICE</div>
+          <div style={{ fontSize: 12, fontWeight: 600, color: D.ink3, marginBottom: 4 }}>Unit price</div>
           <input type="number" step="0.01" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="0.00" style={inputStyle} />
         </label>
         <button onClick={add} disabled={!sku || !price} style={{ background: D.plum, color: D.paper, border: 'none', padding: '9px 16px', borderRadius: 8, fontSize: 12, fontFamily: D.mono, letterSpacing: 0.6, cursor: sku && price ? 'pointer' : 'default', opacity: sku && price ? 1 : 0.5 }}>ADD CONTRACT PRICE</button>
@@ -280,7 +280,7 @@ function PaymentMethodsPanel({ org }) {
   }
   return (
     <>
-      <div style={{ marginTop: 28, fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>PRE-APPROVED PAYMENT METHODS</div>
+      <div style={{ marginTop: 28, fontSize: 12, fontWeight: 600, color: D.ink3 }}>Pre-approved payment methods</div>
       <div style={{ fontSize: 12, color: D.ink2, marginTop: 4 }}>
         Only these rails appear at checkout — anything else is server-rejected. {configured ? '' : 'No explicit list yet (showing derived defaults from terms).'}
       </div>
@@ -330,7 +330,7 @@ function NotificationsPanel({ org }) {
   }
   return (
     <>
-      <div style={{ marginTop: 28, fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>NOTIFICATION RECIPIENTS (CC)</div>
+      <div style={{ marginTop: 28, fontSize: 12, fontWeight: 600, color: D.ink3 }}>Notification recipients (cc)</div>
       <div style={{ fontSize: 12, color: D.ink2, marginTop: 4 }}>Order/ship/deliver/invoice/backorder emails fan out to every subscribed recipient.</div>
       {notice && <div style={{ fontSize: 12, color: notice.startsWith('Not saved') ? D.terra : D.ink3, marginTop: 4 }}>{notice}</div>}
       <div style={{ marginTop: 10, display: 'grid', gap: 8 }}>

@@ -196,7 +196,7 @@ export function AdminProductEdit() {
             </span>
           )}
           {dirty && !saved && (
-            <span style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1, color: D.terra }}>UNSAVED</span>
+            <span style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1, color: D.terra }}>Unsaved</span>
           )}
           {existing && (
             <Link to={`/products/${encodeURIComponent(existing.sku)}`} target="_blank" rel="noreferrer" style={ghostBtn}>
@@ -290,11 +290,11 @@ export function AdminProductEdit() {
               <div className="um-scroll-x">
                 <table style={{ width: '100%', minWidth: 700, borderCollapse: 'collapse', fontSize: 13 }}>
                   <thead>
-                    <tr style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, color: D.ink3 }}>
-                      <th style={thStyle}>TITLE</th>
+                    <tr style={{ fontSize: 12, fontWeight: 600, color: D.ink2 }}>
+                      <th style={thStyle}>Title</th>
                       <th style={thStyle}>SKU</th>
-                      <th style={thStyle}>PRICE</th>
-                      <th style={thStyle}>AVAILABLE</th>
+                      <th style={thStyle}>Price</th>
+                      <th style={thStyle}>Available</th>
                       <th style={thStyle}></th>
                     </tr>
                   </thead>
@@ -311,7 +311,7 @@ export function AdminProductEdit() {
                           </label>
                         </td>
                         <td style={tdSmall}>
-                          <button onClick={() => removeVariant(i)} style={{ ...textBtn, color: D.terra }}>REMOVE</button>
+                          <button onClick={() => removeVariant(i)} style={{ ...textBtn, color: D.terra }}>Remove</button>
                         </td>
                       </tr>
                     ))}
@@ -347,7 +347,7 @@ export function AdminProductEdit() {
               {form.hero_image ? (
                 <img src={form.hero_image} alt={form.name || ''} style={{ width: '100%', height: '100%', objectFit: 'contain', background: '#fff' }} />
               ) : (
-                <span style={{ color: D.ink3, fontFamily: D.mono, fontSize: 11, letterSpacing: 1 }}>NO IMAGE</span>
+                <span style={{ color: D.ink3, fontFamily: D.mono, fontSize: 11, letterSpacing: 1 }}>No image</span>
               )}
             </div>
           </Card>
@@ -369,7 +369,7 @@ export function AdminProductEdit() {
                     <button onClick={() => removeImage(i)} style={{ ...imgPillBtn, color: D.terra }}>✕</button>
                   </div>
                   {i === 0 && (
-                    <div style={{ position: 'absolute', top: 4, left: 4, background: D.plum, color: D.paper, fontFamily: D.mono, fontSize: 9, letterSpacing: 1, padding: '2px 8px', borderRadius: 4 }}>HERO</div>
+                    <div style={{ position: 'absolute', top: 4, left: 4, background: D.plum, color: D.paper, fontSize: 12, fontWeight: 600, padding: '2px 8px', borderRadius: 4 }}>Hero</div>
                   )}
                 </div>
               ))}
@@ -440,7 +440,7 @@ function Card({ title, children, action }) {
 function Field({ label, children }) {
   return (
     <label style={{ display: 'block' }}>
-      <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3, marginBottom: 6 }}>{label.toUpperCase()}</div>
+      <div style={{ fontSize: 12, fontWeight: 600, color: D.ink2, marginBottom: 6 }}>{label.toUpperCase()}</div>
       {children}
     </label>
   );

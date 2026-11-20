@@ -59,8 +59,8 @@ export function AdminVendorApproval() {
   return (
     <AdminShell active="vendors">
       <div style={{ padding: `${isMobile ? 28 : 40}px ${padX}px ${isMobile ? 18 : 24}px`, borderBottom: `1px solid ${D.line}` }}>
-        <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 12 }}>VENDORS · APPROVAL REVIEW</div>
-        <h1 style={{ fontFamily: D.display, fontSize: 'clamp(32px, 5vw, 52px)', fontWeight: 400, letterSpacing: -1.2, lineHeight: 1.02, margin: 0 }}>{vendors.length} vendors</h1>
+        <div style={{ fontSize: 12, fontWeight: 600, color: D.ink2, marginBottom: 12 }}>Vendors</div>
+        <h1 style={{ fontFamily: D.display, fontSize: 28, fontWeight: 600, letterSpacing: -0.4, lineHeight: 1.02, margin: 0 }}>{vendors.length} vendors</h1>
       </div>
       <div style={{ padding: isMobile ? 20 : 32, display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '320px 1fr', gap: 20 }}>
         <div style={{ background: D.card, borderRadius: 12, border: `1px solid ${D.line}`, overflow: 'hidden' }}>
@@ -73,7 +73,7 @@ export function AdminVendorApproval() {
                   <div style={{ fontSize: 14, fontWeight: 500 }}>{v.name}</div>
                   <div style={{ fontSize: 12, color: D.ink2 }}>{v.country} · audit {fmt.ago(v.last_audit) || 'never'}</div>
                 </div>
-                <span style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, padding: '3px 8px', borderRadius: 4, background: `${color}20`, color, textAlign: 'center' }}>{label}</span>
+                <span style={{ fontSize: 12, fontWeight: 600, padding: '3px 8px', borderRadius: 4, background: `${color}20`, color, textAlign: 'center' }}>{label}</span>
               </button>
             );
           })}
@@ -85,7 +85,7 @@ export function AdminVendorApproval() {
             <>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', flexWrap: 'wrap', gap: 12 }}>
                 <div>
-                  <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.plum }}>VENDOR · {active.country}</div>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: D.plum }}>VENDOR · {active.country}</div>
                   <div style={{ fontFamily: D.display, fontSize: 36, letterSpacing: -0.7, lineHeight: 1.05, marginTop: 6 }}>{active.name}</div>
                   <div style={{ fontSize: 13, color: D.ink2, marginTop: 6 }}>FDA registered: {active.fda_registered ? 'yes' : 'no'} · GS1 validated: {active.gs1_validated ? 'yes' : 'pending'}</div>
                 </div>
@@ -109,7 +109,7 @@ export function AdminVendorApproval() {
                 <div style={{ marginTop: 22, padding: 20, borderRadius: 12, background: D.paperAlt, border: `1px solid ${D.line}` }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 14 }}>
                     <div>
-                      <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>DECISION</div>
+                      <div style={{ fontSize: 12, fontWeight: 600, color: D.ink2 }}>Decision</div>
                       <div style={{ fontFamily: D.display, fontSize: 28, color: DECISION_COLOR[scoring.decision] || D.ink, marginTop: 4, letterSpacing: -0.3 }}>
                         {scoring.decision.replace('_', ' ')}
                       </div>
@@ -118,7 +118,7 @@ export function AdminVendorApproval() {
                       )}
                     </div>
                     <div style={{ textAlign: 'right' }}>
-                      <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>SCORE</div>
+                      <div style={{ fontSize: 12, fontWeight: 600, color: D.ink2 }}>Score</div>
                       <div style={{ fontFamily: D.display, fontSize: 42, color: D.plum, marginTop: 4, letterSpacing: -0.4 }}>
                         {scoring.score}
                       </div>
@@ -150,7 +150,7 @@ export function AdminVendorApproval() {
                         <div style={{ fontSize: 14, fontWeight: 600 }}>{c.name}</div>
                         <div style={{ fontSize: 12, color: D.ink2, marginTop: 4 }}>{c.detail}</div>
                       </div>
-                      <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, padding: '4px 10px', borderRadius: 4, background: `${color}20`, color, textAlign: 'center' }}>{label}</span>
+                      <span style={{ fontSize: 12, fontWeight: 600, padding: '4px 10px', borderRadius: 4, background: `${color}20`, color, textAlign: 'center' }}>{label}</span>
                     </div>
                   );
                 })}

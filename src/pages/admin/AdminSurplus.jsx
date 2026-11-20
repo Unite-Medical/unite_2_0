@@ -21,12 +21,12 @@ import { gmail } from '../../lib/services.js';
 import { publishSubmissionLines, offersFor, acceptOffer, declineOffer, confirmFeePaid, BUYER_CHANNELS } from '../../lib/marketplace.js';
 
 const STATUS_COLOR = {
-  new:        ['#8b968d', 'NEW'],
-  reviewing:  [D.terra, 'REVIEWING'],
-  offer_sent: ['#1d5c4d', 'OFFER SENT'],
-  accepted:   ['#2d6a4f', 'ACCEPTED'],
-  declined:   ['#c3382d', 'DECLINED'],
-  received:   ['#3b8760', 'RECEIVED'],
+  new:        ['#8b968d', 'New'],
+  reviewing:  [D.terra, 'Reviewing'],
+  offer_sent: ['#1d5c4d', 'Offer sent'],
+  accepted:   ['#2d6a4f', 'Accepted'],
+  declined:   ['#c3382d', 'Declined'],
+  received:   ['#3b8760', 'Received'],
 };
 
 export function AdminSurplus() {
@@ -157,15 +157,16 @@ Founder, Unite Medical`,
   return (
     <AdminShell active="settings">
       <div style={{ padding: `${isMobile ? 28 : 40}px ${padX}px ${isMobile ? 18 : 24}px`, borderBottom: `1px solid ${D.line}` }}>
-        <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 12 }}>SURPLUS · INTAKE</div>
-        <h1 style={{ fontFamily: D.display, fontSize: 'clamp(32px, 5vw, 52px)', fontWeight: 400, letterSpacing: -1.2, lineHeight: 1.02, margin: 0 }}>{submissions.length} surplus submissions</h1>
+        <div style={{ fontSize: 12, fontWeight: 600, color: D.ink2, marginBottom: 12 }}>Surplus</div>
+        <h1 style={{ fontFamily: D.display, fontSize: 28, fontWeight: 600, letterSpacing: -0.4, lineHeight: 1.02, margin: 0 }}>Surplus submissions</h1>
+        <p style={{ margin: '8px 0 0', color: D.ink2, fontSize: 13 }}>{submissions.length} {submissions.length === 1 ? 'submission' : 'submissions'} from the public Surplus page</p>
       </div>
 
       <div style={{ padding: isMobile ? 20 : 32, display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '320px 1fr', gap: 20 }}>
         <div style={{ background: D.card, borderRadius: 12, border: `1px solid ${D.line}`, overflow: 'hidden' }}>
           <div style={{ padding: '14px 16px', borderBottom: `1px solid ${D.line}`, fontFamily: D.display, fontSize: 18 }}>Submissions</div>
           {submissions.length === 0 && (
-            <div style={{ padding: 20, color: D.ink3, fontSize: 13 }}>No submissions yet. Visit /surplus to test the intake flow.</div>
+            <div style={{ padding: 20, color: D.ink3, fontSize: 13 }}>No submissions yet. Offers sent from the public <a href="/surplus" style={{ color: D.plum }}>Surplus page</a> appear here.</div>
           )}
           {submissions.map((s) => {
             const [color, label] = STATUS_COLOR[s.status] || STATUS_COLOR.new;
@@ -173,7 +174,7 @@ Founder, Unite Medical`,
               <button key={s.id} onClick={() => setActiveId(s.id)} style={{ width: '100%', textAlign: 'left', display: 'block', padding: '14px 16px', borderTop: `1px solid ${D.line}`, background: activeId === s.id ? 'rgba(29,92,77,.06)' : 'transparent', cursor: 'pointer', fontFamily: D.sans, color: D.ink }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
                   <div style={{ fontSize: 14, fontWeight: 500 }}>{s.hospital_name || s.contact_name || 'Anonymous'}</div>
-                  <span style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, padding: '3px 8px', borderRadius: 4, background: `${color}20`, color }}>{label}</span>
+                  <span style={{ fontSize: 11, fontWeight: 600, padding: '3px 8px', borderRadius: 999, background: `${color}20`, color, whiteSpace: 'nowrap' }}>{label}</span>
                 </div>
                 <div style={{ fontSize: 11, color: D.ink2, marginTop: 4 }}>
                   {s.total_lines} lines · {fmt.ago(s.submitted_at)}
@@ -185,12 +186,12 @@ Founder, Unite Medical`,
         </div>
 
         <div style={{ background: D.card, borderRadius: 12, border: `1px solid ${D.line}`, padding: isMobile ? 22 : 28 }}>
-          {!active && <div style={{ color: D.ink3 }}>Select a submission to review.</div>}
+          {!active && <div style={{ color: D.ink3 }}>Choose a submission to review its lines and send an offer.</div>}
           {active && (
             <>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', flexWrap: 'wrap', gap: 12 }}>
                 <div>
-                  <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.plum }}>SUBMISSION · {fmt.ago(active.submitted_at)}</div>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: D.plum }}>Submitted {fmt.ago(active.submitted_at)}</div>
                   <div style={{ fontFamily: D.display, fontSize: 28, letterSpacing: -0.5, marginTop: 6 }}>{active.hospital_name || 'Anonymous hospital'}</div>
                   <div style={{ fontSize: 13, color: D.ink2, marginTop: 4 }}>
                     {active.contact_name} · {active.contact_email} {active.contact_phone ? `· ${active.contact_phone}` : ''}
@@ -198,7 +199,7 @@ Founder, Unite Medical`,
                   {active.pickup_location && <div style={{ fontSize: 12, color: D.ink3, marginTop: 4 }}>Pickup: {active.pickup_location}</div>}
                 </div>
                 <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>OFFER TOTAL</div>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: D.ink3 }}>Offer total</div>
                   <div style={{ fontFamily: D.display, fontSize: 36, color: D.plum, letterSpacing: -0.5 }}>{fmt.money(Number(active.offer_total) || 0)}</div>
                   <div style={{ fontSize: 11, color: D.ink3 }}>est. retail {fmt.money(Number(active.estimated_value) || 0)}</div>
                 </div>
@@ -313,7 +314,7 @@ Founder, Unite Medical`,
                           </button>
                         ) : (
                           <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, padding: '4px 10px', borderRadius: 4, background: o.status === 'connected' ? '#e8f5ed' : '#fbe9e1', color: o.status === 'connected' ? '#1d4731' : '#7a2d10' }}>
-                            {o.status.toUpperCase()}
+                            {o.status.replaceAll('_', ' ')}
                           </span>
                         )}
                       </div>

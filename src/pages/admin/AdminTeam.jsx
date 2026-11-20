@@ -47,8 +47,8 @@ export function AdminTeam() {
     <AdminShell active="team">
       <StaffRoles/>
       <div style={{ padding: `${isMobile ? 28 : 40}px ${padX}px 24px`, borderBottom: `1px solid ${D.line}` }}>
-        <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 12 }}>TEAM · ORDER-ENTRY AUTHORITY (RBAC)</div>
-        <h1 style={{ fontFamily: D.display, fontSize: 'clamp(34px, 5.6vw, 56px)', fontWeight: 400, letterSpacing: -1.3, lineHeight: 1.02, margin: 0 }}>Rep authority</h1>
+        <div style={{ fontSize: 12, fontWeight: 600, color: D.ink2, marginBottom: 12 }}>Team</div>
+        <h1 style={{ fontFamily: D.display, fontSize: 28, fontWeight: 600, letterSpacing: -0.4, lineHeight: 1.02, margin: 0 }}>Rep authority</h1>
         <p style={{ color: D.ink2, marginTop: 10, maxWidth: 640 }}>What each rep may change when placing an order for a customer. Every override is bounded and audited; attempts beyond a grant are rejected and logged.</p>
         {notice && <p style={{ color: notice.startsWith('Not saved') ? D.terra : D.ink3, marginTop: 6, fontSize: 12 }}>{notice}</p>}
       </div>
@@ -73,12 +73,11 @@ export function AdminTeam() {
                   const on = has(active.id, grant);
                   return (
                     <div key={grant} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px', borderRadius: 10, border: `1px solid ${on ? D.plum : D.line}`, background: on ? 'rgba(29,92,77,.05)' : D.paper }}>
-                      <button onClick={() => toggle(grant)} aria-pressed={on} style={{ width: 40, height: 22, borderRadius: 11, border: 'none', background: on ? D.plum : D.line, position: 'relative', cursor: 'pointer', flexShrink: 0 }}>
+                      <button onClick={() => toggle(grant)} aria-pressed={on} aria-label={GRANT_LABEL[grant] || grant} style={{ width: 40, height: 22, borderRadius: 11, border: 'none', background: on ? D.plum : D.line, position: 'relative', cursor: 'pointer', flexShrink: 0 }}>
                         <span style={{ position: 'absolute', top: 2, left: on ? 20 : 2, width: 18, height: 18, borderRadius: 9, background: D.paper, transition: 'left .15s' }} />
                       </button>
                       <div style={{ flex: 1 }}>
-                        <div style={{ fontFamily: D.mono, fontSize: 12, color: D.ink }}>{grant}</div>
-                        <div style={{ fontSize: 12, color: D.ink2 }}>{GRANT_LABEL[grant]}</div>
+                        <div style={{ fontSize: 13, fontWeight: 500, color: D.ink }}>{GRANT_LABEL[grant] || grant}</div>
                       </div>
                       {grant === 'discount' && on && (
                         <label style={{ fontSize: 12, color: D.ink2, display: 'flex', alignItems: 'center', gap: 6 }}>
@@ -93,7 +92,7 @@ export function AdminTeam() {
             </>
           )}
 
-          <div style={{ marginTop: 26, fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>RECENT DENIED ATTEMPTS</div>
+          <div style={{ marginTop: 26, fontSize: 12, fontWeight: 600, color: D.ink3 }}>Recent denied attempts</div>
           {denials.length === 0 && <div style={{ fontSize: 12, color: D.ink3, marginTop: 8 }}>None — no rep has exceeded their authority.</div>}
           {denials.map((a) => (
             <div key={a.id} style={{ fontSize: 12, color: D.ink2, marginTop: 8, fontFamily: D.mono }}>

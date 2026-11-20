@@ -43,14 +43,14 @@ export function AdminConsignment() {
   return (
     <AdminShell active="consignment">
       <div style={{ padding: `${isMobile ? 28 : 40}px ${padX}px 24px`, borderBottom: `1px solid ${D.line}` }}>
-        <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 12 }}>WAREHOUSE · 3PL CONSIGNMENT</div>
-        <h1 style={{ fontFamily: D.display, fontSize: 'clamp(34px, 5.6vw, 56px)', fontWeight: 400, letterSpacing: -1.3, lineHeight: 1.02, margin: 0 }}>Consignment</h1>
+        <div style={{ fontSize: 12, fontWeight: 600, color: D.ink2, marginBottom: 12 }}>Warehouse</div>
+        <h1 style={{ fontFamily: D.display, fontSize: 28, fontWeight: 600, letterSpacing: -0.4, lineHeight: 1.02, margin: 0 }}>Consignment</h1>
         <p style={{ color: D.ink2, marginTop: 10, maxWidth: 680 }}>Distributor-owned stock stored in the Unite warehouse — tracked separately from Unite&apos;s, never commingled. Sell-through draws down the owner&apos;s lots for settlement.</p>
       </div>
 
       <div style={{ padding: isMobile ? 20 : 32, display: 'grid', gap: 20 }}>
         <div style={{ background: D.card, border: `1px solid ${D.line}`, borderRadius: 12, padding: 18 }}>
-          <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3, marginBottom: 10 }}>SHIPPING MARKUP</div>
+          <div style={{ fontSize: 12, fontWeight: 600, color: D.ink3, marginBottom: 10 }}>Shipping markup</div>
           <div style={{ display: 'flex', gap: 18, flexWrap: 'wrap', alignItems: 'center' }}>
             <label style={{ fontSize: 13, color: D.ink2, display: 'flex', alignItems: 'center', gap: 8 }}>
               Global default

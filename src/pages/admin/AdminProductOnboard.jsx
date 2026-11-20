@@ -146,8 +146,8 @@ export function AdminProductOnboard() {
   return (
     <AdminShell active="products">
       <div style={{ padding: `${isMobile ? 28 : 40}px ${padX}px ${isMobile ? 18 : 24}px`, borderBottom: `1px solid ${D.line}` }}>
-        <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 12 }}>PRODUCT · ONBOARD · GUDID PRE-VALIDATION</div>
-        <h1 style={{ fontFamily: D.display, fontSize: 'clamp(32px, 5vw, 52px)', fontWeight: 400, letterSpacing: -1.2, lineHeight: 1.02, margin: 0 }}>Onboard product.</h1>
+        <div style={{ fontSize: 12, fontWeight: 600, color: D.ink2, marginBottom: 12 }}>Product</div>
+        <h1 style={{ fontFamily: D.display, fontSize: 28, fontWeight: 600, letterSpacing: -0.4, lineHeight: 1.02, margin: 0 }}>Onboard product</h1>
         <p style={{ fontSize: 14, color: D.ink2, marginTop: 10, maxWidth: 720, lineHeight: 1.55 }}>
           Validate every GUDID-required field against openFDA + GS1 + USITC before opening the FDA portal. When everything is green, click <em>Open in AccessGUDID</em> and paste from the downloaded CSV.
         </p>
@@ -194,7 +194,7 @@ export function AdminProductOnboard() {
 
         <aside>
           <div style={{ position: isMobile ? 'static' : 'sticky', top: 100, background: D.card, border: `1px solid ${D.line}`, borderRadius: 14, padding: 22 }}>
-            <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1, color: D.plum }}>VALIDATION</div>
+            <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1, color: D.plum }}>Validation</div>
 
             {[
               ['GTIN check-digit', validation.gtin],
@@ -208,7 +208,7 @@ export function AdminProductOnboard() {
                     {label}
                     <div style={{ fontSize: 11, color: D.ink2, marginTop: 2 }}>{vs.detail}</div>
                   </div>
-                  <span style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, padding: '3px 8px', borderRadius: 4, background: `${color}20`, color, whiteSpace: 'nowrap' }}>{text}</span>
+                  <span style={{ fontSize: 12, fontWeight: 600, padding: '3px 8px', borderRadius: 4, background: `${color}20`, color, whiteSpace: 'nowrap' }}>{text}</span>
                 </div>
               );
             })}
@@ -220,7 +220,7 @@ export function AdminProductOnboard() {
                   {requiredOk.ok ? 'all present' : `missing: ${requiredOk.missing.join(', ')}`}
                 </div>
               </div>
-              <span style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, padding: '3px 8px', borderRadius: 4, background: `${requiredOk.ok ? '#2d6a4f' : '#c3382d'}20`, color: requiredOk.ok ? '#2d6a4f' : '#c3382d' }}>
+              <span style={{ fontSize: 12, fontWeight: 600, padding: '3px 8px', borderRadius: 4, background: `${requiredOk.ok ? '#2d6a4f' : '#c3382d'}20`, color: requiredOk.ok ? '#2d6a4f' : '#c3382d' }}>
                 {requiredOk.ok ? 'OK' : 'MISSING'}
               </span>
             </div>
@@ -251,9 +251,9 @@ function Field({ label, value, onChange, placeholder = '', required = false, sta
   return (
     <label style={{ display: 'block' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
-        <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>{label.toUpperCase()}{required ? ' *' : ''}</span>
+        <span style={{ fontSize: 12, fontWeight: 600, color: D.ink2 }}>{label.toUpperCase()}{required ? ' *' : ''}</span>
         {sc && (
-          <span style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, padding: '2px 6px', borderRadius: 4, background: `${sc[0]}20`, color: sc[0] }}>{sc[1]}</span>
+          <span style={{ fontSize: 12, fontWeight: 600, padding: '2px 6px', borderRadius: 4, background: `${sc[0]}20`, color: sc[0] }}>{sc[1]}</span>
         )}
       </div>
       <input
@@ -277,7 +277,7 @@ function FieldWide(props) {
 function Select({ label, value, onChange, options }) {
   return (
     <label style={{ display: 'block' }}>
-      <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3, marginBottom: 6 }}>{label.toUpperCase()}</div>
+      <div style={{ fontSize: 12, fontWeight: 600, color: D.ink2, marginBottom: 6 }}>{label.toUpperCase()}</div>
       <select value={value} onChange={(e) => onChange(e.target.value)} style={{ width: '100%', padding: '10px 12px', background: D.paper, border: `1px solid ${D.line}`, borderRadius: 8, fontSize: 13, color: D.ink, boxSizing: 'border-box' }}>
         {options.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
       </select>

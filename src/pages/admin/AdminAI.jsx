@@ -69,8 +69,8 @@ export function AdminAI() {
   return (
     <AdminShell active="settings">
       <div style={{ padding: `${isMobile ? 28 : 40}px ${padX}px ${isMobile ? 18 : 24}px`, borderBottom: `1px solid ${D.line}` }}>
-        <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 12 }}>AI · USAGE</div>
-        <h1 style={{ fontFamily: D.display, fontSize: 'clamp(32px, 5vw, 52px)', fontWeight: 400, letterSpacing: -1.2, lineHeight: 1.02, margin: 0 }}>AI usage.</h1>
+        <div style={{ fontSize: 12, fontWeight: 600, color: D.ink2, marginBottom: 12 }}>AI</div>
+        <h1 style={{ fontFamily: D.display, fontSize: 28, fontWeight: 600, letterSpacing: -0.4, lineHeight: 1.02, margin: 0 }}>AI usage</h1>
         <p style={{ fontSize: 14, color: D.ink2, marginTop: 10, maxWidth: 720, lineHeight: 1.55 }}>
           Every call through <code>src/lib/ai/client.js</code> is logged here. Stub calls (no API key configured) are counted but have $0 cost.
         </p>
@@ -86,7 +86,7 @@ export function AdminAI() {
             ['Prompts in use', `${byKey.length} / ${Object.keys(PROMPT_REGISTRY).length}`, 'registry'],
           ].map(([h, v, sub]) => (
             <div key={h} style={{ padding: 22, background: D.card, borderRadius: 14, border: `1px solid ${D.line}` }}>
-              <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>{h.toUpperCase()}</div>
+              <div style={{ fontSize: 12, fontWeight: 600, color: D.ink2 }}>{h.toUpperCase()}</div>
               <div style={{ fontFamily: D.display, fontSize: isMobile ? 26 : 40, color: D.ink, marginTop: 8, letterSpacing: -0.6 }}>{v}</div>
               <div style={{ fontSize: 12, color: D.ink2, marginTop: 4 }}>{sub}</div>
             </div>
@@ -97,8 +97,8 @@ export function AdminAI() {
           <div className="um-scroll-x">
             <table style={{ width: '100%', minWidth: 720, borderCollapse: 'collapse', fontSize: 13 }}>
               <thead>
-                <tr style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>
-                  {['PROMPT', 'CALLS', 'OK / STUB / ERR', 'P95 LATENCY', 'TOTAL COST', 'LAST USED'].map((h) => (
+                <tr style={{ fontSize: 12, fontWeight: 600, color: D.ink2 }}>
+                  {['Prompt', 'Calls', 'OK / stub / error', 'P95 latency', 'Total cost', 'Last used'].map((h) => (
                     <th key={h} style={{ textAlign: 'left', padding: '10px 12px', borderBottom: `1px solid ${D.line}` }}>{h}</th>
                   ))}
                 </tr>
@@ -129,7 +129,7 @@ export function AdminAI() {
             <div className="um-scroll-x">
               <table style={{ width: '100%', minWidth: 720, borderCollapse: 'collapse', fontSize: 13 }}>
                 <thead>
-                  <tr style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>
+                  <tr style={{ fontSize: 12, fontWeight: 600, color: D.ink2 }}>
                     {['WHEN', 'PROMPT', 'MODEL', 'STATUS', 'TOKENS (IN/OUT)', 'COST', 'SOURCE', 'LATENCY'].map((h) => (
                       <th key={h} style={{ textAlign: 'left', padding: '10px 12px', borderBottom: `1px solid ${D.line}` }}>{h}</th>
                     ))}
@@ -142,7 +142,7 @@ export function AdminAI() {
                       <td style={{ padding: '10px 12px', fontFamily: D.mono, fontSize: 12 }}>{u.prompt_key} <span style={{ color: D.ink3 }}>v{u.prompt_version}</span></td>
                       <td style={{ padding: '10px 12px', fontFamily: D.mono, fontSize: 11, color: D.ink2 }}>{u.model}</td>
                       <td style={{ padding: '10px 12px' }}>
-                        <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, padding: '3px 8px', borderRadius: 4, background: `${STATUS_COLOR[u.status] || D.ink3}20`, color: STATUS_COLOR[u.status] || D.ink3 }}>{u.status?.toUpperCase()}</span>
+                        <span style={{ fontSize: 12, fontWeight: 600, padding: '3px 8px', borderRadius: 4, background: `${STATUS_COLOR[u.status] || D.ink3}20`, color: STATUS_COLOR[u.status] || D.ink3 }}>{u.status?.replaceAll('_', ' ')}</span>
                       </td>
                       <td style={{ padding: '10px 12px', fontFamily: D.mono, fontSize: 11 }}>{u.input_tokens} / {u.output_tokens}</td>
                       <td style={{ padding: '10px 12px', fontFamily: D.mono, fontSize: 11 }}>${(Number(u.usd_cost) || 0).toFixed(4)}</td>

@@ -241,8 +241,8 @@ export function AdminFulfillment() {
   return (
     <AdminShell active="fulfillment">
       <div style={{ padding: `${isMobile ? 28 : 40}px ${padX}px ${isMobile ? 18 : 24}px`, borderBottom: `1px solid ${D.line}` }}>
-        <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 12 }}>ORDERS · ORCHESTRATOR</div>
-        <h1 style={{ fontFamily: D.display, fontSize: 'clamp(32px, 5vw, 52px)', fontWeight: 400, letterSpacing: -1.2, lineHeight: 1.02, margin: 0 }}>Fulfillment</h1>
+        <div style={{ fontSize: 12, fontWeight: 600, color: D.ink2, marginBottom: 12 }}>Orders</div>
+        <h1 style={{ fontFamily: D.display, fontSize: 28, fontWeight: 600, letterSpacing: -0.4, lineHeight: 1.02, margin: 0 }}>Fulfillment</h1>
         <div style={{ marginTop: 10, fontSize: 13, color: D.ink2, maxWidth: 680 }}>
           Payment or approved credit releases the current in-stock batch. Backordered units remain uncharged until stock arrives and a separately rated suborder is created.
         </div>
@@ -264,7 +264,7 @@ export function AdminFulfillment() {
           <div style={{ background: D.card, border: `1px solid ${D.line}`, borderRadius: 12, overflow: 'auto' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
               <thead>
-                <tr style={{ textAlign: 'left', fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>
+                <tr style={{ textAlign: 'left', fontSize: 12, fontWeight: 600, color: D.ink2 }}>
                   {['ORDER', 'CUSTOMER', 'STATUS', 'PIPELINE', ''].map((h) => <th key={h} style={{ padding: 12 }}>{h}</th>)}
                 </tr>
               </thead>
@@ -302,7 +302,7 @@ export function AdminFulfillment() {
           {/* Detail / live log */}
           <div>
             <div style={{ background: D.card, border: `1px solid ${D.line}`, borderRadius: 12, padding: 18 }}>
-              <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>PIPELINE DETAIL</div>
+              <div style={{ fontSize: 12, fontWeight: 600, color: D.ink2 }}>Pipeline detail</div>
               {!selected && <div style={{ fontSize: 13, color: D.ink3, marginTop: 10 }}>Select an order to inspect its steps.</div>}
               {selected && (
                 <div style={{ marginTop: 12, display: 'grid', gap: 8 }}>
@@ -326,7 +326,7 @@ export function AdminFulfillment() {
                   })}
                   {selectedOrder?.distributor_flow === 'blind_ship' && selectedOrder.status === 'inventory_reserved' && (
                     <div style={{ padding: 10, border: `1px solid ${D.line}`, borderRadius: 7 }}>
-                      <div style={{ fontFamily: D.mono, fontSize: 10, color: D.ink3 }}>DISTRIBUTOR WAREHOUSE READINESS</div>
+                      <div style={{ fontFamily: D.mono, fontSize: 10, color: D.ink3 }}>Distributor warehouse readiness</div>
                       <div style={{ display: 'grid', gridTemplateColumns: '130px 1fr auto', gap: 8, marginTop: 7 }}>
                         <select value={readinessEvidence.document_type} onChange={(event) => setReadinessEvidence((current) => ({ ...current, document_type: event.target.value }))} style={{ padding: 7, border: `1px solid ${D.line}`, borderRadius: 5 }}>
                           <option value="booking">Booking</option><option value="label">Label</option><option value="bol">BOL</option><option value="pro">PRO</option>
@@ -373,7 +373,7 @@ export function AdminFulfillment() {
               )}
               {selected && selectedShipment?.status === 'label_created' && (
                 <div style={{ marginTop: 16, paddingTop: 14, borderTop: `1px solid ${D.line}` }}>
-                  <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>PHYSICAL HANDOFF</div>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: D.ink2 }}>Physical handoff</div>
                   <div style={{ fontSize: 12, color: D.ink2, marginTop: 6 }}>
                     Label created. Inventory remains reserved until a carrier scan, signed BOL, or custody reference is recorded.
                   </div>
@@ -389,14 +389,14 @@ export function AdminFulfillment() {
 
             {/* Backorders */}
             <div style={{ background: D.card, border: `1px solid ${D.line}`, borderRadius: 12, padding: 18, marginTop: 20 }}>
-              <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>BACKORDERS</div>
+              <div style={{ fontSize: 12, fontWeight: 600, color: D.ink2 }}>Backorders</div>
               {backorders.length === 0 && <div style={{ fontSize: 13, color: D.ink3, marginTop: 10 }}>No backorders — all lines reserved from stock.</div>}
               <div style={{ marginTop: 10, display: 'grid', gap: 8 }}>
                 {backorders.slice(0, 12).map((bo) => (
                   <div key={bo.id} style={{ fontSize: 12, padding: '9px 0', borderTop: `1px solid ${D.line}` }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8 }}>
                       <span>{bo.product_name || bo.sku} ×{bo.quantity}<span style={{ color: D.ink3 }}> · {bo.estimated_restock ? new Date(bo.estimated_restock).toLocaleDateString() : 'Date pending'}</span></span>
-                      <span style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, padding: '2px 8px', borderRadius: 4, background: bo.status === 'suborder_created' ? 'rgba(45,106,79,.12)' : 'rgba(154,123,30,.14)', color: bo.status === 'suborder_created' ? '#2d6a4f' : '#9a7b1e' }}>{(bo.status || 'pending').toUpperCase()}</span>
+                      <span style={{ fontSize: 12, fontWeight: 600, padding: '2px 8px', borderRadius: 4, background: bo.status === 'suborder_created' ? 'rgba(45,106,79,.12)' : 'rgba(154,123,30,.14)', color: bo.status === 'suborder_created' ? '#2d6a4f' : '#9a7b1e' }}>{(bo.status || 'pending').toUpperCase()}</span>
                     </div>
                     {bo.status === 'stock_arrived' && (
                       <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
@@ -410,7 +410,7 @@ export function AdminFulfillment() {
             </div>
 
             <div style={{ background: D.card, border: `1px solid ${D.line}`, borderRadius: 12, padding: 18, marginTop: 20 }}>
-              <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>DISTRIBUTOR PICKUPS · 09:00–16:00 ET</div>
+              <div style={{ fontSize: 12, fontWeight: 600, color: D.ink2 }}>DISTRIBUTOR PICKUPS · 09:00–16:00 ET</div>
               {distributorPickups.length === 0 && <div style={{ fontSize: 13, color: D.ink3, marginTop: 10 }}>No pickup requests.</div>}
               <div style={{ marginTop: 10, display: 'grid', gap: 8 }}>
                 {distributorPickups.slice(0, 12).map((pickup) => {
@@ -437,7 +437,7 @@ export function AdminFulfillment() {
             </div>
 
             <div style={{ background: D.card, border: `1px solid ${D.line}`, borderRadius: 12, padding: 18, marginTop: 20 }}>
-              <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>RMA QUEUE</div>
+              <div style={{ fontSize: 12, fontWeight: 600, color: D.ink2 }}>RMA queue</div>
               {rmas.length === 0 && <div style={{ fontSize: 13, color: D.ink3, marginTop: 10 }}>No return requests.</div>}
               <div style={{ marginTop: 10, display: 'grid', gap: 8 }}>
                 {rmas.slice(0, 10).map((rma) => {

@@ -35,11 +35,11 @@ export function AdminCRM() {
 
 
   return (
-    <AdminShell active="customers">
+    <AdminShell active="crm">
       <div style={{ padding: `${isMobile ? 28 : 40}px ${padX}px ${isMobile ? 48 : 64}px` }}>
-        <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 12 }}>SALES · CRM & PIPELINE</div>
+        <div style={{ fontSize: 12, fontWeight: 600, color: D.ink2, marginBottom: 12 }}>Sales</div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: isMobile ? 'flex-start' : 'end', marginBottom: 22, flexDirection: isMobile ? 'column' : 'row', gap: 8 }}>
-          <h1 style={{ fontFamily: D.display, fontSize: 'clamp(34px, 5.6vw, 56px)', fontWeight: 400, letterSpacing: -1.3, lineHeight: 1.02, margin: 0 }}>CRM · pipeline.</h1>
+          <h1 style={{ fontFamily: D.display, fontSize: 28, fontWeight: 600, letterSpacing: -0.4, lineHeight: 1.02, margin: 0 }}>CRM · pipeline</h1>
           <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1, color: D.ink3 }}>Loaded CRM records</div>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(4,1fr)', gap: 12, marginBottom: 14 }}>
@@ -89,7 +89,7 @@ export function AdminCRM() {
                 <div style={{ width: 8, height: 8, borderRadius: 4, background: a.kind === 'call' ? D.plum : a.kind === 'email' ? '#3b8760' : D.ink3, marginTop: 6 }} />
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: 13, fontWeight: 600 }}>{a.subject}</div>
-                  <div style={{ fontSize: 12, color: D.ink2, marginTop: 2 }}>{a.who} · {a.kind?.toUpperCase()}</div>
+                  <div style={{ fontSize: 12, color: D.ink2, marginTop: 2 }}>{a.who} · {a.kind?.replaceAll('_', ' ')}</div>
                 </div>
                 <div style={{ fontSize: 11, color: D.ink3, fontFamily: D.mono }}>{fmt.ago(a.created_at)}</div>
               </div>
