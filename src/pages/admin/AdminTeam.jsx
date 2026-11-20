@@ -73,12 +73,11 @@ export function AdminTeam() {
                   const on = has(active.id, grant);
                   return (
                     <div key={grant} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px', borderRadius: 10, border: `1px solid ${on ? D.plum : D.line}`, background: on ? 'rgba(29,92,77,.05)' : D.paper }}>
-                      <button onClick={() => toggle(grant)} aria-pressed={on} style={{ width: 40, height: 22, borderRadius: 11, border: 'none', background: on ? D.plum : D.line, position: 'relative', cursor: 'pointer', flexShrink: 0 }}>
+                      <button onClick={() => toggle(grant)} aria-pressed={on} aria-label={GRANT_LABEL[grant] || grant} style={{ width: 40, height: 22, borderRadius: 11, border: 'none', background: on ? D.plum : D.line, position: 'relative', cursor: 'pointer', flexShrink: 0 }}>
                         <span style={{ position: 'absolute', top: 2, left: on ? 20 : 2, width: 18, height: 18, borderRadius: 9, background: D.paper, transition: 'left .15s' }} />
                       </button>
                       <div style={{ flex: 1 }}>
-                        <div style={{ fontFamily: D.mono, fontSize: 12, color: D.ink }}>{grant}</div>
-                        <div style={{ fontSize: 12, color: D.ink2 }}>{GRANT_LABEL[grant]}</div>
+                        <div style={{ fontSize: 13, fontWeight: 500, color: D.ink }}>{GRANT_LABEL[grant] || grant}</div>
                       </div>
                       {grant === 'discount' && on && (
                         <label style={{ fontSize: 12, color: D.ink2, display: 'flex', alignItems: 'center', gap: 6 }}>
