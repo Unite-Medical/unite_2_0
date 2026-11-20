@@ -200,7 +200,7 @@ export function AdminReceiving() {
               />
             </div>
             <div>
-              <label style={LABEL}>QTY</label>
+              <label style={LABEL}>Quantity</label>
               <input type="number" inputMode="numeric" aria-label="Quantity to receive" value={scanQty} onChange={(e) => setScanQty(e.target.value)} placeholder="0" disabled={!receivable} style={INPUT} />
             </div>
             <button onClick={addToQueue} disabled={!receivable} style={{ background: po ? D.ink : D.ink3, color: D.paper, border: 'none', padding: '12px 16px', borderRadius: 4, cursor: po ? 'pointer' : 'not-allowed', fontSize: 14, fontWeight: 600 }}>
