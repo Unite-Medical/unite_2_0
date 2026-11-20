@@ -337,12 +337,12 @@ export function AdminIntegrations() {
                   <div style={{ fontSize: 12, color: D.ink2, fontFamily: D.mono, lineHeight: 1.7 }}>{it.envVars.join(' · ')}</div>
 
                   {it.tablesWatched.length > 0 && (
-                    <>
-                      <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3, marginTop: 14, marginBottom: 4 }}>MIRRORED TABLES</div>
-                      <div style={{ fontSize: 12, color: D.ink2, fontFamily: D.mono }}>
+                    <details style={{ marginTop: 14 }}>
+                      <summary style={{ fontSize: 12, color: D.ink2, cursor: 'pointer' }}>Synced data</summary>
+                      <div style={{ fontSize: 12, color: D.ink2, fontFamily: D.mono, marginTop: 4 }}>
                         {it.tablesWatched.map((t) => `${t} (${db.count(t)})`).join(' · ')}
                       </div>
-                    </>
+                    </details>
                   )}
 
                   {evt && (
