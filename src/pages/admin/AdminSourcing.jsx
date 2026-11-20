@@ -40,7 +40,7 @@ export function AdminSourcing() {
     <AdminShell active="sourcing">
       <div style={{ padding: `${isMobile ? 28 : 40}px ${pad}px 24px`, borderBottom: `1px solid ${D.line}` }}>
         <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum }}>SALES · SOURCING DESK</div>
-        <h1 style={{ fontFamily: D.display, fontSize: 'clamp(34px, 5vw, 54px)', fontWeight: 400, letterSpacing: -1.2, margin: '8px 0 0' }}>Sourcing requests</h1>
+        <h1 style={{ fontFamily: D.display, fontSize: 28, fontWeight: 600, letterSpacing: -0.4, margin: '8px 0 0' }}>Sourcing requests</h1>
         <div style={{ marginTop: 9, color: D.ink2, fontSize: 13 }}>Every active request has an accountable owner, source record, response clock, and vendor-offer trail.</div>
       </div>
 

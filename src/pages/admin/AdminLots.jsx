@@ -38,8 +38,8 @@ export function AdminLots() {
   return (
     <AdminShell active="inventory">
       <div style={{ padding: `${isMobile ? 28 : 40}px ${padX}px 64px` }}>
-        <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 12 }}>OPS · LOTS & RECALL</div>
-        <h1 style={{ fontFamily: D.display, fontSize: 'clamp(34px, 5.6vw, 56px)', fontWeight: 400, letterSpacing: -1.3, margin: '0 0 22px' }}>Lots.</h1>
+        <div style={{ fontSize: 12, fontWeight: 600, color: D.ink2, marginBottom: 12 }}>Operations</div>
+        <h1 style={{ fontFamily: D.display, fontSize: 28, fontWeight: 600, letterSpacing: -0.4, margin: '0 0 22px' }}>Lots</h1>
 
         <AdminCard title="Lot genealogy lookup — monitoring only">
           <div style={{ color: D.ink2, fontSize: 13, marginBottom: 12 }}>Use this to trace exact shipments. Recall case ownership remains in Damon’s existing system and is assigned to Jacoby.</div>

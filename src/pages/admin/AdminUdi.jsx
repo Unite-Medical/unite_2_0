@@ -202,8 +202,8 @@ export function AdminUdi() {
   return (
     <AdminShell active="udi">
       <div style={{ padding: `${isMobile ? 28 : 40}px ${padX}px 64px` }}>
-        <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 12 }}>COMPLIANCE · UDI / GUDID</div>
-        <h1 style={{ fontFamily: D.display, fontSize: 'clamp(34px, 5.6vw, 56px)', fontWeight: 400, letterSpacing: -1.3, margin: '0 0 8px' }}>UDI &amp; GUDID.</h1>
+        <div style={{ fontSize: 12, fontWeight: 600, color: D.ink2, marginBottom: 12 }}>Compliance</div>
+        <h1 style={{ fontFamily: D.display, fontSize: 28, fontWeight: 600, letterSpacing: -0.4, margin: '0 0 8px' }}>UDI &amp; GUDID</h1>
         <p style={{ color: D.ink2, maxWidth: 720, margin: '0 0 22px' }}>
           Device Identifier assignment, GS1 prefix capacity, and GUDID-ready record preparation.
           Phase 1: records are prepared here and submitted manually via the FDA GUDID portal.

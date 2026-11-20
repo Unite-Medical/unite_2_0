@@ -159,8 +159,8 @@ export function AdminReceiving() {
   return (
     <AdminShell active="receiving" unsavedChanges={queue.length>0||!!pending}>
       <main id="main" style={{ padding: `${isMobile ? 24 : 40}px ${padX}px 64px`, maxWidth: 940, margin: '0 auto' }}>
-        <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 12 }}>OPS · RECEIVING WORKSTATION</div>
-        <h1 style={{ fontFamily: D.display, fontSize: 'clamp(30px, 5vw, 48px)', fontWeight: 400, letterSpacing: -1.2, margin: '0 0 20px' }}>Receive.</h1>
+        <div style={{ fontSize: 12, fontWeight: 600, color: D.ink2, marginBottom: 12 }}>Operations</div>
+        <h1 style={{ fontFamily: D.display, fontSize: 28, fontWeight: 600, letterSpacing: -0.4, margin: '0 0 20px' }}>Receive</h1>
 
         <AdminCard title="01 · Against which order?">
           <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 200px', gap: 12 }}>

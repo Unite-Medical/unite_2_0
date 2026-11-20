@@ -47,8 +47,8 @@ export function AdminTeam() {
     <AdminShell active="team">
       <StaffRoles/>
       <div style={{ padding: `${isMobile ? 28 : 40}px ${padX}px 24px`, borderBottom: `1px solid ${D.line}` }}>
-        <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 12 }}>TEAM · ORDER-ENTRY AUTHORITY (RBAC)</div>
-        <h1 style={{ fontFamily: D.display, fontSize: 'clamp(34px, 5.6vw, 56px)', fontWeight: 400, letterSpacing: -1.3, lineHeight: 1.02, margin: 0 }}>Rep authority</h1>
+        <div style={{ fontSize: 12, fontWeight: 600, color: D.ink2, marginBottom: 12 }}>Team</div>
+        <h1 style={{ fontFamily: D.display, fontSize: 28, fontWeight: 600, letterSpacing: -0.4, lineHeight: 1.02, margin: 0 }}>Rep authority</h1>
         <p style={{ color: D.ink2, marginTop: 10, maxWidth: 640 }}>What each rep may change when placing an order for a customer. Every override is bounded and audited; attempts beyond a grant are rejected and logged.</p>
         {notice && <p style={{ color: notice.startsWith('Not saved') ? D.terra : D.ink3, marginTop: 6, fontSize: 12 }}>{notice}</p>}
       </div>

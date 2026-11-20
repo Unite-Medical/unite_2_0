@@ -131,8 +131,8 @@ export function AdminReplenishment() {
   return (
     <AdminShell active="replenish">
       <div style={{ padding: `${isMobile ? 28 : 40}px ${padX}px ${isMobile ? 18 : 24}px`, borderBottom: `1px solid ${D.line}` }}>
-        <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 12 }}>INVENTORY · RUN-RATE MODEL</div>
-        <h1 style={{ fontFamily: D.display, fontSize: 'clamp(32px, 5vw, 52px)', fontWeight: 400, letterSpacing: -1.2, lineHeight: 1.02, margin: 0 }}>Replenishment</h1>
+        <div style={{ fontSize: 12, fontWeight: 600, color: D.ink2, marginBottom: 12 }}>Inventory</div>
+        <h1 style={{ fontFamily: D.display, fontSize: 28, fontWeight: 600, letterSpacing: -0.4, lineHeight: 1.02, margin: 0 }}>Replenishment</h1>
         <div style={{ marginTop: 10, fontSize: 13, color: D.ink2, maxWidth: 640 }}>
           {prophetCount > 0
             ? <>Prophet seasonal forecasts active on {prophetCount} SKU(s) via the forecasting sidecar; remaining SKUs use the trailing {DEFAULTS.window_days}-day run rate.</>

@@ -50,7 +50,7 @@ export function AdminCustomers() {
     <AdminShell active="customers">
       <CustomerTools/>
       <header className="uco-header">
-        <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.plum, marginBottom: 12 }}>SALES · CUSTOMERS</div>
+        <div style={{ fontSize: 12, fontWeight: 600, color: D.ink2, marginBottom: 12 }}>Sales</div>
         <Link to="/admin/launch?tab=customers" style={{float:'right',color:D.plum}}>Review customer activation →</Link>
         <h1>Customer accounts <span>{orgs.length}</span></h1><p>Review access, contacts and commercial terms. Changes save immediately.</p>
       </header>
