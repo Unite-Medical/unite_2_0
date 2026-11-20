@@ -329,11 +329,11 @@ export function AdminIntegrations() {
               <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'minmax(0, 1fr) 280px', gap: 24, alignItems: 'start' }}>
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
-                    <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, padding: '4px 10px', borderRadius: 4, background: `${color}20`, color }}>{label}</span>
+                    <span style={{ fontSize: 12, fontWeight: 600, padding: '4px 10px', borderRadius: 4, background: `${color}20`, color }}>{label}</span>
                     <span style={{ fontFamily: D.mono, fontSize: 11, color: D.ink3 }}>{it.prd}</span>
                     <a href={it.docsUrl} target="_blank" rel="noreferrer" style={{ marginLeft: 'auto', fontSize: 12, fontWeight: 500, color: D.plum, textDecoration: 'underline', padding: '8px 0', display: 'inline-block' }}>Documentation<span aria-hidden="true"> ↗</span></a>
                   </div>
-                  <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3, marginTop: 12, marginBottom: 4 }}>ENV VARS</div>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: D.ink2, marginTop: 12, marginBottom: 4 }}>Environment variables</div>
                   <div style={{ fontSize: 12, color: D.ink2, fontFamily: D.mono, lineHeight: 1.7 }}>{it.envVars.join(' · ')}</div>
 
                   {it.tablesWatched.length > 0 && (
@@ -347,7 +347,7 @@ export function AdminIntegrations() {
 
                   {evt && (
                     <>
-                      <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3, marginTop: 14, marginBottom: 4 }}>LAST EVENT</div>
+                      <div style={{ fontSize: 12, fontWeight: 600, color: D.ink2, marginTop: 14, marginBottom: 4 }}>Last event</div>
                       <div style={{ fontSize: 12, color: D.ink2 }}>{evt.kind} · {fmt.ago(evt.created_at)}</div>
                     </>
                   )}

@@ -34,7 +34,7 @@ const STATUS_COLOR = {
 
 function StatusPill({ status }) {
   return (
-    <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: STATUS_COLOR[status] || D.ink3 }}>
+    <span style={{ fontSize: 12, fontWeight: 600, color: STATUS_COLOR[status] || D.ink3 }}>
       {String(status || '—').toUpperCase().replace(/_/g, ' ')}
     </span>
   );
@@ -215,7 +215,7 @@ export function AdminUdi() {
           </div>
           <div className="um-scroll-x">
             <table style={{ width: '100%', minWidth: 640, borderCollapse: 'collapse', fontSize: 13 }}>
-              <thead><tr style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>{['PREFIX', 'LABELER', 'MEDICAL', 'USED', 'REMAINING', 'EXPIRES', 'STATUS'].map((h) => <th key={h} style={{ padding: '8px 12px', textAlign: 'left', borderBottom: `1px solid ${D.line}` }}>{h}</th>)}</tr></thead>
+              <thead><tr style={{ fontSize: 12, fontWeight: 600, color: D.ink2 }}>{['Prefix', 'Labeler', 'Medical', 'Used', 'Remaining', 'Expires', 'Status'].map((h) => <th key={h} style={{ padding: '8px 12px', textAlign: 'left', borderBottom: `1px solid ${D.line}` }}>{h}</th>)}</tr></thead>
               <tbody>
                 {prefixes.map((p) => (
                   <tr key={p.id} style={{ borderTop: `1px solid ${D.line}` }}>
@@ -298,7 +298,7 @@ export function AdminUdi() {
           </div>
           {acks.length > 0 && (
             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13, marginTop: 12 }}>
-              <thead><tr style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>{['CUSTOMER', 'SIGNER', 'SIGNED'].map((h) => <th key={h} style={{ padding: '8px 12px', textAlign: 'left', borderBottom: `1px solid ${D.line}` }}>{h}</th>)}</tr></thead>
+              <thead><tr style={{ fontSize: 12, fontWeight: 600, color: D.ink2 }}>{['Customer', 'Signer', 'Signed'].map((h) => <th key={h} style={{ padding: '8px 12px', textAlign: 'left', borderBottom: `1px solid ${D.line}` }}>{h}</th>)}</tr></thead>
               <tbody>
                 {acks.map((a) => (
                   <tr key={a.id} style={{ borderTop: `1px solid ${D.line}` }}>

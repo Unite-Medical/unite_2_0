@@ -71,7 +71,7 @@ export function AdminCMS() {
                 <div style={{ fontFamily: D.mono, fontSize: 11, color: D.ink2 }}>{fmt.number(p.views)}</div>
                 <div style={{ color: D.ink2, fontSize: 12 }}>{fmt.ago(p.updated_at)}</div>
                 <div>
-                  <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, padding: '3px 10px', borderRadius: 4, background: p.published ? 'rgba(29,92,77,.1)' : D.terraSoft, color: p.published ? D.plum : D.terra }}>{p.published ? 'PUBLISHED' : 'DRAFT'}</span>
+                  <span style={{ fontSize: 12, fontWeight: 600, padding: '3px 10px', borderRadius: 4, background: p.published ? 'rgba(29,92,77,.1)' : D.terraSoft, color: p.published ? D.plum : D.terra }}>{p.published ? 'PUBLISHED' : 'DRAFT'}</span>
                 </div>
                 <button onClick={() => togglePage(p)} style={{ background: D.card, color: D.ink, border: `1px solid ${D.line}`, borderRadius: 8, cursor: 'pointer', fontSize: 12, fontWeight: 600, padding: '8px 12px', minHeight: 34 }}>Change status</button>
               </div>
@@ -89,9 +89,9 @@ export function AdminCMS() {
                 </div>
                 <div style={{ fontFamily: D.mono, fontSize: 11, color: D.ink2 }}>{fmt.number(p.views)} views</div>
                 <div style={{ color: D.ink2, fontSize: 12 }}>{fmt.date(p.posted_at)}</div>
-                <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, padding: '3px 10px', borderRadius: 4, background: p.published ? 'rgba(29,92,77,.1)' : D.terraSoft, color: p.published ? D.plum : D.terra }}>{p.published ? 'LIVE' : 'DRAFT'}</span>
+                <span style={{ fontSize: 12, fontWeight: 600, padding: '3px 10px', borderRadius: 4, background: p.published ? 'rgba(29,92,77,.1)' : D.terraSoft, color: p.published ? D.plum : D.terra }}>{p.published ? 'LIVE' : 'DRAFT'}</span>
                 <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end' }}>
-                  <button onClick={() => startEdit(p)} style={{ background: 'transparent', color: D.plum, border: 'none', cursor: 'pointer', fontFamily: D.mono, fontSize: 11 }}>EDIT</button>
+                  <button onClick={() => startEdit(p)} style={{ background: 'transparent', color: D.plum, border: 'none', cursor: 'pointer', fontFamily: D.mono, fontSize: 11 }}>Edit</button>
                   <button onClick={() => togglePublish(p)} style={{ background: 'transparent', color: D.ink2, border: 'none', cursor: 'pointer', fontFamily: D.mono, fontSize: 11 }}>{p.published ? 'UNPUB' : 'PUB'}</button>
                 </div>
               </div>
@@ -108,7 +108,7 @@ export function AdminCMS() {
                   <div style={{ fontFamily: D.mono, fontSize: 11, color: D.ink3 }}>{b.placement}</div>
                 </div>
                 <div style={{ fontFamily: D.mono, fontSize: 11, color: D.ink2 }}>{b.clicks} clicks</div>
-                <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, padding: '3px 10px', borderRadius: 4, background: b.active ? 'rgba(29,92,77,.1)' : D.terraSoft, color: b.active ? D.plum : D.terra }}>{b.active ? 'ACTIVE' : 'PAUSED'}</span>
+                <span style={{ fontSize: 12, fontWeight: 600, padding: '3px 10px', borderRadius: 4, background: b.active ? 'rgba(29,92,77,.1)' : D.terraSoft, color: b.active ? D.plum : D.terra }}>{b.active ? 'ACTIVE' : 'PAUSED'}</span>
                 <button onClick={() => toggleBanner(b)} style={{ background: 'transparent', color: D.plum, border: 'none', cursor: 'pointer', fontFamily: D.mono, fontSize: 11 }}>{b.active ? 'PAUSE' : 'ACTIVATE'}</button>
               </div>
             ))}
@@ -126,7 +126,7 @@ export function AdminCMS() {
                 <Field label="Category" value={form.category} onChange={(v) => setForm((f) => ({ ...f, category: v }))} />
                 <Field label="Excerpt" value={form.excerpt} onChange={(v) => setForm((f) => ({ ...f, excerpt: v }))} />
                 <label>
-                  <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>BODY (MARKDOWN)</div>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: D.ink2 }}>BODY (MARKDOWN)</div>
                   <textarea value={form.body} onChange={(e) => setForm((f) => ({ ...f, body: e.target.value }))} rows={10} style={{ marginTop: 6, width: '100%', padding: 12, background: D.paper, border: `1px solid ${D.line}`, borderRadius: 10, fontSize: 13, color: D.ink, fontFamily: D.mono, outline: 'none', resize: 'vertical' }} />
                 </label>
                 <div style={{ display: 'flex', gap: 8 }}>
@@ -145,7 +145,7 @@ export function AdminCMS() {
 function Field({ label, value, onChange }) {
   return (
     <label>
-      <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>{label.toUpperCase()}</div>
+      <div style={{ fontSize: 12, fontWeight: 600, color: D.ink2 }}>{label.toUpperCase()}</div>
       <input value={value} onChange={(e) => onChange(e.target.value)} style={{ marginTop: 6, width: '100%', padding: '10px 12px', background: D.paper, border: `1px solid ${D.line}`, borderRadius: 10, fontSize: 13, color: D.ink, outline: 'none', fontFamily: D.sans }} />
     </label>
   );
