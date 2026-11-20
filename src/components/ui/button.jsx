@@ -12,7 +12,7 @@ const buttonVariants = cva(
         ghost: 'text-ink-2 hover:bg-paper hover:text-ink',
         danger: 'bg-warn text-white hover:opacity-90',
       },
-      size: { sm: 'h-8 px-3', md: 'h-10 px-4', icon: 'h-9 w-9' },
+      size: { sm: 'h-9 px-3 md:h-8', md: 'h-11 px-4 md:h-10', icon: 'h-11 w-11 md:h-9 md:w-9' },
     },
     defaultVariants: { variant: 'secondary', size: 'md' },
   },

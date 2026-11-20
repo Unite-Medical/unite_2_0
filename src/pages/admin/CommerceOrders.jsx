@@ -50,7 +50,7 @@ function OrderList(){
         <div className="pb-3 md:w-80 md:pb-0"><Input icon={Search} aria-label="Search orders" type="search" placeholder="Order number, email, PO or tag" value={q} onChange={e=>{setQ(e.target.value);setPage(0);}}/></div>
       </div>
       <LoadingError loading={loading} error={error}>
-        {rows.length?<><ul className="m-0 list-none divide-y divide-line p-0 md:hidden">{rows.map(o=><li key={o.id} className="flex items-start gap-3 pl-4"><span className="pt-3"><SelectionCheck record={o} ids={selected} setIds={setSelected}/></span><Link to={'/admin/orders/'+o.id} className="flex min-w-0 flex-1 flex-col gap-2 py-3 pr-4 text-ink no-underline">
+        {rows.length?<><ul className="m-0 list-none divide-y divide-line p-0 md:hidden">{rows.map(o=><li key={o.id} className="flex items-start gap-1 pl-2"><span className="flex h-11 w-11 shrink-0 items-center justify-center [&_input]:h-5 [&_input]:w-5"><SelectionCheck record={o} ids={selected} setIds={setSelected}/></span><Link to={'/admin/orders/'+o.id} className="flex min-w-0 flex-1 flex-col gap-2 py-3 pr-4 text-ink no-underline">
             <span className="flex items-center justify-between gap-3"><span className="font-semibold">{o.number}{o.draft&&<UiBadge className="ml-2">Draft</UiBadge>}</span><span className="font-mono tabular-nums">{money(o.total)}</span></span>
             <span className="flex items-center justify-between gap-3 text-xs text-ink-2"><span className="truncate">{o.email||'Customer needs matching'}</span><span className="whitespace-nowrap">{date(o.created_at)}</span></span>
             <span className="flex flex-wrap gap-1.5"><StatusBadge value={commercePaymentStatus(o)}/><StatusBadge value={o.fulfillment_status}/><StatusBadge value={o.workflow_state}/></span>
