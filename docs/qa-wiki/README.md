@@ -17,6 +17,7 @@ The working wiki for QA'ing the Unite Medical 2.0 platform before go-live. It co
 | 7 | [Integrations & secrets inventory](07-integrations-and-secrets.md) | Every env var, what it powers, current staging status, what Alex must supply |
 | 8 | [Go-live gates & known issues](08-go-live-gates.md) | What is still blocking launch, decisions needed, risks |
 | 9 | [Bug reporting & sign-off](09-bug-reporting.md) | How to log findings (in-app `/admin/testing` + template), severity, sign-off sheet |
+- [10. Action index by role](10-action-index.md)
 
 ## The platform in one paragraph
 
