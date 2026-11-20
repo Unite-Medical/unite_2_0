@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { cva } from 'class-variance-authority';
 import { cn } from '../../lib/cn.js';
 
@@ -19,4 +20,8 @@ const buttonVariants = cva(
 
 export function Button({ className, variant, size, ...props }) {
   return <button className={cn(buttonVariants({ variant, size }), className)} {...props} />;
+}
+
+export function ButtonLink({ className, variant, size, ...props }) {
+  return <Link className={cn(buttonVariants({ variant, size }), 'no-underline', className)} {...props} />;
 }

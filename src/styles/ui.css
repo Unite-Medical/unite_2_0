@@ -1,7 +1,7 @@
 /* Staff UI kit (shadcn / Untitled UI). Preflight is omitted so existing pages and the public site keep their styles. */
-@layer theme, base, components, utilities;
+@layer theme;
 @import "tailwindcss/theme.css" layer(theme);
-@import "tailwindcss/utilities.css" layer(utilities);
+@import "tailwindcss/utilities.css";
 
 @theme {
   --color-paper: #f3f2eb;
@@ -20,3 +20,7 @@
   --font-sans: "Archivo", -apple-system, "Helvetica Neue", sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, monospace;
 }
+
+:where(.ui-root) :where(button, input, select, textarea) { font: inherit; color: inherit; }
+:where(.ui-root) :where(button) { background: none; border: 0; padding: 0; }
+:where(.ui-root) :where(p, h2, h3, ul) { margin: 0; }
