@@ -313,7 +313,7 @@ Founder, Unite Medical`,
                           </button>
                         ) : (
                           <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, padding: '4px 10px', borderRadius: 4, background: o.status === 'connected' ? '#e8f5ed' : '#fbe9e1', color: o.status === 'connected' ? '#1d4731' : '#7a2d10' }}>
-                            {o.status.toUpperCase()}
+                            {o.status.replaceAll('_', ' ')}
                           </span>
                         )}
                       </div>

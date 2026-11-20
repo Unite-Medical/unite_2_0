@@ -297,7 +297,7 @@ export function AdminReceiving() {
                         <td style={{ padding: '10px 12px', textAlign: 'right', fontFamily: D.mono }}>{l.received}</td>
                         <td style={{ padding: '10px 12px', textAlign: 'right', fontFamily: D.mono, color: l.variance === 0 ? D.ink2 : STATE_COLOR[l.state] }}>{l.variance > 0 ? `+${l.variance}` : l.variance}</td>
                         <td style={{ padding: '10px 12px' }}>
-                          <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 0.8, padding: '3px 8px', borderRadius: 3, background: `${STATE_COLOR[l.state]}22`, color: STATE_COLOR[l.state] }}>{l.state.toUpperCase()}</span>
+                          <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 0.8, padding: '3px 8px', borderRadius: 3, background: `${STATE_COLOR[l.state]}22`, color: STATE_COLOR[l.state] }}>{l.state.replaceAll('_', ' ')}</span>
                         </td>
                       </tr>
                     ))}

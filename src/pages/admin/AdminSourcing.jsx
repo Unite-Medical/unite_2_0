@@ -96,7 +96,7 @@ export function AdminSourcing() {
                         <div style={{ marginTop: 5, color: D.ink2, fontSize: 12 }}>
                           {offer.line_items?.length || 0} line(s) · confidence {Math.round(Number(offer.extraction_confidence || 0) * 10000) / 100}% · price {price.reason.replaceAll('_', ' ')}
                         </div>
-                        <div style={{ marginTop: 4, fontFamily: D.mono, fontSize: 10, color: STATUS_COLOR[offer.status] || D.ink3 }}>{offer.status.toUpperCase()}</div>
+                        <div style={{ marginTop: 4, fontFamily: D.mono, fontSize: 10, color: STATUS_COLOR[offer.status] || D.ink3 }}>{offer.status.replaceAll('_', ' ')}</div>
                       </div>
                       {offer.status === 'reviewable' && (
                         <button type="button" onClick={() => createPo(offer.id)} style={{ alignSelf: 'center', background: D.plum, color: D.paper, border: 'none', padding: '10px 14px', borderRadius: 4, cursor: 'pointer', fontWeight: 600 }}>

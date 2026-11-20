@@ -89,7 +89,7 @@ export function AdminCRM() {
                 <div style={{ width: 8, height: 8, borderRadius: 4, background: a.kind === 'call' ? D.plum : a.kind === 'email' ? '#3b8760' : D.ink3, marginTop: 6 }} />
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: 13, fontWeight: 600 }}>{a.subject}</div>
-                  <div style={{ fontSize: 12, color: D.ink2, marginTop: 2 }}>{a.who} · {a.kind?.toUpperCase()}</div>
+                  <div style={{ fontSize: 12, color: D.ink2, marginTop: 2 }}>{a.who} · {a.kind?.replaceAll('_', ' ')}</div>
                 </div>
                 <div style={{ fontSize: 11, color: D.ink3, fontFamily: D.mono }}>{fmt.ago(a.created_at)}</div>
               </div>
