@@ -127,6 +127,32 @@ Staging `27e6919`, Damon's existing MFA session, Chrome desktop at 1440px plus a
 - Every mutation: roles, orders, quotes, POs, warehouse postings, payments, refunds, QBO, webhooks, CMS and UDI assignment.
 - Stripe mode is still unknown.
 
+### Run 3 — Jacobe (sales) and Darren (warehouse operator), read-only — 2026-11-19
+
+Staging `27e6919`, signed in with each person's own login, nothing saved or submitted.
+
+| Sev | Finding |
+|---|---|
+| P2 | Quote **Discard** on a customer-context quote clears the customer and email but leaves the page dirty. The sidebar and **Back to quotes** stay blocked until reload |
+| P3 | `POST /api/catalog/pricing` returns 400 on every full page load (39 times in Jacobe's run) |
+| P3 | Warehouse **Pick out** still shows count-posting instructions |
+| Gap | There are no suppliers, open POs, locations or lots, eligible pick orders or split shipments. Receiving, pick/pack, split and PO save can't be walked end to end without TEST fixtures |
+
+**Passed:**
+- Order preview reached a $5.95 total without saving.
+- PO review calculated correctly from entered values.
+- Jacobe sees 571 customers. That's intended: a staging-only exception in `canReadUniteCustomerBook`. **Before cutover**, production needs customer `account_rep`/`assigned_to` assignments, or sales will see no customers.
+- Darren's views hide prices and costs.
+- The warehouse app works at 390px.
+- All sampled admin/sales routes and two admin APIs refuse both roles.
+
+**UX:** the ranked click-count review is in the run report. The biggest costs:
+- About 13 activations and 5 dialogs to build an order.
+- Picking is reached through a count-labelled entry point.
+- Empty receiving and split states don't say what to do next.
+- Two customer lists have confusing labels.
+- Sales has no visible search.
+
 ## Rollback plan (to fill in before E3)
 
 1. Keep Shopify store live and unchanged until 7 days after cutover.
