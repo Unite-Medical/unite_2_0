@@ -44,17 +44,21 @@ function OrderList(){
     <SelectionToolbar ids={selected} onClear={()=>setSelected([])}/>
     <UiCard className="overflow-hidden">
       <div className="flex flex-col gap-3 border-b border-line px-4 pt-2 md:flex-row md:items-center md:justify-between">
-        <div role="tablist" aria-label="Order status" className="-mb-px flex gap-1 overflow-x-auto">
+        <div role="tablist" aria-label="Order status" className="-mb-px flex gap-1 overflow-x-auto [scrollbar-width:none]">
           {ORDER_TABS.map(([v,t])=><button key={v} role="tab" aria-selected={filter===v} onClick={()=>{setFilter(v);setPage(0);}} className={cn('cursor-pointer whitespace-nowrap border-b-2 px-3 py-3 text-sm font-semibold transition-colors',filter===v?'border-brand text-brand':'border-transparent text-ink-2 hover:text-ink')}>{t}</button>)}
         </div>
         <div className="pb-3 md:w-80 md:pb-0"><Input icon={Search} aria-label="Search orders" type="search" placeholder="Order number, email, PO or tag" value={q} onChange={e=>{setQ(e.target.value);setPage(0);}}/></div>
       </div>
       <LoadingError loading={loading} error={error}>
-        {rows.length?<Table>
+        {rows.length?<><ul className="m-0 list-none divide-y divide-line p-0 md:hidden">{rows.map(o=><li key={o.id}><Link to={'/admin/orders/'+o.id} className="flex flex-col gap-2 px-4 py-3 text-ink no-underline">
+            <span className="flex items-center justify-between gap-3"><span className="font-semibold">{o.number}{o.draft&&<UiBadge className="ml-2">Draft</UiBadge>}</span><span className="font-mono tabular-nums">{money(o.total)}</span></span>
+            <span className="flex items-center justify-between gap-3 text-xs text-ink-2"><span className="truncate">{o.email||'Customer needs matching'}</span><span className="whitespace-nowrap">{date(o.created_at)}</span></span>
+            <span className="flex flex-wrap gap-1.5"><StatusBadge value={commercePaymentStatus(o)}/><StatusBadge value={o.fulfillment_status}/><StatusBadge value={o.workflow_state}/></span>
+          </Link></li>)}</ul><div className="hidden md:block"><Table>
           <THead><tr><TH className="w-10"><span className="sr-only">Select</span></TH><TH>Order</TH><TH>Date</TH><TH>Customer</TH><TH className="text-right">Total</TH><TH>Payment</TH><TH>Fulfillment</TH><TH>Next step</TH><TH>Source</TH></tr></THead>
           <tbody>{rows.map(o=><TRow key={o.id}>
             <TD><SelectionCheck record={o} ids={selected} setIds={setSelected}/></TD>
-            <TD><Link className="font-semibold text-ink hover:text-brand" to={'/admin/orders/'+o.id}>{o.number}</Link>{o.draft&&<UiBadge className="ml-2">Draft</UiBadge>}</TD>
+            <TD className="whitespace-nowrap"><Link className="font-semibold text-ink hover:text-brand" to={'/admin/orders/'+o.id}>{o.number}</Link>{o.draft&&<UiBadge className="ml-2">Draft</UiBadge>}</TD>
             <TD className="whitespace-nowrap text-ink-2">{date(o.created_at)}</TD>
             <TD className="max-w-64 truncate">{o.customer_id&&!o.customer_id.startsWith('unmatched-')?<Link className="text-ink hover:text-brand" to={'/admin/customers/'+o.customer_id}>{o.email||o.customer_id}</Link>:<span className="text-warn">{o.email||'Customer needs matching'}</span>}</TD>
             <TD className="text-right font-mono tabular-nums">{money(o.total)}</TD>
@@ -63,7 +67,7 @@ function OrderList(){
             <TD><StatusBadge value={o.workflow_state}/></TD>
             <TD><ShopifyLink kind="orders" record={o} compact/></TD>
           </TRow>)}</tbody>
-        </Table>:<EmptyState icon={PackageSearch} title={q||filter?'No orders match':'No orders yet'} description={q||filter?'Try a different search or status tab.':'Orders you create or import will appear here.'} action={q||filter?<Button onClick={()=>{setQ('');setFilter('');setPage(0);}}>Clear filters</Button>:<ButtonLink variant="primary" to="/admin/orders/new"><Plus className="h-4 w-4" aria-hidden/>Create order</ButtonLink>}/>}
+        </Table></div></>:<EmptyState icon={PackageSearch} title={q||filter?'No orders match':'No orders yet'} description={q||filter?'Try a different search or status tab.':'Orders you create or import will appear here.'} action={q||filter?<Button onClick={()=>{setQ('');setFilter('');setPage(0);}}>Clear filters</Button>:<ButtonLink variant="primary" to="/admin/orders/new"><Plus className="h-4 w-4" aria-hidden/>Create order</ButtonLink>}/>}
         <Pager page={page} total={data?.total||0} onChange={setPage}/>
       </LoadingError>
     </UiCard>
