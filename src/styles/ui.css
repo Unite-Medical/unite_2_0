@@ -24,3 +24,6 @@
 :where(.ui-root) :where(button, input, select, textarea) { font: inherit; color: inherit; }
 :where(.ui-root) :where(button) { background: none; border: 0; padding: 0; }
 :where(.ui-root) :where(p, h2, h3, ul) { margin: 0; }
+
+/* Unlayered so legacy global link colors cannot override filled ButtonLinks. */
+.ui-root a.bg-brand, .ui-root a.bg-warn { color: #fff; }
