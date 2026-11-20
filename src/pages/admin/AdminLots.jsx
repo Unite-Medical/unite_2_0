@@ -6,7 +6,7 @@ import { db } from '../../lib/db.js';
 import { useViewport } from '../../lib/viewport.js';
 import { lots as lotsApi } from '../../lib/wms/lots.js';
 
-const INPUT = { padding: '12px 14px', borderRadius: 10, border: `1px solid ${D.line}`, fontFamily: D.mono, fontSize: 14, color: D.ink, background: D.card, minWidth: 220 };
+const INPUT = { padding: '12px 14px', borderRadius: 10, border: `1px solid ${D.line}`, fontFamily: 'inherit', fontSize: 14, color: D.ink, background: D.card, minWidth: 220 };
 
 export function AdminLots() {
   const { isMobile } = useViewport();
@@ -41,19 +41,19 @@ export function AdminLots() {
         <div style={{ fontSize: 12, fontWeight: 600, color: D.ink2, marginBottom: 12 }}>Operations</div>
         <h1 style={{ fontFamily: D.display, fontSize: 28, fontWeight: 600, letterSpacing: -0.4, margin: '0 0 22px' }}>Lots</h1>
 
-        <AdminCard title="Lot genealogy lookup — monitoring only">
-          <div style={{ color: D.ink2, fontSize: 13, marginBottom: 12 }}>Use this to trace exact shipments. Recall case ownership remains in Damon’s existing system and is assigned to Jacoby.</div>
+        <AdminCard title="Trace a lot">
+          <div style={{ color: D.ink2, fontSize: 13, marginBottom: 12 }}>See every order and customer that received a lot. Recall cases are managed outside this app.</div>
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
             <select value={recallLotId} onChange={(e) => setRecallLotId(e.target.value)} style={INPUT}>
-              <option value="">Select exact lot…</option>
+              <option value="">Choose a lot…</option>
               {lots.map((lot) => <option key={lot.id} value={lot.id}>{lot.product_sku} · {lot.lot_number} · {lot.expiration_date || 'N/A'} · {lot.owner_org_id || 'Unite'}</option>)}
             </select>
-            <button onClick={runRecall} style={{ background: D.terra, color: D.paper, border: 'none', padding: '12px 20px', borderRadius: 4, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>Trace genealogy</button>
-            {recallMs != null && <span style={{ fontFamily: D.mono, fontSize: 12, color: recallMs < 1000 ? '#3b8760' : D.terra }}>{recallResult?.length || 0} customer(s) · {recallMs.toFixed(1)}ms {recallMs < 1000 ? '✓ < 1s SLA' : ''}</span>}
+            <button onClick={runRecall} style={{ background: D.terra, color: D.paper, border: 'none', padding: '12px 20px', borderRadius: 4, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>Trace lot</button>
+            {recallMs != null && <span style={{ fontFamily: D.mono, fontSize: 12, color: recallMs < 1000 ? '#3b8760' : D.terra }}>{recallResult?.length || 0} customer(s) · {recallMs.toFixed(1)}ms</span>}
           </div>
           {recallResult && recallResult.length > 0 && (
             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13, marginTop: 14 }}>
-              <thead><tr style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>{['ORDER', 'CUSTOMER', 'SKU', 'QTY', 'SHIPPED'].map((h) => <th key={h} style={{ padding: '8px 12px', textAlign: 'left', borderBottom: `1px solid ${D.line}` }}>{h}</th>)}</tr></thead>
+              <thead><tr style={{ fontSize: 12, fontWeight: 600, color: D.ink2 }}>{['Order', 'Customer', 'SKU', 'Quantity', 'Shipped'].map((h) => <th key={h} style={{ padding: '8px 12px', textAlign: 'left', borderBottom: `1px solid ${D.line}` }}>{h}</th>)}</tr></thead>
               <tbody>
                 {recallResult.map((r, i) => (
                   <tr key={i} style={{ borderTop: `1px solid ${D.line}` }}>
@@ -75,7 +75,7 @@ export function AdminLots() {
         <AdminCard title={`Expiring within 120 days (${expiring.length})`}>
           {expiring.length === 0 ? <div style={{ color: D.ink3, fontSize: 13 }}>Nothing expiring soon.</div> : (
             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
-              <thead><tr style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>{['SKU', 'LOT', 'WAREHOUSE', 'EXPIRES', 'REMAINING'].map((h) => <th key={h} style={{ padding: '8px 12px', textAlign: 'left', borderBottom: `1px solid ${D.line}` }}>{h}</th>)}</tr></thead>
+              <thead><tr style={{ fontSize: 12, fontWeight: 600, color: D.ink2 }}>{['SKU', 'Lot', 'Warehouse', 'Expires', 'Remaining'].map((h) => <th key={h} style={{ padding: '8px 12px', textAlign: 'left', borderBottom: `1px solid ${D.line}` }}>{h}</th>)}</tr></thead>
               <tbody>
                 {expiring.map((l) => (
                   <tr key={l.id} style={{ borderTop: `1px solid ${D.line}` }}>
@@ -94,10 +94,10 @@ export function AdminLots() {
         <div style={{ height: 14 }} />
 
         <AdminCard title={`Active lots (${live.length})`}>
-          {live.length === 0 ? <div style={{ color: D.ink3, fontSize: 13 }}>No lots received yet — receive a PO with lot + expiry on the receiving workstation.</div> : (
+          {live.length === 0 ? <div style={{ color: D.ink3, fontSize: 13 }}>No lots yet. Lots appear here after a purchase order is received with lot numbers and expiry dates.</div> : (
             <div className="um-scroll-x">
               <table style={{ width: '100%', minWidth: 640, borderCollapse: 'collapse', fontSize: 13 }}>
-                <thead><tr style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>{['SKU', 'LOT', 'WH', 'EXPIRES', 'RECEIVED', 'REMAINING'].map((h) => <th key={h} style={{ padding: '8px 12px', textAlign: 'left', borderBottom: `1px solid ${D.line}` }}>{h}</th>)}</tr></thead>
+                <thead><tr style={{ fontSize: 12, fontWeight: 600, color: D.ink2 }}>{['SKU', 'Lot', 'Warehouse', 'Expires', 'Received', 'Remaining'].map((h) => <th key={h} style={{ padding: '8px 12px', textAlign: 'left', borderBottom: `1px solid ${D.line}` }}>{h}</th>)}</tr></thead>
                 <tbody>
                   {live.map((l) => (
                     <tr key={l.id} style={{ borderTop: `1px solid ${D.line}` }}>
