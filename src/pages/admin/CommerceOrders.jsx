@@ -24,7 +24,7 @@ import '../../styles/commerce-order-create.css';
 const STATE_LABEL={needs_review:'Needs review',waiting_stock:'Waiting on stock',waiting_payment:'Waiting on payment',waiting_response:'Waiting on customer',ready:'Ready to ship',complete:'Complete',archived:'Archived'};
 function OrderStatusTracker({order:o}){
   if(o.draft)return null;
-  const pay=commercePaymentStatus(o),ful=o.fulfillment_status||'unfulfilled',cancelled=ful==='cancelled'||o.workflow_state==='cancelled';
+  const pay=commercePaymentStatus(o),ful=o.fulfillment_status||'unfulfilled',cancelled=Boolean(o.cancelled_at)||ful==='cancelled'||o.workflow_state==='cancelled';
   const paid=pay==='paid',shipped=ful==='fulfilled',done=o.workflow_state==='complete'||(paid&&shipped);
   const steps=[
     {key:'placed',title:'Order placed',detail:date(o.created_at),state:'done'},
