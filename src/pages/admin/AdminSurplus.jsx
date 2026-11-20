@@ -190,7 +190,7 @@ Founder, Unite Medical`,
             <>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', flexWrap: 'wrap', gap: 12 }}>
                 <div>
-                  <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.plum }}>SUBMISSION · {fmt.ago(active.submitted_at)}</div>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: D.plum }}>Submitted {fmt.ago(active.submitted_at)}</div>
                   <div style={{ fontFamily: D.display, fontSize: 28, letterSpacing: -0.5, marginTop: 6 }}>{active.hospital_name || 'Anonymous hospital'}</div>
                   <div style={{ fontSize: 13, color: D.ink2, marginTop: 4 }}>
                     {active.contact_name} · {active.contact_email} {active.contact_phone ? `· ${active.contact_phone}` : ''}
