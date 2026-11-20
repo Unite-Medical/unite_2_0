@@ -99,7 +99,7 @@ export function AdminSourcing() {
             <div role="tablist" aria-label="Sourcing views" className="-mb-px flex gap-1 overflow-x-auto [scrollbar-width:none]">
               {TABS.map(([v, t, fn]) => (
                 <button key={v} type="button" role="tab" aria-selected={tab === v} onClick={() => setTab(v)}
-                  className={cn('min-h-10 rounded-lg px-3 text-sm font-medium whitespace-nowrap', tab === v ? 'bg-paper text-ink' : 'text-ink-2 hover:bg-paper/60')}>
+                  className={cn('min-h-11 rounded-lg px-3 text-sm font-medium whitespace-nowrap md:min-h-10', tab === v ? 'bg-paper text-ink' : 'text-ink-2 hover:bg-paper/60')}>
                   {t} <span className="text-ink-3">{staged.filter(fn).length}</span>
                 </button>
               ))}
