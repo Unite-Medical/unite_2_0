@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { D } from '../../tokens.js';
 import { AdminShell } from '../../components/layout/AdminShell.jsx';
 import { Icon } from '../../components/shared/Icon.jsx';
@@ -58,6 +58,8 @@ function emptyProduct() {
 }
 
 export function AdminProductEdit() {
+  const location = useLocation();
+  const back = location.state?.from === '/admin/inventory' ? '/admin/inventory' : '/admin/products';
   const { sku: rawSku } = useParams();
   const sku = rawSku === 'new' ? null : decodeURIComponent(rawSku || '');
   const navigate = useNavigate();
@@ -113,11 +115,11 @@ export function AdminProductEdit() {
 
   function discard() {
     if (!dirty) {
-      navigate('/admin/products');
+      navigate(back);
       return;
     }
     if (window.confirm('Discard unsaved changes?')) {
-      navigate('/admin/products');
+      navigate(back);
     }
   }
 
@@ -169,7 +171,7 @@ export function AdminProductEdit() {
         <div style={{ padding: 40, textAlign: 'center' }}>
           <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.terra, marginBottom: 14 }}>404 · NOT FOUND</div>
           <h1 style={{ fontFamily: D.display, fontSize: 32, letterSpacing: -0.6 }}>Product {sku} not found.</h1>
-          <Link to="/admin/products" style={{ display: 'inline-block', marginTop: 16, color: D.plum }}>← Back to products</Link>
+          <Link to={back} style={{ display: 'inline-block', marginTop: 16, color: D.plum }}>← Back to products</Link>
         </div>
       </AdminShell>
     );
@@ -179,7 +181,7 @@ export function AdminProductEdit() {
     <AdminShell active="products" unsavedChanges={dirty}>
       <div style={{ padding: `${isMobile ? 24 : 32}px ${padX}px ${isMobile ? 16 : 20}px`, borderBottom: `1px solid ${D.line}`, display: 'flex', justifyContent: 'space-between', alignItems: isMobile ? 'flex-start' : 'center', gap: 16, flexDirection: isMobile ? 'column' : 'row', background: D.paperAlt }}>
         <div>
-          <Link to="/admin/products" style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.2, color: D.plum, textDecoration: 'none' }}>← PRODUCTS</Link>
+          <Link to={back} style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.2, color: D.plum, textDecoration: 'none' }}>{back === '/admin/inventory' ? '← INVENTORY' : '← PRODUCTS'}</Link>
           <h1 style={{ fontFamily: D.display, fontSize: 'clamp(28px, 4vw, 40px)', fontWeight: 400, letterSpacing: -0.9, lineHeight: 1.05, margin: '8px 0 0' }}>
             {existing ? form.name || form.sku : 'New product'}
           </h1>
