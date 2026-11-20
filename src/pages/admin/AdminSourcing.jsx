@@ -57,9 +57,9 @@ export function AdminSourcing() {
               <span>
                 <span style={{ display: 'block', fontWeight: 600, fontSize: 13 }}>{request.organization_name || request.contact_email || 'Unassigned customer'}</span>
                 <span style={{ display: 'block', marginTop: 4, color: D.ink2, fontSize: 12 }}>{request.product_description}</span>
-                <span style={{ display: 'block', marginTop: 5, color: D.ink3, fontFamily: D.mono, fontSize: 9 }}>{request.account_owner_email}</span>
+                <span style={{ display: 'block', marginTop: 5, color: D.ink3, fontSize: 11 }}>{request.account_owner_email}</span>
               </span>
-              <span style={{ fontFamily: D.mono, fontSize: 9, color: STATUS_COLOR[request.status] || D.ink3 }}>{String(request.status || 'new').toUpperCase()}</span>
+              <span style={{ fontSize: 11, fontWeight: 600, textTransform: 'capitalize', color: STATUS_COLOR[request.status] || D.ink3 }}>{String(request.status || 'new').replaceAll('_', ' ')}</span>
             </button>
           ))}
           {!requests.length && <div style={{ padding: 24, color: D.ink3, fontSize: 13 }}>No sourcing requests yet.</div>}
