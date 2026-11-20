@@ -66,7 +66,7 @@ export function AdminSourcing() {
         </div>
 
         <div style={{ background: D.card, border: `1px solid ${D.line}`, borderRadius: 12, padding: isMobile ? 20 : 26 }}>
-          {!active && <div style={{ color: D.ink3 }}>Choose a request to see its details, owner and vendor offers.</div>}
+          {!active && <div style={{ color: D.ink3 }}>{requests.length ? 'Choose a request to see its details, owner and vendor offers.' : 'Requests appear here when a customer asks Unite to find a product it does not stock.'}</div>}
           {active && (
             <>
               <div style={{ display: 'flex', justifyContent: 'space-between', gap: 14, flexWrap: 'wrap' }}>
