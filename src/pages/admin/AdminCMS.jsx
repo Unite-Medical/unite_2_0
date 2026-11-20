@@ -73,7 +73,7 @@ export function AdminCMS() {
                 <div>
                   <span style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, padding: '3px 10px', borderRadius: 4, background: p.published ? 'rgba(29,92,77,.1)' : D.terraSoft, color: p.published ? D.plum : D.terra }}>{p.published ? 'PUBLISHED' : 'DRAFT'}</span>
                 </div>
-                <button onClick={() => togglePage(p)} style={{ background: 'transparent', color: D.ink2, border: 'none', cursor: 'pointer', fontFamily: D.mono, fontSize: 11, letterSpacing: 0.8 }}>TOGGLE</button>
+                <button onClick={() => togglePage(p)} style={{ background: D.card, color: D.ink, border: `1px solid ${D.line}`, borderRadius: 8, cursor: 'pointer', fontSize: 12, fontWeight: 600, padding: '8px 12px', minHeight: 34 }}>Change status</button>
               </div>
             ))}
             </div>

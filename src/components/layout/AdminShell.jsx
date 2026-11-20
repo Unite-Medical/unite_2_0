@@ -66,7 +66,7 @@ export function AdminShell({active,children,unsavedChanges=false}){
    </div>)}</nav>
    {session?.role==='admin'&&<details className="uw-more-tools" open={toolIsActive||undefined}>
     <summary className="uw-more-toggle"><WorkspaceIcon name="grid" size={16}/><span>More tools</span><WorkspaceIcon name="chevron" size={13}/></summary>
-    <label className="uw-tool-search"><WorkspaceIcon name="search" size={16}/><input aria-label="Find an additional workspace tool" type="search" placeholder="Find a tool…" value={toolSearch} onChange={e=>setToolSearch(e.target.value)}/></label>
+    <label className="uw-tool-search"><WorkspaceIcon name="search" size={16}/><input aria-label="Find an additional workspace tool" type="search" placeholder="Find a tool…" style={{minHeight:32}} value={toolSearch} onChange={e=>setToolSearch(e.target.value)}/></label>
     {!matchingTools.length&&<p className="uw-tool-empty">No tools match your search.</p>}
     {matchingTools.map(([name,links])=><details key={name} open={Boolean(toolSearch)||links.some(([,path,id])=>isActive(id,path))||undefined}><summary>{name}<WorkspaceIcon name="chevron" size={14}/></summary>{links.map(([label,path,id])=><Link key={id} to={path} onClick={go} className={`uw-tool-link ${isActive(id,path)?'is-active':''}`} aria-current={isActive(id,path)?'page':undefined}>{label}</Link>)}</details>)}
    </details>}
