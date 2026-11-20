@@ -17,10 +17,10 @@ import '../../styles/ui.css';
 
 const TABS = [
   ['all', 'All', () => true],
-  ['new', 'New', (r) => !r.status || r.status === 'new'],
-  ['needs_review', 'Needs review', (r) => r.status === 'needs_review'],
-  ['ready', 'Ready for PO', (r) => r.status === 'reviewable' || r.status === 'approved'],
-  ['po_draft', 'PO drafted', (r) => r.status === 'po_draft'],
+  ['new', 'New', (r) => r.stage === 'new'],
+  ['needs_review', 'Needs review', (r) => r.stage === 'needs_review'],
+  ['ready', 'Ready for PO', (r) => r.stage === 'reviewable'],
+  ['po_draft', 'PO drafted', (r) => r.stage === 'po_draft'],
 ];
 
 const STATUS = {
@@ -31,6 +31,14 @@ const plural = (n, word) => `${n} ${word}${n === 1 ? '' : 's'}`;
 function StatusBadge({ value }) {
   const [text, tone] = STATUS[value] || [String(value || 'new').replaceAll('_', ' '), 'neutral'];
   return <Badge tone={tone} dot>{text.charAt(0).toUpperCase() + text.slice(1)}</Badge>;
+}
+
+// Requests only move new -> po_draft; review progress lives on their vendor offers.
+function requestStage(request, requestOffers) {
+  if (request.status && request.status !== 'new') return request.status;
+  if (requestOffers.some((o) => o.status === 'reviewable')) return 'reviewable';
+  if (requestOffers.some((o) => o.status === 'needs_review')) return 'needs_review';
+  return 'new';
 }
 
 const customerName = (r) => r.organization_name || r.contact_email || 'Unassigned customer';
@@ -45,18 +53,18 @@ export function AdminSourcing() {
   const [notice, setNotice] = useState(null);
   const detailRef = useRef(null);
 
-  const offerCount = useMemo(() => {
-    const counts = {};
-    for (const offer of offers) counts[offer.sourcing_request_id] = (counts[offer.sourcing_request_id] || 0) + 1;
-    return counts;
-  }, [offers]);
+  const staged = useMemo(() => {
+    const byRequest = {};
+    for (const offer of offers) (byRequest[offer.sourcing_request_id] ||= []).push(offer);
+    return requests.map((r) => ({ ...r, offerCount: (byRequest[r.id] || []).length, stage: requestStage(r, byRequest[r.id] || []) }));
+  }, [requests, offers]);
 
   const rows = useMemo(() => {
     const match = TABS.find(([v]) => v === tab)[2];
     const needle = q.trim().toLowerCase();
-    return requests.filter(match).filter((r) => !needle || [customerName(r), r.product_description, r.account_owner_email]
+    return staged.filter(match).filter((r) => !needle || [customerName(r), r.product_description, r.account_owner_email]
       .some((v) => String(v || '').toLowerCase().includes(needle)));
-  }, [requests, tab, q]);
+  }, [staged, tab, q]);
 
   const active = requests.find((r) => r.id === activeId) || null;
   const activeOffers = offers.filter((offer) => offer.sourcing_request_id === active?.id);
@@ -92,7 +100,7 @@ export function AdminSourcing() {
               {TABS.map(([v, t, fn]) => (
                 <button key={v} type="button" role="tab" aria-selected={tab === v} onClick={() => setTab(v)}
                   className={cn('min-h-10 rounded-lg px-3 text-sm font-medium whitespace-nowrap', tab === v ? 'bg-paper text-ink' : 'text-ink-2 hover:bg-paper/60')}>
-                  {t} <span className="text-ink-3">{requests.filter(fn).length}</span>
+                  {t} <span className="text-ink-3">{staged.filter(fn).length}</span>
                 </button>
               ))}
             </div>
@@ -105,9 +113,9 @@ export function AdminSourcing() {
                 {rows.map((r) => (
                   <li key={r.id}>
                     <button type="button" onClick={() => open(r.id)} className={cn('flex w-full flex-col gap-1 border-0 px-4 py-3 text-left text-ink', r.id === activeId ? 'bg-paper' : 'bg-card')}>
-                      <span className="flex items-center justify-between gap-3"><span className="truncate font-semibold">{customerName(r)}</span><StatusBadge value={r.status || 'new'} /></span>
+                      <span className="flex items-center justify-between gap-3"><span className="truncate font-semibold">{customerName(r)}</span><StatusBadge value={r.stage} /></span>
                       <span className="text-sm text-ink-2">{r.product_description}</span>
-                      <span className="text-xs text-ink-3">Due {dueDate(r)} · {plural(offerCount[r.id] || 0, 'offer')}</span>
+                      <span className="text-xs text-ink-3">Due {dueDate(r)} · {plural(r.offerCount, 'offer')}</span>
                     </button>
                   </li>
                 ))}
@@ -123,8 +131,8 @@ export function AdminSourcing() {
                         <TD className="text-right tabular-nums">{r.quantity || '—'}</TD>
                         <TD className="text-ink-2">{r.account_owner_email || 'Unassigned'}</TD>
                         <TD className="whitespace-nowrap text-ink-2">{dueDate(r)}</TD>
-                        <TD className="text-right tabular-nums">{offerCount[r.id] || 0}</TD>
-                        <TD><StatusBadge value={r.status || 'new'} /></TD>
+                        <TD className="text-right tabular-nums">{r.offerCount}</TD>
+                        <TD><StatusBadge value={r.stage} /></TD>
                       </TRow>
                     ))}
                   </tbody>
