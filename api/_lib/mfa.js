@@ -18,7 +18,8 @@ async function createMfaSchema(sql){
  await sql`CREATE TABLE IF NOT EXISTS um_mfa_challenges(user_id text PRIMARY KEY,token_hash text NOT NULL,secret text,revision integer NOT NULL,attempts integer NOT NULL DEFAULT 0,expires_at timestamptz NOT NULL)`;
 }
 export async function beginMfa(sql,profile,{rp=null}={}){
- await Promise.all([ensureMfaSchema(sql),ensurePasskeySchema(sql)]);
+ await ensureMfaSchema(sql);
+ await ensurePasskeySchema(sql);
  const existing=await sql`SELECT user_id FROM um_mfa_credentials WHERE user_id=${profile.id}`;
  const secret=existing.length?null:base32(crypto.randomBytes(20));
  // Validate encryption config even for existing accounts; do not issue unusable challenges.
