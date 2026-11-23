@@ -191,7 +191,7 @@ function ProductEditor() {
     <AdminShell active="products" unsavedChanges={dirty}>
       <main id="main" className="ui-root mx-auto w-full max-w-[1200px] px-4 pb-16 pt-4 font-sans text-sm text-ink md:px-8">
         {dirty && (
-          <div className="sticky top-2 z-20 mb-4 flex flex-wrap items-center justify-between gap-3 rounded-xl bg-ink-deep px-4 py-3 text-white shadow-xs" role="status">
+          <div className="sticky top-[calc(var(--uw-topbar-height,64px)+8px)] z-20 mb-4 flex flex-wrap items-center justify-between gap-3 rounded-xl bg-ink-deep px-4 py-3 text-white shadow-xs" role="status">
             <span className="font-semibold">Unsaved changes</span>
             <div className="flex gap-2">
               <Button variant="secondary" onClick={revert}>Discard</Button>
