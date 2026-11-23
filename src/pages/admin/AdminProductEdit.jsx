@@ -61,6 +61,12 @@ function emptyProduct() {
 }
 
 export function AdminProductEdit() {
+  const { sku } = useParams();
+  // Keyed so going from /new to the saved product's URL starts a fresh editor.
+  return <ProductEditor key={sku || 'new'} />;
+}
+
+function ProductEditor() {
   const location = useLocation();
   const back = location.state?.from === '/admin/inventory' ? '/admin/inventory' : '/admin/products';
   const { sku: rawSku } = useParams();
