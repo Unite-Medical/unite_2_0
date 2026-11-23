@@ -45,3 +45,20 @@ test('session tokens keep the time of the last second-factor check across re-iss
  assert.equal(reissued.mfa_at,1700000000);
  assert.equal('mfa_at' in verifySessionToken(createSessionToken({user_id:'u2',role:'sales'},{secret}),{secret}),false);
 });
+
+test('trusted-device cookie skips the code only for the same user and session revision',async()=>{
+ const {setTrustedDeviceCookie,trustedDevice,verifySessionToken}=await import('../api/_lib/auth.js');
+ const secret='y'.repeat(48);const headers={};
+ const res={getHeader:k=>headers[k],setHeader:(k,v)=>{headers[k]=v;}};
+ headers['Set-Cookie']='um_session=abc; Path=/';
+ setTrustedDeviceCookie(res,{id:'u1',session_revision:2},{secret,now:1700000000000});
+ assert.equal(headers['Set-Cookie'].length,2);
+ const cookie=headers['Set-Cookie'][1];assert.match(cookie,/HttpOnly/);assert.match(cookie,/Path=\/api\/auth/);
+ const value=cookie.split(';')[0];const req={headers:{cookie:value}};
+ assert.equal(trustedDevice(req,{id:'u1',session_revision:2},{secret,now:1700000001000}),true);
+ assert.equal(trustedDevice(req,{id:'u2',session_revision:2},{secret,now:1700000001000}),false);
+ assert.equal(trustedDevice(req,{id:'u1',session_revision:3},{secret,now:1700000001000}),false);
+ assert.equal(trustedDevice(req,{id:'u1',session_revision:2},{secret,now:1700000000000+31*24*3600*1000}),false);
+ assert.equal(trustedDevice(req,{id:'u1',session_revision:2},{secret:'z'.repeat(48),now:1700000001000}),false);
+ assert.equal(verifySessionToken(value.split('=')[1],{secret,now:1700000001000}),null);
+});

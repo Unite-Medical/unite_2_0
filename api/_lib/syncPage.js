@@ -1,5 +1,7 @@
-export function projectSyncPage(rows,{since=null,serviceAccess=false,cutoff}={}){
-  const more=rows.length>500,page=rows.slice(0,500),tables={};
+export function projectSyncPage(rows,{since=null,serviceAccess=false,cutoff,pageSize=500,maxBytes=Infinity}={}){
+  let size=0,count=0;
+  while(count<Math.min(rows.length,pageSize)){size+=JSON.stringify(rows[count].data??null).length;if(count>0&&size>maxBytes)break;count++;}
+  const page=rows.slice(0,count),more=rows.length>count,tables={};
   let latest=since?since.toISOString():null;
   for(const r of page){
     if(!serviceAccess&&(r.tbl.startsWith('commerce_')||r.tbl==='business_reports'))continue;

@@ -116,8 +116,10 @@ function load() {
 function persist(state) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    return true;
   } catch {
     // quota exceeded or private mode — keep running in-memory
+    return false;
   }
 }
 
@@ -147,6 +149,8 @@ function emitMutation(table, op, id, row) {
 }
 
 function notify(table, id) {
+  // A local edit makes the cached copy differ from the server until it is pushed and pulled again.
+  if (!applyingRemote && state.__remote && !state.__remote.dirty) state = { ...state, __remote: { ...state.__remote, dirty: true } };
   subs.get(table)?.forEach((fn) => fn());
   if (id != null) rowSubs.get(`${table}:${id}`)?.forEach((fn) => fn());
   persist(state);
@@ -264,7 +268,7 @@ export const db = {
    * echo back through onMutation (that would loop forever).
    * `tables` is { table_name: [rows] }; rows flagged __deleted are removed.
    */
-  applyRemoteSnapshot(tables) {
+  applyRemoteSnapshot(tables, { save = true } = {}) {
     applyingRemote = true;
     try {
       const next = { ...state };
@@ -280,13 +284,24 @@ export const db = {
         next[table] = [...existing.values()];
       }
       state = next;
-      persist(state);
+      if (save) persist(state);
       for (const table of Object.keys(tables || {})) {
         subs.get(table)?.forEach((fn) => fn());
       }
     } finally {
       applyingRemote = false;
     }
+  },
+
+  /** Which signed-in user and server cursor the cached rows belong to. */
+  remoteCursor() {
+    return state.__remote || null;
+  },
+
+  /** Save rows and their server cursor together, so a cached copy is never paired with a newer cursor. */
+  commitRemote(meta) {
+    state = { ...state, __remote: meta };
+    return persist(state);
   },
 
   /** Every row in every table — used for the first full push to Postgres. */

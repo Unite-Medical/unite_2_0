@@ -18,3 +18,10 @@ test('financial BI snapshots stay out of browser raw-sync caches',()=>{
  assert.deepEqual(projectSyncPage(rows,{cutoff}).tables,{});
  assert.equal(projectSyncPage(rows,{cutoff,serviceAccess:true}).tables.business_reports.length,1);
 });
+test('sync pages stop at the byte budget but always make progress',()=>{
+ const rows=Array.from({length:10},(_,i)=>({tbl:'orders',id:String(i),data:{id:String(i),note:'x'.repeat(1000)},updated_at:cutoff,cursor_at:cutoff}));
+ const page=projectSyncPage(rows,{cutoff,pageSize:9,maxBytes:3500});
+ assert.equal(page.row_count,3);assert.ok(page.next_cursor);
+ assert.equal(projectSyncPage(rows,{cutoff,pageSize:9,maxBytes:10}).row_count,1);
+ assert.equal(projectSyncPage(rows.slice(0,9),{cutoff,pageSize:9}).next_cursor,null);
+});
