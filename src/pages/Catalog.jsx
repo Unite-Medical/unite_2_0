@@ -45,6 +45,9 @@ const LEGACY_CAT_MAP = {
   supplements: 'Supplements',
 };
 
+const PAGE_SIZE = 24;
+const FILTER_HEADING = { fontSize: 13, fontWeight: 600, color: D.ink2, marginBottom: 10 };
+
 function SupplyBadge({ state }) {
   const color = state.id === 'in_stock' ? '#3b8760' : D.terra;
   return (
@@ -127,6 +130,13 @@ export function Catalog() {
     });
   }, [PRODUCTS, cat, compliance, supplyFilter, search, stockBySku]);
 
+  const filterKey = `${cat}|${[...compliance].sort()}|${supplyFilter}|${search.trim().toLowerCase()}`;
+  const [visible, setVisible] = useState({ key: filterKey, count: PAGE_SIZE });
+  // Any change to search or filters starts the list over at the first page.
+  if (visible.key !== filterKey) setVisible({ key: filterKey, count: PAGE_SIZE });
+  const shownCount = visible.key === filterKey ? visible.count : PAGE_SIZE;
+  const shown = filtered.slice(0, shownCount);
+
   const toggleCompliance = (flag) => {
     const n = new Set(compliance);
     if (n.has(flag)) n.delete(flag); else n.add(flag);
@@ -134,20 +144,20 @@ export function Catalog() {
   };
 
   const supplyStates = [
-    ['all', 'Everything'],
+    ['all', 'All products'],
     ['in_stock', SUPPLY_STATES.in_stock.label],
     ['source', SUPPLY_STATES.source.label],
   ];
 
   const filterPanel = (
     <>
-      <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1, color: D.ink3, marginBottom: 14 }}>SUPPLY STATE</div>
+      <div style={FILTER_HEADING}>Availability</div>
       {supplyStates.map(([id, label]) => (
         <label key={id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '6px 0', fontSize: 14, color: D.ink2, cursor: 'pointer' }}>
           <input type="radio" name="supply" checked={supplyFilter === id} onChange={() => setSupplyFilter(id)} style={{ accentColor: D.plum }} /> {label}
         </label>
       ))}
-      <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1, color: D.ink3, margin: '28px 0 14px' }}>COMPLIANCE</div>
+      <div style={{ ...FILTER_HEADING, marginTop: 24 }}>Compliance</div>
       {COMPLIANCE_FILTERS.map(([label, flag]) => (
         <label key={flag} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '6px 0', fontSize: 14, color: D.ink2, cursor: 'pointer' }}>
           <input type="checkbox" checked={compliance.has(flag)} onChange={() => toggleCompliance(flag)} style={{ accentColor: D.plum }} /> {label}
@@ -164,13 +174,13 @@ export function Catalog() {
       <section className="uc-shop uc-wrap" aria-label="Product catalog">
         <div className="uc-searchbar"><label className="uc-search"><Icon.search /><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search products, SKU, or HCPCS" aria-label="Search products" />{search&&<button onClick={()=>setSearch('')} aria-label="Clear search">×</button>}</label><span aria-live="polite">{filtered.length} products</span></div>
         <div className="uc-chips" aria-label="Product categories">{cats.map(c=><button key={c} aria-pressed={cat===c} onClick={()=>setCat(c)}>{c==='All'?'All products':c}</button>)}</div>
-        <div className="uc-catalog-layout"><aside className="uc-filters"><details open={!isMobile}><summary>Refine your search</summary><div>{filterPanel}<button className="uc-text-button" onClick={resetFilters}>Reset filters ↗</button></div></details></aside>
-          <div className="uc-products">{filtered.map(p=>{
+        <div className="uc-catalog-layout"><aside className="uc-filters"><details open={!isMobile}><summary>Refine your search</summary><div>{filterPanel}<button className="uc-text-button" onClick={resetFilters}>Reset filters</button></div></details></aside>
+          <div className="uc-products">{shown.map(p=>{
             const stock=stockBySku.get(p.sku)||0;
             const state=stock>0?SUPPLY_STATES.in_stock:SUPPLY_STATES.source;
             const accountPrice=priceBySku.get(p.sku);
             return <article key={p.sku} className="uc-product">
-              <Link className="uc-product-image" to={`/products/${encodeURIComponent(p.sku)}`} aria-label={`View ${p.name}`}><PhotoPlaceholder src={PRODUCT_IMG[p.sku]} alt={p.name} caption="Product image coming soon" height={240} stripeFrom="#f5f5ef" stripeTo="#edeee6" /></Link>
+              <Link className="uc-product-image" to={`/products/${encodeURIComponent(p.sku)}`} aria-label={`View ${p.name}`}><PhotoPlaceholder src={PRODUCT_IMG[p.sku]} alt={p.name} caption="Image coming soon" height={240} stripeFrom="#f1f1ea" quiet /></Link>
               <div className="uc-product-body"><div className="uc-product-meta"><span>{categorize(p)}</span><SupplyBadge state={state}/></div>
                 <h2><Link to={`/products/${encodeURIComponent(p.sku)}`}>{p.name}</Link></h2><p className="uc-sku">{p.sku}{p.hcpcs&&p.hcpcs!=='—'?` · HCPCS ${p.hcpcs}`:''}</p>
                 <div className="uc-product-bottom"><p>{p.quote_only?'Quote on request':commerce.can_view_prices?(accountPrice?.unit_price!=null?fmt.money(accountPrice.unit_price):'Request pricing'):'Request business pricing'}<small>{p.variants?.length>1?`${p.variants.length} options available`:p.pack_size&&p.pack_size!=='1 ea'?p.pack_size:'Pack size confirmed with quote'}{p.moq>1?` · MOQ ${p.moq}`:''}</small></p>
@@ -179,7 +189,8 @@ export function Catalog() {
               </div>
             </article>;
           })}
-          {!filtered.length&&<div className="uc-empty"><p className="uc-eyebrow">LET’S TRY AGAIN</p><h2>No products found.</h2><p>Try another search or clear your filters. Our team can help source items beyond the catalog.</p><button className="uc-button" onClick={resetFilters}>Clear all filters ↗</button></div>}
+          {!filtered.length&&<div className="uc-empty"><p className="uc-eyebrow">LET’S TRY AGAIN</p><h2>No products found.</h2><p>Try another search or clear your filters. Our team can help source items beyond the catalog.</p><button className="uc-button" onClick={resetFilters}>Clear filters</button></div>}
+          {filtered.length>shownCount&&<div className="uc-show-more"><p>Showing {shownCount} of {filtered.length} products</p><button className="uc-button" onClick={()=>setVisible({key:filterKey,count:shownCount+PAGE_SIZE})}>Show more products</button></div>}
           </div>
         </div>
         <div className="uc-callout"><div><p className="uc-eyebrow">BEYOND THE CATALOG</p><h2>Need something else?</h2><p>A specific brand. A hard-to-find item. An entire shortage list.<br/>Tell us what you need, and we’ll take it from here.</p></div><Link className="uc-button uc-button-light" to="/quote">Talk to our sourcing team ↗</Link></div>

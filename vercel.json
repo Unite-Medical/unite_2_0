@@ -93,6 +93,11 @@
   ],
   "redirects": [
     {
+      "source": "/products",
+      "destination": "/catalog",
+      "permanent": true
+    },
+    {
       "source": "/pages/pdac-consulting",
       "destination": "/services/pdac",
       "permanent": true

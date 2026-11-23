@@ -12,6 +12,7 @@ export function PhotoPlaceholder({
   radius = 2,
   objectPosition = 'center',
   eager = false, // set for above-the-fold heroes so LCP isn't lazy-loaded
+  quiet = false, // storefront: plain tile with a centred note instead of the striped design placeholder
   children,
 }) {
   // If the provided src 404s, gracefully fall back to the stripe placeholder
@@ -44,6 +45,14 @@ export function PhotoPlaceholder({
             display: 'block',
           }}
         />
+        {children}
+      </div>
+    );
+  }
+  if (quiet) {
+    return (
+      <div style={{ height, borderRadius: radius, background: stripeFrom, position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', color: textColor, fontSize: 13 }}>
+        {caption}
         {children}
       </div>
     );
