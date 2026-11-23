@@ -231,7 +231,7 @@ export default function App() {
           <Route path="/account/documents" element={<RequireSession roles={['customer','distributor']}><AccountDocuments /></RequireSession>} />
           <Route path="/staff/welllink" element={<RequireSession roles={['admin','sales','sales_manager','finance','warehouse_operator','warehouse_manager']}><AdminWellLink /></RequireSession>} />
           <Route path="/warehouse" element={<RequireSession roles={['admin','warehouse_manager','warehouse_operator']}><WarehouseMobile /></RequireSession>} />
-          <Route path="/work/security" element={<RequireSession roles={['admin','finance','warehouse_manager','sales_manager','sourcing_manager']}><StaffSecurity /></RequireSession>} />
+          <Route path="/work/security" element={<RequireSession><StaffSecurity /></RequireSession>} />
           <Route path="/work" element={<RequireSession roles={['admin','sales','sales_manager','customer_service','warehouse_operator','warehouse_manager','finance','sourcing','sourcing_manager']}><StaffWork /></RequireSession>} />
           <Route path="/admin/packing" element={<RequireAdmin><AdminPacking /></RequireAdmin>} />
           <Route path="/admin/documents" element={<RequireAdmin><AdminDocuments /></RequireAdmin>} />
