@@ -3,6 +3,7 @@ import {neon} from '@neondatabase/serverless';
 import {readRawBody,sendJson} from '../_lib/http.js';
 import {issueSession} from '../_lib/auth.js';
 import {digestToken,openMfa,verifyTotp,requiresMfa} from '../_lib/mfa.js';
+import {relyingParty,verifyPasskeySignIn} from '../_lib/passkeys.js';
 export default async function handler(req,res){
  res.setHeader('Cache-Control','no-store, private');
  if(req.method!=='POST')return sendJson(res,405,{error:'method_not_allowed'});
@@ -17,6 +18,22 @@ export default async function handler(req,res){
   const profiles=await sql`SELECT data FROM um_rows WHERE tbl='profiles' AND id=${challenge.user_id} AND deleted=false`;
   const p=profiles[0]?.data;
   if(!p||p.status!=='active'||!requiresMfa([p.role,...(p.roles||[])])||Number(p.session_revision||0)!==challenge.revision)return sendJson(res,401,{error:'sign_in_again'});
+  if(body.passkey){
+   const passkeys=challenge.webauthn_challenge?await sql`SELECT * FROM um_passkeys WHERE id=${String(body.passkey.id||'')} AND user_id=${p.id}`:[];
+   const passkey=passkeys[0];
+   let info=null;
+   if(passkey){try{info=await verifyPasskeySignIn({rp:relyingParty(req),response:body.passkey,expectedChallenge:challenge.webauthn_challenge,passkey});}catch{info=null;}}
+   if(!info)return sendJson(res,400,{error:'passkey_not_recognized'});
+   const audit={id:crypto.randomUUID(),kind:'auth.passkey_verified',actor_id:p.id,created_at:new Date().toISOString()};
+   const results=await sql`WITH consumed AS (
+    DELETE FROM um_mfa_challenges WHERE user_id=${p.id} AND token_hash=${challenge.token_hash} AND expires_at>now() AND revision=${challenge.revision} AND EXISTS(SELECT 1 FROM um_rows WHERE tbl='profiles' AND id=${p.id} AND deleted=false AND data->>'status'='active' AND data->>'role'=${p.role} AND COALESCE((data->>'session_revision')::integer,0)=${challenge.revision}) RETURNING user_id
+   ), used AS (UPDATE um_passkeys SET counter=${Number(info.newCounter||0)},last_used_at=now() WHERE id=${passkey.id} AND user_id IN (SELECT user_id FROM consumed) AND counter=${Number(passkey.counter||0)} RETURNING user_id)
+   INSERT INTO um_rows(tbl,id,data,deleted,updated_at) SELECT 'audit_log',${audit.id},${JSON.stringify(audit)}::jsonb,false,now() FROM used RETURNING id`;
+   if(!results.length)return sendJson(res,409,{error:'sign_in_again'});
+   const session={user_id:p.id,email:p.email,name:p.name,role:p.role,roles:[...new Set([p.role,...(p.roles||[])])],org_id:p.org_id,session_revision:Number(p.session_revision||0),mfa_verified:true};
+   issueSession(res,session,{remember:body.remember===true});
+   return sendJson(res,200,{ok:true,session,method:'passkey'});
+  }
   const credentials=await sql`SELECT * FROM um_mfa_credentials WHERE user_id=${p.id}`;
   const cred=credentials[0];
   const recoveryHash=body.recovery_code?digestToken(String(body.recovery_code).trim()):null;

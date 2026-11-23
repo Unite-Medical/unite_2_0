@@ -22,6 +22,7 @@ const TOOLS=[
  ['Manage Unite',[['Data review','/admin/data-review','data-review'],['Product reconciliation','/admin/catalog-review','catalog-review'],['Refund approvals','/admin/refund-reviews','refund-reviews'],['Needs attention','/admin/desk','desk'],['Document review','/admin/documents','documents'],['Products','/admin/products','products'],['Morning brief','/admin/digest','digest'],['Analytics','/admin/analytics','analytics'],['Team & permissions','/admin/team','team'],['Integrations','/admin/integrations','integrations'],['Website content','/admin/cms','cms'],['Compliance','/admin/compliance','compliance'],['UDI / GUDID','/admin/udi','udi'],['Discovery','/admin/discovery','discovery'],['Webhooks','/admin/webhooks','webhooks'],['Shopify history','/admin/shopify-history','shopify-history'],['Launch preparation','/admin/launch','launch'],['Testing & feedback','/admin/testing','testing'],['Test data','/admin/test-data','test-data'],['Launch workspace','/admin/workspace-reset','workspace-reset'],['Settings','/admin/settings','settings']]],
 ];
 const iconFor=id=>({work:'grid',chat:'inbox',products:'box',inventory:'list',orders:'box',customers:'people',inquiries:'inbox',quotes:'list',finance:'money',fulfillment:'box',receiving:'box',rep:'people','refund-reviews':'money','new-quote':'list'}[id]||'list');
+const PASSKEY_ROLES=['admin','finance','warehouse_manager','sales_manager','sourcing_manager'];
 export function AdminShell({active,children,unsavedChanges=false}){
  const session=auth.use(),location=useLocation(),navigate=useNavigate();
  const [open,setOpen]=useState(false),[error,setError]=useState(''),[switching,setSwitching]=useState(false),[toolSearch,setToolSearch]=useState('');
@@ -34,7 +35,7 @@ export function AdminShell({active,children,unsavedChanges=false}){
  const primaryPaths=new Set(nav.map(n=>n.path));
  const matchingTools=TOOLS.map(([name,links])=>[name,links.filter(([label,path,id])=>!primaryPaths.has(path)&&id!=='settings'&&label.toLowerCase().includes(toolSearch.toLowerCase().trim()))]).filter(([,links])=>links.length);
  const toolIsActive=matchingTools.some(([,links])=>links.some(([,path,id])=>active===id||location.pathname===path));
- const pageLabel=active==='work'||active==='overview'?'Home':nav.find(n=>n.id===active)?.label||TOOLS.flatMap(([,links])=>links).find(([,path,id])=>id===active||path===location.pathname)?.[0]||'Operations';
+ const pageLabel=active==='work'||active==='overview'?'Home':active==='security'?'Sign-in security':nav.find(n=>n.id===active)?.label||TOOLS.flatMap(([,links])=>links).find(([,path,id])=>id===active||path===location.pathname)?.[0]||'Operations';
  const isActive=(id,path)=>active===id||location.pathname===path||(id==='work'&&location.pathname==='/admin');
  useEffect(()=>{if(!open)return;const previous=document.activeElement;drawer.current?.querySelector('button')?.focus();const previousOverflow=document.body.style.overflow;document.body.style.overflow='hidden';function key(e){if(e.key==='Escape')setOpen(false);if(e.key==='Tab'){const els=[...drawer.current.querySelectorAll('a,button,input,select,summary')].filter(el=>el.getClientRects().length);if(e.shiftKey&&document.activeElement===els[0]){e.preventDefault();els.at(-1)?.focus();}else if(!e.shiftKey&&document.activeElement===els.at(-1)){e.preventDefault();els[0]?.focus();}}}document.addEventListener('keydown',key);return()=>{document.body.style.overflow=previousOverflow;document.removeEventListener('keydown',key);previous?.focus();};},[open]);
  async function switchRole(role){if(unsavedChanges){setError('Save or discard your changes before changing roles.');return;}setSwitching(true);setError('');try{const next=await auth.switchRole(role);setOpen(false);navigate(staffHome(next.role));}catch(e){setError(e.message);}finally{setSwitching(false);}}
@@ -78,6 +79,7 @@ export function AdminShell({active,children,unsavedChanges=false}){
      <details className="uw-personal-appearance"><summary>Appearance</summary><AppearanceControls userId={session?.user_id}/></details>
      {session?.roles?.length>1&&<label className="uw-role-label">Working role<select value={session.role} disabled={switching} onChange={e=>switchRole(e.target.value)}>{session.roles.map(r=><option key={r} value={r}>{r.replaceAll('_',' ')}</option>)}</select></label>}
      {session?.role==='admin'&&<Link to="/admin/settings" onClick={go}><WorkspaceIcon name="settings" size={16}/>Settings</Link>}
+     {PASSKEY_ROLES.some(r=>session?.roles?.includes(r)||session?.role===r)&&<Link to="/work/security" onClick={go}><WorkspaceIcon name="shield" size={16}/>Sign-in security</Link>}
      <Link to="/" onClick={go}><WorkspaceIcon name="external" size={16}/>View website</Link>
      <button onClick={async()=>{if(unsavedChanges){setError('Save or discard your changes before signing out.');return;}await auth.logout();navigate('/login');}}><WorkspaceIcon name="logout" size={16}/>Sign out</button>
     </div>
