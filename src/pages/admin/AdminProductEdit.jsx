@@ -240,11 +240,11 @@ function ProductEditor() {
                   <ImagePlus size={22} aria-hidden="true" /> No images yet. Add an image link below.
                 </div>
               ) : (
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
                   {images.map((src, i) => (
-                    <figure key={`${src}-${i}`} className={`m-0 overflow-hidden rounded-lg border bg-white ${i === 0 ? 'col-span-2 row-span-2 border-brand' : 'border-line'}`}>
+                    <figure key={`${src}-${i}`} className={`m-0 overflow-hidden rounded-lg border bg-white ${i === 0 ? 'border-brand sm:col-span-2 sm:row-span-2' : 'border-line'}`}>
                       <div className="relative">
-                        <img src={src} alt="" className={`block w-full object-contain ${i === 0 ? 'h-72' : 'h-32'}`} />
+                        <img src={src} alt="" className={`block w-full object-contain ${i === 0 ? 'h-72' : 'h-48 sm:h-32'}`} />
                         {i === 0 && <span className="absolute left-2 top-2"><Badge tone="good">Main image</Badge></span>}
                       </div>
                       <figcaption className="flex items-center justify-between gap-1 border-t border-line bg-card px-1.5 py-1">
