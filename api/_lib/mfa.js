@@ -11,13 +11,14 @@ function key(){const value=process.env.MFA_ENCRYPTION_KEY;if(!/^[a-f0-9]{64}$/i.
 export function sealMfa(value){const iv=crypto.randomBytes(12),c=crypto.createCipheriv('aes-256-gcm',key(),iv);const encrypted=Buffer.concat([c.update(value,'utf8'),c.final()]);return [iv,c.getAuthTag(),encrypted].map(b=>b.toString('base64url')).join('.');}
 export function openMfa(value){const [iv,tag,data]=value.split('.').map(s=>Buffer.from(s,'base64url'));const c=crypto.createDecipheriv('aes-256-gcm',key(),iv);c.setAuthTag(tag);return Buffer.concat([c.update(data),c.final()]).toString('utf8');}
 export function digestToken(value){return crypto.createHash('sha256').update(String(value)).digest('hex');}
-export async function ensureMfaSchema(sql){
+let mfaSchemaReady=null;
+export function ensureMfaSchema(sql){return mfaSchemaReady||=createMfaSchema(sql).catch(e=>{mfaSchemaReady=null;throw e;});}
+async function createMfaSchema(sql){
  await sql`CREATE TABLE IF NOT EXISTS um_mfa_credentials(user_id text PRIMARY KEY,secret text NOT NULL,last_counter bigint NOT NULL DEFAULT -1,recovery_hashes jsonb NOT NULL DEFAULT '[]',created_at timestamptz NOT NULL DEFAULT now())`;
  await sql`CREATE TABLE IF NOT EXISTS um_mfa_challenges(user_id text PRIMARY KEY,token_hash text NOT NULL,secret text,revision integer NOT NULL,attempts integer NOT NULL DEFAULT 0,expires_at timestamptz NOT NULL)`;
 }
 export async function beginMfa(sql,profile,{rp=null}={}){
- await ensureMfaSchema(sql);
- await ensurePasskeySchema(sql);
+ await Promise.all([ensureMfaSchema(sql),ensurePasskeySchema(sql)]);
  const existing=await sql`SELECT user_id FROM um_mfa_credentials WHERE user_id=${profile.id}`;
  const secret=existing.length?null:base32(crypto.randomBytes(20));
  // Validate encryption config even for existing accounts; do not issue unusable challenges.

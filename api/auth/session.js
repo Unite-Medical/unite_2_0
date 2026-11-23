@@ -10,6 +10,7 @@ import {
   passwordNeedsUpgrade,
   sessionFromRequest,
   verifyStoredPassword,
+  trustedDevice,
 } from '../_lib/auth.js';
 import { logEvent, readRawBody, sendJson } from '../_lib/http.js';
 
@@ -209,7 +210,15 @@ export default async function handler(req, res) {
       clearThrottle(sql, descriptors.find((row) => row.scope === 'pair').id),
       releaseSuccessfulIpAttempt(sql, descriptors.find((row) => row.scope === 'ip').id),
     ]);
-    if(requiresMfa([profile.role,...(profile.roles||[])])) { clearSessionCookie(res); return sendJson(res,200,await beginMfa(sql,profile,{rp:relyingParty(req)})); }
+    if(requiresMfa([profile.role,...(profile.roles||[])])) {
+      if(trustedDevice(req,profile)){
+        const session={...safeSession(profile, await organizationFor(sql, profile)),mfa_verified:true};
+        issueSession(res, session, {remember: remember === true});
+        logEvent('auth.session', 'login_trusted_device', { user_id: session.user_id, role: session.role });
+        return sendJson(res, 200, { session });
+      }
+      clearSessionCookie(res); return sendJson(res,200,await beginMfa(sql,profile,{rp:relyingParty(req)}));
+    }
     const session = safeSession(profile, await organizationFor(sql, profile));
     issueSession(res, session, {remember: remember === true});
     logEvent('auth.session', 'login_succeeded', { user_id: session.user_id, role: session.role });

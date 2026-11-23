@@ -6,7 +6,9 @@ export function relyingParty(req){
  const local=hostname==='localhost'||hostname==='127.0.0.1';
  return {rpID:process.env.WEBAUTHN_RP_ID||hostname,origin:process.env.WEBAUTHN_ORIGIN||`${local?'http':'https'}://${host}`};
 }
-export async function ensurePasskeySchema(sql){
+let passkeySchemaReady=null;
+export function ensurePasskeySchema(sql){return passkeySchemaReady||=createPasskeySchema(sql).catch(e=>{passkeySchemaReady=null;throw e;});}
+async function createPasskeySchema(sql){
  await sql`CREATE TABLE IF NOT EXISTS um_passkeys(id text PRIMARY KEY,user_id text NOT NULL,public_key text NOT NULL,counter bigint NOT NULL DEFAULT 0,transports jsonb NOT NULL DEFAULT '[]',device_type text,backed_up boolean NOT NULL DEFAULT false,name text,created_at timestamptz NOT NULL DEFAULT now(),last_used_at timestamptz)`;
  await sql`CREATE INDEX IF NOT EXISTS um_passkeys_user_idx ON um_passkeys(user_id)`;
  await sql`ALTER TABLE um_passkeys ADD COLUMN IF NOT EXISTS rp_id text`;

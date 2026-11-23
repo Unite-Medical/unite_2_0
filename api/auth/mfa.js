@@ -1,7 +1,7 @@
 import crypto from 'node:crypto';
 import {neon} from '@neondatabase/serverless';
 import {readRawBody,sendJson} from '../_lib/http.js';
-import {issueSession} from '../_lib/auth.js';
+import {issueSession,setTrustedDeviceCookie} from '../_lib/auth.js';
 import {digestToken,openMfa,verifyTotp,requiresMfa} from '../_lib/mfa.js';
 import {relyingParty,verifyPasskeySignIn} from '../_lib/passkeys.js';
 export default async function handler(req,res){
@@ -31,7 +31,7 @@ export default async function handler(req,res){
    INSERT INTO um_rows(tbl,id,data,deleted,updated_at) SELECT 'audit_log',${audit.id},${JSON.stringify(audit)}::jsonb,false,now() FROM used RETURNING id`;
    if(!results.length)return sendJson(res,409,{error:'sign_in_again'});
    const session={user_id:p.id,email:p.email,name:p.name,role:p.role,roles:[...new Set([p.role,...(p.roles||[])])],org_id:p.org_id,session_revision:Number(p.session_revision||0),mfa_verified:true,mfa_at:Math.floor(Date.now()/1000)};
-   issueSession(res,session,{remember:body.remember===true});
+   issueSession(res,session,{remember:body.remember===true});if(body.trust_device===true)setTrustedDeviceCookie(res,p);
    return sendJson(res,200,{ok:true,session,method:'passkey'});
   }
   const credentials=await sql`SELECT * FROM um_mfa_credentials WHERE user_id=${p.id}`;
@@ -52,7 +52,7 @@ export default async function handler(req,res){
   WHERE um_mfa_credentials.last_counter=${Number(cred?.last_counter??-1)} AND um_mfa_credentials.recovery_hashes=${JSON.stringify(cred?.recovery_hashes||[])}::jsonb RETURNING user_id) INSERT INTO um_rows(tbl,id,data,deleted,updated_at) SELECT 'audit_log',${audit.id},${JSON.stringify(audit)}::jsonb,false,now() FROM verified RETURNING id`;
   if(!results.length)return sendJson(res,409,{error:'sign_in_again'});
   const session={user_id:p.id,email:p.email,name:p.name,role:p.role,roles:[...new Set([p.role,...(p.roles||[])])],org_id:p.org_id,session_revision:Number(p.session_revision||0),mfa_verified:true,mfa_at:Math.floor(Date.now()/1000)};
-  issueSession(res,session,{remember:body.remember===true});
+  issueSession(res,session,{remember:body.remember===true});if(body.trust_device===true)setTrustedDeviceCookie(res,p);
   return sendJson(res,200,{ok:true,session,...(recoveryCodes.length?{recovery_codes:recoveryCodes}:{})});
  }catch{return sendJson(res,503,{error:'mfa_unavailable'});}
 }

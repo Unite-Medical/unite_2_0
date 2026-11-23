@@ -89,6 +89,39 @@ export function authorizeLiveProfile(session, profile, { roles = null } = {}) {
   return { ok: true, profile };
 }
 
+const TRUST_COOKIE = 'um_mfa_trust';
+export const TRUST_TTL_MS = 30 * 24 * 60 * 60 * 1000;
+// Signed over a prefixed body so a trust token can never verify as a session token.
+const trustSignature = (body, key) => signature(`mfa_trust.${body}`, key);
+
+function appendSetCookie(res, value) {
+  const previous = res.getHeader?.('Set-Cookie');
+  res.setHeader('Set-Cookie', [...(Array.isArray(previous) ? previous : previous ? [String(previous)] : []), value]);
+}
+
+/** Remember that this browser passed a second-factor check, for 30 days or until the profile's sessions are revoked. */
+export function setTrustedDeviceCookie(res, profile, { secret, now = Date.now() } = {}) {
+  const key = secretOrThrow(secret);
+  const body = Buffer.from(JSON.stringify({ kind: 'mfa_trust', user_id: String(profile.id), session_revision: Number(profile.session_revision || 0), exp: Math.floor((now + TRUST_TTL_MS) / 1000) })).toString('base64url');
+  const secure = process.env.NODE_ENV === 'production' ? '; Secure' : '';
+  appendSetCookie(res, `${TRUST_COOKIE}=${body}.${trustSignature(body, key)}; Path=/api/auth; HttpOnly; SameSite=Lax; Max-Age=${Math.floor(TRUST_TTL_MS / 1000)}${secure}`);
+}
+
+export function trustedDevice(req, profile, { secret, now = Date.now() } = {}) {
+  try {
+    const key = secretOrThrow(secret);
+    const [body, provided, extra] = String(parseCookies(req.headers?.cookie || '')[TRUST_COOKIE] || '').split('.');
+    if (!body || !provided || extra || !safeEqual(provided, trustSignature(body, key))) return false;
+    const payload = JSON.parse(Buffer.from(body, 'base64url').toString('utf8'));
+    return payload.kind === 'mfa_trust'
+      && payload.user_id === String(profile?.id)
+      && payload.session_revision === Number(profile?.session_revision || 0)
+      && Number.isFinite(payload.exp) && payload.exp > Math.floor(now / 1000);
+  } catch {
+    return false;
+  }
+}
+
 function parseCookies(header = '') {
   return Object.fromEntries(String(header).split(';').map((part) => {
     const index = part.indexOf('=');
