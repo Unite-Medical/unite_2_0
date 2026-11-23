@@ -131,6 +131,7 @@ const VendorPurchaseOrderReview = lazy(() => import('./pages/VendorPurchaseOrder
 const ActivateAccount = lazy(() => import('./pages/ActivateAccount.jsx').then(m=>({default:m.ActivateAccount})));
 const AdminPacking = lazy(() => import('./pages/admin/AdminPacking.jsx').then(m=>({default:m.AdminPacking})));
 const AdminWellLink = lazy(() => import('./pages/admin/AdminWellLink.jsx').then(m=>({default:m.AdminWellLink})));
+const StaffSecurity = lazy(() => import('./pages/StaffSecurity.jsx').then(m=>({default:m.StaffSecurity})));
 const StaffWork = lazy(() => import('./pages/StaffWork.jsx').then(m=>({default:m.StaffWork})));
 const AdminDocuments = lazy(() => import('./pages/admin/AdminDocuments.jsx').then(m=>({default:m.AdminDocuments})));
 const AdminDesk = lazy(() => import('./pages/admin/AdminDesk.jsx').then(m=>({default:m.AdminDesk})));
@@ -230,6 +231,7 @@ export default function App() {
           <Route path="/account/documents" element={<RequireSession roles={['customer','distributor']}><AccountDocuments /></RequireSession>} />
           <Route path="/staff/welllink" element={<RequireSession roles={['admin','sales','sales_manager','finance','warehouse_operator','warehouse_manager']}><AdminWellLink /></RequireSession>} />
           <Route path="/warehouse" element={<RequireSession roles={['admin','warehouse_manager','warehouse_operator']}><WarehouseMobile /></RequireSession>} />
+          <Route path="/work/security" element={<RequireSession roles={['admin','finance','warehouse_manager','sales_manager','sourcing_manager']}><StaffSecurity /></RequireSession>} />
           <Route path="/work" element={<RequireSession roles={['admin','sales','sales_manager','customer_service','warehouse_operator','warehouse_manager','finance','sourcing','sourcing_manager']}><StaffWork /></RequireSession>} />
           <Route path="/admin/packing" element={<RequireAdmin><AdminPacking /></RequireAdmin>} />
           <Route path="/admin/documents" element={<RequireAdmin><AdminDocuments /></RequireAdmin>} />

@@ -1,4 +1,5 @@
 import { beginMfa,requiresMfa } from '../_lib/mfa.js';
+import { relyingParty } from '../_lib/passkeys.js';
 import crypto from 'node:crypto';
 import { neon } from '@neondatabase/serverless';
 import {
@@ -208,7 +209,7 @@ export default async function handler(req, res) {
       clearThrottle(sql, descriptors.find((row) => row.scope === 'pair').id),
       releaseSuccessfulIpAttempt(sql, descriptors.find((row) => row.scope === 'ip').id),
     ]);
-    if(requiresMfa([profile.role,...(profile.roles||[])])) { clearSessionCookie(res); return sendJson(res,200,await beginMfa(sql,profile)); }
+    if(requiresMfa([profile.role,...(profile.roles||[])])) { clearSessionCookie(res); return sendJson(res,200,await beginMfa(sql,profile,{rp:relyingParty(req)})); }
     const session = safeSession(profile, await organizationFor(sql, profile));
     issueSession(res, session, {remember: remember === true});
     logEvent('auth.session', 'login_succeeded', { user_id: session.user_id, role: session.role });
