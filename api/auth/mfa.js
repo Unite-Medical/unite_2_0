@@ -30,7 +30,7 @@ export default async function handler(req,res){
    ), used AS (UPDATE um_passkeys SET counter=${Number(info.newCounter||0)},last_used_at=now() WHERE id=${passkey.id} AND user_id IN (SELECT user_id FROM consumed) AND counter=${Number(passkey.counter||0)} RETURNING user_id)
    INSERT INTO um_rows(tbl,id,data,deleted,updated_at) SELECT 'audit_log',${audit.id},${JSON.stringify(audit)}::jsonb,false,now() FROM used RETURNING id`;
    if(!results.length)return sendJson(res,409,{error:'sign_in_again'});
-   const session={user_id:p.id,email:p.email,name:p.name,role:p.role,roles:[...new Set([p.role,...(p.roles||[])])],org_id:p.org_id,session_revision:Number(p.session_revision||0),mfa_verified:true};
+   const session={user_id:p.id,email:p.email,name:p.name,role:p.role,roles:[...new Set([p.role,...(p.roles||[])])],org_id:p.org_id,session_revision:Number(p.session_revision||0),mfa_verified:true,mfa_at:Math.floor(Date.now()/1000)};
    issueSession(res,session,{remember:body.remember===true});
    return sendJson(res,200,{ok:true,session,method:'passkey'});
   }
@@ -51,7 +51,7 @@ export default async function handler(req,res){
   ON CONFLICT(user_id) DO UPDATE SET last_counter=EXCLUDED.last_counter,recovery_hashes=EXCLUDED.recovery_hashes
   WHERE um_mfa_credentials.last_counter=${Number(cred?.last_counter??-1)} AND um_mfa_credentials.recovery_hashes=${JSON.stringify(cred?.recovery_hashes||[])}::jsonb RETURNING user_id) INSERT INTO um_rows(tbl,id,data,deleted,updated_at) SELECT 'audit_log',${audit.id},${JSON.stringify(audit)}::jsonb,false,now() FROM verified RETURNING id`;
   if(!results.length)return sendJson(res,409,{error:'sign_in_again'});
-  const session={user_id:p.id,email:p.email,name:p.name,role:p.role,roles:[...new Set([p.role,...(p.roles||[])])],org_id:p.org_id,session_revision:Number(p.session_revision||0),mfa_verified:true};
+  const session={user_id:p.id,email:p.email,name:p.name,role:p.role,roles:[...new Set([p.role,...(p.roles||[])])],org_id:p.org_id,session_revision:Number(p.session_revision||0),mfa_verified:true,mfa_at:Math.floor(Date.now()/1000)};
   issueSession(res,session,{remember:body.remember===true});
   return sendJson(res,200,{ok:true,session,...(recoveryCodes.length?{recovery_codes:recoveryCodes}:{})});
  }catch{return sendJson(res,503,{error:'mfa_unavailable'});}

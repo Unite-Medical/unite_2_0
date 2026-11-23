@@ -31,6 +31,7 @@ export function createSessionToken(session, { secret, now = Date.now(), ttlMs = 
     session_revision: Number(session.session_revision || 0),
     mfa_verified: session.mfa_verified === true,
     ...(session.remember_until ? { remember_until: session.remember_until } : {}),
+    ...(session.mfa_at ? { mfa_at: Number(session.mfa_at) } : {}),
     iat: Math.floor(now / 1000),
     exp: Math.floor((now + ttlMs) / 1000),
   };

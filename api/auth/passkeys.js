@@ -4,6 +4,7 @@ import {authorizeLiveRequest} from '../_lib/auth.js';
 import {readRawBody,sendJson} from '../_lib/http.js';
 import {requiresMfa} from '../_lib/mfa.js';
 import {defaultPasskeyName,ensurePasskeySchema,listPasskeys,passkeyRegistrationOptions,publicPasskey,relyingParty,verifyPasskeyRegistration} from '../_lib/passkeys.js';
+const ENROLL_WINDOW_S=15*60;
 async function audit(sql,kind,actor){const row={id:crypto.randomUUID(),kind,actor_id:actor,created_at:new Date().toISOString()};await sql`INSERT INTO um_rows(tbl,id,data,deleted,updated_at) VALUES('audit_log',${row.id},${JSON.stringify(row)}::jsonb,false,now())`;}
 export default async function handler(req,res){
  res.setHeader('Cache-Control','no-store, private');
@@ -28,6 +29,8 @@ export default async function handler(req,res){
    return sendJson(res,200,{ok:true});
   }
   const rp=relyingParty(req);
+  // Adding a passkey needs a recent second-factor check, so a stolen session cookie can't plant one.
+  if(!(Number(live.session.mfa_at)>Date.now()/1000-ENROLL_WINDOW_S))return sendJson(res,403,{error:'sign_in_again_to_add_passkey'});
   if(body.action==='options'){
    const options=await passkeyRegistrationOptions(rp,profile,await listPasskeys(sql,userId));
    await sql`INSERT INTO um_passkey_challenges(user_id,challenge,expires_at) VALUES(${userId},${options.challenge},now()+interval '5 minutes') ON CONFLICT(user_id) DO UPDATE SET challenge=EXCLUDED.challenge,expires_at=EXCLUDED.expires_at`;
@@ -40,7 +43,7 @@ export default async function handler(req,res){
    try{credential=await verifyPasskeyRegistration({rp,response:body.response,expectedChallenge:challenges[0].challenge});}catch{credential=null;}
    if(!credential)return sendJson(res,400,{error:'passkey_not_verified'});
    const name=String(body.name||'').trim().slice(0,60)||defaultPasskeyName(req.headers['user-agent']);
-   const saved=await sql`INSERT INTO um_passkeys(id,user_id,public_key,counter,transports,device_type,backed_up,name) VALUES(${credential.id},${userId},${credential.public_key},${credential.counter},${JSON.stringify(credential.transports)}::jsonb,${credential.device_type},${credential.backed_up},${name}) ON CONFLICT(id) DO NOTHING RETURNING id,name,created_at,last_used_at`;
+   const saved=await sql`INSERT INTO um_passkeys(id,user_id,rp_id,public_key,counter,transports,device_type,backed_up,name) VALUES(${credential.id},${userId},${rp.rpID},${credential.public_key},${credential.counter},${JSON.stringify(credential.transports)}::jsonb,${credential.device_type},${credential.backed_up},${name}) ON CONFLICT(id) DO NOTHING RETURNING id,name,created_at,last_used_at`;
    if(!saved.length)return sendJson(res,409,{error:'passkey_already_registered'});
    await audit(sql,'auth.passkey_added',userId);
    return sendJson(res,200,{ok:true,passkey:publicPasskey(saved[0])});
