@@ -81,6 +81,10 @@ function client() {
   return neon(url);
 }
 
+// Fewer round trips on sign-in; the byte cap keeps each response under Vercel's 4.5 MB limit.
+const SYNC_PAGE_ROWS = 2500;
+const SYNC_PAGE_BYTES = 3_000_000;
+
 async function ensureSchema(sql) {
   if (schemaReady) return;
   await sql`
@@ -134,8 +138,8 @@ export default async function handler(req, res) {
         AND (${Boolean(since)} OR deleted=false)
         AND updated_at>${since?since.toISOString():'1970-01-01T00:00:00Z'}::timestamptz
         AND (updated_at,tbl,id)>(${cursor?.at||'1970-01-01T00:00:00Z'}::timestamptz,${cursor?.table||''},${cursor?.id||''})
-        ORDER BY updated_at,tbl,id LIMIT 501`;
-      return sendJson(res,200,projectSyncPage(rows,{since,serviceAccess,cutoff}));
+        ORDER BY updated_at,tbl,id LIMIT ${SYNC_PAGE_ROWS+1}`;
+      return sendJson(res,200,projectSyncPage(rows,{since,serviceAccess,cutoff,pageSize:SYNC_PAGE_ROWS,maxBytes:SYNC_PAGE_BYTES}));
     }
 
     if (req.method === 'POST') {

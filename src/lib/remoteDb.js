@@ -39,6 +39,7 @@ const stateRef = {
   pullTimer: null,
   unsubscribe: null,
   lastError: null,
+  userId: null,
 };
 
 function headers() {
@@ -57,7 +58,15 @@ function authorizationLost(status) {
   return true;
 }
 
-async function serverHasPostgres() {
+let serverStatus = null;
+/** Start the backend check early (in parallel with the session check) and reuse the answer. */
+export function warmRemoteDb() {
+  serverStatus ||= checkServerHasPostgres();
+  return serverStatus;
+}
+const serverHasPostgres = warmRemoteDb;
+
+async function checkServerHasPostgres() {
   try {
     const res = await fetch(`${API_BASE}/health`);
     if (!res.ok) return false;
@@ -82,12 +91,13 @@ async function pull({ full = false } = {}) {
   }
   const json = await res.json();
   if (json.latest) latest = json.latest;
-  if (json.row_count > 0) db.applyRemoteSnapshot(json.tables);
+  if (json.row_count > 0) db.applyRemoteSnapshot(json.tables, { save: false });
   total+=json.row_count||0;
   cursor=json.next_cursor||null;
   if(cursor){if(seen.has(cursor)||seen.size>=1000)throw new Error('Database pagination did not complete');seen.add(cursor);}
   }while(cursor);
   if(latest)stateRef.latest=latest;
+  if(stateRef.enabled&&stateRef.userId)db.commitRemote({user_id:stateRef.userId,latest:stateRef.latest});
   return total;
 }
 
@@ -140,13 +150,22 @@ export async function startRemoteDb({ session = null } = {}) {
   if (!ready) return remoteDbStatus();
 
   stateRef.enabled = true;
-  db.clear();
-  try {
-    await pull({ full: true });
+  stateRef.userId = String(session.user_id || '');
+  const cached = db.remoteCursor();
+  if (stateRef.userId && cached?.user_id === stateRef.userId && cached.latest) {
+    // Reload with this user's saved copy: show it now and fetch only what changed since.
+    stateRef.latest = cached.latest;
     stateRef.hydrated = true;
-  } catch (err) {
-    stateRef.lastError = err.message;
-    warn('remoteDb', `hydration failed: ${err.message}`);
+    pull().catch((err) => { stateRef.lastError = err.message; });
+  } else {
+    db.clear();
+    try {
+      await pull({ full: true });
+      stateRef.hydrated = true;
+    } catch (err) {
+      stateRef.lastError = err.message;
+      warn('remoteDb', `hydration failed: ${err.message}`);
+    }
   }
 
   if (!stateRef.enabled) return remoteDbStatus();
@@ -164,6 +183,7 @@ export function stopRemoteDb({ purge = false } = {}) {
   clearInterval(stateRef.pullTimer);
   stateRef.enabled = false;
   stateRef.hydrated = false;
+  stateRef.userId = null;
   if (purge) {
     stateRef.queue.clear();
     stateRef.latest = null;
