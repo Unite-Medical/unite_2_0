@@ -1,11 +1,14 @@
+import { ArrowLeft, ChevronLeft, ChevronRight, ExternalLink, ImagePlus, Plus, Star, Trash2 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
-import { D } from '../../tokens.js';
 import { AdminShell } from '../../components/layout/AdminShell.jsx';
-import { Icon } from '../../components/shared/Icon.jsx';
+import { Badge } from '../../components/ui/badge.jsx';
+import { Button, ButtonLink } from '../../components/ui/button.jsx';
+import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card.jsx';
+import { useSEO } from '../../lib/seo.js';
+import '../../styles/ui.css';
 import { db } from '../../lib/db.js';
 import { fmt } from '../../lib/format.js';
-import { useViewport } from '../../lib/viewport.js';
 import { M6_CATEGORIES } from '../../lib/taxonomy.js';
 
 const CATEGORIES = ['Orthotics', 'Diagnostics', 'PPE', 'Surgical', 'Supplements', 'Wound Care', 'Pharmaceuticals', 'Equipment'];
@@ -63,12 +66,13 @@ export function AdminProductEdit() {
   const { sku: rawSku } = useParams();
   const sku = rawSku === 'new' ? null : decodeURIComponent(rawSku || '');
   const navigate = useNavigate();
-  const { isMobile } = useViewport();
-  const padX = isMobile ? 18 : 32;
   const existing = sku ? db.useRow('products', sku) : null;
   const [form, setForm] = useState(() => existing ? { ...existing } : emptyProduct());
   const [dirty, setDirty] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [error, setError] = useState('');
+  const [newImage, setNewImage] = useState('');
+  useSEO({ title: `${existing ? existing.name || existing.sku : 'New product'} · Products`, noindex: true });
 
   useEffect(() => {
     if (existing && !dirty) {
@@ -80,19 +84,14 @@ export function AdminProductEdit() {
   function patch(p) {
     setDirty(true);
     setSaved(false);
+    setError('');
     setForm((f) => ({ ...f, ...p }));
   }
 
   function save() {
-    if (!form.sku?.trim()) {
-      window.alert('SKU is required.');
-      return;
-    }
+    if (!form.sku?.trim()) return setError('Add a SKU before saving.');
     // M6 taxonomy is a required classification on every new product (PRD-28 §5.6).
-    if (!existing && !form.m6_category) {
-      window.alert('Product category (M6 taxonomy) is required on new products.');
-      return;
-    }
+    if (!existing && !form.m6_category) return setError('Choose a product category before creating the product.');
     const payload = {
       ...form,
       id: existing?.id || form.sku,
@@ -111,48 +110,49 @@ export function AdminProductEdit() {
     setDirty(false);
     setSaved(true);
     setTimeout(() => setSaved(false), 1800);
+    if (!existing) navigate(`/admin/products/edit/${encodeURIComponent(payload.sku)}`, { replace: true, state: location.state });
   }
 
   function discard() {
-    if (!dirty) {
-      navigate(back);
-      return;
-    }
-    if (window.confirm('Discard unsaved changes?')) {
-      navigate(back);
-    }
+    if (!dirty) return navigate(back);
+    if (window.confirm('Discard unsaved changes?')) navigate(back);
   }
 
+  function revert() {
+    setForm(existing ? { ...existing } : emptyProduct());
+    setDirty(false);
+    setError('');
+  }
+
+  function setImages(list) {
+    patch({ images: list, hero_image: list[0] || '' });
+  }
   function moveImage(idx, dir) {
     const list = [...(form.images || [])];
     const target = idx + dir;
     if (target < 0 || target >= list.length) return;
     [list[idx], list[target]] = [list[target], list[idx]];
-    patch({ images: list, hero_image: list[0] || '' });
+    setImages(list);
   }
-
-  function removeImage(idx) {
-    const list = (form.images || []).filter((_, i) => i !== idx);
-    patch({ images: list, hero_image: list[0] || '' });
+  function makeMain(idx) {
+    const list = [...(form.images || [])];
+    setImages([list[idx], ...list.filter((_, i) => i !== idx)]);
   }
-
-  function addImageUrl() {
-    const url = window.prompt('Image URL or local path (e.g. /images/products/foo/foo_01.jpg)');
+  function addImage(e) {
+    e.preventDefault();
+    const url = newImage.trim();
     if (!url) return;
-    const list = [...(form.images || []), url.trim()];
-    patch({ images: list, hero_image: form.hero_image || list[0] });
+    setImages([...(form.images || []), url]);
+    setNewImage('');
   }
-
   function setVariant(idx, p) {
     const list = [...(form.variants || [])];
     list[idx] = { ...list[idx], ...p };
     patch({ variants: list });
   }
-
   function removeVariant(idx) {
     patch({ variants: (form.variants || []).filter((_, i) => i !== idx) });
   }
-
   function addVariant() {
     patch({
       variants: [
@@ -161,305 +161,283 @@ export function AdminProductEdit() {
       ],
     });
   }
-
   const tagsString = useMemo(() => (form.tags || []).join(', '), [form.tags]);
   const collectionsString = useMemo(() => (form.collections || []).join(', '), [form.collections]);
+  const price = Number(form.price) || 0;
+  const cost = Number(form.cogs) || 0;
+  const profit = price > 0 && cost > 0 ? price - cost : null;
 
   if (sku && !existing) {
     return (
       <AdminShell active="products" unsavedChanges={dirty}>
-        <div style={{ padding: 40, textAlign: 'center' }}>
-          <div style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.4, color: D.terra, marginBottom: 14 }}>404 · NOT FOUND</div>
-          <h1 style={{ fontFamily: D.display, fontSize: 32, letterSpacing: -0.6 }}>Product {sku} not found.</h1>
-          <Link to={back} style={{ display: 'inline-block', marginTop: 16, color: D.plum }}>← Back to products</Link>
-        </div>
+        <main id="main" className="ui-root mx-auto w-full max-w-[1200px] px-4 py-10 font-sans text-sm text-ink md:px-8">
+          <Card><CardContent className="py-10 text-center">
+            <h1 className="m-0 font-display text-2xl font-semibold">We couldn’t find product {sku}.</h1>
+            <p className="mt-2 text-ink-2">It may have been renamed or removed from the catalog.</p>
+            <ButtonLink to={back} className="mt-4">Back to {back === '/admin/inventory' ? 'Inventory' : 'Products'}</ButtonLink>
+          </CardContent></Card>
+        </main>
       </AdminShell>
     );
   }
-
+  const images = form.images || [];
   return (
     <AdminShell active="products" unsavedChanges={dirty}>
-      <div style={{ padding: `${isMobile ? 24 : 32}px ${padX}px ${isMobile ? 16 : 20}px`, borderBottom: `1px solid ${D.line}`, display: 'flex', justifyContent: 'space-between', alignItems: isMobile ? 'flex-start' : 'center', gap: 16, flexDirection: isMobile ? 'column' : 'row', background: D.paperAlt }}>
-        <div>
-          <Link to={back} style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1.2, color: D.plum, textDecoration: 'none' }}>{back === '/admin/inventory' ? '← INVENTORY' : '← PRODUCTS'}</Link>
-          <h1 style={{ fontFamily: D.display, fontSize: 'clamp(28px, 4vw, 40px)', fontWeight: 400, letterSpacing: -0.9, lineHeight: 1.05, margin: '8px 0 0' }}>
-            {existing ? form.name || form.sku : 'New product'}
-          </h1>
-          <div style={{ fontFamily: D.mono, fontSize: 11, color: D.ink3, marginTop: 4 }}>
-            {existing ? `${existing.sku} · ${existing.product_type}` : 'Add a new SKU to the catalog'}
+      <main id="main" className="ui-root mx-auto w-full max-w-[1200px] px-4 pb-16 pt-4 font-sans text-sm text-ink md:px-8">
+        {dirty && (
+          <div className="sticky top-2 z-20 mb-4 flex flex-wrap items-center justify-between gap-3 rounded-xl bg-ink-deep px-4 py-3 text-white shadow-xs" role="status">
+            <span className="font-semibold">Unsaved changes</span>
+            <div className="flex gap-2">
+              <Button variant="secondary" onClick={revert}>Discard</Button>
+              <Button variant="primary" onClick={save}>{existing ? 'Save' : 'Create product'}</Button>
+            </div>
           </div>
-        </div>
-        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
-          {saved && (
-            <span style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1, color: '#3b8760' }}>
-              <Icon.check /> SAVED
-            </span>
-          )}
-          {dirty && !saved && (
-            <span style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 1, color: D.terra }}>Unsaved</span>
-          )}
-          {existing && (
-            <Link to={`/products/${encodeURIComponent(existing.sku)}`} target="_blank" rel="noreferrer" style={ghostBtn}>
-              View live →
-            </Link>
-          )}
-          <button onClick={discard} style={ghostBtn}>{dirty ? 'Discard' : 'Close'}</button>
-
-          <button onClick={save} disabled={!dirty && !!existing} style={{ ...primaryBtn, opacity: !dirty && !!existing ? 0.5 : 1, cursor: !dirty && !!existing ? 'default' : 'pointer' }}>
-            {existing ? 'Save changes' : 'Create product'}
-          </button>
-        </div>
-      </div>
-
-      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.4fr 1fr', gap: 24, padding: `${isMobile ? 24 : 32}px ${padX}px ${isMobile ? 48 : 80}px` }}>
-        <div style={{ display: 'grid', gap: 18 }}>
-          <Card title="Basics">
-            <Field label="Title">
-              <input value={form.name || ''} onChange={(e) => patch({ name: e.target.value })} style={inputStyle} />
-            </Field>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-              <Field label="SKU">
-                <input readOnly={Boolean(existing)} title={existing?'SKU is preserved so inventory stays linked':undefined} value={form.sku || ''} onChange={(e) => patch({ sku: e.target.value, id: e.target.value })} style={inputStyle} />
-              </Field>
-              <Field label="URL handle">
-                <input value={form.handle || ''} onChange={(e) => patch({ handle: e.target.value })} placeholder="auto-from-title" style={inputStyle} />
-              </Field>
+        )}
+        <header className="mb-5 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+          <div className="min-w-0">
+            <button type="button" onClick={discard} className="mb-2 inline-flex min-h-11 items-center gap-1.5 text-ink-2 hover:text-ink md:min-h-0">
+              <ArrowLeft size={16} aria-hidden="true" /> {back === '/admin/inventory' ? 'Inventory' : 'Products'}
+            </button>
+            <div className="flex flex-wrap items-center gap-2">
+              <h1 className="m-0 font-display text-2xl font-semibold leading-tight md:text-[28px]">{existing ? form.name || form.sku : 'New product'}</h1>
+              {existing && <Badge tone={form.available ? 'good' : 'neutral'} dot>{form.available ? 'Active' : 'Draft'}</Badge>}
+              {saved && <Badge tone="good">Saved</Badge>}
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12 }}>
-              <Field label="Vendor">
-                <input value={form.vendor || ''} onChange={(e) => patch({ vendor: e.target.value })} style={inputStyle} />
-              </Field>
-              <Field label="Category">
-                <select value={form.category || ''} onChange={(e) => patch({ category: e.target.value })} style={inputStyle}>
-                  <option value="">Not specified</option>{CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
-                </select>
-              </Field>
-              <Field label="Tier">
-                <select value={form.tier || ''} onChange={(e) => patch({ tier: e.target.value })} style={inputStyle}>
-                  <option value="">Not specified</option>{TIERS.map((t) => <option key={t} value={t}>{t}</option>)}
-                </select>
-              </Field>
-            </div>
-            <Field label="Product category (M6 taxonomy) — required">
-              <select value={form.m6_category || ''} onChange={(e) => patch({ m6_category: e.target.value })} style={inputStyle}>
-                <option value="" disabled>Select a category…</option>
-                {M6_CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
-              </select>
-            </Field>
-            <Field label="Summary (1-line for cards)">
-              <input value={form.summary || ''} onChange={(e) => patch({ summary: e.target.value })} style={inputStyle} />
-            </Field>
-            <Field label="Description (full)">
-              <textarea
-                value={form.description || ''}
-                onChange={(e) => patch({ description: e.target.value })}
-                rows={9}
-                style={{ ...inputStyle, resize: 'vertical', fontFamily: D.sans, lineHeight: 1.5 }}
-                placeholder="Long-form product description (manufacturer copy, key features, billing, etc.)"
-              />
-            </Field>
-          </Card>
-
-          <Card title="Pricing & inventory">
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12 }}>
-              <Field label="Price"><input type="number" step="0.01" value={form.price ?? 0} onChange={(e) => patch({ price: e.target.value })} style={inputStyle} /></Field>
-              <Field label="Price min"><input type="number" step="0.01" value={form.price_min ?? 0} onChange={(e) => patch({ price_min: e.target.value })} style={inputStyle} /></Field>
-              <Field label="Price max"><input type="number" step="0.01" value={form.price_max ?? 0} onChange={(e) => patch({ price_max: e.target.value })} style={inputStyle} /></Field>
-              <Field label="COGS"><input type="number" step="0.01" value={form.cogs ?? 0} onChange={(e) => patch({ cogs: e.target.value })} style={inputStyle} /></Field>
-              <Field label="MOQ"><input type="number" value={form.moq ?? 1} onChange={(e) => patch({ moq: e.target.value })} style={inputStyle} /></Field>
-              <Field label="Pack size"><input value={form.pack_size || ''} onChange={(e) => patch({ pack_size: e.target.value })} style={inputStyle} /></Field>
-              <Field label="HCPCS"><input value={form.hcpcs || ''} onChange={(e) => patch({ hcpcs: e.target.value })} style={inputStyle} /></Field>
-              <Field label="Country of origin">
-                <select value={form.country_of_origin || ''} onChange={(e) => patch({ country_of_origin: e.target.value })} style={inputStyle}>
-                  <option value="">Not specified</option>{COUNTRIES.map((c) => <option key={c} value={c}>{c}</option>)}
-                </select>
-              </Field>
-            </div>
-          </Card>
-
-          <Card
-            title={`Variants · ${form.variants?.length || 0}`}
-            action={<button onClick={addVariant} style={ghostBtn}>+ Add variant</button>}
-          >
-            {(!form.variants || form.variants.length === 0) && (
-              <div style={{ padding: '14px 0', color: D.ink3, fontSize: 13 }}>
-                No variants. Single-SKU products use the price above.
-              </div>
+            <p className="m-0 mt-1 text-ink-2">{existing ? [existing.sku, existing.product_type].filter(Boolean).join(' · ') : 'Add a new product to the catalog'}</p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {existing && (
+              <ButtonLink to={`/products/${encodeURIComponent(existing.sku)}`} target="_blank" rel="noreferrer">
+                <ExternalLink size={16} aria-hidden="true" /> View on store
+              </ButtonLink>
             )}
-            {form.variants?.length > 0 && (
-              <div className="um-scroll-x">
-                <table style={{ width: '100%', minWidth: 700, borderCollapse: 'collapse', fontSize: 13 }}>
-                  <thead>
-                    <tr style={{ fontSize: 12, fontWeight: 600, color: D.ink2 }}>
-                      <th style={thStyle}>Title</th>
-                      <th style={thStyle}>SKU</th>
-                      <th style={thStyle}>Price</th>
-                      <th style={thStyle}>Available</th>
-                      <th style={thStyle}></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {form.variants.map((v, i) => (
-                      <tr key={v.variant_id || i} style={{ borderTop: `1px solid ${D.line}` }}>
-                        <td style={tdSmall}><input value={v.title || ''} onChange={(e) => setVariant(i, { title: e.target.value })} style={smallInput} /></td>
-                        <td style={tdSmall}><input value={v.sku || ''} onChange={(e) => setVariant(i, { sku: e.target.value })} style={{ ...smallInput, fontFamily: D.mono }} /></td>
-                        <td style={tdSmall}><input type="number" step="0.01" value={v.price ?? 0} onChange={(e) => setVariant(i, { price: parseFloat(e.target.value) || 0 })} style={{ ...smallInput, textAlign: 'right', fontFamily: D.mono }} /></td>
-                        <td style={tdSmall}>
-                          <label style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12, color: D.ink2 }}>
-                            <input type="checkbox" checked={!!v.available} onChange={(e) => setVariant(i, { available: e.target.checked })} style={{ accentColor: D.plum }} />
-                            {v.available ? 'In stock' : 'Out of stock'}
-                          </label>
-                        </td>
-                        <td style={tdSmall}>
-                          <button onClick={() => removeVariant(i)} style={{ ...textBtn, color: D.terra }}>Remove</button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </Card>
+            <Button variant="primary" onClick={save} disabled={!dirty && !!existing}>{existing ? 'Save' : 'Create product'}</Button>
+          </div>
+        </header>
+        {error && <p role="alert" className="mb-4 rounded-lg border border-warn-soft bg-[#f8ede4] px-4 py-3 text-warn">{error}</p>}
 
-          <Card title="Tags & collections">
-            <Field label="Tags (comma-separated)">
-              <input
-                value={tagsString}
-                onChange={(e) => patch({ tags: e.target.value.split(',').map((s) => s.trim()).filter(Boolean) })}
-                placeholder="ortho, recovery, knee brace"
-                style={inputStyle}
-              />
-            </Field>
-            <Field label="Collections (comma-separated)">
-              <input
-                value={collectionsString}
-                onChange={(e) => patch({ collections: e.target.value.split(',').map((s) => s.trim()).filter(Boolean) })}
-                placeholder="Knee Braces, Orthopedic Bracing"
-                style={inputStyle}
-              />
-            </Field>
-          </Card>
-        </div>
+        <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_340px]">
+          <div className="grid content-start gap-5">
+            <Section title="Title and description">
+              <Field label="Title"><input value={form.name || ''} onChange={(e) => patch({ name: e.target.value })} className={inputCls} /></Field>
+              <Field label="Short summary" hint="One line, shown on product cards.">
+                <input value={form.summary || ''} onChange={(e) => patch({ summary: e.target.value })} className={inputCls} />
+              </Field>
+              <Field label="Description">
+                <textarea value={form.description || ''} onChange={(e) => patch({ description: e.target.value })} rows={8} className={`${inputCls} h-auto py-2.5 leading-relaxed`} placeholder="Manufacturer copy, key features, billing notes" />
+              </Field>
+            </Section>
 
-        <div style={{ display: 'grid', gap: 18, alignContent: 'start' }}>
-          <Card title="Hero image">
-            <div style={{ borderRadius: 10, overflow: 'hidden', border: `1px solid ${D.line}`, background: D.paperAlt, aspectRatio: '4 / 3', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              {form.hero_image ? (
-                <img src={form.hero_image} alt={form.name || ''} style={{ width: '100%', height: '100%', objectFit: 'contain', background: '#fff' }} />
+            <Section title={`Media${images.length ? ` (${images.length})` : ''}`}>
+              {images.length === 0 ? (
+                <div className="flex min-h-40 flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-line bg-paper text-ink-2">
+                  <ImagePlus size={22} aria-hidden="true" /> No images yet. Add an image link below.
+                </div>
               ) : (
-                <span style={{ color: D.ink3, fontFamily: D.mono, fontSize: 11, letterSpacing: 1 }}>No image</span>
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                  {images.map((src, i) => (
+                    <figure key={`${src}-${i}`} className={`m-0 overflow-hidden rounded-lg border bg-white ${i === 0 ? 'col-span-2 row-span-2 border-brand' : 'border-line'}`}>
+                      <div className="relative">
+                        <img src={src} alt="" className={`block w-full object-contain ${i === 0 ? 'h-72' : 'h-32'}`} />
+                        {i === 0 && <span className="absolute left-2 top-2"><Badge tone="good">Main image</Badge></span>}
+                      </div>
+                      <figcaption className="flex items-center justify-between gap-1 border-t border-line bg-card px-1.5 py-1">
+                        <span className="flex">
+                          <Button variant="ghost" size="icon" aria-label="Move image earlier" disabled={i === 0} onClick={() => moveImage(i, -1)}><ChevronLeft size={16} /></Button>
+                          <Button variant="ghost" size="icon" aria-label="Move image later" disabled={i === images.length - 1} onClick={() => moveImage(i, 1)}><ChevronRight size={16} /></Button>
+                        </span>
+                        <span className="flex">
+                          {i > 0 && <Button variant="ghost" size="icon" aria-label="Make main image" onClick={() => makeMain(i)}><Star size={16} /></Button>}
+                          <Button variant="ghost" size="icon" aria-label="Remove image" onClick={() => setImages(images.filter((_, j) => j !== i))}><Trash2 size={16} /></Button>
+                        </span>
+                      </figcaption>
+                    </figure>
+                  ))}
+                </div>
               )}
-            </div>
-          </Card>
+              <form onSubmit={addImage} className="flex gap-2">
+                <input value={newImage} onChange={(e) => setNewImage(e.target.value)} placeholder="Image link, e.g. https://… or /images/products/…" aria-label="Image link" className={inputCls} />
+                <Button type="submit" disabled={!newImage.trim()}><Plus size={16} aria-hidden="true" /> Add</Button>
+              </form>
+            </Section>
 
-          <Card
-            title={`Gallery · ${form.images?.length || 0}`}
-            action={<button onClick={addImageUrl} style={ghostBtn}>+ Add URL</button>}
-          >
-            {(!form.images || form.images.length === 0) && (
-              <div style={{ color: D.ink3, fontSize: 13, padding: '8px 0' }}>No images yet.</div>
-            )}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 8 }}>
-              {(form.images || []).map((src, i) => (
-                <div key={`${src}-${i}`} style={{ position: 'relative', border: `1px solid ${D.line}`, borderRadius: 8, overflow: 'hidden', background: D.paperAlt }}>
-                  <img src={src} alt="" style={{ width: '100%', height: 110, objectFit: 'cover', background: '#fff' }} />
-                  <div style={{ position: 'absolute', inset: 'auto 4px 4px 4px', display: 'flex', justifyContent: 'space-between', gap: 4 }}>
-                    <button onClick={() => moveImage(i, -1)} disabled={i === 0} style={imgPillBtn}>←</button>
-                    <button onClick={() => moveImage(i, +1)} disabled={i === (form.images.length - 1)} style={imgPillBtn}>→</button>
-                    <button onClick={() => removeImage(i)} style={{ ...imgPillBtn, color: D.terra }}>✕</button>
-                  </div>
-                  {i === 0 && (
-                    <div style={{ position: 'absolute', top: 4, left: 4, background: D.plum, color: D.paper, fontSize: 12, fontWeight: 600, padding: '2px 8px', borderRadius: 4 }}>Hero</div>
-                  )}
+            <Section title="Pricing">
+              <div className="grid gap-3 sm:grid-cols-2">
+                <Field label="Price"><Money value={form.price} onChange={(v) => patch({ price: v })} /></Field>
+                <Field label="Cost per item" hint="Customers won’t see this."><Money value={form.cogs} onChange={(v) => patch({ cogs: v })} /></Field>
+                <Field label="Lowest price"><Money value={form.price_min} onChange={(v) => patch({ price_min: v })} /></Field>
+                <Field label="Highest price"><Money value={form.price_max} onChange={(v) => patch({ price_max: v })} /></Field>
+              </div>
+              <div className="grid grid-cols-2 gap-3 rounded-lg bg-paper px-4 py-3">
+                <div><div className="text-ink-2">Profit</div><div className="font-display text-lg font-semibold">{profit == null ? '—' : fmt.money(profit)}</div></div>
+                <div><div className="text-ink-2">Margin</div><div className={`font-display text-lg font-semibold ${profit != null && profit < 0 ? 'text-warn' : ''}`}>{profit == null ? '—' : `${Math.round((profit / price) * 100)}%`}</div></div>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <Field label="Minimum order quantity"><input type="number" min="1" value={form.moq ?? 1} onChange={(e) => patch({ moq: e.target.value })} className={inputCls} /></Field>
+                <Field label="Pack size"><input value={form.pack_size || ''} onChange={(e) => patch({ pack_size: e.target.value })} placeholder="e.g. 100/box" className={inputCls} /></Field>
+              </div>
+            </Section>
+
+            <Section title={`Variants${form.variants?.length ? ` (${form.variants.length})` : ''}`} action={<Button size="sm" onClick={addVariant}><Plus size={16} aria-hidden="true" /> Add variant</Button>}>
+              {!form.variants?.length ? (
+                <p className="m-0 text-ink-2">No variants. This product sells at the price above.</p>
+              ) : (
+                <div className="grid gap-3">
+                  {form.variants.map((v, i) => (
+                    <div key={v.variant_id || i} className="grid gap-3 rounded-lg border border-line p-3 sm:grid-cols-[minmax(0,2fr)_minmax(0,1.3fr)_120px_auto] sm:items-end">
+                      <Field label="Option name"><input value={v.title || ''} onChange={(e) => setVariant(i, { title: e.target.value })} className={inputCls} /></Field>
+                      <Field label="SKU"><input value={v.sku || ''} onChange={(e) => setVariant(i, { sku: e.target.value })} className={`${inputCls} font-mono`} /></Field>
+                      <Field label="Price"><Money value={v.price} onChange={(val) => setVariant(i, { price: parseFloat(val) || 0 })} /></Field>
+                      <div className="flex items-center justify-between gap-2 sm:justify-end">
+                        <label className="inline-flex min-h-11 cursor-pointer items-center gap-2 text-ink-2">
+                          <input type="checkbox" className="size-5 accent-[#1d5c4d]" checked={!!v.available} onChange={(e) => setVariant(i, { available: e.target.checked })} /> In stock
+                        </label>
+                        <Button variant="ghost" size="icon" aria-label={`Remove ${v.title || 'variant'}`} onClick={() => removeVariant(i)}><Trash2 size={16} /></Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </Section>
+          </div>
+
+          <div className="grid content-start gap-5">
+            <Section title="Status">
+              <select value={form.available ? 'active' : 'draft'} onChange={(e) => patch({ available: e.target.value === 'active' })} className={inputCls} aria-label="Product status">
+                <option value="active">Active: customers can buy it</option>
+                <option value="draft">Draft: hidden from purchase</option>
+              </select>
+            </Section>
+
+            <Section title="Organization">
+              <Field label={existing ? 'Product category' : 'Product category (required)'}>
+                <select value={form.m6_category || ''} onChange={(e) => patch({ m6_category: e.target.value })} className={inputCls}>
+                  <option value="" disabled>Choose a category…</option>
+                  {M6_CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+                </select>
+              </Field>
+              <Field label="Vendor"><input value={form.vendor || ''} onChange={(e) => patch({ vendor: e.target.value })} className={inputCls} /></Field>
+              <div className="grid grid-cols-2 gap-3">
+                <Field label="Type">
+                  <select value={form.category || ''} onChange={(e) => patch({ category: e.target.value })} className={inputCls}>
+                    <option value="">Not set</option>{CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+                  </select>
+                </Field>
+                <Field label="Tier">
+                  <select value={form.tier || ''} onChange={(e) => patch({ tier: e.target.value })} className={inputCls}>
+                    <option value="">Not set</option>{TIERS.map((t) => <option key={t} value={t}>{t}</option>)}
+                  </select>
+                </Field>
+              </div>
+              <Field label="Tags" hint="Separate with commas.">
+                <input value={tagsString} onChange={(e) => patch({ tags: e.target.value.split(',').map((s) => s.trim()).filter(Boolean) })} placeholder="ortho, recovery, knee brace" className={inputCls} />
+              </Field>
+              <Field label="Collections" hint="Separate with commas.">
+                <input value={collectionsString} onChange={(e) => patch({ collections: e.target.value.split(',').map((s) => s.trim()).filter(Boolean) })} placeholder="Knee Braces, Orthopedic Bracing" className={inputCls} />
+              </Field>
+            </Section>
+
+            <Section title="Identifiers">
+              <Field label="SKU" hint={existing ? 'Can’t be changed, so stock stays linked.' : undefined}>
+                <input readOnly={Boolean(existing)} value={form.sku || ''} onChange={(e) => patch({ sku: e.target.value, id: e.target.value })} className={`${inputCls} font-mono ${existing ? 'bg-paper text-ink-2' : ''}`} />
+              </Field>
+              <Field label="Web address" hint="Leave blank to use the title."><input value={form.handle || ''} onChange={(e) => patch({ handle: e.target.value })} className={inputCls} /></Field>
+              <div className="grid grid-cols-2 gap-3">
+                <Field label="HCPCS code"><input value={form.hcpcs || ''} onChange={(e) => patch({ hcpcs: e.target.value })} className={inputCls} /></Field>
+                <Field label="Made in">
+                  <select value={form.country_of_origin || ''} onChange={(e) => patch({ country_of_origin: e.target.value })} className={inputCls}>
+                    <option value="">Not set</option>{COUNTRIES.map((c) => <option key={c} value={c}>{c}</option>)}
+                  </select>
+                </Field>
+              </div>
+            </Section>
+
+            <Section title="Compliance">
+              <div className="grid">
+                {[
+                  ['fda_registered', 'FDA registered'],
+                  ['pdac_approved', 'PDAC approved'],
+                  ['taa_compliant', 'TAA compliant'],
+                  ['berry_compliant', 'Berry compliant'],
+                  ['mspv_listed', 'MSPV listed'],
+                  ['latex_free', 'Latex-free'],
+                ].map(([key, label]) => (
+                  <label key={key} className="flex min-h-11 cursor-pointer items-center gap-3 text-ink">
+                    <input type="checkbox" className="size-5 accent-[#1d5c4d]" checked={!!form[key]} onChange={(e) => patch({ [key]: e.target.checked })} /> {label}
+                  </label>
+                ))}
+              </div>
+            </Section>
+
+            <Section title="Warehouse tracking">
+              <p className="m-0 text-ink-2">“Required” blocks receiving and shipping until the warehouse records it.</p>
+              {[
+                ['lot_tracking', 'Lot number'],
+                ['expiration_tracking', 'Expiration date'],
+                ['serial_tracking', 'Serial number'],
+                ['udi_tracking', 'UDI'],
+              ].map(([key, label]) => (
+                <div key={key} className="grid grid-cols-[minmax(0,1fr)_150px] items-center gap-3">
+                  <span>{label}</span>
+                  <select aria-label={label} value={form[key] || 'not_tracked'} onChange={(e) => patch({ [key]: e.target.value })} className={inputCls}>
+                    {TRACKING_LEVELS.map(([value, text]) => <option key={value} value={value}>{text}</option>)}
+                  </select>
                 </div>
               ))}
-            </div>
-          </Card>
+            </Section>
 
-          <Card title="Warehouse tracking policy">
-            <div style={{ fontSize: 12.5, color: D.ink2, lineHeight: 1.5 }}>
-              Required fields block receiving and shipment until valid data is captured. Warehouse users cannot bypass the policy.
-            </div>
-            {[
-              ['lot_tracking', 'Lot number'],
-              ['expiration_tracking', 'Expiration date'],
-              ['serial_tracking', 'Serial number'],
-              ['udi_tracking', 'UDI'],
-            ].map(([key, label]) => (
-              <Field key={key} label={label}>
-                <select value={form[key] || 'not_tracked'} onChange={(e) => patch({ [key]: e.target.value })} style={inputStyle}>
-                  {TRACKING_LEVELS.map(([value, text]) => <option key={value} value={value}>{text}</option>)}
-                </select>
-              </Field>
-            ))}
-          </Card>
-
-          <Card title="Compliance flags">
-            {[
-              ['fda_registered',  'FDA registered'],
-              ['pdac_approved',   'PDAC approved'],
-              ['taa_compliant',   'TAA compliant'],
-              ['berry_compliant', 'Berry compliant'],
-              ['mspv_listed',     'MSPV listed'],
-              ['latex_free',      'Latex-free'],
-              ['available',       'Available for purchase'],
-            ].map(([key, label]) => (
-              <label key={key} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 0', fontSize: 13.5, color: D.ink2, cursor: 'pointer' }}>
-                <input type="checkbox" checked={!!form[key]} onChange={(e) => patch({ [key]: e.target.checked })} style={{ accentColor: D.plum }} />
-                {label}
-              </label>
-            ))}
-          </Card>
-
-          {existing && (
-            <Card title="Quick stats">
-              <Stat label="Variants" value={String(existing.variants?.length || 1)} />
-              <Stat label="Images" value={String(existing.images?.length || 0)} />
-              <Stat label="Stock (all variants)" value={fmt.number(db.list('inventory').filter(r=>(existing.variants?.length?existing.variants:[existing]).some(v=>v.sku===r.sku)&&(r.inventory_owner_type||'unite')==='unite'&&!r.inventory_owner_org_id).reduce((a,b)=>a+Number(b.on_hand||0),0))} />
-              <Stat label="Lifetime orders" value={String(db.list('order_items', { where: { sku: existing.sku } }).length)} />
-            </Card>
-          )}
+            {existing && (
+              <Section title="At a glance">
+                <dl className="m-0 grid">
+                  <Stat label="Variants" value={String(existing.variants?.length || 1)} />
+                  <Stat label="Images" value={String(existing.images?.length || 0)} />
+                  <Stat label="In stock (all variants)" value={fmt.number(db.list('inventory').filter(r=>(existing.variants?.length?existing.variants:[existing]).some(v=>v.sku===r.sku)&&(r.inventory_owner_type||'unite')==='unite'&&!r.inventory_owner_org_id).reduce((a,b)=>a+Number(b.on_hand||0),0))} />
+                  <Stat label="Order lines" value={String(db.list('order_items', { where: { sku: existing.sku } }).length)} />
+                </dl>
+              </Section>
+            )}
+          </div>
         </div>
-      </div>
+      </main>
     </AdminShell>
   );
 }
 
-function Card({ title, children, action }) {
+const inputCls = 'h-11 w-full rounded-lg border border-line bg-card px-3 text-sm text-ink outline-none focus:border-brand md:h-10';
+
+function Section({ title, action, children }) {
   return (
-    <div style={{ background: D.card, borderRadius: 14, border: `1px solid ${D.line}`, padding: 22 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, gap: 10, flexWrap: 'wrap' }}>
-        <div style={{ fontFamily: D.display, fontSize: 20, letterSpacing: -0.3 }}>{title}</div>
-        {action}
-      </div>
-      <div style={{ display: 'grid', gap: 12 }}>{children}</div>
-    </div>
+    <Card>
+      <CardHeader><CardTitle>{title}</CardTitle>{action}</CardHeader>
+      <CardContent className="grid gap-4">{children}</CardContent>
+    </Card>
   );
 }
 
-function Field({ label, children }) {
+function Field({ label, hint, children }) {
   return (
-    <label style={{ display: 'block' }}>
-      <div style={{ fontSize: 12, fontWeight: 600, color: D.ink2, marginBottom: 6 }}>{label.toUpperCase()}</div>
+    <label className="grid content-start gap-1.5">
+      <span className="font-medium text-ink">{label}</span>
       {children}
+      {hint && <span className="text-xs text-ink-2">{hint}</span>}
     </label>
+  );
+}
+
+function Money({ value, onChange }) {
+  return (
+    <span className="relative block">
+      <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-ink-2">$</span>
+      <input type="number" step="0.01" min="0" value={value ?? 0} onChange={(e) => onChange(e.target.value)} className={`${inputCls} pl-7`} />
+    </span>
   );
 }
 
 function Stat({ label, value }) {
   return (
-    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderTop: `1px solid ${D.line}` }}>
-      <span style={{ fontFamily: D.mono, fontSize: 11, letterSpacing: 0.8, color: D.ink3 }}>{label.toUpperCase()}</span>
-      <span style={{ fontFamily: D.display, fontSize: 16, color: D.ink, letterSpacing: -0.2 }}>{value}</span>
+    <div className="flex justify-between gap-3 border-t border-line py-2 first:border-t-0">
+      <dt className="text-ink-2">{label}</dt>
+      <dd className="m-0 font-semibold">{value}</dd>
     </div>
   );
 }
-
-const inputStyle = { width: '100%', padding: '10px 12px', background: D.paper, border: `1px solid ${D.line}`, borderRadius: 8, fontSize: 13, color: D.ink, fontFamily: 'inherit', outline: 'none', boxSizing: 'border-box' };
-const smallInput = { width: '100%', padding: '6px 8px', background: D.paper, border: `1px solid ${D.line}`, borderRadius: 6, fontSize: 12, color: D.ink, outline: 'none', boxSizing: 'border-box' };
-const thStyle = { padding: '10px 8px', textAlign: 'left' };
-const tdSmall = { padding: '6px 4px' };
-const primaryBtn = { background: D.plum, color: D.paper, border: 'none', padding: '11px 22px', borderRadius: 4, fontSize: 13, fontWeight: 600, fontFamily: 'inherit', cursor: 'pointer' };
-const ghostBtn = { background: 'transparent', color: D.ink, border: `1px solid ${D.line}`, padding: '10px 18px', borderRadius: 4, fontSize: 13, fontFamily: 'inherit', cursor: 'pointer', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 6 };
-const textBtn = { background: 'transparent', color: D.plum, border: 'none', cursor: 'pointer', fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, letterSpacing: 0.8, padding: '4px 6px' };
-const imgPillBtn = { flex: 1, background: 'rgba(0,0,0,0.55)', color: '#fff', border: 'none', padding: '4px 0', borderRadius: 4, fontSize: 11, cursor: 'pointer', fontFamily: 'inherit' };
