@@ -1,4 +1,5 @@
 import crypto from 'node:crypto';
+import {ensurePasskeySchema,listPasskeys,passkeySignInOptions} from './passkeys.js';
 // RFC 4226 / RFC 6238. All stored secrets are AES-256-GCM sealed.
 export function requiresMfa(role){return (Array.isArray(role)?role:[role]).some(r=>['admin','finance','warehouse_manager','sales_manager','sourcing_manager'].includes(r));}
 const alphabet='ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
@@ -14,13 +15,16 @@ export async function ensureMfaSchema(sql){
  await sql`CREATE TABLE IF NOT EXISTS um_mfa_credentials(user_id text PRIMARY KEY,secret text NOT NULL,last_counter bigint NOT NULL DEFAULT -1,recovery_hashes jsonb NOT NULL DEFAULT '[]',created_at timestamptz NOT NULL DEFAULT now())`;
  await sql`CREATE TABLE IF NOT EXISTS um_mfa_challenges(user_id text PRIMARY KEY,token_hash text NOT NULL,secret text,revision integer NOT NULL,attempts integer NOT NULL DEFAULT 0,expires_at timestamptz NOT NULL)`;
 }
-export async function beginMfa(sql,profile){
+export async function beginMfa(sql,profile,{rp=null}={}){
  await ensureMfaSchema(sql);
+ await ensurePasskeySchema(sql);
  const existing=await sql`SELECT user_id FROM um_mfa_credentials WHERE user_id=${profile.id}`;
  const secret=existing.length?null:base32(crypto.randomBytes(20));
  // Validate encryption config even for existing accounts; do not issue unusable challenges.
  key();
  const token=crypto.randomBytes(32).toString('base64url');
- await sql`INSERT INTO um_mfa_challenges(user_id,token_hash,secret,revision,attempts,expires_at) VALUES(${profile.id},${digestToken(token)},${secret?sealMfa(secret):null},${Number(profile.session_revision||0)},0,now()+interval '5 minutes') ON CONFLICT(user_id) DO UPDATE SET token_hash=EXCLUDED.token_hash,secret=EXCLUDED.secret,revision=EXCLUDED.revision,attempts=CASE WHEN um_mfa_challenges.expires_at>now() THEN um_mfa_challenges.attempts ELSE 0 END,expires_at=CASE WHEN um_mfa_challenges.expires_at>now() THEN um_mfa_challenges.expires_at ELSE EXCLUDED.expires_at END`;
- return {mfa_required:true,challenge:token,enrollment:!existing.length,...(secret?{setup_key:secret,issuer:'Unite Medical',account:profile.email}:{})};
+ const passkeys=existing.length&&rp?await listPasskeys(sql,profile.id,rp.rpID):[];
+ const passkeyOptions=passkeys.length?await passkeySignInOptions(rp,passkeys):null;
+ await sql`INSERT INTO um_mfa_challenges(user_id,token_hash,secret,revision,attempts,expires_at,webauthn_challenge) VALUES(${profile.id},${digestToken(token)},${secret?sealMfa(secret):null},${Number(profile.session_revision||0)},0,now()+interval '5 minutes',${passkeyOptions?.challenge||null}) ON CONFLICT(user_id) DO UPDATE SET token_hash=EXCLUDED.token_hash,secret=EXCLUDED.secret,webauthn_challenge=EXCLUDED.webauthn_challenge,revision=EXCLUDED.revision,attempts=CASE WHEN um_mfa_challenges.expires_at>now() THEN um_mfa_challenges.attempts ELSE 0 END,expires_at=CASE WHEN um_mfa_challenges.expires_at>now() THEN um_mfa_challenges.expires_at ELSE EXCLUDED.expires_at END`;
+ return {mfa_required:true,challenge:token,enrollment:!existing.length,...(passkeyOptions?{passkey_options:passkeyOptions}:{}),...(secret?{setup_key:secret,issuer:'Unite Medical',account:profile.email}:{})};
 }

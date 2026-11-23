@@ -80,7 +80,8 @@ export function useAccountPricingBootstrap() {
 
   useEffect(() => {
     let cancelled = false;
-    if (!access.can_view_prices) {
+    // Account prices are per customer organization; staff price orders server-side.
+    if (!access.can_view_prices || !['customer', 'distributor'].includes(session?.role)) {
       clearAccountPrices();
       return () => { cancelled = true; };
     }
@@ -103,5 +104,5 @@ export function useAccountPricingBootstrap() {
       }).filter(Boolean) });
     });
     return () => { cancelled = true; };
-  }, [access.can_view_prices, session?.org_id, session?.user_id]);
+  }, [access.can_view_prices, session?.org_id, session?.user_id, session?.role]);
 }
