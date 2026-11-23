@@ -7,10 +7,11 @@ const MESSAGES={
  InvalidStateError:'This device already has a passkey for your account.',
  SecurityError:'Passkeys only work on the Unite Medical site address.',
 };
+const SERVER_MESSAGES={sign_in_again_to_add_passkey:'For security, sign out and back in, then add your passkey within 15 minutes.'};
 async function call(method,body){
  const response=await fetch('/api/auth/passkeys',{method,credentials:'include',headers:{'Content-Type':'application/json'},...(body?{body:JSON.stringify(body)}:{})});
  const data=await response.json().catch(()=>({}));
- if(!response.ok)throw new Error(String(data.error||'Passkey request failed').replaceAll('_',' '));
+ if(!response.ok)throw new Error(SERVER_MESSAGES[data.error]||String(data.error||'Passkey request failed').replaceAll('_',' '));
  return data;
 }
 export function friendlyPasskeyError(error){return MESSAGES[error?.name]||error?.message||'Passkey failed. Use your 6-digit code instead.';}

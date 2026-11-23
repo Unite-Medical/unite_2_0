@@ -9,10 +9,11 @@ export function relyingParty(req){
 export async function ensurePasskeySchema(sql){
  await sql`CREATE TABLE IF NOT EXISTS um_passkeys(id text PRIMARY KEY,user_id text NOT NULL,public_key text NOT NULL,counter bigint NOT NULL DEFAULT 0,transports jsonb NOT NULL DEFAULT '[]',device_type text,backed_up boolean NOT NULL DEFAULT false,name text,created_at timestamptz NOT NULL DEFAULT now(),last_used_at timestamptz)`;
  await sql`CREATE INDEX IF NOT EXISTS um_passkeys_user_idx ON um_passkeys(user_id)`;
+ await sql`ALTER TABLE um_passkeys ADD COLUMN IF NOT EXISTS rp_id text`;
  await sql`CREATE TABLE IF NOT EXISTS um_passkey_challenges(user_id text PRIMARY KEY,challenge text NOT NULL,expires_at timestamptz NOT NULL)`;
  await sql`ALTER TABLE um_mfa_challenges ADD COLUMN IF NOT EXISTS webauthn_challenge text`;
 }
-export function listPasskeys(sql,userId){return sql`SELECT id,public_key,counter,transports,name,created_at,last_used_at FROM um_passkeys WHERE user_id=${userId} ORDER BY created_at`;}
+export function listPasskeys(sql,userId,rpID=null){return rpID?sql`SELECT id,public_key,counter,transports,name,created_at,last_used_at FROM um_passkeys WHERE user_id=${userId} AND (rp_id IS NULL OR rp_id=${rpID}) ORDER BY created_at`:sql`SELECT id,public_key,counter,transports,name,created_at,last_used_at FROM um_passkeys WHERE user_id=${userId} ORDER BY created_at`;}
 export function publicPasskey(p){return {id:p.id,name:p.name||'Passkey',created_at:p.created_at,last_used_at:p.last_used_at};}
 export function passkeySignInOptions(rp,passkeys){
  return generateAuthenticationOptions({rpID:rp.rpID,allowCredentials:passkeys.map(p=>({id:p.id,transports:p.transports||[]})),userVerification:'preferred',timeout:120000});

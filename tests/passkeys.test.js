@@ -34,3 +34,14 @@ test('default passkey names describe the device',()=>{
  assert.equal(defaultPasskeyName('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/131.0 Safari/537.36 Edg/131.0'),'Windows PC · Edge');
  assert.equal(defaultPasskeyName(''),'This device');
 });
+
+test('session tokens keep the time of the last second-factor check across re-issue',async()=>{
+ const {createSessionToken,verifySessionToken}=await import('../api/_lib/auth.js');
+ const secret='x'.repeat(48);
+ const token=createSessionToken({user_id:'u1',role:'admin',mfa_verified:true,mfa_at:1700000000},{secret,now:1700000000000});
+ const payload=verifySessionToken(token,{secret,now:1700000001000});
+ assert.equal(payload.mfa_at,1700000000);
+ const reissued=verifySessionToken(createSessionToken({...payload,role:'sales'},{secret,now:1700000500000}),{secret,now:1700000501000});
+ assert.equal(reissued.mfa_at,1700000000);
+ assert.equal('mfa_at' in verifySessionToken(createSessionToken({user_id:'u2',role:'sales'},{secret}),{secret}),false);
+});
