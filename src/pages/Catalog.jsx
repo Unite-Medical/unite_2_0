@@ -108,7 +108,6 @@ export function Catalog() {
   }, [cat]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const [search, setSearch] = useState(() => searchParams.get('q') || '');
-  const [visible, setVisible] = useState({ key: '', count: PAGE_SIZE });
 
   useSEO({
     title: cat === 'All'
@@ -132,6 +131,9 @@ export function Catalog() {
   }, [PRODUCTS, cat, compliance, supplyFilter, search, stockBySku]);
 
   const filterKey = `${cat}|${[...compliance].sort()}|${supplyFilter}|${search.trim().toLowerCase()}`;
+  const [visible, setVisible] = useState({ key: filterKey, count: PAGE_SIZE });
+  // Any change to search or filters starts the list over at the first page.
+  if (visible.key !== filterKey) setVisible({ key: filterKey, count: PAGE_SIZE });
   const shownCount = visible.key === filterKey ? visible.count : PAGE_SIZE;
   const shown = filtered.slice(0, shownCount);
 
