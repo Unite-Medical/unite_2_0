@@ -149,6 +149,8 @@ function emitMutation(table, op, id, row) {
 }
 
 function notify(table, id) {
+  // A local edit makes the cached copy differ from the server until it is pushed and pulled again.
+  if (!applyingRemote && state.__remote && !state.__remote.dirty) state = { ...state, __remote: { ...state.__remote, dirty: true } };
   subs.get(table)?.forEach((fn) => fn());
   if (id != null) rowSubs.get(`${table}:${id}`)?.forEach((fn) => fn());
   persist(state);
