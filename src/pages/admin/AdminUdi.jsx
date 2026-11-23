@@ -225,8 +225,8 @@ export function AdminUdi() {
                     <td style={{ padding: '8px 12px', fontFamily: D.mono }}>{p.used} / {p.capacity}</td>
                     <td style={{ padding: '8px 12px', fontFamily: D.mono, color: p.alert ? D.terra : D.ink }}>{p.remaining}</td>
                     <td style={{ padding: '8px 12px', color: D.ink2 }}>{p.expires}</td>
-                    <td style={{ padding: '8px 12px', fontFamily: D.mono, fontSize: 11, color: p.exhausted ? D.terra : p.alert ? D.terra : '#3b8760' }}>
-                      {p.exhausted ? 'EXHAUSTED' : p.alert ? `⚠ NEAR CAP (≤20)` : 'OK'}
+                    <td style={{ padding: '8px 12px', fontFamily: D.mono, fontSize: 11, color: p.expired || p.exhausted || p.alert ? D.terra : '#3b8760' }}>
+                      {p.expired ? 'EXPIRED' : p.exhausted ? 'EXHAUSTED' : p.alert ? `⚠ NEAR CAP (≤20)` : 'OK'}
                     </td>
                   </tr>
                 ))}

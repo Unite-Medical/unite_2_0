@@ -84,7 +84,10 @@ export function gs1CheckDigit(body) {
 }
 
 /** Per-prefix status: used / remaining / near-cap alert (spec §5). */
-export function prefixStatus() {
+const isoDay = (now) => new Date(now).toISOString().slice(0, 10);
+const prefixExpired = (p, now) => Boolean(p.expires) && p.expires < isoDay(now);
+
+export function prefixStatus(now = Date.now()) {
   ensurePrefixRegistry();
   return db.list('gs1_prefixes').map((p) => {
     const remaining = p.capacity - p.used;
@@ -93,6 +96,7 @@ export function prefixStatus() {
       remaining,
       alert: p.medical && remaining <= PREFIX_ALERT_THRESHOLD,
       exhausted: remaining <= 0,
+      expired: prefixExpired(p, now),
     };
   });
 }
@@ -102,12 +106,12 @@ export function prefixStatus() {
  * medical-flagged prefix with remaining capacity (never a non-medical
  * or exhausted prefix). Returns { ok, di?, prefix?, reason? }.
  */
-export function assignDi({ labeler = 'unite', brand = '', ref = null } = {}) {
+export function assignDi({ labeler = 'unite', brand = '', ref = null, now = Date.now() } = {}) {
   if (!LABELERS[labeler]) return { ok: false, reason: 'unknown_labeler' };
   ensurePrefixRegistry();
   const candidates = db
     .list('gs1_prefixes', { where: { labeler } })
-    .filter((p) => p.medical && p.capacity - p.used > 0)
+    .filter((p) => p.medical && p.capacity - p.used > 0 && !prefixExpired(p, now))
     .sort((a, b) => a.used - b.used === 0 ? a.prefix.localeCompare(b.prefix) : (b.capacity - b.used) - (a.capacity - a.used));
   const pick = candidates[0];
   if (!pick) return { ok: false, reason: 'no_medical_capacity', labeler };
