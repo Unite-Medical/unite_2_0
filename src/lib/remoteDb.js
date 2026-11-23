@@ -97,7 +97,7 @@ async function pull({ full = false } = {}) {
   if(cursor){if(seen.has(cursor)||seen.size>=1000)throw new Error('Database pagination did not complete');seen.add(cursor);}
   }while(cursor);
   if(latest)stateRef.latest=latest;
-  if(stateRef.enabled&&stateRef.userId)db.commitRemote({user_id:stateRef.userId,latest:stateRef.latest});
+  if(stateRef.enabled&&stateRef.userId)db.commitRemote({user_id:stateRef.userId,latest:stateRef.latest,...(stateRef.queue.size?{dirty:true}:{})});
   return total;
 }
 
@@ -152,12 +152,19 @@ export async function startRemoteDb({ session = null } = {}) {
   stateRef.enabled = true;
   stateRef.userId = String(session.user_id || '');
   const cached = db.remoteCursor();
-  if (stateRef.userId && cached?.user_id === stateRef.userId && cached.latest) {
-    // Reload with this user's saved copy: show it now and fetch only what changed since.
+  let caughtUp = false;
+  if (stateRef.userId && cached?.user_id === stateRef.userId && cached.latest && !cached.dirty) {
+    // Reload with this user's clean saved copy: fetch only what changed since, before any page reads it.
     stateRef.latest = cached.latest;
-    stateRef.hydrated = true;
-    pull().catch((err) => { stateRef.lastError = err.message; });
-  } else {
+    try {
+      await pull();
+      stateRef.hydrated = caughtUp = true;
+    } catch (err) {
+      stateRef.lastError = err.message;
+      stateRef.latest = null;
+    }
+  }
+  if (!caughtUp) {
     db.clear();
     try {
       await pull({ full: true });
