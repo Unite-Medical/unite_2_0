@@ -170,6 +170,7 @@ export default function App() {
           <Route path="/surplus/market" element={<Navigate to="/surplus" replace />} />
           <Route path="/shortage-list" element={<ShortageMatch />} />
           <Route path="/supply-risk" element={<SupplyRisk />} />
+          <Route path="/products" element={<Navigate to="/catalog" replace />} />
           <Route path="/products/:id" element={<ProductDetail />} />
 
           <Route path="/cart" element={<RequireSession approvedAccount><Cart /></RequireSession>} />
