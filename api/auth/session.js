@@ -120,7 +120,7 @@ export default async function handler(req, res) {
         clearSessionCookie(res);
         return sendJson(res, 401, { error: live.reason });
       }
-      const session = {...safeSession(profile, await organizationFor(sql, profile)),mfa_verified:claimed.mfa_verified===true,role:claimed.role,...(claimed.remember_until?{remember_until:claimed.remember_until}:{})};
+      const session = {...safeSession(profile, await organizationFor(sql, profile)),mfa_verified:claimed.mfa_verified===true,role:claimed.role,...(claimed.remember_until?{remember_until:claimed.remember_until}:{}),...(claimed.mfa_at?{mfa_at:claimed.mfa_at}:{})};
       issueSession(res, session);
       return sendJson(res, 200, { session });
     } catch (error) {
