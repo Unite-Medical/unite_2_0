@@ -1086,14 +1086,17 @@ export function WarehouseMobile() {
                             : "Confirm pick"}
                     </button>
                     <p className="wm-hint">
-                      Counts retain the original evidence. A manager reviews
-                      variances before stock changes. Unrecognized products and
-                      incomplete details cannot be submitted.
+                      {mode === "count"
+                        ? "Counts retain the original evidence. A manager reviews variances before stock changes."
+                        : mode === "receive"
+                          ? "Check the product, lot and quantity against the delivery paperwork before confirming."
+                          : "Check the product, lot and quantity against the order before confirming the pick."}{" "}
+                      Unrecognized products and incomplete details cannot be submitted.
                     </p>
                   </fieldset>
                 </section>
                 <aside className="wm-card wm-capture-aside">
-                  <p className="wm-eyebrow">YOUR COUNT</p><h2>{product?.name || 'Choose a product to begin'}</h2><div className="wm-capture-total"><strong>{quantityReady ? total.toLocaleString() : '—'}</strong><span>physical eaches</span></div><p>{label(data.bins.find(b=>b.id===form.bin_id)) || 'No location selected'}{form.lot_number ? ' · Lot ' + form.lot_number : ''}</p><p className="wm-hint">Saved counts go to review. Stock changes only when a manager posts the count.</p>
+                  <p className="wm-eyebrow">{mode === "pick" ? "YOUR PICK" : mode === "receive" ? "YOUR RECEIPT" : "YOUR COUNT"}</p><h2>{product?.name || 'Choose a product to begin'}</h2><div className="wm-capture-total"><strong>{quantityReady ? total.toLocaleString() : '—'}</strong><span>physical eaches</span></div><p>{label(data.bins.find(b=>b.id===form.bin_id)) || 'No location selected'}{form.lot_number ? ' · Lot ' + form.lot_number : ''}</p>{mode === "count" && <p className="wm-hint">Saved counts go to review. Stock changes only when a manager posts the count.</p>}
                   <p className="wm-eyebrow">ASSISTED CAPTURE</p>
                   <h2>Read a label or photo</h2>
                   <p>
