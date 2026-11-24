@@ -28,7 +28,7 @@ export async function postOrderInvoice({order,items,mapping,context,fetchImpl=fe
 }
 export async function syncOrderAccounting(sql,orderId,{getContext=qboAccessContext,fetchImpl=fetch}={}){
  const get=async(table,id)=>(await sql`SELECT data FROM um_rows WHERE tbl=${table} AND id=${id} AND deleted=false`)[0]?.data;
- const job=await get('accounting_jobs','qbo-invoice-'+orderId);if(!job)return {status:'not_queued'};if(job.status==='synced')return job;
+ const job=await get('accounting_jobs','qbo-invoice-'+orderId);if(!job)return {status:'not_queued'};if(job.status==='synced')return job;if(job.status==='awaiting_approval'||job.status==='cancelled')return {status:job.status};
  const claim=crypto.randomUUID();const claimed=await sql`UPDATE um_rows SET data=data||${JSON.stringify({status:'syncing',claim,updated_at:new Date().toISOString()})}::jsonb,updated_at=now() WHERE tbl='accounting_jobs' AND id=${job.id} AND deleted=false AND (data->>'status'!='syncing' OR updated_at<now()-interval '3 minutes') RETURNING id`;if(!claimed.length)return {status:'syncing'};
  let result;
  try{

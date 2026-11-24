@@ -9,7 +9,13 @@ export const STAFF_TEAMS = {
  sourcing: {label:'Sourcing',title:'Find the next way forward.',description:'Open requests, supplier responses, and purchasing follow-ups.',person:'Sourcing team',routine:['Review incoming requests','Follow up on supplier offers','Confirm purchase-order acknowledgments']},
 };
 export function staffHome(role) { return STAFF_ROLES.includes(role) ? '/work' : role === 'distributor' ? '/distributor' : '/dashboard'; }
-export function staffShortcuts(role, {inquiries=false,customerDirectory=false}={}) {
+const APPROVALS={label:'Waiting for approval',path:'/staff/order-approvals',id:'order-approvals'};
+export function staffShortcuts(role, options) {
+ const list=roleShortcuts(role, options),at=list.findIndex(i=>i.id==='orders');
+ if(at>=0)return [...list.slice(0,at+1),{...APPROVALS,group:list[at].group},...list.slice(at+1)];
+ return [list[0],{...APPROVALS,group:list[0].group},...list.slice(1)];
+}
+function roleShortcuts(role, {inquiries=false,customerDirectory=false}={}) {
  const base=[{label:'Home',path:'/work',id:'work',group:'Your workspace'},...((role==='admin'||role==='finance'||role?.startsWith('warehouse_')||inquiries)?[{label:'WellLink',path:'/staff/welllink',id:'welllink',group:'Partner programs'}]:[]),...(['admin','finance','warehouse_operator','warehouse_manager'].includes(role)||inquiries?[{label:'Split shipments',path:'/staff/shipments',id:'shipments',group:'Daily work'}]:[])];
  if(role==='admin')return [base[0],
   {label:'Chat',path:'/admin/chat',id:'chat',group:'Your workspace'},
