@@ -29,7 +29,7 @@ export async function calculateEstimate({draft,products,organization,fetchImpl=f
  const results=await Promise.allSettled(carriers.map(async carrier=>{
   const rates=await jsonFetch('https://ssapi.shipstation.com/shipments/getrates',{method:'POST',headers,body:JSON.stringify({carrierCode:carrier,fromPostalCode:env.UNITE_SHIP_FROM_ZIP,toState:draft.address.state,toCountry:draft.address.country||'US',toPostalCode:draft.address.zip,toCity:draft.address.city,weight:pack.weight,dimensions:pack.dimensions,confirmation:'delivery',residential:draft.address.residential===true})},fetchImpl);
   if(!Array.isArray(rates))throw new Error('invalid_rates');
-  return rates.filter(r=>r.serviceCode&&Number.isFinite(Number(r.shipmentCost))&&Number(r.shipmentCost)>=0).map(r=>({...r,carrier}));
+  return rates.filter(r=>r.serviceCode&&!/media_mail|library_mail/.test(r.serviceCode)&&Number.isFinite(Number(r.shipmentCost))&&Number(r.shipmentCost)>=0).map(r=>({...r,carrier}));
  }));
  const handling=organization.shipping_handling_flat??15;
  if(!Number.isFinite(Number(handling))||Number(handling)<0)return {ok:false,reason:'handling_policy_required'};

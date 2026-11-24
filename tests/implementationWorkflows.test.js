@@ -22,6 +22,10 @@ test('delivered estimate combines provider freight, handling and exclusive tax w
  assert.equal(r.ok,true);assert.equal(r.estimate.options[0].freight,31.8);assert.equal(r.estimate.options[0].tax,9.03);assert.equal(r.estimate.options[0].total,140.83);
  assert.equal(new URLSearchParams(calls[1].options.body).get('shipping_cost[amount]'),'3180');
 });
+test('checkout never offers USPS Media Mail or Library Mail for medical supplies',async()=>{
+ const r=await calculateEstimate({draft,products,organization:{tax_exempt:true},env:{SHIPSTATION_API_KEY:'test',SHIPSTATION_API_SECRET:'test',UNITE_SHIP_FROM_ZIP:'30122',UNITE_SHIP_FROM_STREET:'1 Test Warehouse',UNITE_SHIP_FROM_CITY:'Atlanta',UNITE_SHIP_FROM_STATE:'GA',UNITE_RATE_CARRIERS:'stamps_com'},fetchImpl:async()=>({ok:true,json:async()=>[{serviceCode:'usps_media_mail',shipmentCost:3},{serviceCode:'usps_library_mail',shipmentCost:3},{serviceCode:'usps_ground_advantage',shipmentCost:6}]})});
+ assert.equal(r.ok,true);assert.deepEqual(r.estimate.options.map(o=>o.service),['usps_ground_advantage']);
+});
 test('exception desk escalates unowned/overdue work and detects missed customer cadence',()=>{
  const now=new Date('2026-09-08');const rows=buildOperationsDesk({organizations:[{id:'c',name:'Clinic',account_owner_email:'owner@example.com'}],orders:[...['2026-07-01','2026-07-08','2026-07-15'].map((d,i)=>({id:String(i),customer_id:'c',status:'delivered',placed_at:d})),{id:'big',total:11000,status:'pending',created_at:'2026-09-01'}]},now);
  assert.equal(rows.find(r=>r.kind==='approval').owner_email,'damon@unitemedical.net');assert.equal(rows.find(r=>r.kind==='missed_reorder').owner_email,'owner@example.com');assert.equal(rows.every(r=>r.escalated),true);
