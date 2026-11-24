@@ -24,6 +24,6 @@ export default async function handler(req,res){
    return sendJson(res,422,{error:'shipping_review_requested',review_id:review.id,detail:result.reason});
   }
   const e=result.estimate;await sql`INSERT INTO um_rows(tbl,id,data,deleted,updated_at) VALUES('checkout_estimates',${e.id},${JSON.stringify(e)}::jsonb,false,now()) ON CONFLICT(tbl,id) DO NOTHING`;
-  return sendJson(res,200,{ok:true,estimate:{id:e.id,expires_at:e.expires_at,options:e.options.map(({id,label,service,freight,tax,total})=>({id,label,service,freight,tax,total}))}});
+  return sendJson(res,200,{ok:true,estimate:{id:e.id,expires_at:e.expires_at,options:e.options.map(({id,label,service,freight,tax,card_surcharge,total})=>({id,label,service,freight,tax,card_surcharge:card_surcharge||0,total}))}});
  }catch{return sendJson(res,503,{error:'shipping_or_tax_unavailable'});}
 }

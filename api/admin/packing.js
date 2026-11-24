@@ -1,5 +1,6 @@
 import crypto from 'node:crypto';
 import {shippingOrigin} from '../_lib/shippingOrigin.js';
+import {cardSurcharge} from '../_lib/checkoutEstimate.js';
 import {neon} from '@neondatabase/serverless';
 import {authorizeLiveRequest} from '../_lib/auth.js';
 import {readRawBody,sendJson} from '../_lib/http.js';
@@ -10,7 +11,8 @@ export function reviewedPackingOption(body,draft,env=process.env){
  if(!Number.isFinite(freight)||freight<0||!Number.isFinite(tax)||tax<0||![weight,...Object.values(dimensions)].every(v=>Number.isFinite(v)&&v>0))return {ok:false,reason:'valid_costs_and_package_required'};
  if(!['fedex','ups','stamps_com'].includes(body.carrier)||!String(body.service||'').trim()||!String(body.shipping_evidence||'').trim()||!String(body.tax_evidence||'').trim())return {ok:false,reason:'carrier_service_and_evidence_required'};
  if(draft.order.tax_exempt_basis&&tax!==0)return {ok:false,reason:'preserved_exemption_requires_review'};
- return {ok:true,option:{id:crypto.randomUUID(),label:body.label||body.service,service:body.service,carrier:body.carrier,freight:Math.round(freight*100)/100,tax:Math.round(tax*100)/100,total:Math.round((draft.order.subtotal+freight+tax)*100)/100,ship_from:origin,shipping_package:{weight:{value:weight,units:'pounds'},dimensions:{...dimensions,units:'inches'}},tax_basis:draft.order.tax_exempt_basis?'preserved_account_exemption':'finance_reviewed',shipping_evidence:String(body.shipping_evidence).slice(0,2000),tax_evidence:String(body.tax_evidence).slice(0,2000)}};
+ const card_surcharge=cardSurcharge(draft.order.subtotal+freight+tax,draft.order.payment_method);
+ return {ok:true,option:{id:crypto.randomUUID(),label:body.label||body.service,service:body.service,carrier:body.carrier,freight:Math.round(freight*100)/100,tax:Math.round(tax*100)/100,card_surcharge,total:Math.round((draft.order.subtotal+freight+tax+card_surcharge)*100)/100,ship_from:origin,shipping_package:{weight:{value:weight,units:'pounds'},dimensions:{...dimensions,units:'inches'}},tax_basis:draft.order.tax_exempt_basis?'preserved_account_exemption':'finance_reviewed',shipping_evidence:String(body.shipping_evidence).slice(0,2000),tax_evidence:String(body.tax_evidence).slice(0,2000)}};
 }
 export default async function handler(req,res){res.setHeader('Cache-Control','no-store, private');if(!['GET','POST'].includes(req.method))return sendJson(res,405,{error:'method_not_allowed'});if(!process.env.DATABASE_URL)return sendJson(res,503,{error:'not_configured'});const sql=neon(process.env.DATABASE_URL);try{const live=await authorizeLiveRequest(req,sql,{roles:['admin']});if(!live.ok)return sendJson(res,403,{error:live.reason});
  if(req.method==='GET'){const rows=await sql`SELECT data FROM um_rows WHERE tbl='checkout_reviews' AND deleted=false AND data->>'status'='pending' ORDER BY updated_at LIMIT 100`;return sendJson(res,200,{ok:true,reviews:rows.map(r=>r.data)});}
