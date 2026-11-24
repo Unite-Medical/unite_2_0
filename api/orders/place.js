@@ -171,7 +171,7 @@ export default async function handler(req, res) {
     const checked=validateEstimate(estimates[0]?.data,draft,body.shipping_option_id);
     if(!checked.ok)return sendJson(res,409,{error:checked.reason});
     const option=checked.option;
-    Object.assign(draft.order,{freight:option.freight,shipping_cost:option.freight,shipping_calculated:option.calculated_shipping??option.freight,shipping_materials_markup_pct:option.materials_markup_pct,shipping_handling_fee:option.handling,tax:option.tax,total:option.total,ship_method:option.service,carrier:option.carrier,shipping_package:option.shipping_package,ship_from:option.ship_from,tax_calculation_id:option.tax_calculation_id,tax_basis:option.tax_basis,estimate_id:body.estimate_id,totals_verified:true});
+    Object.assign(draft.order,{freight:option.freight,shipping_cost:option.freight,shipping_calculated:option.calculated_shipping??option.freight,shipping_materials_markup_pct:option.materials_markup_pct,shipping_handling_fee:option.handling,tax:option.tax,card_surcharge:option.card_surcharge||0,total:option.total,ship_method:option.service,carrier:option.carrier,shipping_package:option.shipping_package,ship_from:option.ship_from,tax_calculation_id:option.tax_calculation_id,tax_basis:option.tax_basis,estimate_id:body.estimate_id,totals_verified:true});
     if(draft.payment_grant.credit_limit!=null&&/^net\d+$/.test(draft.order.payment_method)&&draft.order.total>Number(draft.payment_grant.credit_limit))return sendJson(res,409,{error:'over_credit_limit'});
 
 
