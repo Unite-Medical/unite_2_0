@@ -72,7 +72,7 @@ export function DataTable({
   return (
     <div className={cn('overflow-hidden rounded-xl border border-line bg-card shadow-xs', className)}>
       {tabs && (
-        <div role="tablist" aria-label={`${label} views`} className="flex gap-1 overflow-x-auto overflow-y-hidden border-b border-line px-3 pt-2 [scrollbar-width:none]">
+        <div role="tablist" aria-label={`${label} views`} className="flex flex-wrap gap-1 border-b border-line px-3 pt-2">
           {tabs.map((t) => (
             <button key={t.id} role="tab" aria-selected={tab === t.id} onClick={reset(() => setTab(t.id))}
               className={cn('-mb-px flex min-h-11 items-center gap-2 whitespace-nowrap border-b-2 px-3 text-sm font-medium md:min-h-10', tab === t.id ? 'border-brand text-ink' : 'border-transparent text-ink-2 hover:text-ink')}>
