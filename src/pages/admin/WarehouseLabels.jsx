@@ -41,7 +41,7 @@ export function WarehouseLabels(){
     <div>{o.items.map(i=>`${i.qty} × ${i.name||i.sku} (${i.sku})`).join(', ')||'No lines'}</div>
     <div style={{color:'var(--uw-ink-2, #5c5a55)'}}>Ship to {[o.ship_to.name,o.ship_to.city,o.ship_to.state,o.ship_to.zip].filter(Boolean).join(', ')||'address missing'}{o.po_number?` · PO ${o.po_number}`:''}</div>
     {o.status==='ready_to_ship'
-      ?<div><strong>Label bought</strong> · {String(o.carrier||'').toUpperCase()} {o.tracking_number}{o.label_created_at?` · ${when(o.label_created_at)}`:''}</div>
+      ?<div><strong>Label bought</strong> · {String(o.carrier||'').toUpperCase()} {o.tracking_number}{o.label_created_at?` · ${when(o.label_created_at)}`:''} · <a href={`/api/orders/label?label=${encodeURIComponent(o.id)}`} target="_blank" rel="noopener noreferrer">Print label</a></div>
       :confirm===o.id
         ?<div style={{display:'flex',gap:8,flexWrap:'wrap',alignItems:'center'}}><span>This buys real postage in ShipStation.</span><button type="button" className="uw-button primary" onClick={()=>buy(o.id)}>Buy label now</button><button type="button" className="uw-button" onClick={()=>setConfirm('')}>Cancel</button></div>
         :<div><button type="button" className="uw-button primary" disabled={busy===o.id} onClick={()=>setConfirm(o.id)}>{busy===o.id?'Buying label…':'Buy label'}</button></div>}
