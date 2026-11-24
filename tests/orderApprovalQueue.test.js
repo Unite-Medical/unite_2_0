@@ -45,3 +45,9 @@ test('queue summary lists lines and every staff role gets the queue in navigatio
  for(const role of ['admin','sales','sales_manager','customer_service','warehouse_operator','warehouse_manager','finance','sourcing','sourcing_manager'])
   assert.ok(staffShortcuts(role).some(i=>i.path==='/staff/order-approvals'),role);
 });
+test('queue orders get one decision; delegated approvers cannot touch orders outside the queue',()=>{
+ const approved=planOrderApproval({order:pending,actor:ashley,action:'approve',reason:'ok',env}).order;
+ assert.equal(planOrderApproval({order:approved,actor:damon,action:'reject',reason:'changed mind',env}).reason,'approval_already_decided');
+ const checkout={id:'C1',customer_id:'c',total:50,status:'payment_pending'};
+ assert.equal(planOrderApproval({order:checkout,actor:ashley,action:'reject',reason:'no',env}).reason,'order_not_waiting_for_approval');
+});

@@ -21,9 +21,11 @@ export function planOrderApproval({order,actor,action,reason,now=new Date(),env=
   const highValue=Number(order?.total)>ORDER_APPROVAL_THRESHOLD;
   if(highValue?!(actor?.role==='admin'&&emailOf(actor)===DAMON_APPROVER_EMAIL):!isOrderApprover(actor,env))return {ok:false,reason:highValue?'damon_approval_authority_required':'order_approval_authority_required'};
   if(!order?.id||!['approve','reject'].includes(action))return {ok:false,reason:'invalid_approval_request'};
+  const wasPending=order.approval?.status==='pending',isDamon=actor.role==='admin'&&emailOf(actor)===DAMON_APPROVER_EMAIL;
+  if(order.approval?.requested_at&&!wasPending)return {ok:false,reason:'approval_already_decided'};
+  if(!wasPending&&!isDamon)return {ok:false,reason:'order_not_waiting_for_approval'};
   if(!String(reason||'').trim())return {ok:false,reason:'approval_reason_required'};
   if(['shipped','delivered','cancelled','refunded'].includes(order.status))return {ok:false,reason:'order_already_closed'};
-  const wasPending=order.approval?.status==='pending';
   const approval={...(wasPending?{requested_by:order.approval.requested_by,requested_at:order.approval.requested_at}:{}),status:action==='approve'?'approved':'rejected',actor_id:actor.user_id,approver_email:emailOf(actor),approver_name:actor.name||null,reason:String(reason).trim().slice(0,2000),fingerprint:orderApprovalFingerprint(order),decided_at:now.toISOString()};
   const status=wasPending?(action==='approve'?'payment_pending':'cancelled'):order.status;
   return {ok:true,wasPending,order:{...order,status,...(wasPending?{accounting_status:action==='approve'?'queued':'cancelled'}:{}),approval,fulfillment_revision:Number(order.fulfillment_revision||0)+1},approval};
