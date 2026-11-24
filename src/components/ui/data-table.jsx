@@ -49,7 +49,7 @@ export function DataTable({
       && (!needle || (searchText ? searchText(r) : columns.map((c) => text(valueOf(c, r))).join(' ')).toLowerCase().includes(needle))
       && filters.every((f) => active[f.id] == null || active[f.id] === '' || text(f.value(r)) === text(active[f.id])));
     const col = sort && columns.find((c) => c.id === sort.id);
-    if (col) out = [...out].sort((a, b) => compare(valueOf(col, a), valueOf(col, b)) * (sort.dir === 'desc' ? -1 : 1));
+    if (col) out = [...out].sort((a, b) => { const va = valueOf(col, a), vb = valueOf(col, b); const ea = va == null || va === '', eb = vb == null || vb === ''; return ea || eb ? ea - eb : compare(va, vb) * (sort.dir === 'desc' ? -1 : 1); });
     return out;
   }, [rows, tabs, tab, q, searchText, columns, filters, active, sort]);
 
