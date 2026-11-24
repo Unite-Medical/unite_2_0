@@ -2,7 +2,7 @@ import { ordinaryParcelCharge } from './launchPolicy.js';
 import crypto from 'node:crypto';
 import {shippingOrigin} from './shippingOrigin.js';
 export const CARD_SURCHARGE_RATE=0.03;
-export function cardSurcharge(amount,method){return method==='card'?Math.round(Number(amount||0)*CARD_SURCHARGE_RATE*100)/100:0;}
+export function cardSurcharge(amount,method){return method==='card'?Math.round(Math.round(Number(amount||0)*100)*CARD_SURCHARGE_RATE)/100:0;}
 export function estimateBinding(draft){return crypto.createHash('sha256').update(JSON.stringify({customer:draft.order.customer_id,exempt:draft.order.tax_exempt_basis,address:draft.address,lines:draft.lines.map(l=>[l.sku,l.qty,l.unit_price]),payment:draft.order.payment_method})).digest('hex');}
 export function validateEstimate(estimate,draft,optionId,now=Date.now()){
  if(!estimate||!Number.isFinite(Date.parse(estimate.expires_at))||Date.parse(estimate.expires_at)<=now||estimate.binding!==estimateBinding(draft))return {ok:false,reason:'refresh_shipping_and_tax'};
