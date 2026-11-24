@@ -60,5 +60,6 @@ export async function calculateEstimate({draft,products,organization,fetchImpl=f
   const surcharge=cardSurcharge(draft.order.subtotal+freight+tax,draft.order.payment_method);
   options.push({id:crypto.randomUUID(),label:rate.serviceName||rate.serviceCode,service:rate.serviceCode,carrier:rate.carrier,freight,tax,card_surcharge:surcharge,total:Math.round((draft.order.subtotal+freight+tax+surcharge)*100)/100,tax_calculation_id:taxId,tax_basis:exempt?'preserved_account_exemption':'stripe_tax',shipping_package:pack,ship_from:origin,carrier_cost:carrierCost,materials_markup_pct:charge.materials_markup_pct,calculated_shipping:charge.calculated_amount,handling:Number(handling)});
  }
+ options.sort((a,b)=>a.total-b.total);
  return {ok:true,estimate:{id:crypto.randomUUID(),customer_id:draft.order.customer_id,binding:estimateBinding(draft),expires_at:new Date(now.getTime()+15*60000).toISOString(),created_at:now.toISOString(),options}};
 }
