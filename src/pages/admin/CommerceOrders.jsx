@@ -70,7 +70,7 @@ function OrderList(){
             <span className="flex items-center justify-between gap-3 text-xs text-ink-2"><span className="truncate">{o.email||'Customer needs matching'}</span><span className="whitespace-nowrap">{date(o.created_at)}</span></span>
             <span className="flex flex-wrap gap-1.5"><StatusBadge value={commercePaymentStatus(o)}/><StatusBadge value={o.fulfillment_status}/><StatusBadge value={o.workflow_state}/></span>
           </Link></li>)}</ul><div className="hidden md:block"><Table>
-          <THead><tr><TH className="w-10"><span className="sr-only">Select</span></TH>{[["number","Order"],["created_at","Date"],["email","Customer"],["total","Total","right"],["financial_status","Payment"],["fulfillment_status","Fulfillment"],["workflow_state","Next step"]].map(([k,t,a])=><SortHeader key={k} id={k} align={a} sort={sort} onSort={v=>{setSort(v);setPage(0);}}>{t}</SortHeader>)}<TH>Source</TH></tr></THead>
+          <THead><tr><TH className="w-10"><span className="sr-only">Select</span></TH>{[["number","Order"],["created_at","Date"],["email","Customer"],["total","Total","right"],["payment","Payment"],["fulfillment_status","Fulfillment"],["workflow_state","Next step"]].map(([k,t,a])=>k==="payment"?<TH key={k}>{t}</TH>:<SortHeader key={k} id={k} align={a} sort={sort} onSort={v=>{setSort(v);setPage(0);}}>{t}</SortHeader>)}<TH>Source</TH></tr></THead>
           <tbody>{rows.map(o=><TRow key={o.id}>
             <TD><SelectionCheck record={o} ids={selected} setIds={setSelected}/></TD>
             <TD className="whitespace-nowrap"><Link className="font-semibold text-ink hover:text-brand" to={'/admin/orders/'+o.id}>{o.number}</Link>{o.draft&&<UiBadge className="ml-2">Draft</UiBadge>}</TD>
