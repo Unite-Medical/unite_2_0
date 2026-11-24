@@ -24,6 +24,7 @@ export function planInvoicePayment({ invoice, order = null, input = {}, actorId,
     return { ok: true, idempotent: true, invoice, order, payment: existing };
   }
   if(['void','voided','cancelled','canceled','refunded','written_off','settled'].includes(invoice.status))return {ok:false,reason:'invoice_closed'};
+  if(invoice.status==='awaiting_approval')return {ok:false,reason:'order_approval_pending'};
   if(order&&['cancelled','canceled','refunded'].includes(order.status))return {ok:false,reason:'cancelled_order_payment_requires_reconciliation'};
   if(invoice.kind==='shipment_freight'&&order?.shipment_plan?.find(s=>s.id===invoice.shipment_id)?.status==='cancelled')return {ok:false,reason:'cancelled_order_payment_requires_reconciliation'};
   if(!Number.isSafeInteger(Math.round(amount*100))||Math.abs(amount*100-Math.round(amount*100))>0.00001)return {ok:false,reason:'payment_amount_requires_cents'};
