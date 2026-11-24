@@ -30,6 +30,7 @@ function roleShortcuts(role, {inquiries=false,customerDirectory=false}={}) {
   {label:'CRM',path:'/admin/crm',id:'crm',group:'Sales'},
   {label:'Warehouse app',path:'/warehouse',id:'warehouse-mobile',group:'Warehouse'},
   {label:'Pick & ship',path:'/admin/fulfillment',id:'fulfillment',group:'Warehouse'},
+  {label:'Ready to ship',path:'/warehouse/labels',id:'labels',group:'Warehouse'},
   {label:'Receiving',path:'/admin/inventory/receive',id:'receiving',group:'Warehouse'},
   {label:'Split shipments',path:'/staff/shipments',id:'shipments',group:'Warehouse'},
   {label:'Advanced BI',path:'/admin/advanced-bi',id:'advanced-bi',group:'Business'},
@@ -37,7 +38,7 @@ function roleShortcuts(role, {inquiries=false,customerDirectory=false}={}) {
   {label:'Approvals',path:'/admin/decisions',id:'decisions',group:'Business'},
   {label:'WellLink',path:'/staff/welllink',id:'welllink',group:'Business'}];
  if(role==='finance')return [...base,{label:'Approvals & release',path:'/admin/decisions',id:'decisions',group:'Daily work'},{label:'Invoices & payments',path:'/admin/finance',id:'finance',group:'Daily work'},{label:'Refund reviews',path:'/admin/refund-reviews',id:'refund-reviews',group:'Daily work'}];
- if(role?.startsWith('warehouse_'))return [...base,{label:'Warehouse app',path:'/warehouse',id:'warehouse-mobile',group:'Daily work'},{label:'Receive a delivery',path:'/admin/inventory/receive',id:'receiving',group:'Daily work'}];
+ if(role?.startsWith('warehouse_'))return [...base,{label:'Warehouse app',path:'/warehouse',id:'warehouse-mobile',group:'Daily work'},{label:'Ready to ship',path:'/warehouse/labels',id:'labels',group:'Daily work'},{label:'Receive a delivery',path:'/admin/inventory/receive',id:'receiving',group:'Daily work'}];
  if(['sales','sales_manager','customer_service'].includes(role))return [...base,...(['sales','sales_manager'].includes(role)?[{label:'Customer orders',path:'/sales/orders',id:'orders',group:'Daily work'},{label:'Create order',path:'/sales/orders/new',id:'new-order',group:'Daily work'},{label:'Supplier POs',path:'/sales/purchase-orders',id:'purchase-orders',group:'Daily work'}]:[]),...(customerDirectory?[{label:'Customers',path:'/rep/customers',id:'customer-directory',group:'Daily work'},{label:'Quotes',path:'/admin/quotes',id:'quotes',group:'Daily work'}]:[]),...(inquiries?[{label:'New quote',path:'/quote/new',id:'new-quote',group:'Daily work'}]:[]),{label:'Customer workspace',path:'/rep',id:'rep',group:'Daily work'},...(inquiries?[{label:'Inquiries',path:'/staff/inquiries',id:'inquiries',group:'Daily work'}]:[])];
  return base;
 }
