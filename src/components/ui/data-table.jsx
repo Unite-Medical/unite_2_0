@@ -60,7 +60,7 @@ export function DataTable({
   const allPicked = visibleIds.length > 0 && visibleIds.every((id) => picked.includes(id));
   const chips = filters.filter((f) => active[f.id] != null && active[f.id] !== '');
   const reset = (fn) => (...a) => { fn(...a); setPage(0); };
-  const toggleSort = (col) => setSort((s) => (s?.id !== col.id ? { id: col.id, dir: col.align === 'right' ? 'desc' : 'asc' } : s.dir === 'asc' ? { id: col.id, dir: 'desc' } : s.dir === 'desc' && !defaultSort ? null : { id: col.id, dir: 'asc' }));
+  const toggleSort = (col) => setSort((s) => { const first = col.align === 'right' ? 'desc' : 'asc'; return s?.id !== col.id ? { id: col.id, dir: first } : s.dir === first ? { id: col.id, dir: first === 'asc' ? 'desc' : 'asc' } : defaultSort ? { id: col.id, dir: first } : null; });
   const open = (row, e) => {
     if (e?.target?.closest('a,button,input,select,textarea,label')) return;
     if (onRowClick) onRowClick(row); else if (rowHref) navigate(rowHref(row));
@@ -89,6 +89,13 @@ export function DataTable({
             {filterValues[f.id].map((o) => <option key={text(o.value)} value={text(o.value)}>{o.label}</option>)}
           </select>
         ))}
+        {columns.some((c) => c.header && c.sortable !== false) && (
+          <select aria-label="Sort by" className="h-11 rounded-lg border border-line bg-card px-3 text-sm text-ink shadow-xs md:hidden"
+            value={sort ? `${sort.id}:${sort.dir}` : ''} onChange={(e) => { const [id, dir] = e.target.value.split(':'); setSort(id ? { id, dir } : null); setPage(0); }}>
+            {!defaultSort && <option value="">Sort: default</option>}
+            {columns.filter((c) => c.header && c.sortable !== false).flatMap((c) => [<option key={c.id + 'a'} value={`${c.id}:asc`}>{c.header}: {c.align === 'right' ? 'low to high' : 'A–Z'}</option>, <option key={c.id + 'd'} value={`${c.id}:desc`}>{c.header}: {c.align === 'right' ? 'high to low' : 'Z–A'}</option>])}
+          </select>
+        )}
         {toolbar}
       </div>
       {(chips.length > 0 || q) && (
@@ -193,7 +200,8 @@ function Chip({ children, onRemove }) {
 /** Sortable column header for server-paginated tables. `sort` is `{id, dir}` or null. */
 export function SortHeader({ id, children, sort, onSort, align, className }) {
   const dir = sort?.id === id ? sort.dir : null;
-  const next = () => onSort(!dir ? { id, dir: align === 'right' ? 'desc' : 'asc' } : dir === 'asc' ? { id, dir: 'desc' } : null);
+  const first = align === 'right' ? 'desc' : 'asc';
+  const next = () => onSort(!dir ? { id, dir: first } : dir === first ? { id, dir: first === 'asc' ? 'desc' : 'asc' } : null);
   return (
     <th scope="col" aria-sort={dir ? (dir === 'asc' ? 'ascending' : 'descending') : undefined} className={cn('whitespace-nowrap px-4 py-3 font-medium', align === 'right' && 'text-right', className)}>
       <button type="button" onClick={next} className={cn('inline-flex items-center gap-1 rounded hover:text-ink', align === 'right' && 'flex-row-reverse', dir && 'text-ink')}>
