@@ -182,7 +182,7 @@ export function AdminReplenishment() {
               { id: 'rate', header: 'Run rate /day', align: 'right', accessor: 'run_rate', cell: (r) => <>{r.run_rate > 0 ? r.run_rate.toFixed(2) : '—'}{r.model === 'prophet' && <span title="Prophet seasonal forecast" className="ml-1.5 rounded bg-paper px-1.5 py-0.5 text-[10px] text-brand">Prophet</span>}</> },
               { id: 'onhand', header: 'On hand', align: 'right', accessor: 'on_hand', cell: (r) => fmt.number(r.on_hand) },
               { id: 'reorder', header: 'Reorder point', align: 'right', accessor: 'reorder_point', cell: (r) => fmt.number(r.reorder_point) },
-              { id: 'cover', header: 'Days cover', align: 'right', accessor: 'days_cover', cell: (r) => (r.days_cover == null ? '∞' : `${r.days_cover}d`) },
+              { id: 'cover', header: 'Days cover', align: 'right', sortValue: (r) => (r.days_cover == null ? Infinity : r.days_cover), cell: (r) => (r.days_cover == null ? '∞' : `${r.days_cover}d`) },
               { id: 'status', header: 'Status', accessor: 'status', cell: (r) => { const [color, label] = STATUS_CHIP[r.status]; return <span className="rounded px-2 py-0.5 text-xs font-semibold" style={{ background: `${color}20`, color }}>{label}</span>; } },
               { id: 'qty', header: 'Suggested qty', align: 'right', accessor: 'suggested_qty', cell: (r) => (r.suggested_qty > 0 ? <strong>{fmt.number(r.suggested_qty)}</strong> : '—') },
             ]} />
