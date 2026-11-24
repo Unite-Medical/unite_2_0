@@ -13,7 +13,7 @@ export const PAYMENT_METHODS = ['card', 'ach', 'wire', 'net15', 'net30', 'net60'
 export const TERMS_METHODS = new Set(['net15', 'net30', 'net60']);
 
 export const METHOD_LABEL = {
-  card: 'Credit card', ach: 'ACH', wire: 'Wire transfer',
+  card: 'Credit or debit card', ach: 'ACH', wire: 'Wire transfer',
   net15: 'Net 15', net30: 'Net 30', net60: 'Net 60',
 };
 
