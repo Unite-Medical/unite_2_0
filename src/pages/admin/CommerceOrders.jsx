@@ -4,6 +4,7 @@ import {Badge as UiBadge} from '../../components/ui/badge.jsx';
 import {Card as UiCard} from '../../components/ui/card.jsx';
 import {Input} from '../../components/ui/input.jsx';
 import {Table,THead,TRow,TH,TD} from '../../components/ui/table.jsx';
+import {SortHeader} from '../../components/ui/data-table.jsx';
 import {EmptyState} from '../../components/ui/empty-state.jsx';
 import {StatusBadge} from '../../components/ui/status-badge.jsx';
 import {cn} from '../../lib/cn.js';
@@ -40,8 +41,8 @@ export function CommerceOrders(){const {id}=useParams();return <AdminShell activ
 const ORDER_TABS=[['','All'],['needs_review','Needs review'],['waiting_stock','Waiting for stock'],['waiting_payment','Waiting for payment'],['waiting_response','Waiting for response'],['archived','Archived']];
 function OrderList(){
   const [selected,setSelected]=useAssistantSelection('orders');
-  const [params]=useSearchParams(),[q,setQ]=useState(params.get('search')||''),[page,setPage]=useState(0),[filter,setFilter]=useState('');
-  const customer=params.get('customer')||'',{data,error,loading}=useCommerce({kind:'orders',q,page,filter,customer_id:customer,selected_ids:params.get('selected')?selected:undefined});
+  const [params]=useSearchParams(),[q,setQ]=useState(params.get('search')||''),[page,setPage]=useState(0),[filter,setFilter]=useState(''),[sort,setSort]=useState(null);
+  const customer=params.get('customer')||'',{data,error,loading}=useCommerce({kind:'orders',q,page,filter,customer_id:customer,sort:sort?.id,dir:sort?.dir,selected_ids:params.get('selected')?selected:undefined});
   const rows=data?.rows||[];
   return <div className="flex flex-col gap-5">
     <div className="flex flex-wrap items-end justify-between gap-4">
@@ -69,7 +70,7 @@ function OrderList(){
             <span className="flex items-center justify-between gap-3 text-xs text-ink-2"><span className="truncate">{o.email||'Customer needs matching'}</span><span className="whitespace-nowrap">{date(o.created_at)}</span></span>
             <span className="flex flex-wrap gap-1.5"><StatusBadge value={commercePaymentStatus(o)}/><StatusBadge value={o.fulfillment_status}/><StatusBadge value={o.workflow_state}/></span>
           </Link></li>)}</ul><div className="hidden md:block"><Table>
-          <THead><tr><TH className="w-10"><span className="sr-only">Select</span></TH><TH>Order</TH><TH>Date</TH><TH>Customer</TH><TH className="text-right">Total</TH><TH>Payment</TH><TH>Fulfillment</TH><TH>Next step</TH><TH>Source</TH></tr></THead>
+          <THead><tr><TH className="w-10"><span className="sr-only">Select</span></TH>{[["number","Order"],["created_at","Date"],["email","Customer"],["total","Total","right"],["financial_status","Payment"],["fulfillment_status","Fulfillment"],["workflow_state","Next step"]].map(([k,t,a])=><SortHeader key={k} id={k} align={a} sort={sort} onSort={v=>{setSort(v);setPage(0);}}>{t}</SortHeader>)}<TH>Source</TH></tr></THead>
           <tbody>{rows.map(o=><TRow key={o.id}>
             <TD><SelectionCheck record={o} ids={selected} setIds={setSelected}/></TD>
             <TD className="whitespace-nowrap"><Link className="font-semibold text-ink hover:text-brand" to={'/admin/orders/'+o.id}>{o.number}</Link>{o.draft&&<UiBadge className="ml-2">Draft</UiBadge>}</TD>

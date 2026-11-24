@@ -1,11 +1,10 @@
 import { useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FileSearch, Search } from 'lucide-react';
+import { FileSearch } from 'lucide-react';
 import { AdminShell } from '../../components/layout/AdminShell.jsx';
 import { Button } from '../../components/ui/button.jsx';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card.jsx';
-import { Input } from '../../components/ui/input.jsx';
-import { Table, THead, TRow, TH, TD } from '../../components/ui/table.jsx';
+import { DataTable } from '../../components/ui/data-table.jsx';
 import { EmptyState } from '../../components/ui/empty-state.jsx';
 import { Badge } from '../../components/ui/badge.jsx';
 import { cn } from '../../lib/cn.js';
@@ -47,8 +46,6 @@ const dueDate = (r) => (r.response_due_at ? fmt.date(r.response_due_at, { year: 
 export function AdminSourcing() {
   const requests = db.useTable('sourcing_requests', { orderBy: 'created_at', dir: 'desc' });
   const offers = db.useTable('vendor_offers', { orderBy: 'created_at', dir: 'desc' });
-  const [tab, setTab] = useState('all');
-  const [q, setQ] = useState('');
   const [activeId, setActiveId] = useState(null);
   const [notice, setNotice] = useState(null);
   const detailRef = useRef(null);
@@ -59,12 +56,6 @@ export function AdminSourcing() {
     return requests.map((r) => ({ ...r, offerCount: (byRequest[r.id] || []).length, stage: requestStage(r, byRequest[r.id] || []) }));
   }, [requests, offers]);
 
-  const rows = useMemo(() => {
-    const match = TABS.find(([v]) => v === tab)[2];
-    const needle = q.trim().toLowerCase();
-    return staged.filter(match).filter((r) => !needle || [customerName(r), r.product_description, r.account_owner_email]
-      .some((v) => String(v || '').toLowerCase().includes(needle)));
-  }, [staged, tab, q]);
 
   const active = requests.find((r) => r.id === activeId) || null;
   const activeOffers = offers.filter((offer) => offer.sourcing_request_id === active?.id);
@@ -94,58 +85,26 @@ export function AdminSourcing() {
 
         {notice && <p className="m-0 rounded-lg border border-line bg-paper px-4 py-3 text-sm" role="status">{notice}</p>}
 
-        <Card className="overflow-hidden">
-          <div className="flex flex-col gap-3 border-b border-line px-4 py-3">
-            <div role="tablist" aria-label="Sourcing views" className="-mb-px flex gap-1 overflow-x-auto [scrollbar-width:none]">
-              {TABS.map(([v, t, fn]) => (
-                <button key={v} type="button" role="tab" aria-selected={tab === v} onClick={() => setTab(v)}
-                  className={cn('min-h-11 rounded-lg px-3 text-sm font-medium whitespace-nowrap md:min-h-10', tab === v ? 'bg-paper text-ink' : 'text-ink-2 hover:bg-paper/60')}>
-                  {t} <span className="text-ink-3">{staged.filter(fn).length}</span>
-                </button>
-              ))}
-            </div>
-            <Input icon={Search} type="search" aria-label="Search sourcing requests" placeholder="Customer, product or owner" value={q} onChange={(e) => setQ(e.target.value)} />
-          </div>
-
-          {rows.length ? (
-            <>
-              <ul className="m-0 list-none divide-y divide-line p-0 md:hidden">
-                {rows.map((r) => (
-                  <li key={r.id}>
-                    <button type="button" onClick={() => open(r.id)} className={cn('flex w-full flex-col gap-1 border-0 px-4 py-3 text-left text-ink', r.id === activeId ? 'bg-paper' : 'bg-card')}>
-                      <span className="flex items-center justify-between gap-3"><span className="truncate font-semibold">{customerName(r)}</span><StatusBadge value={r.stage} /></span>
-                      <span className="text-sm text-ink-2">{r.product_description}</span>
-                      <span className="text-xs text-ink-3">Due {dueDate(r)} · {plural(r.offerCount, 'offer')}</span>
-                    </button>
-                  </li>
-                ))}
-              </ul>
-              <div className="hidden md:block">
-                <Table>
-                  <THead><tr><TH>Customer</TH><TH>Product</TH><TH className="text-right">Quantity</TH><TH>Owner</TH><TH>Response due</TH><TH className="text-right">Offers</TH><TH>Status</TH></tr></THead>
-                  <tbody>
-                    {rows.map((r) => (
-                      <TRow key={r.id} className={cn('cursor-pointer', r.id === activeId && 'bg-paper')} onClick={() => open(r.id)}>
-                        <TD><button type="button" className="border-0 bg-transparent p-0 text-left font-semibold text-ink hover:text-brand" onClick={(e) => { e.stopPropagation(); open(r.id); }}>{customerName(r)}</button></TD>
-                        <TD className="max-w-80 text-ink-2">{r.product_description}</TD>
-                        <TD className="text-right tabular-nums">{r.quantity || '—'}</TD>
-                        <TD className="text-ink-2">{r.account_owner_email || 'Unassigned'}</TD>
-                        <TD className="whitespace-nowrap text-ink-2">{dueDate(r)}</TD>
-                        <TD className="text-right tabular-nums">{r.offerCount}</TD>
-                        <TD><StatusBadge value={r.stage} /></TD>
-                      </TRow>
-                    ))}
-                  </tbody>
-                </Table>
-              </div>
-            </>
-          ) : (
-            <EmptyState icon={FileSearch}
-              title={requests.length ? 'No requests match' : 'No sourcing requests yet'}
-              description={requests.length ? 'Try another view or search.' : 'Requests appear here when a customer asks Unite to find a product it does not stock.'}
-              action={requests.length ? <Button variant="secondary" onClick={() => { setQ(''); setTab('all'); }}>Clear filters</Button> : null} />
-          )}
-        </Card>
+        <DataTable
+          label="Sourcing requests"
+          rows={staged}
+          searchPlaceholder="Customer, product or owner"
+          searchText={(r) => [customerName(r), r.product_description, r.account_owner_email].join(' ')}
+          tabs={TABS.map(([v, t, fn]) => ({ id: v, label: t, filter: fn }))}
+          filters={[{ id: 'owner', label: 'Owner', value: (r) => r.account_owner_email || 'Unassigned' }, { id: 'stage', label: 'Status', value: (r) => r.stage, format: (v) => String(v).replace(/_/g, ' ').replace(/^./, (x) => x.toUpperCase()) }]}
+          defaultSort={{ id: 'due', dir: 'asc' }}
+          onRowClick={(r) => open(r.id)}
+          empty={<EmptyState icon={FileSearch} title="No sourcing requests yet" description="Requests appear here when a customer asks Unite to find a product it does not stock." />}
+          columns={[
+            { id: 'customer', header: 'Customer', sortValue: customerName, cell: (r) => <button type="button" className={cn('border-0 bg-transparent p-0 text-left font-semibold hover:text-brand', r.id === activeId ? 'text-brand' : 'text-ink')} onClick={() => open(r.id)}>{customerName(r)}</button> },
+            { id: 'product', header: 'Product', accessor: 'product_description', className: 'max-w-80 text-ink-2' },
+            { id: 'qty', header: 'Quantity', align: 'right', sortValue: (r) => Number(r.quantity) || null, cell: (r) => r.quantity || '—' },
+            { id: 'owner', header: 'Owner', sortValue: (r) => r.account_owner_email || '', cell: (r) => <span className="text-ink-2">{r.account_owner_email || 'Unassigned'}</span> },
+            { id: 'due', header: 'Response due', sortValue: (r) => r.response_due_at || r.due_at || r.needed_by || null, cell: (r) => <span className="whitespace-nowrap text-ink-2">{dueDate(r)}</span> },
+            { id: 'offers', header: 'Offers', align: 'right', accessor: 'offerCount' },
+            { id: 'status', header: 'Status', accessor: 'stage', cell: (r) => <StatusBadge value={r.stage} /> },
+          ]}
+        />
 
         {active && (
           <Card ref={detailRef}>
