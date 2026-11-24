@@ -89,6 +89,13 @@ export function DataTable({
             {filterValues[f.id].map((o) => <option key={text(o.value)} value={text(o.value)}>{o.label}</option>)}
           </select>
         ))}
+        {columns.some((c) => c.header && c.sortable !== false) && (
+          <select aria-label="Sort by" className="h-11 rounded-lg border border-line bg-card px-3 text-sm text-ink shadow-xs md:hidden"
+            value={sort ? `${sort.id}:${sort.dir}` : ''} onChange={(e) => { const [id, dir] = e.target.value.split(':'); setSort(id ? { id, dir } : null); setPage(0); }}>
+            {!defaultSort && <option value="">Sort: default</option>}
+            {columns.filter((c) => c.header && c.sortable !== false).flatMap((c) => [<option key={c.id + 'a'} value={`${c.id}:asc`}>{c.header}: {c.align === 'right' ? 'low to high' : 'A–Z'}</option>, <option key={c.id + 'd'} value={`${c.id}:desc`}>{c.header}: {c.align === 'right' ? 'high to low' : 'Z–A'}</option>])}
+          </select>
+        )}
         {toolbar}
       </div>
       {(chips.length > 0 || q) && (
