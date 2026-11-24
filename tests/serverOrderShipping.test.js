@@ -65,3 +65,22 @@ test('staff orders without a checkout rate ship the approved carton from the war
   assert.equal(warehouseShipping(order, items, products, env), null);
   assert.equal(warehouseShipping({ ...staff, fulfillment_mode: 'distributor_pickup' }, items, products, env), null);
 });
+
+test('ready-to-ship list: released parcel orders only, with ship-to and lines', async () => {
+  const { readyToShipOrders, LABEL_ROLES } = await import('../api/_lib/orderShipping.js');
+  assert.ok(LABEL_ROLES.includes('warehouse_operator'));
+  const rows = readyToShipOrders({
+    orders: [
+      { id: 'a', status: 'inventory_reserved', customer_name: 'Clinic', ship_to_address_id: 'ad1', inventory_reserved_at: '2026-01-02' },
+      { id: 'b', status: 'ready_to_ship', tracking_number: '1Z', carrier: 'ups', inventory_reserved_at: '2026-01-01' },
+      { id: 'c', status: 'payment_pending' },
+      { id: 'd', status: 'inventory_reserved', fulfillment_mode: 'customer_pickup' },
+      { id: 'e', status: 'inventory_reserved', shipment_plan: [{ id: 's1' }, { id: 's2' }] },
+    ],
+    items: [{ order_id: 'a', sku: 'X', name: 'X item', qty: 2 }, { order_id: 'a', sku: 'Y', removed: true, qty: 1 }],
+    addresses: [{ id: 'ad1', recipient: 'Dock', city: 'Malibu', state: 'CA', zip: '90265' }],
+  });
+  assert.deepEqual(rows.map((r) => r.id), ['b', 'a']);
+  assert.deepEqual(rows[1].ship_to, { name: 'Dock', city: 'Malibu', state: 'CA', zip: '90265' });
+  assert.deepEqual(rows[1].items, [{ sku: 'X', name: 'X item', qty: 2 }]);
+});
