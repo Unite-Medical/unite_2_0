@@ -4,8 +4,9 @@
  * Customer contract pricing continues through resolveAuthoritativePrice.
  */
 import { PUBLIC_CATALOG } from '../../src/data/publicCatalog.generated.js';
+import { withQaProducts } from '../../src/data/qaCatalog.js';
 
-export function buildQuickQuoteCatalog(legacyProducts = [], commerceProducts = [], publicProducts = PUBLIC_CATALOG.products) {
+export function buildQuickQuoteCatalog(legacyProducts = [], commerceProducts = [], publicProducts = withQaProducts(PUBLIC_CATALOG.products, process.env.UNITE_ENVIRONMENT)) {
   if (!commerceProducts.length) return legacyProducts;
   const publicSkus = new Map();
   for (const product of publicProducts) {
