@@ -1,4 +1,4 @@
-import { beginMfa,requiresMfa } from '../_lib/mfa.js';
+import { beginMfa,requiresMfa,secondFactorEnabled } from '../_lib/mfa.js';
 import { relyingParty } from '../_lib/passkeys.js';
 import crypto from 'node:crypto';
 import { neon } from '@neondatabase/serverless';
@@ -22,6 +22,7 @@ const DUMMY_PASSWORD_RECORD = hashStoredPassword('not-a-valid-password', { salt:
 
 function safeSession(profile, organization = null) {
   return {
+    second_factor: secondFactorEnabled(),
     user_id: profile.id,
     email: profile.email,
     name: profile.name || null,

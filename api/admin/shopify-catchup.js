@@ -1,3 +1,4 @@
+import { secondFactorSatisfied } from '../_lib/mfa.js';
 import crypto from 'node:crypto';
 import { neon } from '@neondatabase/serverless';
 import { authorizeLiveRequest } from '../_lib/auth.js';
@@ -140,7 +141,7 @@ export function createShopifyCatchupHandler({ env=process.env, sqlFactory=neon, 
       const sql = sqlFactory(env.DATABASE_URL);
       const live = await authorize(req,sql,{roles:['admin']});
       if (!live.ok) fail(live.reason === 'authentication_required' ? 'authentication_required' : 'admin_mfa_session_required',live.reason === 'authentication_required' ? 401 : 403);
-      if (live.session.role !== 'admin' || live.session.mfa_verified !== true || live.session.org_id !== CATCHUP_TARGET.org) fail('staging_admin_mfa_session_required',403);
+      if (live.session.role !== 'admin' || !secondFactorSatisfied(live.session) || live.session.org_id !== CATCHUP_TARGET.org) fail('staging_admin_mfa_session_required',403);
       if (req.method === 'POST' && req.headers.origin !== CATCHUP_TARGET.origin) fail('same_origin_required',403);
       const body = req.method === 'POST' ? await boundedBody(req) : null;
       html ||= body?.view === 'html';
