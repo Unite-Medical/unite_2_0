@@ -41,3 +41,11 @@ test('privileged sessions without completed MFA cannot access API requests',()=>
  assert.equal(sessionFromRequest(req(true),{secret}).user_id,'a');
  assert.equal(requiresMfa('finance'),true);assert.equal(requiresMfa('warehouse_manager'),true);assert.equal(requiresMfa('customer'),false);
 });
+test('STAFF_SECOND_FACTOR=off turns the second step off for every role',async()=>{
+ const {requiresMfa,secondFactorSatisfied}=await import('../api/_lib/mfa.js');
+ const off={STAFF_SECOND_FACTOR:'off'};
+ for(const role of ['admin','finance','warehouse_manager','sales_manager','sourcing_manager'])assert.equal(requiresMfa(role,off),false);
+ assert.equal(secondFactorSatisfied({mfa_verified:false},off),true);
+ assert.equal(secondFactorSatisfied({mfa_verified:false},{}),false);
+ assert.equal(requiresMfa('admin',{}),true);
+});
