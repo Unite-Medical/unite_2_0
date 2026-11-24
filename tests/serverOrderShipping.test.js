@@ -5,7 +5,7 @@ function reviewed(order){return {...order,finance_release:{actor_id:'ashley',act
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { buildLabelRequest, applyLabelEvidence } from '../api/_lib/orderShipping.js';
+import { buildLabelRequest, applyLabelEvidence, withWarehouseShipping } from '../api/_lib/orderShipping.js';
 
 const order = reviewed({
   ship_from:{street1:'1 Test Warehouse',city:'Atlanta',state:'GA',postalCode:'30303',country:'US'},
@@ -50,4 +50,16 @@ test('server label request rejects unpaid, unreserved, or missing-address orders
   assert.equal(buildLabelRequest({ order: { ...order, payment_status: 'pending' }, address, items }).reason, 'payment_not_released');
   assert.equal(buildLabelRequest({ order: { ...order, status: 'payment_released' }, address, items }).reason, 'inventory_not_reserved');
   assert.equal(buildLabelRequest({ order, address: null, items }).reason, 'shipping_address_not_found');
+});
+
+test('staff orders without a checkout rate ship the approved carton from the warehouse', () => {
+  const env = { UNITE_SHIP_FROM_STREET: '1487 Trae Lane', UNITE_SHIP_FROM_CITY: 'Lithia Springs', UNITE_SHIP_FROM_STATE: 'GA', UNITE_SHIP_FROM_ZIP: '30122' };
+  const products = [{ sku: 'P', variants: [{ sku: 'SKU-A', shipping_packages: [{ approved: true, quantity: 2, weight_lb: 1, length_in: 8, width_in: 6, height_in: 4 }] }] }];
+  const staff = withWarehouseShipping({ ...order, ship_from: undefined, shipping_package: undefined, ship_method: null }, items, products, env);
+  assert.equal(staff.ship_from.postalCode, '30122');
+  assert.deepEqual(staff.shipping_package.dimensions, { length: 8, width: 6, height: 4, units: 'inches' });
+  assert.equal(buildLabelRequest({ order: reviewed(staff), address, items }).ok, true);
+  const unpacked = withWarehouseShipping({ ...order, shipping_package: undefined }, items, [], env);
+  assert.equal(buildLabelRequest({ order: reviewed(unpacked), address, items }).reason, 'verified_shipping_package_required');
+  assert.equal(withWarehouseShipping(order, items, [], env), order);
 });

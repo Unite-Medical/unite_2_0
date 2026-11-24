@@ -1,7 +1,8 @@
 import { paymentReleaseGate } from './financialDecisions.js';
 import { orderApprovalGate } from './orderApproval.js';
 import crypto from 'node:crypto';
-import {validShippingOrigin} from './shippingOrigin.js';
+import {shippingOrigin,validShippingOrigin} from './shippingOrigin.js';
+import {shippingPackage} from './checkoutEstimate.js';
 
 function stableId(prefix, value) {
   return `${prefix}_${crypto.createHash('sha256').update(String(value)).digest('hex').slice(0, 20)}`;
@@ -112,13 +113,27 @@ async function shipstationLabel(body, { fetchImpl = fetch } = {}) {
   }
 }
 
+// Staff-entered orders carry no checkout rate, so take the box from the product's approved carton and ship from the warehouse.
+export function withWarehouseShipping(order, items = [], products = [], env = process.env) {
+  if (!order || (order.shipping_package && validShippingOrigin(order.ship_from))) return order;
+  const pack = order.shipping_package ? null : shippingPackage(items.map((i) => ({ sku: i.sku, qty: Number(i.qty) })), products);
+  return {
+    ...order,
+    ...(pack?.ok ? { shipping_package: { weight: pack.weight, dimensions: pack.dimensions } } : {}),
+    ...(validShippingOrigin(order.ship_from) ? {} : { ship_from: shippingOrigin(env) }),
+  };
+}
+
 export async function createOrderLabel(sql, orderId, { actorId = 'system', fetchImpl = fetch } = {}) {
   const existingShipment = (await rowsWhere(sql, 'shipments', 'order_id', orderId))[0];
   if (existingShipment?.status === 'label_created' || existingShipment?.status === 'shipped') {
     return { ok: true, idempotent: true, shipment: existingShipment, order: await getRow(sql, 'orders', orderId) };
   }
-  const order = await getRow(sql, 'orders', orderId);
+  const stored = await getRow(sql, 'orders', orderId);
   const items = await rowsWhere(sql, 'order_items', 'order_id', orderId);
+  const needsShipping = stored && (!stored.shipping_package || !validShippingOrigin(stored.ship_from));
+  const products = needsShipping ? (await sql`SELECT data FROM um_rows WHERE tbl='products' AND deleted=false AND (data->>'sku' = ANY(${items.map((i) => String(i.sku))}) OR data->'variants' @> ANY(${items.map((i) => JSON.stringify([{ sku: String(i.sku) }]))}::jsonb[]))`).map((r) => r.data) : [];
+  const order = needsShipping ? withWarehouseShipping(stored, items, products) : stored;
   const address = order?.ship_to_address_id ? await getRow(sql, 'addresses', order.ship_to_address_id) : null;
   const request = buildLabelRequest({ order, address, items });
   if (!request.ok) return request;
