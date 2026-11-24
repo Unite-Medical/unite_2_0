@@ -9,8 +9,13 @@ import crypto from 'node:crypto';
 
 /** Read the raw request body as a Buffer, regardless of parsing state. */
 export async function readRawBody(req) {
-  // Vercel's Node runtime may have already parsed the body for
-  // application/json. If so, the stream is consumed — re-serialize.
+  // Read the untouched stream first: Vercel parses req.body lazily, and
+  // re-serialized JSON no longer matches provider signatures.
+  if (typeof req[Symbol.asyncIterator] === 'function' && req.readable && !req.readableEnded) {
+    const chunks = [];
+    for await (const chunk of req) chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
+    if (chunks.length) return Buffer.concat(chunks);
+  }
   if (req.body !== undefined && req.body !== null) {
     if (Buffer.isBuffer(req.body)) return req.body;
     if (typeof req.body === 'string') return Buffer.from(req.body);
@@ -61,7 +66,8 @@ export function verifyStripeSignature({ header, payload, secret, toleranceSec = 
   if (!Number.isFinite(ts)) return { ok: false, reason: 'bad_timestamp' };
   if (Math.abs(Date.now() / 1000 - ts) > toleranceSec) return { ok: false, reason: 'timestamp_out_of_tolerance' };
   const expected = hmacHex(secret, `${parts.t}.${payload}`);
-  if (!parts.v1 || !safeEqual(expected, parts.v1)) return { ok: false, reason: 'signature_mismatch' };
+  const signatures = String(header).split(',').map((kv) => kv.trim()).filter((kv) => kv.startsWith('v1=')).map((kv) => kv.slice(3));
+  if (!signatures.some((sig) => safeEqual(expected, sig))) return { ok: false, reason: 'signature_mismatch' };
   return { ok: true };
 }
 
