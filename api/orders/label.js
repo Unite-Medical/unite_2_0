@@ -16,6 +16,17 @@ export default async function handler(req, res) {
       const profiles = await sql`SELECT data FROM um_rows WHERE tbl='profiles' AND id=${String(session.user_id)} AND deleted=false LIMIT 1`;
       const live = authorizeLiveProfile(session, profiles[0]?.data, { roles: LABEL_ROLES });
       if (!live.ok) return sendJson(res, 403, { error: live.reason });
+      const labelFor = String(req.query?.label || new URL(req.url, 'http://x').searchParams.get('label') || '').trim();
+      if (labelFor) {
+        const rows = await sql`SELECT data FROM um_rows WHERE tbl='shipments' AND deleted=false AND data->>'order_id'=${labelFor} AND data->>'label_data_base64' IS NOT NULL ORDER BY updated_at DESC LIMIT 1`;
+        const pdf = rows[0]?.data?.label_data_base64;
+        if (!pdf) return sendJson(res, 404, { error: 'label_not_found' });
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `inline; filename="label-${labelFor.replace(/[^\w-]/g, '')}.pdf"`);
+        res.setHeader('Cache-Control', 'private, no-store');
+        return res.end(Buffer.from(pdf, 'base64'));
+      }
       const orders = (await sql`SELECT data FROM um_rows WHERE tbl='orders' AND deleted=false AND data->>'status' IN ('inventory_reserved','ready_to_ship')`).map((r) => r.data);
       const ids = orders.map((o) => o.id), addressIds = orders.map((o) => o.ship_to_address_id).filter(Boolean);
       const items = ids.length ? (await sql`SELECT data FROM um_rows WHERE tbl='order_items' AND deleted=false AND data->>'order_id' = ANY(${ids})`).map((r) => r.data) : [];
