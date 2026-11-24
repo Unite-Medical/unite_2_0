@@ -1,3 +1,4 @@
+import { secondFactorSatisfied } from '../_lib/mfa.js';
 import crypto from 'node:crypto';
 import {neon} from '@neondatabase/serverless';
 import {authorizeLiveRequest} from '../_lib/auth.js';
@@ -59,7 +60,7 @@ export function createQboHistoricalMatchHandler({env=process.env,sqlFactory=neon
    if(!['GET','POST'].includes(req.method))fail('method_not_allowed',405);
    if(env.VERCEL_PROJECT_ID!==CATCHUP_TARGET.project||env.PUBLIC_APP_ORIGIN!==CATCHUP_TARGET.origin||req.headers.host!=='staging.unitemedical.net')fail('staging_target_required',403);
    const sql=sqlFactory(env.DATABASE_URL);const live=await authorize(req,sql,{roles:['admin']});
-   if(!live.ok||live.session.role!=='admin'||live.session.mfa_verified!==true||live.session.org_id!==CATCHUP_TARGET.org)fail('staging_admin_mfa_required',403);
+   if(!live.ok||live.session.role!=='admin'||!secondFactorSatisfied(live.session)||live.session.org_id!==CATCHUP_TARGET.org)fail('staging_admin_mfa_required',403);
    if(req.method==='POST'&&req.headers.origin!==CATCHUP_TARGET.origin)fail('same_origin_required',403);
    const identity=(await sql.query(IDENTITY))[0];
    if(!identity||identity.schema_name!=='public'||identity.relkind!=='r'||identity.relrowsecurity||identity.relispartition||identity.inherited||identity.triggers||identity.rules||catchupTargetFingerprint(env.DATABASE_URL,identity)!==expectedFingerprint)fail('staging_database_changed');

@@ -1,7 +1,10 @@
 import crypto from 'node:crypto';
 import {ensurePasskeySchema,listPasskeys,passkeySignInOptions} from './passkeys.js';
 // RFC 4226 / RFC 6238. All stored secrets are AES-256-GCM sealed.
-export function requiresMfa(role){return (Array.isArray(role)?role:[role]).some(r=>['admin','finance','warehouse_manager','sales_manager','sourcing_manager'].includes(r));}
+// STAFF_SECOND_FACTOR=off turns the 6-digit code / passkey step off for everyone (password only).
+export function secondFactorEnabled(env=process.env){return String(env.STAFF_SECOND_FACTOR||'').toLowerCase()!=='off';}
+export function requiresMfa(role,env=process.env){return secondFactorEnabled(env)&&(Array.isArray(role)?role:[role]).some(r=>['admin','finance','warehouse_manager','sales_manager','sourcing_manager'].includes(r));}
+export function secondFactorSatisfied(session,env=process.env){return !secondFactorEnabled(env)||session?.mfa_verified===true;}
 const alphabet='ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
 export function base32(bytes){let bits=0,value=0,out='';for(const byte of bytes){value=(value<<8)|byte;bits+=8;while(bits>=5){out+=alphabet[(value>>>(bits-5))&31];bits-=5;}}if(bits)out+=alphabet[(value<<(5-bits))&31];return out;}
 export function decode32(value){let bits=0,n=0;const out=[];for(const c of value.toUpperCase().replace(/=+$/,'')){const v=alphabet.indexOf(c);if(v<0)throw new Error('invalid_key');n=(n<<5)|v;bits+=5;if(bits>=8){out.push((n>>>(bits-8))&255);bits-=8;}}return Buffer.from(out);}
