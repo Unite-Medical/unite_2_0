@@ -93,6 +93,7 @@ const AdminCustomers = lazy(() => import('./pages/admin/CommerceCustomers.jsx').
 const CommerceChat = lazy(() => import('./pages/admin/CommerceChat.jsx').then(m=>({default:m.CommerceChat})));
 const CommerceOrderCreate = lazy(() => import('./pages/admin/CommerceOrderCreate.jsx').then(m=>({default:m.CommerceOrderCreate})));
 const CommerceOrders = lazy(() => import('./pages/admin/CommerceOrders.jsx').then(m=>({default:m.CommerceOrders})));
+const OrderApprovals = lazy(() => import('./pages/admin/OrderApprovals.jsx').then(m=>({default:m.OrderApprovals})));
 const CommercePricing = lazy(() => import('./pages/admin/CommercePricing.jsx').then(m=>({default:m.CommercePricing})));
 const CommerceDataReview = lazy(() => import('./pages/admin/CommercePricing.jsx').then(m=>({default:m.CommerceDataReview})));
 const CommerceCatalogReview = lazy(() => import('./pages/admin/CommercePricing.jsx').then(m=>({default:m.CommerceCatalogReview})));
@@ -285,6 +286,7 @@ export default function App() {
           <Route path="/admin/quotes"    element={<RequireSession roles={['admin','sales','sales_manager']}><AdminQuotes /></RequireSession>} />
           <Route path="/admin/sourcing"  element={<RequireAdmin><AdminSourcing /></RequireAdmin>} />
           <Route path="/admin/orders" element={<RequireAdmin><CommerceOrders /></RequireAdmin>} />
+          <Route path="/staff/order-approvals" element={<RequireSession roles={['admin','sales','sales_manager','customer_service','warehouse_operator','warehouse_manager','finance','sourcing','sourcing_manager']}><OrderApprovals /></RequireSession>} />
           <Route path="/admin/chat" element={<RequireAdmin><CommerceChat /></RequireAdmin>} />
           <Route path="/sales/orders" element={<RequireSession roles={['admin','sales','sales_manager']}><SalesOrders /></RequireSession>} />
           <Route path="/sales/orders/new" element={<RequireSession roles={['admin','sales','sales_manager']}><CommerceOrderCreate /></RequireSession>} />
