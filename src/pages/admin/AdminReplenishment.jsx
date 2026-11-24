@@ -171,7 +171,7 @@ export function AdminReplenishment() {
         )}
 
         <div className="ui-root mt-5 font-sans text-sm text-ink">
-          <DataTable label="SKUs" rows={visible} getRowId={(r) => r.sku} searchPlaceholder="Search SKU, product or vendor"
+          <DataTable label="SKUs" rows={visible} getRowId={(r) => r.sku} searchPlaceholder="Search SKU, product or vendor" searchText={(r) => `${r.sku} ${r.name || ''} ${r.vendor || ''}`}
             defaultSort={{ id: 'cover', dir: 'asc' }}
             filters={[{ id: 'vendor', label: 'Vendor', value: (r) => r.vendor }, { id: 'status', label: 'Status', value: (r) => r.status, format: (v) => STATUS_CHIP[v]?.[1] || v }]}
             empty={<p className="p-6 text-ink-3">Every SKU is above its reorder point. Untick “Needs attention only” to see the full table.</p>}
