@@ -9,6 +9,8 @@
  */
 
 import { useEffect, useMemo, useState } from 'react';
+import { DataTable } from '../../components/ui/data-table.jsx';
+import '../../styles/ui.css';
 import { Link } from 'react-router-dom';
 import { D } from '../../tokens.js';
 import { AdminShell } from '../../components/layout/AdminShell.jsx';
@@ -168,44 +170,22 @@ export function AdminReplenishment() {
           <div style={{ marginTop: 14, padding: '12px 16px', background: 'rgba(29,92,77,.07)', border: `1px solid ${D.line}`, borderRadius: 10, fontSize: 13 }}>{notice}</div>
         )}
 
-        <div style={{ marginTop: 20, background: D.card, border: `1px solid ${D.line}`, borderRadius: 12, overflow: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13, minWidth: 760 }}>
-            <thead>
-              <tr style={{ textAlign: 'left', fontSize: 12, fontWeight: 600, color: D.ink2 }}>
-                {['SKU', 'Product', 'Vendor', 'Run rate /day', 'On hand', 'Reorder pt', 'Days cover', 'Status', 'Suggested QTY'].map((h) => (
-                  <th key={h} style={{ padding: '12px' }}>{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {visible.map((r) => {
-                const [color, label] = STATUS_CHIP[r.status];
-                return (
-                  <tr key={r.sku} style={{ borderTop: `1px solid ${D.line}` }}>
-                    <td style={{ padding: 12, fontFamily: D.mono, fontSize: 12 }}>{r.sku}</td>
-                    <td style={{ padding: 12, maxWidth: 240, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.name}</td>
-                    <td style={{ padding: 12, color: D.ink2 }}>{r.vendor || '—'}</td>
-                    <td style={{ padding: 12 }}>
-                      {r.run_rate > 0 ? r.run_rate.toFixed(2) : '—'}
-                      {r.model === 'prophet' && (
-                        <span title="Prophet seasonal forecast" style={{ marginLeft: 6, fontFamily: D.mono, fontSize: 8, letterSpacing: 1, padding: '2px 6px', borderRadius: 4, background: 'rgba(29,92,77,.09)', color: D.plum }}>Prophet</span>
-                      )}
-                    </td>
-                    <td style={{ padding: 12 }}>{fmt.number(r.on_hand)}</td>
-                    <td style={{ padding: 12 }}>{fmt.number(r.reorder_point)}</td>
-                    <td style={{ padding: 12 }}>{r.days_cover == null ? '∞' : `${r.days_cover}d`}</td>
-                    <td style={{ padding: 12 }}>
-                      <span style={{ fontSize: 12, fontWeight: 600, padding: '3px 8px', borderRadius: 4, background: `${color}20`, color }}>{label}</span>
-                    </td>
-                    <td style={{ padding: 12, fontWeight: r.suggested_qty > 0 ? 600 : 400 }}>{r.suggested_qty > 0 ? fmt.number(r.suggested_qty) : '—'}</td>
-                  </tr>
-                );
-              })}
-              {visible.length === 0 && (
-                <tr><td colSpan={9} style={{ padding: 24, color: D.ink3 }}>Every SKU is above its reorder point. Untick the filter to see the full table.</td></tr>
-              )}
-            </tbody>
-          </table>
+        <div className="ui-root mt-5 font-sans text-sm text-ink">
+          <DataTable label="SKUs" rows={visible} getRowId={(r) => r.sku} searchPlaceholder="Search SKU, product or vendor"
+            defaultSort={{ id: 'cover', dir: 'asc' }}
+            filters={[{ id: 'vendor', label: 'Vendor', value: (r) => r.vendor }, { id: 'status', label: 'Status', value: (r) => r.status, format: (v) => STATUS_CHIP[v]?.[1] || v }]}
+            empty={<p className="p-6 text-ink-3">Every SKU is above its reorder point. Untick “Needs attention only” to see the full table.</p>}
+            columns={[
+              { id: 'sku', header: 'SKU', accessor: 'sku', className: 'font-mono text-xs' },
+              { id: 'name', header: 'Product', accessor: 'name', className: 'max-w-60 truncate' },
+              { id: 'vendor', header: 'Vendor', accessor: 'vendor', className: 'text-ink-2' },
+              { id: 'rate', header: 'Run rate /day', align: 'right', accessor: 'run_rate', cell: (r) => <>{r.run_rate > 0 ? r.run_rate.toFixed(2) : '—'}{r.model === 'prophet' && <span title="Prophet seasonal forecast" className="ml-1.5 rounded bg-paper px-1.5 py-0.5 text-[10px] text-brand">Prophet</span>}</> },
+              { id: 'onhand', header: 'On hand', align: 'right', accessor: 'on_hand', cell: (r) => fmt.number(r.on_hand) },
+              { id: 'reorder', header: 'Reorder point', align: 'right', accessor: 'reorder_point', cell: (r) => fmt.number(r.reorder_point) },
+              { id: 'cover', header: 'Days cover', align: 'right', accessor: 'days_cover', cell: (r) => (r.days_cover == null ? '∞' : `${r.days_cover}d`) },
+              { id: 'status', header: 'Status', accessor: 'status', cell: (r) => { const [color, label] = STATUS_CHIP[r.status]; return <span className="rounded px-2 py-0.5 text-xs font-semibold" style={{ background: `${color}20`, color }}>{label}</span>; } },
+              { id: 'qty', header: 'Suggested qty', align: 'right', accessor: 'suggested_qty', cell: (r) => (r.suggested_qty > 0 ? <strong>{fmt.number(r.suggested_qty)}</strong> : '—') },
+            ]} />
         </div>
 
         <div style={{ marginTop: 28 }}>
