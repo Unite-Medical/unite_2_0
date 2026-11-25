@@ -74,7 +74,7 @@ export function WarehouseLabels(){
       columns={[
         {id:'order',header:'Order',accessor:'id',cell:o=><><div className="whitespace-nowrap font-mono text-xs font-semibold">{shortId(o.id)}</div>{o.po_number&&<div className="text-xs text-ink-2">PO {o.po_number}</div>}</>},
         {id:'date',header:'Released',sortValue:o=>o.inventory_reserved_at||o.placed_at||'',cell:o=><span className="whitespace-nowrap text-ink-2">{when(o.inventory_reserved_at||o.placed_at)}</span>},
-        {id:'customer',header:'Customer',accessor:'customer_name',cell:o=><span className="font-medium">{o.customer_name||'Customer'}</span>},
+        {id:'customer',header:'Customer',accessor:'customer_name',cell:o=><span className="block min-w-[10rem] font-medium">{o.customer_name||'Customer'}</span>},
         {id:'items',header:'Items',align:'right',sortValue:units,cell:o=><div title={o.items.map(i=>`${i.qty} × ${i.name||i.sku} (${i.sku})`).join('\n')}><div>{units(o)}</div><div className="whitespace-nowrap text-xs text-ink-2">{o.items.length===1?o.items[0].sku:`${o.items.length} SKUs`}</div></div>},
         {id:'shipto',header:'Ship to',sortValue:o=>`${o.ship_to.state} ${o.ship_to.city}`,cell:o=><><div className="font-medium">{o.ship_to.name||'—'}</div><div className="whitespace-nowrap text-xs text-ink-2">{[[o.ship_to.city,o.ship_to.state].filter(Boolean).join(', '),o.ship_to.zip].filter(Boolean).join(' ')||'Address missing'}</div></>},
         {id:'status',header:'Status',accessor:'status',cell:o=>o.status==='ready_to_ship'?<Badge tone="good" dot>Label bought</Badge>:<Badge tone="warn" dot>Awaiting label</Badge>},

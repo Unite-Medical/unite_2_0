@@ -15,7 +15,9 @@ import '../styles/workspace.css';
 export function Checkout(){
  useSEO({title:'Checkout',noindex:true});const navigate=useNavigate(),session=auth.use(),cart=useCart(),orgId=session?.org_id||'__none__';
  const addresses=db.useTable('addresses',{where:{org_id:orgId}}),methods=db.useTable('account_payment_methods',{where:{org_id:orgId}}),org=db.useRow('organizations',orgId);
- const [address,setAddress]=useState(''),[payment,setPayment]=useState(''),[po,setPo]=useState(''),[estimate,setEstimate]=useState(null),[option,setOption]=useState(''),[busy,setBusy]=useState(false),[error,setError]=useState('');
+ const [addressChoice,setAddress]=useState(''),[payment,setPayment]=useState(''),[po,setPo]=useState(''),[estimate,setEstimate]=useState(null),[option,setOption]=useState(''),[busy,setBusy]=useState(false),[error,setError]=useState('');
+ const preferred=(addresses.find(a=>a.is_default)||(addresses.length===1?addresses[0]:null))?.id||'';
+ const address=addressChoice||preferred;
  const [idempotencyKey]=useState(()=>crypto.randomUUID());const allowed=commerceAccessFor(session,org).can_order;
  const request={ship_to_address_id:address,payment_method:payment,po_number:po.trim(),lines:cart.items.map(i=>({sku:i.sku,qty:i.qty}))};
  const key=JSON.stringify(request);const current=estimate?.input===key?estimate:null;const selected=current?.options.find(o=>o.id===option);

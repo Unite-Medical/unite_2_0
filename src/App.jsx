@@ -331,6 +331,7 @@ export default function App() {
           <Route path="/admin/inventory/transfers" element={<RequireAdmin><AdminTransfers /></RequireAdmin>} />
           <Route path="/admin/webhooks"         element={<RequireAdmin><AdminWebhooks /></RequireAdmin>} />
 
+          <Route path="/shop" element={<Navigate to="/catalog" replace />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>

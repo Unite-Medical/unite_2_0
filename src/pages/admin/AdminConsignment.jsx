@@ -91,7 +91,7 @@ export function AdminConsignment() {
               <div style={{ padding: '12px 16px', fontFamily: D.display, fontSize: 18, borderBottom: `1px solid ${D.line}` }}>Inventory</div>
               <div className="um-scroll-x">
                 <table style={{ width: '100%', minWidth: 980, borderCollapse: 'collapse', fontSize: 13 }}>
-                  <thead><tr style={{ background: D.paperAlt, fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>{['SKU', 'NAME', 'ON HAND', 'RUN RATE', 'AGREED COST', 'PRICE VALID UNTIL', 'LOW AT', 'NEAREST EXPIRY'].map((h) => <th key={h} style={{ padding: '10px 12px', textAlign: 'left' }}>{h}</th>)}</tr></thead>
+                  <thead><tr style={{ background: D.paperAlt, fontSize: 12, fontWeight: 500, color: D.ink2 }}>{['SKU', 'Name', 'On hand', 'Run rate', 'Agreed cost', 'Price valid until', 'Low at', 'Nearest expiry'].map((h) => <th key={h} style={{ padding: '12px 16px', textAlign: 'left', whiteSpace: 'nowrap', fontWeight: 500 }}>{h}</th>)}</tr></thead>
                   <tbody>
                     {inventory.map((product) => {
                       const metric = metrics.get(product.id) || {};

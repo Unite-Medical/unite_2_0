@@ -13,6 +13,10 @@ import {useSearchParams} from 'react-router-dom';
 import { D } from '../../tokens.js';
 import { AdminShell } from '../../components/layout/AdminShell.jsx';
 import { db } from '../../lib/db.js';
+import { Table, THead, TRow, TH, TD } from '../../components/ui/table.jsx';
+import { Badge } from '../../components/ui/badge.jsx';
+import { Button } from '../../components/ui/button.jsx';
+import '../../styles/ui.css';
 
 import { useViewport } from '../../lib/viewport.js';
 import {
@@ -262,41 +266,37 @@ export function AdminFulfillment() {
         <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.4fr 1fr', gap: 20 }}>
           {/* Orders + pipeline */}
           <div style={{ background: D.card, border: `1px solid ${D.line}`, borderRadius: 12, overflow: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
-              <thead>
-                <tr style={{ textAlign: 'left', fontSize: 12, fontWeight: 600, color: D.ink2 }}>
-                  {['ORDER', 'CUSTOMER', 'STATUS', 'PIPELINE', ''].map((h) => <th key={h} style={{ padding: 12 }}>{h}</th>)}
-                </tr>
-              </thead>
+            <div className="ui-root font-sans text-sm text-ink"><Table>
+              <THead><tr><TH>Order</TH><TH>Customer</TH><TH>Status</TH><TH>Pipeline</TH><TH><span className="sr-only">Run</span></TH></tr></THead>
               <tbody>
                 {orders.slice(0, 40).map((o) => {
                   const { done, total } = progress(o.id);
                   const steps = stepsByOrder.get(o.id) || {};
                   return (
-                    <tr key={o.id} style={{ borderTop: `1px solid ${D.line}`, background: selected === o.id ? 'rgba(29,92,77,.05)' : 'transparent', cursor: 'pointer' }} onClick={() => setSelected(o.id)}>
-                      <td style={{ padding: 12, fontFamily: D.mono, fontSize: 12 }}>{o.id}</td>
-                      <td style={{ padding: 12, maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{o.customer_name}</td>
-                      <td style={{ padding: 12, color: D.ink2 }}>{o.status}</td>
-                      <td style={{ padding: 12 }}>
+                    <TRow key={o.id} tabIndex={0} aria-selected={selected === o.id} className={selected === o.id ? 'cursor-pointer bg-paper' : 'cursor-pointer'} onClick={() => setSelected(o.id)} onKeyDown={(e) => { if (e.key === 'Enter') setSelected(o.id); }}>
+                      <TD><span className="block max-w-[12rem] truncate font-mono text-xs font-semibold" title={o.id}>{o.id}</span></TD>
+                      <TD><span className="block max-w-[14rem] truncate font-medium" title={o.customer_name}>{o.customer_name}</span></TD>
+                      <TD><Badge tone={o.status === 'ready_to_ship' || o.status === 'delivered' ? 'good' : 'neutral'}>{String(o.status || '').replaceAll('_', ' ')}</Badge></TD>
+                      <TD className="whitespace-nowrap">
                         <span style={{ display: 'inline-flex', gap: 3 }}>
                           {PIPELINE_STEPS.map((s) => {
                             const [color, glyph] = STEP_CHIP[steps[s]?.status || 'pending'];
                             return <span key={s} title={`${s}: ${steps[s]?.status || 'pending'}`} style={{ color, fontSize: 13 }}>{glyph}</span>;
                           })}
                         </span>
-                        <span style={{ marginLeft: 8, fontSize: 11, color: D.ink3 }}>{done}/{total}</span>
-                      </td>
-                      <td style={{ padding: 12 }}>
-                        <button type="button" onClick={(e) => { e.stopPropagation(); handleRun(o.id); }} disabled={busy === o.id} style={btn(true)}>
+                        <span className="ml-2 text-xs text-ink-3">{done}/{total}</span>
+                      </TD>
+                      <TD className="text-right">
+                        <Button size="sm" variant="primary" onClick={(e) => { e.stopPropagation(); handleRun(o.id); }} disabled={busy === o.id}>
                           {busy === o.id ? 'Running…' : (done > 0 ? 'Re-run' : 'Run')}
-                        </button>
-                      </td>
-                    </tr>
+                        </Button>
+                      </TD>
+                    </TRow>
                   );
                 })}
-                {orders.length === 0 && <tr><td colSpan={5} style={{ padding: 24, color: D.ink3 }}>No orders yet.</td></tr>}
+                {orders.length === 0 && <tr><TD colSpan={5} className="text-ink-3">No orders yet.</TD></tr>}
               </tbody>
-            </table>
+            </Table></div>
           </div>
 
           {/* Detail / live log */}

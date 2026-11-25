@@ -43,3 +43,8 @@ test('customer fields are allowlisted and non-approved staff navigation stays un
  const shortcuts=staffShortcuts('sales',{customerDirectory:true});assert.ok(shortcuts.some(item=>item.path==='/rep/customers'));assert.ok(shortcuts.some(item=>item.path==='/admin/quotes'));
  assert.equal(staffShortcuts('finance',{customerDirectory:true}).some(item=>item.path==='/rep/customers'),false);
 });
+test('directory sorts only by allowlisted columns',async()=>{
+ const f=fixture();assert.equal((await f.call({query:{q:'',sort:'last_order_date',dir:'desc'}})).status,200);
+ assert.deepEqual(f.calls.at(-1),{kind:'customers',id:undefined,q:'',page:0,limit:50,sort:'last_order_date',dir:'desc'});
+ for(const query of [{sort:'amount_spent'},{sort:'name',dir:'sideways'},{sort:['name']}]){const g=fixture();assert.equal((await g.call({query})).status,400);}
+});

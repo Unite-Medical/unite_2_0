@@ -1,9 +1,30 @@
-import { useState } from 'react';
 import { AdminShell } from '../../components/layout/AdminShell.jsx';
+import { DataTable } from '../../components/ui/data-table.jsx';
+import { Badge } from '../../components/ui/badge.jsx';
 import readiness from '../../data/barcodeReadiness.generated.json';
-import { D } from '../../tokens.js';
+import '../../styles/ui.css';
 
-export function AdminBarcodes(){
- const queue=readiness.queue;const registry={variant_count:readiness.summary.variants,identifiers:{length:readiness.summary.mapped},missing:{length:readiness.summary.missing},conflicts:readiness.conflicts};const [filter,setFilter]=useState('launch_operational');const rows=filter==='all'?queue:queue.filter((row)=>row.priority===filter);
- return <AdminShell active="barcodes"><main style={{padding:40,maxWidth:1320}}><p style={{fontFamily:D.mono,fontSize:11,letterSpacing:1.2,color:D.plum}}>WAREHOUSE · BARCODE READINESS</p><h1 style={{fontFamily:D.display,fontWeight:400,fontSize:48,margin:'8px 0'}}>Barcode work queue</h1><p style={{maxWidth:800,color:D.ink2}}>Conflicting codes fail closed. Missing codes do not receive stock until a manufacturer mapping or approved internal label is recorded.</p><div style={{display:'flex',gap:12,margin:'24px 0',flexWrap:'wrap'}}>{[['Variants',registry.variant_count],['Mapped',registry.identifiers.length],['Missing',registry.missing.length],['Conflicts',registry.conflicts.length],['Launch + stock priority',queue.filter((r)=>r.priority==='launch_operational').length]].map(([label,value])=><div key={label} style={{border:`1px solid ${D.line}`,padding:'14px 18px',borderRadius:6,minWidth:140}}><div style={{fontSize:11,color:D.ink2}}>{label}</div><strong style={{fontSize:26}}>{value}</strong></div>)}</div><div style={{display:'flex',gap:8,marginBottom:16}}>{['launch_operational','launch_no_stock','not_launching','all'].map((key)=><button key={key} onClick={()=>setFilter(key)} style={{padding:'9px 12px',border:`1px solid ${D.line}`,background:filter===key?D.plum:D.card,color:filter===key?D.paper:D.ink,borderRadius:4}}>{key.replaceAll('_',' ')}</button>)}</div><div style={{border:`1px solid ${D.line}`,borderRadius:8,overflow:'hidden'}}><table style={{width:'100%',borderCollapse:'collapse',fontSize:13}}><thead><tr style={{background:D.paperAlt,textAlign:'left'}}><th style={{padding:12}}>PRIORITY</th><th style={{padding:12}}>SKU</th><th style={{padding:12}}>PRODUCT</th><th style={{padding:12}}>VARIANT</th><th style={{padding:12}}>ACTION</th></tr></thead><tbody>{rows.map((row)=><tr key={row.product_handle+row.sku+row.variant_title} style={{borderTop:`1px solid ${D.line}`}}><td style={{padding:12}}>{row.priority.replaceAll('_',' ')}</td><td style={{padding:12,fontFamily:D.mono}}>{row.sku||'NO SKU'}</td><td style={{padding:12}}>{row.product_name}</td><td style={{padding:12}}>{row.variant_title}</td><td style={{padding:12}}>Scan manufacturer code or issue internal label</td></tr>)}</tbody></table></div>{registry.conflicts.length>0&&<section style={{marginTop:30}}><h2>Cross-SKU conflicts</h2>{registry.conflicts.map((row)=><p key={row.value}><code>{row.value}</code> → {row.skus.join(', ')}</p>)}</section>}</main></AdminShell>;
+const PRIORITY = { launch_operational: 'Launch · in stock', launch_no_stock: 'Launch · no stock', not_launching: 'Not launching' };
+const priorityLabel = (v) => PRIORITY[v] || String(v || '').replaceAll('_', ' ');
+const rowId = (r) => `${r.product_handle}|${r.sku}|${r.variant_title}`;
+
+export function AdminBarcodes() {
+  const queue = readiness.queue, summary = readiness.summary, conflicts = readiness.conflicts || [];
+  const stats = [['Variants', summary.variants], ['Mapped', summary.mapped], ['Missing', summary.missing], ['Conflicts', conflicts.length], ['Launch · in stock', queue.filter((r) => r.priority === 'launch_operational').length]];
+  return <AdminShell active="barcodes"><main id="main" className="ui-root mx-auto w-full max-w-[1500px] px-4 py-6 font-sans text-sm text-ink md:px-8"><div className="flex flex-col gap-5">
+    <header><h1 className="m-0 font-display text-2xl font-semibold text-ink">Barcode work queue</h1><p className="mt-1 max-w-3xl text-sm text-ink-2">Conflicting codes fail closed. Missing codes don’t receive stock until a manufacturer code or an approved internal label is recorded.</p></header>
+    <div className="grid grid-cols-2 gap-3 md:grid-cols-5">{stats.map(([label, value]) => <div key={label} className="rounded-xl border border-line bg-card px-4 py-3"><div className="text-xs text-ink-2">{label}</div><div className="mt-1 text-2xl font-semibold tabular-nums">{value}</div></div>)}</div>
+    <DataTable label="Variants" rows={queue} getRowId={rowId} pageSize={50} defaultTab="launch_operational" searchPlaceholder="Search SKU, product or variant"
+      tabs={[{ id: 'launch_operational', label: 'Launch · in stock', filter: (r) => r.priority === 'launch_operational' }, { id: 'launch_no_stock', label: 'Launch · no stock', filter: (r) => r.priority === 'launch_no_stock' }, { id: 'not_launching', label: 'Not launching', filter: (r) => r.priority === 'not_launching' }, { id: 'all', label: 'All' }]}
+      empty={<p className="p-6 text-ink-3">Nothing in this view.</p>}
+      mobileCard={(r) => <div className="flex flex-col gap-1"><div className="flex items-center justify-between gap-2"><span className="font-mono text-xs font-semibold">{r.sku || 'No SKU'}</span><Badge tone={r.priority === 'launch_operational' ? 'warn' : 'neutral'}>{priorityLabel(r.priority)}</Badge></div><div className="font-semibold">{r.product_name}</div><div className="text-xs text-ink-2">{r.variant_title}</div></div>}
+      columns={[
+        { id: 'sku', header: 'SKU', accessor: (r) => r.sku || '', cell: (r) => <span className="whitespace-nowrap font-mono text-xs">{r.sku || 'No SKU'}</span> },
+        { id: 'product', header: 'Product', accessor: 'product_name', cell: (r) => <span className="font-medium">{r.product_name}</span> },
+        { id: 'variant', header: 'Variant', accessor: 'variant_title', cell: (r) => <span className="text-ink-2">{r.variant_title}</span> },
+        { id: 'priority', header: 'Priority', accessor: 'priority', cell: (r) => <Badge tone={r.priority === 'launch_operational' ? 'warn' : 'neutral'}>{priorityLabel(r.priority)}</Badge> },
+        { id: 'next', header: 'Next step', sortable: false, cell: () => <span className="text-ink-2">Scan the manufacturer code or print an internal label</span> },
+      ]} />
+    {conflicts.length > 0 && <section className="rounded-xl border border-line bg-card p-4"><h2 className="m-0 text-base font-semibold">Cross-SKU conflicts</h2>{conflicts.map((row) => <p key={row.value} className="mb-0 mt-2"><code className="font-mono text-xs">{row.value}</code> → {row.skus.join(', ')}</p>)}</section>}
+  </div></main></AdminShell>;
 }

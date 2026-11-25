@@ -27,11 +27,19 @@ function viaBackendProxy() {
   return Boolean(API_BASE);
 }
 
+// Once the proxy says the sidecar isn't configured, skip the remaining per-SKU calls.
+let sidecarUnavailable = false;
 async function callSidecar({ method = 'GET', path }) {
-  return fetchJson(`${API_BASE}/proxy/forecast${path}`, {
-    method,
-    headers: { 'Content-Type': 'application/json' },
-  });
+  if (sidecarUnavailable) throw Object.assign(new Error('forecast_not_configured'), { status: 503 });
+  try {
+    return await fetchJson(`${API_BASE}/proxy/forecast${path}`, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  } catch (err) {
+    if (err.status === 503) sidecarUnavailable = true;
+    throw err;
+  }
 }
 
 /** Run-rate-derived stand-in for a Prophet horizon set. */

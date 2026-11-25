@@ -49,5 +49,5 @@ export default async function handler(req,res){
    tx`INSERT INTO um_rows(tbl,id,data) VALUES('workspace_resets',${id},${JSON.stringify(run)}::jsonb)`,
   ]);
   return sendJson(res,200,{ok:true,archived:results[2].length,run_id:id,counts:plan.counts});
- }catch(error){return sendJson(res,error.code==='22012'?409:500,{error:error.code==='22012'?'workspace_changed_refresh':'workspace_reset_unavailable'});}
+ }catch(error){console.error('workspace_reset_failed',error?.code||'',error?.message||'');return sendJson(res,error.code==='22012'?409:500,{error:error.code==='22012'?'workspace_changed_refresh':'workspace_reset_unavailable'});}
 }
