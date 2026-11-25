@@ -263,7 +263,7 @@ export function AdminFulfillment() {
           ))}
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'minmax(0,2.2fr) minmax(0,1fr)', gap: 20 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'minmax(0,2fr) minmax(22rem,1fr)', gap: 20 }}>
           {/* Orders + pipeline */}
           <div style={{ background: D.card, border: `1px solid ${D.line}`, borderRadius: 12, overflow: 'auto' }}>
             <div className="ui-root font-sans text-sm text-ink"><Table>
