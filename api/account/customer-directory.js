@@ -10,7 +10,7 @@ const DIRECTORY_SORTS = ['name','company','email','status','last_order_date','so
 export function customerDirectoryRecord(row) {
   const fields = ['id','name','first_name','last_name','company','email','phone','status','approval_status','account_rep','tags','notes','source_order_count','last_order_date'];
   const result = Object.fromEntries(fields.filter(key => Object.hasOwn(row,key)).map(key => [key,row[key]]));
-  result.addresses = (row.addresses || []).filter(a => !a.archived).map(a => Object.fromEntries(
+  result.addresses = (row.addresses || (row.default_address ? [row.default_address] : [])).filter(a => !a.archived).map(a => Object.fromEntries(
     ['id','recipient','company','address1','address2','city','province','zip','country','phone','is_default'].filter(key => Object.hasOwn(a,key)).map(key => [key,a[key]])));
   return result;
 }
