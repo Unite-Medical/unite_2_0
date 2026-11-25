@@ -200,7 +200,7 @@ export function FilterBar({ filters, values, onChange, onClear, className }) {
         {filters.map((f) => f.type === 'date' ? (
           <label key={f.id} className="flex h-10 items-center gap-2 rounded-lg border border-line bg-card px-3 text-sm text-ink-2 shadow-xs">
             <span className="whitespace-nowrap">{f.label}</span>
-            <input type="date" aria-label={f.label} value={values[f.id] || ''} onChange={(e) => onChange(f.id, e.target.value)} className="min-w-0 bg-transparent text-ink outline-none" />
+            <input type="date" aria-label={f.label} value={values[f.id] || ''} onChange={(e) => onChange(f.id, e.target.value)} style={{ border: 0, padding: 0, boxShadow: "none", background: "transparent" }} className="min-w-0 text-ink outline-none" />
           </label>
         ) : (
           <select key={f.id} aria-label={f.label} value={values[f.id] || ''} onChange={(e) => onChange(f.id, e.target.value)} className="h-10 max-w-[14rem] rounded-lg border border-line bg-card px-3 text-sm text-ink shadow-xs">
