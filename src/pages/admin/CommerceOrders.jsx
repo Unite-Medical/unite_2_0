@@ -70,17 +70,17 @@ function OrderList(){
             <span className="flex items-center justify-between gap-3 text-xs text-ink-2"><span className="truncate">{o.email||'Customer needs matching'}</span><span className="whitespace-nowrap">{date(o.created_at)}</span></span>
             <span className="flex flex-wrap gap-1.5"><StatusBadge value={commercePaymentStatus(o)}/><StatusBadge value={o.fulfillment_status}/><StatusBadge value={o.workflow_state}/></span>
           </Link></li>)}</ul><div className="hidden md:block"><Table>
-          <THead><tr><TH className="w-10"><span className="sr-only">Select</span></TH>{[["number","Order"],["created_at","Date"],["email","Customer"],["total","Total","right"],["payment","Payment"],["fulfillment_status","Fulfillment"],["workflow_state","Next step"]].map(([k,t,a])=>k==="payment"?<TH key={k}>{t}</TH>:<SortHeader key={k} id={k} align={a} sort={sort} onSort={v=>{setSort(v);setPage(0);}}>{t}</SortHeader>)}<TH className="hidden 2xl:table-cell">Source</TH></tr></THead>
+          <THead><tr><TH className="w-10"><span className="sr-only">Select</span></TH>{[["number","Order"],["created_at","Date"],["email","Customer"],["total","Total","right"],["payment","Payment"],["fulfillment_status","Fulfillment"],["workflow_state","Next step"]].map(([k,t,a])=>k==="payment"?<TH key={k}>{t}</TH>:<SortHeader key={k} id={k} align={a} sort={sort} onSort={v=>{setSort(v);setPage(0);}}>{t}</SortHeader>)}</tr></THead>
           <tbody>{rows.map(o=><TRow key={o.id}>
             <TD><SelectionCheck record={o} ids={selected} setIds={setSelected}/></TD>
-            <TD className="whitespace-nowrap"><Link className="font-semibold text-ink hover:text-brand" to={'/admin/orders/'+o.id}>{o.number}</Link>{o.draft&&<UiBadge className="ml-2">Draft</UiBadge>}</TD>
+            <TD className="whitespace-nowrap"><Link className="font-semibold text-ink hover:text-brand" to={'/admin/orders/'+o.id}>{o.number}</Link>{o.draft&&<UiBadge className="ml-2">Draft</UiBadge>}<span className="ml-2 inline-block align-middle"><ShopifyLink kind="orders" record={o} compact/></span></TD>
             <TD className="whitespace-nowrap text-ink-2">{date(o.created_at)}</TD>
             <TD className="max-w-[12rem] truncate">{o.customer_id&&!o.customer_id.startsWith('unmatched-')?<Link className="text-ink hover:text-brand" to={'/admin/customers/'+o.customer_id}>{o.email||o.customer_id}</Link>:<span className="text-warn">{o.email||'Customer needs matching'}</span>}</TD>
             <TD className="text-right font-mono tabular-nums">{money(o.total)}</TD>
             <TD><StatusBadge value={commercePaymentStatus(o)}/></TD>
             <TD><StatusBadge value={o.fulfillment_status}/></TD>
             <TD><StatusBadge value={o.workflow_state}/></TD>
-            <TD className="hidden 2xl:table-cell"><ShopifyLink kind="orders" record={o} compact/></TD>
+            
           </TRow>)}</tbody>
         </Table></div></>:<EmptyState icon={PackageSearch} title={q||filter?'No orders match':'No orders yet'} description={q||filter?'Try a different search or status tab.':'Orders you create or import will appear here.'} action={q||filter?<Button onClick={()=>{setQ('');setFilter('');setPage(0);}}>Clear filters</Button>:<ButtonLink variant="primary" to="/admin/orders/new"><Plus className="h-4 w-4" aria-hidden/>Create order</ButtonLink>}/>}
         <Pager page={page} total={data?.total||0} onChange={setPage}/>
