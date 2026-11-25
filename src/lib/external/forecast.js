@@ -37,7 +37,7 @@ async function callSidecar({ method = 'GET', path }) {
       headers: { 'Content-Type': 'application/json' },
     });
   } catch (err) {
-    if (err.status === 503) sidecarUnavailable = true;
+    if (err.status === 503 && /"error":"not_configured"/.test(err.body || '')) sidecarUnavailable = true;
     throw err;
   }
 }

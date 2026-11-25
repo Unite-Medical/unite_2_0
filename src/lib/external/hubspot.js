@@ -52,7 +52,7 @@ async function callHubSpot({ method = 'GET', path, body }) {
         body: body ? JSON.stringify(body) : undefined,
       });
     } catch (err) {
-      if (err.status === 503) proxyUnavailable = true;
+      if (err.status === 503 && /"error":"not_configured"/.test(err.body || '')) proxyUnavailable = true;
       throw err;
     }
   }
