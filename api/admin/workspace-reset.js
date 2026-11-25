@@ -14,7 +14,8 @@ export default async function handler(req,res){
  try{
   const live=await authorizeLiveRequest(req,sql,{roles:['admin']});
   if(!live.ok)return sendJson(res,live.reason==='authentication_required'?401:403,{error:live.reason});
-  const rows=await sql`SELECT tbl,id,data,deleted,updated_at::text AS updated_at FROM um_rows WHERE deleted=false`;
+  // Only the fields the plan reads: whole rows exceed Neon's 64 MB response limit.
+  const rows=await sql`SELECT tbl,id,deleted,updated_at::text AS updated_at,CASE WHEN tbl='workspace_resets' THEN data ELSE jsonb_strip_nulls(jsonb_build_object('role',data->'role','roles',data->'roles','org_id',data->'org_id','user_id',data->'user_id','profile_id',data->'profile_id','customer_id',data->'customer_id','status',data->'status','table',data->'table','record_id',data->'record_id','legal_hold',data->'legal_hold','workspace_internal',data->'workspace_internal')) END AS data FROM um_rows WHERE deleted=false`;
   const plan=planWorkspaceReset(rows);
   const history=rows.filter(r=>r.tbl==='workspace_resets').map(r=>({id:r.id,...r.data})).sort((a,b)=>b.created_at.localeCompare(a.created_at));
   if(req.method==='GET')return sendJson(res,200,{ok:true,...plan,targets:undefined,history,preserved_counts:Object.fromEntries([...new Set(rows.map(r=>r.tbl))].map(tbl=>[tbl,rows.filter(r=>r.tbl===tbl).length-(plan.counts[tbl]||0)]).filter(([,n])=>n>0)),environment:'staging'});
@@ -49,5 +50,5 @@ export default async function handler(req,res){
    tx`INSERT INTO um_rows(tbl,id,data) VALUES('workspace_resets',${id},${JSON.stringify(run)}::jsonb)`,
   ]);
   return sendJson(res,200,{ok:true,archived:results[2].length,run_id:id,counts:plan.counts});
- }catch(error){return sendJson(res,error.code==='22012'?409:500,{error:error.code==='22012'?'workspace_changed_refresh':'workspace_reset_unavailable'});}
+ }catch(error){console.error('workspace_reset_failed',error?.code||'',error?.message||'');return sendJson(res,error.code==='22012'?409:500,{error:error.code==='22012'?'workspace_changed_refresh':'workspace_reset_unavailable'});}
 }

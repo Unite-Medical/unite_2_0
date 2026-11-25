@@ -3,6 +3,7 @@ const SalesPurchases=lazy(()=>import('./pages/SalesOperations.jsx').then(m=>({de
 const NotFound = lazy(() => import('./pages/NotFound.jsx').then(m=>({default:m.NotFound})));
 import { AnalyticsPageTracker } from './components/AnalyticsPageTracker.jsx';
 const WarehouseMobile = lazy(() => import('./pages/WarehouseMobile.jsx').then(m=>({default:m.WarehouseMobile})));
+const WarehouseLabels = lazy(() => import('./pages/admin/WarehouseLabels.jsx').then(m=>({default:m.WarehouseLabels})));
 const StaffShipments = lazy(() => import('./pages/admin/StaffShipments.jsx').then(m=>({default:m.StaffShipments})));
 const AdminDecisions = lazy(() => import('./pages/admin/AdminDecisions.jsx').then(m=>({default:m.AdminDecisions})));
 const AdminRefundReviews = lazy(() => import('./pages/admin/AdminRefundReviews.jsx').then(m=>({default:m.AdminRefundReviews})));
@@ -230,6 +231,7 @@ export default function App() {
           <Route path="/activate" element={<SessionStartup><ActivateAccount /></SessionStartup>} />
           <Route path="/account/documents" element={<RequireSession roles={['customer','distributor']}><AccountDocuments /></RequireSession>} />
           <Route path="/staff/welllink" element={<RequireSession roles={['admin','sales','sales_manager','finance','warehouse_operator','warehouse_manager']}><AdminWellLink /></RequireSession>} />
+          <Route path="/warehouse/labels" element={<RequireSession roles={['admin','warehouse_manager','warehouse_operator']}><WarehouseLabels /></RequireSession>} />
           <Route path="/warehouse" element={<RequireSession roles={['admin','warehouse_manager','warehouse_operator']}><WarehouseMobile /></RequireSession>} />
           <Route path="/work" element={<RequireSession roles={['admin','sales','sales_manager','customer_service','warehouse_operator','warehouse_manager','finance','sourcing','sourcing_manager']}><StaffWork /></RequireSession>} />
           <Route path="/admin/packing" element={<RequireAdmin><AdminPacking /></RequireAdmin>} />
@@ -329,6 +331,7 @@ export default function App() {
           <Route path="/admin/inventory/transfers" element={<RequireAdmin><AdminTransfers /></RequireAdmin>} />
           <Route path="/admin/webhooks"         element={<RequireAdmin><AdminWebhooks /></RequireAdmin>} />
 
+          <Route path="/shop" element={<Navigate to="/catalog" replace />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>

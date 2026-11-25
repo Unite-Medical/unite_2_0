@@ -40,13 +40,21 @@ function viaBackendProxy() {
   return Boolean(API_BASE);
 }
 
+// Once the proxy says HubSpot isn't configured, stop sending the rest of the page's requests.
+let proxyUnavailable = false;
 async function callHubSpot({ method = 'GET', path, body }) {
   if (viaBackendProxy()) {
-    return fetchJson(`${API_BASE}/proxy/hubspot${path}`, {
-      method,
-      headers: { 'Content-Type': 'application/json' },
-      body: body ? JSON.stringify(body) : undefined,
-    });
+    if (proxyUnavailable) throw Object.assign(new Error('hubspot_not_configured'), { status: 503 });
+    try {
+      return await fetchJson(`${API_BASE}/proxy/hubspot${path}`, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: body ? JSON.stringify(body) : undefined,
+      });
+    } catch (err) {
+      if (err.status === 503 && /"error":"not_configured"/.test(err.body || '')) proxyUnavailable = true;
+      throw err;
+    }
   }
   return fetchJson(`${HUBSPOT_BASE}${path}`, {
     method,

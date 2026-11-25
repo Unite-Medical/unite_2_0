@@ -4,6 +4,8 @@ import {Badge as UiBadge} from '../../components/ui/badge.jsx';
 import {Card as UiCard} from '../../components/ui/card.jsx';
 import {Input} from '../../components/ui/input.jsx';
 import {Table,THead,TRow,TH,TD} from '../../components/ui/table.jsx';
+import {SortHeader,FilterBar} from '../../components/ui/data-table.jsx';
+import {ORDER_FILTERS,facetQuery} from '../../lib/tableFilters.js';
 import {EmptyState} from '../../components/ui/empty-state.jsx';
 import {StatusBadge} from '../../components/ui/status-badge.jsx';
 import {cn} from '../../lib/cn.js';
@@ -40,8 +42,8 @@ export function CommerceOrders(){const {id}=useParams();return <AdminShell activ
 const ORDER_TABS=[['','All'],['needs_review','Needs review'],['waiting_stock','Waiting for stock'],['waiting_payment','Waiting for payment'],['waiting_response','Waiting for response'],['archived','Archived']];
 function OrderList(){
   const [selected,setSelected]=useAssistantSelection('orders');
-  const [params]=useSearchParams(),[q,setQ]=useState(params.get('search')||''),[page,setPage]=useState(0),[filter,setFilter]=useState('');
-  const customer=params.get('customer')||'',{data,error,loading}=useCommerce({kind:'orders',q,page,filter,customer_id:customer,selected_ids:params.get('selected')?selected:undefined});
+  const [params]=useSearchParams(),[q,setQ]=useState(params.get('search')||''),[page,setPage]=useState(0),[filter,setFilter]=useState(''),[sort,setSort]=useState(null),[facets,setFacetValues]=useState({});
+  const customer=params.get('customer')||'',{data,error,loading}=useCommerce({kind:'orders',q,page,filter,...facetQuery(facets),customer_id:customer,sort:sort?.id,dir:sort?.dir,selected_ids:params.get('selected')?selected:undefined});
   const rows=data?.rows||[];
   return <div className="flex flex-col gap-5">
     <div className="flex flex-wrap items-end justify-between gap-4">
@@ -63,23 +65,24 @@ function OrderList(){
         </div>
         <div className="pb-3 md:w-80 md:pb-0"><Input icon={Search} aria-label="Search orders" type="search" placeholder="Order number, email, PO or tag" value={q} onChange={e=>{setQ(e.target.value);setPage(0);}}/></div>
       </div>
+      <FilterBar className="border-b border-line px-4 py-3" filters={ORDER_FILTERS} values={facets} onChange={(k,v)=>{setFacetValues(f=>({...f,[k]:v}));setPage(0);}} onClear={()=>{setFacetValues({});setPage(0);}}/>
       <LoadingError loading={loading} error={error}>
         {rows.length?<><ul className="m-0 list-none divide-y divide-line p-0 md:hidden">{rows.map(o=><li key={o.id} className="flex items-start gap-1 pl-2"><span className="flex h-11 w-11 shrink-0 items-center justify-center [&_input]:h-5 [&_input]:w-5"><SelectionCheck record={o} ids={selected} setIds={setSelected}/></span><Link to={'/admin/orders/'+o.id} className="flex min-w-0 flex-1 flex-col gap-2 py-3 pr-4 text-ink no-underline">
             <span className="flex items-center justify-between gap-3"><span className="font-semibold">{o.number}{o.draft&&<UiBadge className="ml-2">Draft</UiBadge>}</span><span className="font-mono tabular-nums">{money(o.total)}</span></span>
             <span className="flex items-center justify-between gap-3 text-xs text-ink-2"><span className="truncate">{o.email||'Customer needs matching'}</span><span className="whitespace-nowrap">{date(o.created_at)}</span></span>
             <span className="flex flex-wrap gap-1.5"><StatusBadge value={commercePaymentStatus(o)}/><StatusBadge value={o.fulfillment_status}/><StatusBadge value={o.workflow_state}/></span>
           </Link></li>)}</ul><div className="hidden md:block"><Table>
-          <THead><tr><TH className="w-10"><span className="sr-only">Select</span></TH><TH>Order</TH><TH>Date</TH><TH>Customer</TH><TH className="text-right">Total</TH><TH>Payment</TH><TH>Fulfillment</TH><TH>Next step</TH><TH>Source</TH></tr></THead>
+          <THead><tr><TH className="w-10"><span className="sr-only">Select</span></TH>{[["number","Order"],["created_at","Date"],["email","Customer"],["total","Total","right"],["payment","Payment"],["fulfillment_status","Fulfillment"],["workflow_state","Next step"]].map(([k,t,a])=>k==="payment"?<TH key={k}>{t}</TH>:<SortHeader key={k} id={k} align={a} sort={sort} onSort={v=>{setSort(v);setPage(0);}}>{t}</SortHeader>)}</tr></THead>
           <tbody>{rows.map(o=><TRow key={o.id}>
             <TD><SelectionCheck record={o} ids={selected} setIds={setSelected}/></TD>
-            <TD className="whitespace-nowrap"><Link className="font-semibold text-ink hover:text-brand" to={'/admin/orders/'+o.id}>{o.number}</Link>{o.draft&&<UiBadge className="ml-2">Draft</UiBadge>}</TD>
+            <TD className="whitespace-nowrap"><Link className="font-semibold text-ink hover:text-brand" to={'/admin/orders/'+o.id}>{o.number}</Link>{o.draft&&<UiBadge className="ml-2">Draft</UiBadge>}<span className="ml-2 inline-block align-middle"><ShopifyLink kind="orders" record={o} compact/></span></TD>
             <TD className="whitespace-nowrap text-ink-2">{date(o.created_at)}</TD>
-            <TD className="max-w-64 truncate">{o.customer_id&&!o.customer_id.startsWith('unmatched-')?<Link className="text-ink hover:text-brand" to={'/admin/customers/'+o.customer_id}>{o.email||o.customer_id}</Link>:<span className="text-warn">{o.email||'Customer needs matching'}</span>}</TD>
+            <TD className="max-w-[12rem] truncate">{o.customer_id&&!o.customer_id.startsWith('unmatched-')?<Link className="text-ink hover:text-brand" to={'/admin/customers/'+o.customer_id}>{o.email||o.customer_id}</Link>:<span className="text-warn">{o.email||'Customer needs matching'}</span>}</TD>
             <TD className="text-right font-mono tabular-nums">{money(o.total)}</TD>
             <TD><StatusBadge value={commercePaymentStatus(o)}/></TD>
             <TD><StatusBadge value={o.fulfillment_status}/></TD>
             <TD><StatusBadge value={o.workflow_state}/></TD>
-            <TD><ShopifyLink kind="orders" record={o} compact/></TD>
+            
           </TRow>)}</tbody>
         </Table></div></>:<EmptyState icon={PackageSearch} title={q||filter?'No orders match':'No orders yet'} description={q||filter?'Try a different search or status tab.':'Orders you create or import will appear here.'} action={q||filter?<Button onClick={()=>{setQ('');setFilter('');setPage(0);}}>Clear filters</Button>:<ButtonLink variant="primary" to="/admin/orders/new"><Plus className="h-4 w-4" aria-hidden/>Create order</ButtonLink>}/>}
         <Pager page={page} total={data?.total||0} onChange={setPage}/>

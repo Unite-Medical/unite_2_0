@@ -5,8 +5,12 @@ import { AdminCard } from '../../components/layout/AdminCard.jsx';
 import { db } from '../../lib/db.js';
 import { useViewport } from '../../lib/viewport.js';
 import { lots as lotsApi } from '../../lib/wms/lots.js';
+import { DataTable } from '../../components/ui/data-table.jsx';
+import '../../styles/ui.css';
 
 const INPUT = { padding: '12px 14px', borderRadius: 10, border: `1px solid ${D.line}`, fontFamily: 'inherit', fontSize: 14, color: D.ink, background: D.card, minWidth: 220 };
+
+const warehouseName = (id) => db.get('warehouses', id)?.name || id || '—';
 
 export function AdminLots() {
   const { isMobile } = useViewport();
@@ -73,46 +77,33 @@ export function AdminLots() {
         <div style={{ height: 14 }} />
 
         <AdminCard title={`Expiring within 120 days (${expiring.length})`}>
-          {expiring.length === 0 ? <div style={{ color: D.ink3, fontSize: 13 }}>Nothing expiring soon.</div> : (
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
-              <thead><tr style={{ fontSize: 12, fontWeight: 600, color: D.ink2 }}>{['SKU', 'Lot', 'Warehouse', 'Expires', 'Remaining'].map((h) => <th key={h} style={{ padding: '8px 12px', textAlign: 'left', borderBottom: `1px solid ${D.line}` }}>{h}</th>)}</tr></thead>
-              <tbody>
-                {expiring.map((l) => (
-                  <tr key={l.id} style={{ borderTop: `1px solid ${D.line}` }}>
-                    <td style={{ padding: '8px 12px', fontFamily: D.mono, fontSize: 12 }}>{l.product_sku}</td>
-                    <td style={{ padding: '8px 12px', fontFamily: D.mono, fontSize: 12 }}>{l.lot_number}</td>
-                    <td style={{ padding: '8px 12px' }}>{l.warehouse_id}</td>
-                    <td style={{ padding: '8px 12px', color: D.terra }}>{l.expiration_date}</td>
-                    <td style={{ padding: '8px 12px', fontFamily: D.mono }}>{l.qty_remaining}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
+          <div className="ui-root font-sans text-sm text-ink"><DataTable label="Expiring lots" rows={expiring} searchPlaceholder="Search SKU or lot" defaultSort={{ id: 'exp', dir: 'asc' }}
+            filters={[{ id: 'wh', label: 'Warehouse', value: (l) => warehouseName(l.warehouse_id) }]}
+            empty={<p className="p-6 text-ink-3">Nothing expiring soon.</p>}
+            columns={[
+              { id: 'sku', header: 'SKU', accessor: 'product_sku', className: 'font-mono text-xs' },
+              { id: 'lot', header: 'Lot', accessor: 'lot_number', className: 'font-mono text-xs' },
+              { id: 'wh', header: 'Warehouse', sortValue: (l) => warehouseName(l.warehouse_id), cell: (l) => warehouseName(l.warehouse_id) },
+              { id: 'exp', header: 'Expires', accessor: 'expiration_date', cell: (l) => <span className="text-warn">{l.expiration_date}</span> },
+              { id: 'left', header: 'Remaining', align: 'right', sortValue: (l) => Number(l.qty_remaining) },
+            ]} /></div>
         </AdminCard>
 
         <div style={{ height: 14 }} />
 
         <AdminCard title={`Active lots (${live.length})`}>
-          {live.length === 0 ? <div style={{ color: D.ink3, fontSize: 13 }}>No lots yet. Lots appear here after a purchase order is received with lot numbers and expiry dates.</div> : (
-            <div className="um-scroll-x">
-              <table style={{ width: '100%', minWidth: 640, borderCollapse: 'collapse', fontSize: 13 }}>
-                <thead><tr style={{ fontSize: 12, fontWeight: 600, color: D.ink2 }}>{['SKU', 'Lot', 'Warehouse', 'Expires', 'Received', 'Remaining'].map((h) => <th key={h} style={{ padding: '8px 12px', textAlign: 'left', borderBottom: `1px solid ${D.line}` }}>{h}</th>)}</tr></thead>
-                <tbody>
-                  {live.map((l) => (
-                    <tr key={l.id} style={{ borderTop: `1px solid ${D.line}` }}>
-                      <td style={{ padding: '8px 12px', fontFamily: D.mono, fontSize: 12 }}>{l.product_sku}</td>
-                      <td style={{ padding: '8px 12px', fontFamily: D.mono, fontSize: 12 }}>{l.lot_number}</td>
-                      <td style={{ padding: '8px 12px' }}>{l.warehouse_id}</td>
-                      <td style={{ padding: '8px 12px', color: D.ink2 }}>{l.expiration_date || '—'}</td>
-                      <td style={{ padding: '8px 12px', fontFamily: D.mono }}>{l.qty_received}</td>
-                      <td style={{ padding: '8px 12px', fontFamily: D.mono }}>{l.qty_remaining}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
+          <div className="ui-root font-sans text-sm text-ink"><DataTable label="Lots" rows={live} searchPlaceholder="Search SKU or lot" defaultSort={{ id: 'exp', dir: 'asc' }}
+            tabs={[{ id: 'all', label: 'All' }, { id: 'exp', label: 'Has expiry', filter: (l) => Boolean(l.expiration_date) }, { id: 'noexp', label: 'No expiry recorded', filter: (l) => !l.expiration_date }]}
+            filters={[{ id: 'wh', label: 'Warehouse', value: (l) => warehouseName(l.warehouse_id) }]}
+            empty={<p className="p-6 text-ink-3">No lots yet. Lots appear here after a purchase order is received with lot numbers and expiry dates.</p>}
+            columns={[
+              { id: 'sku', header: 'SKU', accessor: 'product_sku', className: 'font-mono text-xs' },
+              { id: 'lot', header: 'Lot', accessor: 'lot_number', className: 'font-mono text-xs' },
+              { id: 'wh', header: 'Warehouse', sortValue: (l) => warehouseName(l.warehouse_id), cell: (l) => warehouseName(l.warehouse_id) },
+              { id: 'exp', header: 'Expires', accessor: 'expiration_date', cell: (l) => l.expiration_date || '—' },
+              { id: 'recv', header: 'Received', align: 'right', sortValue: (l) => Number(l.qty_received) },
+              { id: 'left', header: 'Remaining', align: 'right', sortValue: (l) => Number(l.qty_remaining) },
+            ]} /></div>
         </AdminCard>
       </div>
     </AdminShell>

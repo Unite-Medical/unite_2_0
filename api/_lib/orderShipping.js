@@ -1,14 +1,15 @@
 import { paymentReleaseGate } from './financialDecisions.js';
 import { orderApprovalGate } from './orderApproval.js';
 import crypto from 'node:crypto';
-import {validShippingOrigin} from './shippingOrigin.js';
+import {shippingOrigin,validShippingOrigin} from './shippingOrigin.js';
+import {shippingPackage} from './checkoutEstimate.js';
 
 function stableId(prefix, value) {
   return `${prefix}_${crypto.createHash('sha256').update(String(value)).digest('hex').slice(0, 20)}`;
 }
 function number(value) { return Number(value) || 0; }
 
-export function buildLabelRequest({ order, address, items = [], now = new Date() } = {}) {
+export function buildLabelRequest({ order, address, items = [], now = new Date(), fallback = null } = {}) {
   if (order?.shipment_plan?.length > 1) return { ok: false, reason: 'split_shipment_fulfillment_review_required' };
   if (!order) return { ok: false, reason: 'order_not_found' };
   const approvalGate=orderApprovalGate(order); if(!approvalGate.ok)return approvalGate;
@@ -19,9 +20,10 @@ export function buildLabelRequest({ order, address, items = [], now = new Date()
   if (!items.length) return { ok: false, reason: 'order_lines_required' };
   const service = order.ship_method || 'fedex_ground';
   const carrier = order.carrier || (service.startsWith('ups') ? 'ups' : service.startsWith('usps') ? 'stamps_com' : 'fedex');
-  const pack=order.shipping_package;
+  const pack=order.shipping_package||fallback?.shipping_package;
+  const origin=validShippingOrigin(order.ship_from)?order.ship_from:fallback?.ship_from;
   if(!pack?.weight?.value||!pack?.dimensions?.length||!pack?.dimensions?.width||!pack?.dimensions?.height)return {ok:false,reason:'verified_shipping_package_required'};
-  if(!validShippingOrigin(order.ship_from))return {ok:false,reason:'verified_shipping_origin_required'};
+  if(!validShippingOrigin(origin))return {ok:false,reason:'verified_shipping_origin_required'};
   const shipDate = (now instanceof Date ? now : new Date(now)).toISOString().slice(0, 10);
   return {
     ok: true,
@@ -34,7 +36,7 @@ export function buildLabelRequest({ order, address, items = [], now = new Date()
       shipDate,
       weight: pack.weight,
       dimensions: pack.dimensions,
-      shipFrom: order.ship_from,
+      shipFrom: origin,
       shipTo: {
         name: address.recipient || address.label || order.customer_name,
         company: address.company || order.customer_name,
@@ -112,6 +114,17 @@ async function shipstationLabel(body, { fetchImpl = fetch } = {}) {
   }
 }
 
+// Staff-entered orders carry no checkout rate: ship the product's approved carton from the warehouse.
+// Approval fingerprints stay on the stored order; this only fills the label request.
+export function warehouseShipping(order, items = [], products = [], env = process.env) {
+  if (!order || order.fulfillment_mode || (order.shipping_package && validShippingOrigin(order.ship_from))) return null;
+  const pack = order.shipping_package ? null : shippingPackage(items.map((i) => ({ sku: i.sku, qty: Number(i.qty) })), products);
+  return {
+    ...(pack?.ok ? { shipping_package: { weight: pack.weight, dimensions: pack.dimensions } } : {}),
+    ...(validShippingOrigin(order.ship_from) ? {} : { ship_from: shippingOrigin(env) }),
+  };
+}
+
 export async function createOrderLabel(sql, orderId, { actorId = 'system', fetchImpl = fetch } = {}) {
   const existingShipment = (await rowsWhere(sql, 'shipments', 'order_id', orderId))[0];
   if (existingShipment?.status === 'label_created' || existingShipment?.status === 'shipped') {
@@ -119,8 +132,10 @@ export async function createOrderLabel(sql, orderId, { actorId = 'system', fetch
   }
   const order = await getRow(sql, 'orders', orderId);
   const items = await rowsWhere(sql, 'order_items', 'order_id', orderId);
+  const needsShipping = order && !order.fulfillment_mode && (!order.shipping_package || !validShippingOrigin(order.ship_from));
+  const products = needsShipping ? (await sql`SELECT data FROM um_rows WHERE tbl='products' AND deleted=false AND (data->>'sku' = ANY(${items.map((i) => String(i.sku))}) OR data->'variants' @> ANY(${items.map((i) => JSON.stringify([{ sku: String(i.sku) }]))}::jsonb[]))`).map((r) => r.data) : [];
   const address = order?.ship_to_address_id ? await getRow(sql, 'addresses', order.ship_to_address_id) : null;
-  const request = buildLabelRequest({ order, address, items });
+  const request = buildLabelRequest({ order, address, items, fallback: needsShipping ? warehouseShipping(order, items, products) : null });
   if (!request.ok) return request;
 
   const operationId = stableId('labelop', orderId);
@@ -189,4 +204,25 @@ export async function createOrderLabel(sql, orderId, { actorId = 'system', fetch
     return { ok: false, reason: 'label_reconciliation_required' };
   }
   return applied;
+}
+
+export const LABEL_ROLES = ['admin', 'warehouse_manager', 'warehouse_operator'];
+
+// Released single-shipment parcel orders the warehouse can buy (or has bought) a label for.
+export function readyToShipOrders({ orders = [], items = [], addresses = [], shipments = [] } = {}) {
+  return orders
+    .filter((o) => ['inventory_reserved', 'ready_to_ship'].includes(o.status) && !o.fulfillment_mode && !(o.shipment_plan?.length > 1))
+    .map((o) => {
+      const a = addresses.find((r) => r.id === o.ship_to_address_id) || {};
+      const shp = shipments.find((r) => r.order_id === o.id && r.tracking_number && r.tracking_number === o.tracking_number) || {};
+      return {
+        id: o.id, status: o.status, customer_name: o.customer_name || '', po_number: o.po_number || '',
+        placed_at: o.placed_at || o.created_at || null, inventory_reserved_at: o.inventory_reserved_at || null,
+        carrier: o.carrier || null, tracking_number: o.tracking_number || null, label_created_at: o.label_created_at || null,
+        service: shp.service || null, label_cost: shp.label_cost ?? null, total: Number(o.total) || 0,
+        ship_to: { name: a.recipient || a.company || '', city: a.city || '', state: a.state || a.province || '', zip: a.zip || '' },
+        items: items.filter((i) => i.order_id === o.id && !i.removed).map((i) => ({ sku: i.sku, name: i.name, qty: Number(i.qty ?? i.quantity) || 0 })),
+      };
+    })
+    .sort((x, y) => String(x.inventory_reserved_at || x.placed_at || '').localeCompare(String(y.inventory_reserved_at || y.placed_at || '')));
 }

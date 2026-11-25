@@ -20,7 +20,7 @@ export function createSessionToken(session, { secret, now = Date.now(), ttlMs = 
   const key = secretOrThrow(secret);
   const payload = {
     user_id: String(session.user_id),
-    email: session.email ? String(session.email).toLowerCase() : null,
+    email: (session.login_email || session.email) ? String(session.login_email || session.email).toLowerCase() : null,
     name: session.name || null,
     role: String(session.role || ''),
     roles: Array.isArray(session.roles)?session.roles:[String(session.role||'')],
@@ -76,13 +76,25 @@ export function passwordNeedsUpgrade(profile) {
   return profile?.password_algorithm !== 'scrypt-v1';
 }
 
+// Staging only: UNITE_STAGING_ALIAS_IDENTITIES="alias@x=person@x,..." lets QA aliases act as the named person. Never set in production.
+export function aliasIdentityMap(env = process.env) {
+  if (env.VERCEL_ENV === 'production' && !String(env.VERCEL_PROJECT_PRODUCTION_URL || '').toLowerCase().startsWith('staging.')) return new Map();
+  return new Map(String(env.UNITE_STAGING_ALIAS_IDENTITIES || '').split(',').map((pair) => pair.split('=').map((v) => String(v || '').trim().toLowerCase())).filter(([alias, target]) => alias && target && alias !== target));
+}
+
+export function withPolicyIdentity(session, env = process.env) {
+  if (!session || session.login_email) return session;
+  const login = String(session.email || '').trim().toLowerCase(), target = aliasIdentityMap(env).get(login);
+  return target ? { ...session, email: target, login_email: session.email } : session;
+}
+
 export function authorizeLiveProfile(session, profile, { roles = null } = {}) {
   if (!session || !profile || String(profile.id) !== String(session.user_id)) return { ok: false, reason: 'profile_not_found' };
   if (profile.status !== 'active') return { ok: false, reason: 'profile_inactive' };
   if (![profile.role,...(profile.roles||[])].includes(session.role)) return { ok: false, reason: 'session_role_stale' };
   if (String(profile.org_id || '') !== String(session.org_id || '')) return { ok: false, reason: 'session_organization_stale' };
   if (Number(profile.session_revision || 0) !== Number(session.session_revision || 0)) return { ok: false, reason: 'session_revoked' };
-  if (String(profile.email||'').trim().toLowerCase()!==String(session.email||'').trim().toLowerCase()) return {ok:false,reason:'session_identity_stale'};
+  if (String(profile.email||'').trim().toLowerCase()!==String(session.login_email||session.email||'').trim().toLowerCase()) return {ok:false,reason:'session_identity_stale'};
   if (requiresMfa([profile.role,...(profile.roles||[])])&&session.mfa_verified!==true) return {ok:false,reason:'mfa_required'};
   if (roles && !roles.includes(session.role)) return { ok: false, reason: 'forbidden' };
   return { ok: true, profile };
@@ -101,7 +113,7 @@ export function sessionFromRequest(req, options = {}) {
   const bearer = authorization.startsWith('Bearer ') ? authorization.slice(7).trim() : null;
   const cookie = parseCookies(req.headers?.cookie || '')[COOKIE_NAME];
   const session=verifySessionToken(bearer || cookie, options);
-  return session && (!requiresMfa([session.role,...(session.roles||[])]) || session.mfa_verified===true) ? session : null;
+  return session && (!requiresMfa([session.role,...(session.roles||[])]) || session.mfa_verified===true) ? withPolicyIdentity(session) : null;
 }
 
 export async function authorizeLiveRequest(req, sql, { roles = null } = {}) {

@@ -60,7 +60,7 @@ export function AdminVendorApproval() {
     <AdminShell active="vendors">
       <div style={{ padding: `${isMobile ? 28 : 40}px ${padX}px ${isMobile ? 18 : 24}px`, borderBottom: `1px solid ${D.line}` }}>
         <div style={{ fontSize: 12, fontWeight: 600, color: D.ink2, marginBottom: 12 }}>Vendors</div>
-        <h1 style={{ fontFamily: D.display, fontSize: 28, fontWeight: 600, letterSpacing: -0.4, lineHeight: 1.02, margin: 0 }}>{vendors.length} vendors</h1>
+        <h1 style={{ fontFamily: D.display, fontSize: 28, fontWeight: 600, letterSpacing: -0.4, lineHeight: 1.02, margin: 0 }}>{vendors.length} {vendors.length===1?'vendor':'vendors'}</h1>
       </div>
       <div style={{ padding: isMobile ? 20 : 32, display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '320px 1fr', gap: 20 }}>
         <div style={{ background: D.card, borderRadius: 12, border: `1px solid ${D.line}`, overflow: 'hidden' }}>

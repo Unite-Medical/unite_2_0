@@ -27,11 +27,19 @@ function viaBackendProxy() {
   return Boolean(API_BASE);
 }
 
+// Once the proxy says the sidecar isn't configured, skip the remaining per-SKU calls.
+let sidecarUnavailable = false;
 async function callSidecar({ method = 'GET', path }) {
-  return fetchJson(`${API_BASE}/proxy/forecast${path}`, {
-    method,
-    headers: { 'Content-Type': 'application/json' },
-  });
+  if (sidecarUnavailable) throw Object.assign(new Error('forecast_not_configured'), { status: 503 });
+  try {
+    return await fetchJson(`${API_BASE}/proxy/forecast${path}`, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  } catch (err) {
+    if (err.status === 503 && /"error":"not_configured"/.test(err.body || '')) sidecarUnavailable = true;
+    throw err;
+  }
 }
 
 /** Run-rate-derived stand-in for a Prophet horizon set. */
@@ -91,7 +99,7 @@ export const forecast = {
    */
   async getForecastMap(skus) {
     const out = {};
-    await Promise.all(skus.map(async (sku) => {
+    const load = async (sku) => {
       try {
         const resp = await this.getForecast(sku);
         const h60 = (resp.horizons || []).find((h) => h.horizon_days === 60);
@@ -104,7 +112,10 @@ export const forecast = {
       } catch {
         // 404 (no forecast yet) or sidecar down — run-rate covers it.
       }
-    }));
+    };
+    // Probe with one SKU first so an unconfigured sidecar costs one request, not one per SKU.
+    if (skus.length) await load(skus[0]);
+    await Promise.all(skus.slice(1).map(load));
     return out;
   },
 

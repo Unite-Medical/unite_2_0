@@ -1,6 +1,8 @@
 import { ordinaryParcelCharge } from './launchPolicy.js';
 import crypto from 'node:crypto';
 import {shippingOrigin} from './shippingOrigin.js';
+export const CARD_SURCHARGE_RATE=0.03;
+export function cardSurcharge(amount,method){return method==='card'?Math.round(Math.round(Number(amount||0)*100)*CARD_SURCHARGE_RATE)/100:0;}
 export function estimateBinding(draft){return crypto.createHash('sha256').update(JSON.stringify({customer:draft.order.customer_id,exempt:draft.order.tax_exempt_basis,address:draft.address,lines:draft.lines.map(l=>[l.sku,l.qty,l.unit_price]),payment:draft.order.payment_method})).digest('hex');}
 export function validateEstimate(estimate,draft,optionId,now=Date.now()){
  if(!estimate||!Number.isFinite(Date.parse(estimate.expires_at))||Date.parse(estimate.expires_at)<=now||estimate.binding!==estimateBinding(draft))return {ok:false,reason:'refresh_shipping_and_tax'};
@@ -29,7 +31,7 @@ export async function calculateEstimate({draft,products,organization,fetchImpl=f
  const results=await Promise.allSettled(carriers.map(async carrier=>{
   const rates=await jsonFetch('https://ssapi.shipstation.com/shipments/getrates',{method:'POST',headers,body:JSON.stringify({carrierCode:carrier,fromPostalCode:env.UNITE_SHIP_FROM_ZIP,toState:draft.address.state,toCountry:draft.address.country||'US',toPostalCode:draft.address.zip,toCity:draft.address.city,weight:pack.weight,dimensions:pack.dimensions,confirmation:'delivery',residential:draft.address.residential===true})},fetchImpl);
   if(!Array.isArray(rates))throw new Error('invalid_rates');
-  return rates.filter(r=>r.serviceCode&&Number.isFinite(Number(r.shipmentCost))&&Number(r.shipmentCost)>=0).map(r=>({...r,carrier}));
+  return rates.filter(r=>r.serviceCode&&!/media_mail|library_mail/.test(r.serviceCode)&&Number.isFinite(Number(r.shipmentCost))&&Number(r.shipmentCost)>=0).map(r=>({...r,carrier}));
  }));
  const handling=organization.shipping_handling_flat??15;
  if(!Number.isFinite(Number(handling))||Number(handling)<0)return {ok:false,reason:'handling_policy_required'};
@@ -55,7 +57,9 @@ export async function calculateEstimate({draft,products,organization,fetchImpl=f
    if(!calculation.id||!Number.isInteger(calculation.tax_amount_exclusive)||calculation.tax_amount_exclusive<0)return {ok:false,reason:'invalid_tax_evidence'};
    tax=calculation.tax_amount_exclusive/100;taxId=calculation.id;
   }
-  options.push({id:crypto.randomUUID(),label:rate.serviceName||rate.serviceCode,service:rate.serviceCode,carrier:rate.carrier,freight,tax,total:Math.round((draft.order.subtotal+freight+tax)*100)/100,tax_calculation_id:taxId,tax_basis:exempt?'preserved_account_exemption':'stripe_tax',shipping_package:pack,ship_from:origin,carrier_cost:carrierCost,materials_markup_pct:charge.materials_markup_pct,calculated_shipping:charge.calculated_amount,handling:Number(handling)});
+  const surcharge=cardSurcharge(draft.order.subtotal+freight+tax,draft.order.payment_method);
+  options.push({id:crypto.randomUUID(),label:rate.serviceName||rate.serviceCode,service:rate.serviceCode,carrier:rate.carrier,freight,tax,card_surcharge:surcharge,total:Math.round((draft.order.subtotal+freight+tax+surcharge)*100)/100,tax_calculation_id:taxId,tax_basis:exempt?'preserved_account_exemption':'stripe_tax',shipping_package:pack,ship_from:origin,carrier_cost:carrierCost,materials_markup_pct:charge.materials_markup_pct,calculated_shipping:charge.calculated_amount,handling:Number(handling)});
  }
+ options.sort((a,b)=>a.total-b.total);
  return {ok:true,estimate:{id:crypto.randomUUID(),customer_id:draft.order.customer_id,binding:estimateBinding(draft),expires_at:new Date(now.getTime()+15*60000).toISOString(),created_at:now.toISOString(),options}};
 }

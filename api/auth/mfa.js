@@ -1,7 +1,7 @@
 import crypto from 'node:crypto';
 import {neon} from '@neondatabase/serverless';
 import {readRawBody,sendJson} from '../_lib/http.js';
-import {issueSession} from '../_lib/auth.js';
+import {issueSession,withPolicyIdentity} from '../_lib/auth.js';
 import {digestToken,openMfa,verifyTotp,requiresMfa} from '../_lib/mfa.js';
 export default async function handler(req,res){
  res.setHeader('Cache-Control','no-store, private');
@@ -36,6 +36,6 @@ export default async function handler(req,res){
   if(!results.length)return sendJson(res,409,{error:'sign_in_again'});
   const session={user_id:p.id,email:p.email,name:p.name,role:p.role,roles:[...new Set([p.role,...(p.roles||[])])],org_id:p.org_id,session_revision:Number(p.session_revision||0),mfa_verified:true};
   issueSession(res,session,{remember:body.remember===true});
-  return sendJson(res,200,{ok:true,session,...(recoveryCodes.length?{recovery_codes:recoveryCodes}:{})});
+  return sendJson(res,200,{ok:true,session:withPolicyIdentity(session),...(recoveryCodes.length?{recovery_codes:recoveryCodes}:{})});
  }catch{return sendJson(res,503,{error:'mfa_unavailable'});}
 }

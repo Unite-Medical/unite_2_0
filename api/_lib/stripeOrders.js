@@ -31,13 +31,12 @@ export async function createHostedOrderPayment({
   if (!order?.id) return { ok: false, reason: 'order_required' };
   if(['cancelled','refunded','shipped','delivered'].includes(order.status))return {ok:false,reason:'order_already_closed'};
   const gate=orderApprovalGate(order);if(!gate.ok)return gate;
-  if(order.payment_method==='card')return {ok:false,reason:'card_fee_policy_required'};
   const email = String(order.contact_email || '').trim().toLowerCase();
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return { ok: false, reason: 'customer_email_required' };
   if (!items.length) return { ok: false, reason: 'order_lines_required' };
   const amounts=items.map(item=>cents(item.ext_price ?? Number(item.qty)*Number(item.unit_price)));
-  const freight=cents(order.freight??order.shipping_cost??0),tax=cents(order.tax);
-  if(!amounts.every(v=>Number.isSafeInteger(v)&&v>0)||![freight,tax].every(v=>Number.isSafeInteger(v)&&v>=0)||amounts.reduce((a,b)=>a+b,0)+freight+tax!==cents(order.total))return {ok:false,reason:'payment_total_mismatch'};
+  const freight=cents(order.freight??order.shipping_cost??0),tax=cents(order.tax),surcharge=order.payment_method==='card'?cents(order.card_surcharge):0;
+  if(!amounts.every(v=>Number.isSafeInteger(v)&&v>0)||![freight,tax,surcharge].every(v=>Number.isSafeInteger(v)&&v>=0)||amounts.reduce((a,b)=>a+b,0)+freight+tax+surcharge!==cents(order.total))return {ok:false,reason:'payment_total_mismatch'};
 
   try {
     const customer = await stripePost('/customers', {
@@ -54,7 +53,7 @@ export async function createHostedOrderPayment({
       description: `Unite Medical order ${order.id}`,
       'metadata[order_id]': order.id,
       'metadata[organization_id]': order.customer_id,
-      'payment_settings[payment_method_types][0]': 'us_bank_account',
+      'payment_settings[payment_method_types][0]': order.payment_method === 'card' ? 'card' : 'us_bank_account',
     }, { stripeKey, fetchImpl, idempotencyKey: `order:${order.id}:invoice` });
 
     for (const [index, item] of items.entries()) {
@@ -84,6 +83,7 @@ export async function createHostedOrderPayment({
     }
 
     if(cents(order.tax)>0)await stripePost('/invoiceitems',{customer:customer.id,invoice:invoice.id,currency:'usd',amount:cents(order.tax),description:'Sales tax','metadata[order_id]':order.id},{stripeKey,fetchImpl,idempotencyKey:`order:${order.id}:tax`});
+    if(surcharge>0)await stripePost('/invoiceitems',{customer:customer.id,invoice:invoice.id,currency:'usd',amount:surcharge,description:'Card processing fee (3%)','metadata[order_id]':order.id,'metadata[sku]':'CARD_SURCHARGE'},{stripeKey,fetchImpl,idempotencyKey:`order:${order.id}:card_surcharge`});
     const finalized = await stripePost(`/invoices/${encodeURIComponent(invoice.id)}/finalize`, {}, {
       stripeKey, fetchImpl, idempotencyKey: `order:${order.id}:invoice:finalize`,
     });

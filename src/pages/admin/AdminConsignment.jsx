@@ -81,8 +81,8 @@ export function AdminConsignment() {
             <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(4,1fr)', gap: 12 }}>
               {[[String(inventory.reduce((a, b) => a + b.on_hand, 0)), 'Units on hand'], [String(inventory.length), 'Consignment SKUs'], [fmt.money(settlement.owed), 'Owed (sell-through)'], [String(settlement.units), 'Units sold']].map(([b, s]) => (
                 <div key={s} style={{ padding: 16, background: D.card, border: `1px solid ${D.line}`, borderRadius: 10 }}>
-                  <div style={{ fontFamily: D.display, fontSize: 22 }}>{b}</div>
-                  <div style={{ fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3, marginTop: 4 }}>{s.toUpperCase()}</div>
+                  <div style={{ fontSize: 12, color: D.ink2 }}>{s}</div>
+                  <div style={{ fontSize: 24, fontWeight: 600, marginTop: 4, fontVariantNumeric: 'tabular-nums' }}>{b}</div>
                 </div>
               ))}
             </div>
@@ -90,8 +90,8 @@ export function AdminConsignment() {
             <div style={{ background: D.card, border: `1px solid ${D.line}`, borderRadius: 12, overflow: 'hidden' }}>
               <div style={{ padding: '12px 16px', fontFamily: D.display, fontSize: 18, borderBottom: `1px solid ${D.line}` }}>Inventory</div>
               <div className="um-scroll-x">
-                <table style={{ width: '100%', minWidth: 980, borderCollapse: 'collapse', fontSize: 13 }}>
-                  <thead><tr style={{ background: D.paperAlt, fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>{['SKU', 'NAME', 'ON HAND', 'RUN RATE', 'AGREED COST', 'PRICE VALID UNTIL', 'LOW AT', 'NEAREST EXPIRY'].map((h) => <th key={h} style={{ padding: '10px 12px', textAlign: 'left' }}>{h}</th>)}</tr></thead>
+                <table style={{ width: '100%', minWidth: inventory.length ? 980 : 0, borderCollapse: 'collapse', fontSize: 13 }}>
+                  <thead><tr style={{ background: D.paperAlt, fontSize: 12, fontWeight: 500, color: D.ink2 }}>{['SKU', 'Name', 'On hand', 'Run rate', 'Agreed cost', 'Price valid until', 'Low at', 'Nearest expiry'].map((h) => <th key={h} style={{ padding: '12px 16px', textAlign: 'left', whiteSpace: 'nowrap', fontWeight: 500 }}>{h}</th>)}</tr></thead>
                   <tbody>
                     {inventory.map((product) => {
                       const metric = metrics.get(product.id) || {};

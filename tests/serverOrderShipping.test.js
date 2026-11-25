@@ -5,7 +5,7 @@ function reviewed(order){return {...order,finance_release:{actor_id:'ashley',act
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { buildLabelRequest, applyLabelEvidence } from '../api/_lib/orderShipping.js';
+import { buildLabelRequest, applyLabelEvidence, warehouseShipping } from '../api/_lib/orderShipping.js';
 
 const order = reviewed({
   ship_from:{street1:'1 Test Warehouse',city:'Atlanta',state:'GA',postalCode:'30303',country:'US'},
@@ -50,4 +50,43 @@ test('server label request rejects unpaid, unreserved, or missing-address orders
   assert.equal(buildLabelRequest({ order: { ...order, payment_status: 'pending' }, address, items }).reason, 'payment_not_released');
   assert.equal(buildLabelRequest({ order: { ...order, status: 'payment_released' }, address, items }).reason, 'inventory_not_reserved');
   assert.equal(buildLabelRequest({ order, address: null, items }).reason, 'shipping_address_not_found');
+});
+
+test('staff orders without a checkout rate ship the approved carton from the warehouse', () => {
+  const env = { UNITE_SHIP_FROM_STREET: '1487 Trae Lane', UNITE_SHIP_FROM_CITY: 'Lithia Springs', UNITE_SHIP_FROM_STATE: 'GA', UNITE_SHIP_FROM_ZIP: '30122' };
+  const products = [{ sku: 'P', variants: [{ sku: 'SKU-A', shipping_packages: [{ approved: true, quantity: 2, weight_lb: 1, length_in: 8, width_in: 6, height_in: 4 }] }] }];
+  const staff = reviewed({ ...order, ship_from: undefined, shipping_package: undefined, ship_method: null });
+  const fallback = warehouseShipping(staff, items, products, env);
+  const request = buildLabelRequest({ order: staff, address, items, fallback });
+  assert.equal(request.ok, true);
+  assert.equal(request.body.shipFrom.postalCode, '30122');
+  assert.deepEqual(request.body.dimensions, { length: 8, width: 6, height: 4, units: 'inches' });
+  assert.equal(buildLabelRequest({ order: staff, address, items, fallback: warehouseShipping(staff, items, [], env) }).reason, 'verified_shipping_package_required');
+  assert.equal(warehouseShipping(order, items, products, env), null);
+  assert.equal(warehouseShipping({ ...staff, fulfillment_mode: 'distributor_pickup' }, items, products, env), null);
+});
+
+test('ready-to-ship list: released parcel orders only, with ship-to and lines', async () => {
+  const { readyToShipOrders, LABEL_ROLES } = await import('../api/_lib/orderShipping.js');
+  assert.ok(LABEL_ROLES.includes('warehouse_operator'));
+  const rows = readyToShipOrders({
+    orders: [
+      { id: 'a', status: 'inventory_reserved', customer_name: 'Clinic', ship_to_address_id: 'ad1', inventory_reserved_at: '2026-01-02' },
+      { id: 'b', status: 'ready_to_ship', tracking_number: '1Z', carrier: 'ups', inventory_reserved_at: '2026-01-01' },
+      { id: 'c', status: 'payment_pending' },
+      { id: 'd', status: 'inventory_reserved', fulfillment_mode: 'customer_pickup' },
+      { id: 'e', status: 'inventory_reserved', shipment_plan: [{ id: 's1' }, { id: 's2' }] },
+    ],
+    items: [{ order_id: 'a', sku: 'X', name: 'X item', qty: 2 }, { order_id: 'a', sku: 'Y', removed: true, qty: 1 }],
+    addresses: [{ id: 'ad1', recipient: 'Dock', city: 'Malibu', state: 'CA', zip: '90265' }],
+  });
+  assert.deepEqual(rows.map((r) => r.id), ['b', 'a']);
+  assert.deepEqual(rows[1].ship_to, { name: 'Dock', city: 'Malibu', state: 'CA', zip: '90265' });
+  assert.deepEqual(rows[1].items, [{ sku: 'X', name: 'X item', qty: 2 }]);
+  const [labelled] = readyToShipOrders({
+    orders: [{ id: 'b', status: 'ready_to_ship', tracking_number: '1Z', carrier: 'ups' }],
+    shipments: [{ order_id: 'b', tracking_number: 'OLD', service: 'ups_2nd_day', label_cost: 30 }, { order_id: 'b', tracking_number: '1Z', service: 'ups_ground', label_cost: 9.5 }],
+  });
+  assert.equal(labelled.service, 'ups_ground');
+  assert.equal(labelled.label_cost, 9.5);
 });

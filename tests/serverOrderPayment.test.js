@@ -54,3 +54,21 @@ test('payment does not send an invoice with an unexpected provider total',async(
  const result=await createHostedOrderPayment({order,items,stripeKey:'sk_test',fetchImpl:async url=>{calls.push(url);return {ok:true,json:async()=>payloads.shift()};}});
  assert.equal(result.reason,'provider_invoice_total_mismatch');assert.equal(calls.some(url=>url.endsWith('/send')),false);
 });
+
+test('card orders get a card-only Stripe invoice with the 3% card processing fee line', async () => {
+  const calls = [];
+  const cardOrder = { ...order, payment_method: 'card', payment_terms: 'card', card_surcharge: 1.26, total: 43.26 };
+  const fetchImpl = async (url, options) => {
+    calls.push({ url, form: Object.fromEntries(new URLSearchParams(options.body)) });
+    const payload = url.endsWith('/finalize') || url.endsWith('/send')
+      ? { id: 'in_c', status: 'open', currency: 'usd', total: 4326, amount_due: 4326, hosted_invoice_url: 'https://invoice.stripe.test/in_c' }
+      : { id: url.endsWith('/customers') ? 'cus_c' : url.endsWith('/invoices') ? 'in_c' : 'ii_c' };
+    return { ok: true, status: 200, json: async () => payload, text: async () => JSON.stringify(payload) };
+  };
+  const result = await createHostedOrderPayment({ order: cardOrder, items, stripeKey: 'sk_test_not_real', fetchImpl });
+  assert.equal(result.ok, true);
+  assert.equal(calls[1].form['payment_settings[payment_method_types][0]'], 'card');
+  const fee = calls.find((c) => c.form['metadata[sku]'] === 'CARD_SURCHARGE');
+  assert.equal(fee.form.amount, '126');
+  assert.equal((await createHostedOrderPayment({ order: { ...cardOrder, card_surcharge: 0 }, items, stripeKey: 'sk_test_not_real', fetchImpl })).reason, 'payment_total_mismatch');
+});

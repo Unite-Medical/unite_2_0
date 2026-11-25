@@ -14,6 +14,10 @@ import { db } from '../../lib/db.js';
 import { fmt } from '../../lib/format.js';
 import { useViewport } from '../../lib/viewport.js';
 import { processDue, replayEvent, busStats } from '../../lib/webhookBus.js';
+import { DataTable } from '../../components/ui/data-table.jsx';
+import { Button } from '../../components/ui/button.jsx';
+import { StatusBadge } from '../../components/ui/status-badge.jsx';
+import '../../styles/ui.css';
 
 const STATUS_CHIP = {
   received:   [D.ink3, 'RECEIVED'],
@@ -85,45 +89,27 @@ export function AdminWebhooks() {
           {notice && <span style={{ fontSize: 13, color: D.ink2 }}>{notice}</span>}
         </div>
 
-        <div style={{ marginTop: 20, background: D.card, border: `1px solid ${D.line}`, borderRadius: 12, overflow: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13, minWidth: 820 }}>
-            <thead>
-              <tr style={{ textAlign: 'left', fontFamily: D.mono, fontSize: 10, letterSpacing: 1, color: D.ink3 }}>
-                {['SOURCE', 'TYPE', 'EVENT ID', 'STATUS', 'ATTEMPTS', 'LAST ERROR', 'RECEIVED', ''].map((h) => (
-                  <th key={h} style={{ padding: '12px' }}>{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {events.map((e) => {
-                const [color, label] = STATUS_CHIP[e.status] || STATUS_CHIP.received;
-                const canReplay = e.status === 'dead' || e.status === 'failed';
-                return (
-                  <tr key={e.id} style={{ borderTop: `1px solid ${D.line}` }}>
-                    <td style={{ padding: 12, fontWeight: 600 }}>{e.source}</td>
-                    <td style={{ padding: 12, fontFamily: D.mono, fontSize: 12 }}>{e.type}</td>
-                    <td style={{ padding: 12, fontFamily: D.mono, fontSize: 11, color: D.ink2, maxWidth: 180, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{e.event_id}</td>
-                    <td style={{ padding: 12 }}>
-                      <span style={{ fontFamily: D.mono, fontSize: 9, letterSpacing: 1, padding: '3px 8px', borderRadius: 4, background: `${color}20`, color }}>{label}</span>
-                    </td>
-                    <td style={{ padding: 12 }}>{e.attempts}</td>
-                    <td style={{ padding: 12, color: D.terra, maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{e.last_error || '—'}</td>
-                    <td style={{ padding: 12, color: D.ink3, fontSize: 12 }}>{fmt.ago(e.received_at)}</td>
-                    <td style={{ padding: 12 }}>
-                      {canReplay && (
-                        <button type="button" onClick={() => handleReplay(e.id)} disabled={busy === e.id} style={{ ...btn(false), padding: '5px 12px', fontSize: 12 }}>
-                          {busy === e.id ? '…' : 'Replay'}
-                        </button>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
-              {events.length === 0 && (
-                <tr><td colSpan={8} style={{ padding: 24, color: D.ink3 }}>No webhook events yet. They land here as providers deliver them to <code>/api/hooks/*</code>.</td></tr>
-              )}
-            </tbody>
-          </table>
+        <div className="ui-root mt-5 font-sans text-sm text-ink">
+          <DataTable
+            label="Webhook events"
+            rows={events}
+            searchPlaceholder="Search source, type, event ID or error"
+            searchText={(e) => `${e.source} ${e.type} ${e.event_id} ${e.last_error || ''}`}
+            tabs={[{ id: 'all', label: 'All' }, { id: 'problems', label: 'Needs replay', filter: (e) => e.status === 'failed' || e.status === 'dead' }, { id: 'processing', label: 'In progress', filter: (e) => e.status === 'received' || e.status === 'processing' }, { id: 'processed', label: 'Processed', filter: (e) => e.status === 'processed' }]}
+            filters={[{ id: 'source', label: 'Source', value: (e) => e.source }, { id: 'type', label: 'Type', value: (e) => e.type }]}
+            defaultSort={{ id: 'received', dir: 'desc' }}
+            empty={<p className="p-6 text-ink-3">No webhook events yet. They land here as providers deliver them to <code>/api/hooks/*</code>.</p>}
+            columns={[
+              { id: 'source', header: 'Source', accessor: 'source', className: 'font-semibold' },
+              { id: 'type', header: 'Type', accessor: 'type', className: 'font-mono text-xs' },
+              { id: 'event', header: 'Event ID', accessor: 'event_id', className: 'max-w-44 truncate font-mono text-xs text-ink-2' },
+              { id: 'status', header: 'Status', accessor: 'status', cell: (e) => <StatusBadge value={e.status === 'dead' ? 'dead_letter' : e.status} /> },
+              { id: 'attempts', header: 'Attempts', align: 'right', accessor: 'attempts' },
+              { id: 'error', header: 'Last error', accessor: 'last_error', className: 'max-w-52 truncate text-warn' },
+              { id: 'received', header: 'Received', accessor: 'received_at', cell: (e) => <span className="text-xs text-ink-3">{fmt.ago(e.received_at)}</span> },
+              { id: 'actions', header: '', sortable: false, cell: (e) => (e.status === 'dead' || e.status === 'failed') && <Button size="sm" onClick={() => handleReplay(e.id)} disabled={busy === e.id}>{busy === e.id ? 'Replaying…' : 'Replay'}</Button> },
+            ]}
+          />
         </div>
       </div>
     </AdminShell>

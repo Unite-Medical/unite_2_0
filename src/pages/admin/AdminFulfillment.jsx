@@ -13,6 +13,10 @@ import {useSearchParams} from 'react-router-dom';
 import { D } from '../../tokens.js';
 import { AdminShell } from '../../components/layout/AdminShell.jsx';
 import { db } from '../../lib/db.js';
+import { Table, THead, TRow, TH, TD } from '../../components/ui/table.jsx';
+import { Badge } from '../../components/ui/badge.jsx';
+import { Button } from '../../components/ui/button.jsx';
+import '../../styles/ui.css';
 
 import { useViewport } from '../../lib/viewport.js';
 import {
@@ -31,6 +35,9 @@ export function AdminFulfillment() {
   const { isMobile } = useViewport();
   const padX = isMobile ? 18 : 40;
   const orders = db.useTable('orders', { orderBy: 'placed_at', dir: 'desc' });
+  const [statusFilter, setStatusFilter] = useState('');
+  const orderStatuses = [...new Set(orders.map((o) => o.status).filter(Boolean))].sort();
+  const listedOrders = orders.filter((o) => !statusFilter || o.status === statusFilter);
   const shipments = db.useTable('shipments');
   const orderItems = db.useTable('order_items');
   const reservations = db.useTable('reservations');
@@ -242,7 +249,7 @@ export function AdminFulfillment() {
     <AdminShell active="fulfillment">
       <div style={{ padding: `${isMobile ? 28 : 40}px ${padX}px ${isMobile ? 18 : 24}px`, borderBottom: `1px solid ${D.line}` }}>
         <div style={{ fontSize: 12, fontWeight: 600, color: D.ink2, marginBottom: 12 }}>Orders</div>
-        <h1 style={{ fontFamily: D.display, fontSize: 28, fontWeight: 600, letterSpacing: -0.4, lineHeight: 1.02, margin: 0 }}>Fulfillment</h1>
+        <h1 style={{ fontFamily: D.display, fontSize: 28, fontWeight: 600, letterSpacing: -0.4, lineHeight: 1.02, margin: 0 }}>Pick & ship</h1>
         <div style={{ marginTop: 10, fontSize: 13, color: D.ink2, maxWidth: 680 }}>
           Payment or approved credit releases the current in-stock batch. Backordered units remain uncharged until stock arrives and a separately rated suborder is created.
         </div>
@@ -259,44 +266,41 @@ export function AdminFulfillment() {
           ))}
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.4fr 1fr', gap: 20 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'minmax(0,1fr)' : 'minmax(0,2fr) minmax(22rem,1fr)', gap: 20 }}>
           {/* Orders + pipeline */}
           <div style={{ background: D.card, border: `1px solid ${D.line}`, borderRadius: 12, overflow: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
-              <thead>
-                <tr style={{ textAlign: 'left', fontSize: 12, fontWeight: 600, color: D.ink2 }}>
-                  {['ORDER', 'CUSTOMER', 'STATUS', 'PIPELINE', ''].map((h) => <th key={h} style={{ padding: 12 }}>{h}</th>)}
-                </tr>
-              </thead>
+            <div className="ui-root flex items-center gap-2 border-b border-line p-3 font-sans text-sm"><select aria-label="Status" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="h-10 rounded-lg border border-line bg-card px-3 text-sm text-ink shadow-xs"><option value="">Status: all</option>{orderStatuses.map((s) => <option key={s} value={s}>{s.replaceAll('_', ' ')}</option>)}</select><span className="ml-auto text-ink-2">{listedOrders.length} order{listedOrders.length === 1 ? '' : 's'}</span></div>
+            <div className="ui-root font-sans text-sm text-ink"><Table>
+              <THead><tr><TH>Order</TH><TH>Customer</TH><TH>Status</TH><TH>Pipeline</TH><TH><span className="sr-only">Run</span></TH></tr></THead>
               <tbody>
-                {orders.slice(0, 40).map((o) => {
+                {listedOrders.slice(0, 40).map((o) => {
                   const { done, total } = progress(o.id);
                   const steps = stepsByOrder.get(o.id) || {};
                   return (
-                    <tr key={o.id} style={{ borderTop: `1px solid ${D.line}`, background: selected === o.id ? 'rgba(29,92,77,.05)' : 'transparent', cursor: 'pointer' }} onClick={() => setSelected(o.id)}>
-                      <td style={{ padding: 12, fontFamily: D.mono, fontSize: 12 }}>{o.id}</td>
-                      <td style={{ padding: 12, maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{o.customer_name}</td>
-                      <td style={{ padding: 12, color: D.ink2 }}>{o.status}</td>
-                      <td style={{ padding: 12 }}>
-                        <span style={{ display: 'inline-flex', gap: 3 }}>
+                    <TRow key={o.id} tabIndex={0} aria-selected={selected === o.id} className={selected === o.id ? 'cursor-pointer bg-paper' : 'cursor-pointer'} onClick={() => setSelected(o.id)} onKeyDown={(e) => { if (e.key === 'Enter') setSelected(o.id); }}>
+                      <TD><span className="block max-w-[9rem] truncate font-mono text-xs font-semibold" title={o.id}>{o.id}</span></TD>
+                      <TD><span className="block max-w-[10rem] truncate font-medium" title={o.customer_name}>{o.customer_name}</span></TD>
+                      <TD><Badge tone={o.status === 'ready_to_ship' || o.status === 'delivered' ? 'good' : 'neutral'}>{String(o.status || '').replaceAll('_', ' ')}</Badge></TD>
+                      <TD>
+                        <span style={{ display: 'inline-flex', flexWrap: 'wrap', gap: 3, maxWidth: 120 }}>
                           {PIPELINE_STEPS.map((s) => {
                             const [color, glyph] = STEP_CHIP[steps[s]?.status || 'pending'];
                             return <span key={s} title={`${s}: ${steps[s]?.status || 'pending'}`} style={{ color, fontSize: 13 }}>{glyph}</span>;
                           })}
                         </span>
-                        <span style={{ marginLeft: 8, fontSize: 11, color: D.ink3 }}>{done}/{total}</span>
-                      </td>
-                      <td style={{ padding: 12 }}>
-                        <button type="button" onClick={(e) => { e.stopPropagation(); handleRun(o.id); }} disabled={busy === o.id} style={btn(true)}>
+                        <span className="ml-2 text-xs text-ink-3">{done}/{total}</span>
+                      </TD>
+                      <TD className="text-right">
+                        <Button size="sm" variant="primary" onClick={(e) => { e.stopPropagation(); handleRun(o.id); }} disabled={busy === o.id}>
                           {busy === o.id ? 'Running…' : (done > 0 ? 'Re-run' : 'Run')}
-                        </button>
-                      </td>
-                    </tr>
+                        </Button>
+                      </TD>
+                    </TRow>
                   );
                 })}
-                {orders.length === 0 && <tr><td colSpan={5} style={{ padding: 24, color: D.ink3 }}>No orders yet.</td></tr>}
+                {listedOrders.length === 0 && <tr><TD colSpan={5} className="text-ink-3">{orders.length ? 'No orders match this status.' : 'No orders yet.'}</TD></tr>}
               </tbody>
-            </table>
+            </Table></div>
           </div>
 
           {/* Detail / live log */}
@@ -410,7 +414,7 @@ export function AdminFulfillment() {
             </div>
 
             <div style={{ background: D.card, border: `1px solid ${D.line}`, borderRadius: 12, padding: 18, marginTop: 20 }}>
-              <div style={{ fontSize: 12, fontWeight: 600, color: D.ink2 }}>DISTRIBUTOR PICKUPS · 09:00–16:00 ET</div>
+              <div style={{ fontSize: 12, fontWeight: 600, color: D.ink2 }}>Distributor pickups · 09:00–16:00 ET</div>
               {distributorPickups.length === 0 && <div style={{ fontSize: 13, color: D.ink3, marginTop: 10 }}>No pickup requests.</div>}
               <div style={{ marginTop: 10, display: 'grid', gap: 8 }}>
                 {distributorPickups.slice(0, 12).map((pickup) => {

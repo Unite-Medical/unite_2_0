@@ -158,11 +158,10 @@ export function AdminReceiving() {
 
   return (
     <AdminShell active="receiving" unsavedChanges={queue.length>0||!!pending}>
-      <main id="main" style={{ padding: `${isMobile ? 24 : 40}px ${padX}px 64px`, maxWidth: 940, margin: '0 auto' }}>
-        <div style={{ fontSize: 12, fontWeight: 600, color: D.ink2, marginBottom: 12 }}>Operations</div>
-        <h1 style={{ fontFamily: D.display, fontSize: 28, fontWeight: 600, letterSpacing: -0.4, margin: '0 0 20px' }}>Receive</h1>
+      <main id="main" className="ui-root font-sans" style={{ padding: `${isMobile ? 24 : 32}px ${padX}px 64px`, maxWidth: 1100, margin: '0 auto' }}>
+                <header style={{ marginBottom: 20 }}><h1 className="m-0 font-display text-2xl font-semibold text-ink">Receive a delivery</h1><p className="mt-1 text-sm text-ink-2">Pick the purchase order, scan each carton, then post only what physically arrived.</p></header>
 
-        <AdminCard title="01 · Against which order?">
+        <AdminCard title="1. Purchase order">
           <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 200px', gap: 12 }}>
             <div>
               <label style={LABEL}>Open purchase order</label>
@@ -184,7 +183,7 @@ export function AdminReceiving() {
         <div style={{ height: 14 }} />
 
         {!openPos.length&&<p className="uw-notice">No open purchase orders are available for receiving.</p>}
-        <AdminCard title="02 · Scan a carton">
+        <AdminCard title="2. Scan a carton">
           <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 120px 120px', gap: 12, alignItems: 'end' }}>
             <div>
               <label style={LABEL}>Scan UPC / GTIN / barcode</label>
@@ -247,7 +246,7 @@ export function AdminReceiving() {
         {queue.length > 0 && (
           <>
             <div style={{ height: 14 }} />
-            <AdminCard title={`03 · Staged (${queue.length})`}>
+            <AdminCard title={`3. Ready to post (${queue.length})`}>
               {queue.map((r, i) => (
                 <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 0', borderTop: i === 0 ? 'none' : `1px solid ${D.line}`, fontSize: 13 }}>
                   <span style={{ fontFamily: D.mono, fontSize: 12 }}>{r.sku}{r.name && r.name !== r.sku ? ` · ${r.name}` : ''}{r.lot_number ? ` · lot ${r.lot_number}` : ''}{r.expiration_date ? ` · exp ${r.expiration_date}` : ''}</span>
@@ -267,7 +266,7 @@ export function AdminReceiving() {
         {po && recon && recon.ok && (
           <>
             <div style={{ height: 14 }} />
-            <AdminCard title={`04 · Reconcile ${po.id}`}>
+            <AdminCard title={`4. Check against ${po.id}`}>
               <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap', marginBottom: 14 }}>
                 <Stat label="ORDERED" value={recon.totals.ordered} />
                 <Stat label="RECEIVED" value={recon.totals.received} />
