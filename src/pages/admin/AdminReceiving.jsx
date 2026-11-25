@@ -158,7 +158,7 @@ export function AdminReceiving() {
 
   return (
     <AdminShell active="receiving" unsavedChanges={queue.length>0||!!pending}>
-      <main id="main" className="ui-root font-sans text-ink" style={{ padding: `${isMobile ? 24 : 32}px ${padX}px 64px`, maxWidth: 1100, margin: '0 auto' }}>
+      <main id="main" className="ui-root font-sans" style={{ padding: `${isMobile ? 24 : 32}px ${padX}px 64px`, maxWidth: 1100, margin: '0 auto' }}>
                 <header style={{ marginBottom: 20 }}><h1 className="m-0 font-display text-2xl font-semibold text-ink">Receive a delivery</h1><p className="mt-1 text-sm text-ink-2">Pick the purchase order, scan each carton, then post only what physically arrived.</p></header>
 
         <AdminCard title="1. Purchase order">
