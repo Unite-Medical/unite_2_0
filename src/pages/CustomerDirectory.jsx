@@ -43,7 +43,7 @@ export function CustomerDirectory() {
     return () => controller.abort();
   },[id,detailKey]);
   const [syncedSearch,setSyncedSearch] = useState(search);
-  if (syncedSearch !== search) { setSyncedSearch(search); setDraft(search); }
+  if (syncedSearch !== search) { setSyncedSearch(search); if (draft.trim() !== search) setDraft(search); }
   // Search as you type (debounced); Enter still searches immediately.
   useEffect(() => { const next = draft.trim(); if (next === search) return undefined;
     const timer = setTimeout(() => update({q:next,page:null,customer:null}), 350); return () => clearTimeout(timer);
