@@ -78,6 +78,7 @@ export function passwordNeedsUpgrade(profile) {
 
 // Staging only: UNITE_STAGING_ALIAS_IDENTITIES="alias@x=person@x,..." lets QA aliases act as the named person. Never set in production.
 export function aliasIdentityMap(env = process.env) {
+  if (env.VERCEL_ENV === 'production' && !String(env.VERCEL_PROJECT_PRODUCTION_URL || '').toLowerCase().startsWith('staging.')) return new Map();
   return new Map(String(env.UNITE_STAGING_ALIAS_IDENTITIES || '').split(',').map((pair) => pair.split('=').map((v) => String(v || '').trim().toLowerCase())).filter(([alias, target]) => alias && target && alias !== target));
 }
 

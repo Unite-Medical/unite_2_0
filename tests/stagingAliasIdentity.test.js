@@ -27,3 +27,9 @@ test('reissued tokens keep the sign-in email, not the mapped one', () => {
   const token=createSessionToken(withPolicyIdentity(session,env),{secret:'x'.repeat(40)});
   assert.equal(verifySessionToken(token,{secret:'x'.repeat(40)}).email,'alex+damon@unitemedical.net');
 });
+
+test('the alias map is ignored on production deployments other than staging', () => {
+  assert.equal(withPolicyIdentity(session,{...env,VERCEL_ENV:'production',VERCEL_PROJECT_PRODUCTION_URL:'unitemedical.net'}).email,'Alex+Damon@unitemedical.net');
+  assert.equal(withPolicyIdentity(session,{...env,VERCEL_ENV:'production'}).email,'Alex+Damon@unitemedical.net');
+  assert.equal(withPolicyIdentity(session,{...env,VERCEL_ENV:'production',VERCEL_PROJECT_PRODUCTION_URL:'staging.unitemedical.net'}).email,'damon@unitemedical.net');
+});
