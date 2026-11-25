@@ -266,7 +266,7 @@ export function AdminFulfillment() {
           ))}
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'minmax(0,2fr) minmax(22rem,1fr)', gap: 20 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'minmax(0,1fr)' : 'minmax(0,2fr) minmax(22rem,1fr)', gap: 20 }}>
           {/* Orders + pipeline */}
           <div style={{ background: D.card, border: `1px solid ${D.line}`, borderRadius: 12, overflow: 'auto' }}>
             <div className="ui-root flex items-center gap-2 border-b border-line p-3 font-sans text-sm"><select aria-label="Status" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="h-10 rounded-lg border border-line bg-card px-3 text-sm text-ink shadow-xs"><option value="">Status: all</option>{orderStatuses.map((s) => <option key={s} value={s}>{s.replaceAll('_', ' ')}</option>)}</select><span className="ml-auto text-ink-2">{listedOrders.length} order{listedOrders.length === 1 ? '' : 's'}</span></div>
