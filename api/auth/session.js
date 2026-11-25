@@ -8,6 +8,7 @@ import {
   hashStoredPassword,
   passwordNeedsUpgrade,
   sessionFromRequest,
+  withPolicyIdentity,
   verifyStoredPassword,
 } from '../_lib/auth.js';
 import { logEvent, readRawBody, sendJson } from '../_lib/http.js';
@@ -121,7 +122,7 @@ export default async function handler(req, res) {
       }
       const session = {...safeSession(profile, await organizationFor(sql, profile)),mfa_verified:claimed.mfa_verified===true,role:claimed.role,...(claimed.remember_until?{remember_until:claimed.remember_until}:{})};
       issueSession(res, session);
-      return sendJson(res, 200, { session });
+      return sendJson(res, 200, { session: withPolicyIdentity(session) });
     } catch (error) {
       logEvent('auth.session', 'validation_error', { error: error.message });
       return sendJson(res, 503, { error: 'session_validation_failed' });
@@ -212,7 +213,7 @@ export default async function handler(req, res) {
     const session = safeSession(profile, await organizationFor(sql, profile));
     issueSession(res, session, {remember: remember === true});
     logEvent('auth.session', 'login_succeeded', { user_id: session.user_id, role: session.role });
-    return sendJson(res, 200, { session });
+    return sendJson(res, 200, { session: withPolicyIdentity(session) });
   } catch (error) {
     logEvent('auth.session', 'error', { error: error.message });
     return sendJson(res, 500, { error: 'auth_failed' });

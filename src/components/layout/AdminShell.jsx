@@ -30,7 +30,7 @@ export function AdminShell({active,children,unsavedChanges=false}){
  const setTheme=theme=>changeAppearance({theme});
  useEffect(()=>{document.documentElement.dataset.workspaceTheme=theme;return()=>{delete document.documentElement.dataset.workspaceTheme;};},[theme]);
  useWebhookBridge(session?.role==='admin');
- const nav=staffShortcuts(session?.role,{inquiries:String(session?.email||'').toLowerCase()==='jacobe@unitemedical.net',customerDirectory:isUniteCustomerReadIdentity(session),welllink:!String(session?.role||'').startsWith('warehouse_')||String(session?.email||'').toLowerCase()==='darren@unitemedical.net'});
+ const nav=staffShortcuts(session?.role,{inquiries:String(session?.email||'').toLowerCase()==='jacobe@unitemedical.net',customerDirectory:isUniteCustomerReadIdentity(session),welllink:(({role,email})=>role==='admin'||(role==='finance'&&email==='accounting@unitemedical.net')||(role?.startsWith('warehouse_')&&email==='darren@unitemedical.net'))({role:session?.role,email:String(session?.email||'').toLowerCase()})});
  const primaryPaths=new Set(nav.map(n=>n.path));
  const matchingTools=TOOLS.map(([name,links])=>[name,links.filter(([label,path,id])=>!primaryPaths.has(path)&&id!=='settings'&&label.toLowerCase().includes(toolSearch.toLowerCase().trim()))]).filter(([,links])=>links.length);
  const toolIsActive=matchingTools.some(([,links])=>links.some(([,path,id])=>active===id||location.pathname===path));
