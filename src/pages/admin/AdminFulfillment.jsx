@@ -274,11 +274,11 @@ export function AdminFulfillment() {
                   const steps = stepsByOrder.get(o.id) || {};
                   return (
                     <TRow key={o.id} tabIndex={0} aria-selected={selected === o.id} className={selected === o.id ? 'cursor-pointer bg-paper' : 'cursor-pointer'} onClick={() => setSelected(o.id)} onKeyDown={(e) => { if (e.key === 'Enter') setSelected(o.id); }}>
-                      <TD><span className="block max-w-[12rem] truncate font-mono text-xs font-semibold" title={o.id}>{o.id}</span></TD>
-                      <TD><span className="block max-w-[14rem] truncate font-medium" title={o.customer_name}>{o.customer_name}</span></TD>
+                      <TD><span className="block max-w-[9rem] truncate font-mono text-xs font-semibold" title={o.id}>{o.id}</span></TD>
+                      <TD><span className="block max-w-[10rem] truncate font-medium" title={o.customer_name}>{o.customer_name}</span></TD>
                       <TD><Badge tone={o.status === 'ready_to_ship' || o.status === 'delivered' ? 'good' : 'neutral'}>{String(o.status || '').replaceAll('_', ' ')}</Badge></TD>
-                      <TD className="whitespace-nowrap">
-                        <span style={{ display: 'inline-flex', gap: 3 }}>
+                      <TD>
+                        <span style={{ display: 'inline-flex', flexWrap: 'wrap', gap: 3, maxWidth: 120 }}>
                           {PIPELINE_STEPS.map((s) => {
                             const [color, glyph] = STEP_CHIP[steps[s]?.status || 'pending'];
                             return <span key={s} title={`${s}: ${steps[s]?.status || 'pending'}`} style={{ color, fontSize: 13 }}>{glyph}</span>;

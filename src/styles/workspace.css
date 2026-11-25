@@ -9,6 +9,8 @@
 .ws-eyebrow { color:var(--ws-muted); font-size:13px; margin-bottom:10px; }
 .ws-card { background:#fff; border:1px solid var(--ws-line); border-radius:10px; padding:24px; margin-bottom:18px; min-width:0; }
 .ws-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }
+.ws-grid > label { min-width:0; }
+.ws-grid select, .ws-grid input { width:100%; min-width:0; max-width:100%; box-sizing:border-box; text-overflow:ellipsis; }
 .ws-split { display:grid; grid-template-columns:minmax(300px,1fr) minmax(300px,1fr); gap:20px; align-items:start; }
 .ws-actions { display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
 .um-workspace .ws-button { display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:11px 16px; min-height:44px; border:1px solid var(--ws-line); border-radius:6px; font:500 14px/1.4 Archivo,Arial,sans-serif; color:var(--ws-text); background:#fff; cursor:pointer; text-decoration:none; }
