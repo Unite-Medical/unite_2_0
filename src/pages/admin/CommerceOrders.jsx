@@ -4,7 +4,8 @@ import {Badge as UiBadge} from '../../components/ui/badge.jsx';
 import {Card as UiCard} from '../../components/ui/card.jsx';
 import {Input} from '../../components/ui/input.jsx';
 import {Table,THead,TRow,TH,TD} from '../../components/ui/table.jsx';
-import {SortHeader} from '../../components/ui/data-table.jsx';
+import {SortHeader,FilterBar} from '../../components/ui/data-table.jsx';
+import {ORDER_FILTERS} from '../../lib/tableFilters.js';
 import {EmptyState} from '../../components/ui/empty-state.jsx';
 import {StatusBadge} from '../../components/ui/status-badge.jsx';
 import {cn} from '../../lib/cn.js';
@@ -38,11 +39,12 @@ function OrderStatusTracker({order:o}){
 }
 const states=['needs_review','waiting_stock','waiting_payment','waiting_response','ready','complete','archived'];
 export function CommerceOrders(){const {id}=useParams();return <AdminShell active="orders"><main id="main" className={id?'cw-page':'ui-root mx-auto w-full max-w-[1500px] px-4 py-6 font-sans text-sm text-ink md:px-8'}>{id?<OrderDetail key={id} id={id}/>:<OrderList/>}</main></AdminShell>;}
+const setFacets=(values)=>Object.fromEntries(Object.entries(values).filter(([,v])=>v));
 const ORDER_TABS=[['','All'],['needs_review','Needs review'],['waiting_stock','Waiting for stock'],['waiting_payment','Waiting for payment'],['waiting_response','Waiting for response'],['archived','Archived']];
 function OrderList(){
   const [selected,setSelected]=useAssistantSelection('orders');
-  const [params]=useSearchParams(),[q,setQ]=useState(params.get('search')||''),[page,setPage]=useState(0),[filter,setFilter]=useState(''),[sort,setSort]=useState(null);
-  const customer=params.get('customer')||'',{data,error,loading}=useCommerce({kind:'orders',q,page,filter,customer_id:customer,sort:sort?.id,dir:sort?.dir,selected_ids:params.get('selected')?selected:undefined});
+  const [params]=useSearchParams(),[q,setQ]=useState(params.get('search')||''),[page,setPage]=useState(0),[filter,setFilter]=useState(''),[sort,setSort]=useState(null),[facets,setFacetValues]=useState({});
+  const customer=params.get('customer')||'',{data,error,loading}=useCommerce({kind:'orders',q,page,filter,...setFacets(facets),customer_id:customer,sort:sort?.id,dir:sort?.dir,selected_ids:params.get('selected')?selected:undefined});
   const rows=data?.rows||[];
   return <div className="flex flex-col gap-5">
     <div className="flex flex-wrap items-end justify-between gap-4">
@@ -64,6 +66,7 @@ function OrderList(){
         </div>
         <div className="pb-3 md:w-80 md:pb-0"><Input icon={Search} aria-label="Search orders" type="search" placeholder="Order number, email, PO or tag" value={q} onChange={e=>{setQ(e.target.value);setPage(0);}}/></div>
       </div>
+      <FilterBar className="border-b border-line px-4 py-3" filters={ORDER_FILTERS} values={facets} onChange={(k,v)=>{setFacetValues(f=>({...f,[k]:v}));setPage(0);}} onClear={()=>{setFacetValues({});setPage(0);}}/>
       <LoadingError loading={loading} error={error}>
         {rows.length?<><ul className="m-0 list-none divide-y divide-line p-0 md:hidden">{rows.map(o=><li key={o.id} className="flex items-start gap-1 pl-2"><span className="flex h-11 w-11 shrink-0 items-center justify-center [&_input]:h-5 [&_input]:w-5"><SelectionCheck record={o} ids={selected} setIds={setSelected}/></span><Link to={'/admin/orders/'+o.id} className="flex min-w-0 flex-1 flex-col gap-2 py-3 pr-4 text-ink no-underline">
             <span className="flex items-center justify-between gap-3"><span className="font-semibold">{o.number}{o.draft&&<UiBadge className="ml-2">Draft</UiBadge>}</span><span className="font-mono tabular-nums">{money(o.total)}</span></span>

@@ -16,6 +16,7 @@ export function AdminBarcodes() {
     <div className="grid grid-cols-2 gap-3 md:grid-cols-5">{stats.map(([label, value]) => <div key={label} className="rounded-xl border border-line bg-card px-4 py-3"><div className="text-xs text-ink-2">{label}</div><div className="mt-1 text-2xl font-semibold tabular-nums">{value}</div></div>)}</div>
     <DataTable label="Variants" rows={queue} getRowId={rowId} pageSize={50} defaultTab="launch_operational" searchPlaceholder="Search SKU, product or variant"
       tabs={[{ id: 'launch_operational', label: 'Launch · in stock', filter: (r) => r.priority === 'launch_operational' }, { id: 'launch_no_stock', label: 'Launch · no stock', filter: (r) => r.priority === 'launch_no_stock' }, { id: 'not_launching', label: 'Not launching', filter: (r) => r.priority === 'not_launching' }, { id: 'all', label: 'All' }]}
+      filters={[{ id: 'sku', label: 'SKU', value: (r) => (r.sku ? 'Has SKU' : 'Missing SKU') }]}
       empty={<p className="p-6 text-ink-3">Nothing in this view.</p>}
       mobileCard={(r) => <div className="flex flex-col gap-1"><div className="flex items-center justify-between gap-2"><span className="font-mono text-xs font-semibold">{r.sku || 'No SKU'}</span><Badge tone={r.priority === 'launch_operational' ? 'warn' : 'neutral'}>{priorityLabel(r.priority)}</Badge></div><div className="font-semibold">{r.product_name}</div><div className="text-xs text-ink-2">{r.variant_title}</div></div>}
       columns={[

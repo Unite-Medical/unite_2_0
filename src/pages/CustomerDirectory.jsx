@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Search } from 'lucide-react';
 import { Table, THead, TRow, TD } from '../components/ui/table.jsx';
-import { SortHeader } from '../components/ui/data-table.jsx';
+import { SortHeader, FilterBar } from '../components/ui/data-table.jsx';
+import { filterOptions } from '../lib/tableFilters.js';
+import { US_STATES } from '../lib/usStates.js';
+const DIRECTORY_FILTERS = [{id:'province',label:'State',options:filterOptions(US_STATES)}];
 import { Badge } from '../components/ui/badge.jsx';
 import { Input } from '../components/ui/input.jsx';
 import '../styles/ui.css';
@@ -29,15 +32,16 @@ export function CustomerDirectory() {
   useSEO({title:'All customers',noindex:true});
   const [params,setParams] = useSearchParams();
   const search = params.get('q') || '', page = Number(params.get('page') || 0), id = params.get('customer') || '';
+  const province = params.get('province') || '';
   const sortId = params.get('sort') || '', sortDir = params.get('dir') === 'desc' ? 'desc' : 'asc', sort = sortId ? {id:sortId,dir:sortDir} : null;
   const [draft,setDraft] = useState(search), [listState,setListState] = useState(null), [detailState,setDetailState] = useState(null), [revision,setRevision] = useState(0);
-  const listKey = JSON.stringify([search,page,sortId,sortDir,revision]), detailKey = JSON.stringify([id,revision]);
+  const listKey = JSON.stringify([search,page,sortId,sortDir,province,revision]), detailKey = JSON.stringify([id,revision]);
   const data = listState?.key === listKey ? listState.data : null, error = listState?.key === listKey ? listState.error : '', loading = listState?.key !== listKey;
   const customer = detailState?.key === detailKey ? detailState.data : null, detailError = detailState?.key === detailKey ? detailState.error : '';
   useEffect(() => { const controller = new AbortController();
-    workspaceRequest('/api/account/customer-directory?'+new URLSearchParams({q:search,page:String(page),...(sortId ? {sort:sortId,dir:sortDir} : {})}),{signal:controller.signal}).then(result => {if(!controller.signal.aborted)setListState({key:listKey,data:result.data,error:''});}).catch(e => {if(!controller.signal.aborted)setListState({key:listKey,data:null,error:e.message});});
+    workspaceRequest('/api/account/customer-directory?'+new URLSearchParams({q:search,page:String(page),...(sortId ? {sort:sortId,dir:sortDir} : {}),...(province ? {province} : {})}),{signal:controller.signal}).then(result => {if(!controller.signal.aborted)setListState({key:listKey,data:result.data,error:''});}).catch(e => {if(!controller.signal.aborted)setListState({key:listKey,data:null,error:e.message});});
     return () => controller.abort();
-  },[search,page,sortId,sortDir,listKey]);
+  },[search,page,sortId,sortDir,province,listKey]);
   useEffect(() => { const controller = new AbortController();
     if(id)workspaceRequest('/api/account/customer-directory?'+new URLSearchParams({id}),{signal:controller.signal}).then(result => {if(!controller.signal.aborted)setDetailState({key:detailKey,data:result.data,error:''});}).catch(e => {if(!controller.signal.aborted)setDetailState({key:detailKey,data:null,error:e.message});});
     return () => controller.abort();
@@ -52,7 +56,7 @@ export function CustomerDirectory() {
   const onSort = value => update({sort:value?.id || null,dir:value?.dir || null,page:null});
   function update(values) { const next = new URLSearchParams(params); for(const [key,value] of Object.entries(values)) {if(value === null || value === '')next.delete(key);else next.set(key,String(value));} setParams(next); }
   return <AdminShell active="customer-directory"><main id="main" className="uw-workday uw-customer-directory"><header className="uw-day-heading"><div><span className="uw-eyebrow">Sales & service</span><h1>All customers {data ? `(${data.total})` : ''}</h1><p>Review contact information and saved addresses across the Unite customer roster.</p></div><div className="uw-detail-actions"><button className="uw-button" disabled={loading} onClick={() => setRevision(v => v+1)}>Refresh</button><Link className="uw-button" to="/admin/quotes">Quotes</Link></div></header>
-    <form className="ui-root uw-directory-search flex flex-wrap items-center gap-2 font-sans text-sm" role="search" onSubmit={event => {event.preventDefault();update({q:draft.trim(),page:null,customer:null});}}><div className="min-w-[16rem] flex-1"><Input icon={Search} aria-label="Search all customers" type="search" placeholder="Search customer, company or email" value={draft} onChange={event => setDraft(event.target.value)}/></div>{search && <button className="uw-button quiet" type="button" onClick={() => {setDraft('');update({q:null,page:null,customer:null});}}>Clear search</button>}</form>
+    <form className="ui-root uw-directory-search flex flex-wrap items-center gap-2 font-sans text-sm" role="search" onSubmit={event => {event.preventDefault();update({q:draft.trim(),page:null,customer:null});}}><div className="min-w-[16rem] flex-1"><Input icon={Search} aria-label="Search all customers" type="search" placeholder="Search customer, company or email" value={draft} onChange={event => setDraft(event.target.value)}/></div><FilterBar filters={DIRECTORY_FILTERS} values={{province}} onChange={(k,v) => update({[k]:v || null,page:null,customer:null})} onClear={() => update({province:null,page:null,customer:null})}/>{search && <button className="uw-button quiet" type="button" onClick={() => {setDraft('');update({q:null,page:null,customer:null});}}>Clear search</button>}</form>
     {error && <p role="alert" className="uw-error">{error}</p>}
     <div className={`uw-work-grid ${id ? 'has-detail' : ''}`}><section className="uw-work-list"><div className="uw-queue-heading"><h2>{search ? 'Matching customers' : 'Customer roster'} {data ? `(${data.total})` : ''}</h2></div>{loading ? <p role="status">Loading customers…</p> : data?.rows.length ? <div className="ui-root -mx-px overflow-hidden border-y border-line bg-card font-sans text-sm text-ink"><Table><THead><tr><SortHeader id="name" sort={sort} onSort={onSort}>Customer</SortHeader><SortHeader id="email" sort={sort} onSort={onSort}>Email</SortHeader><th scope="col" className="whitespace-nowrap px-4 py-3 font-medium">Location</th><SortHeader id="source_order_count" align="right" sort={sort} onSort={onSort}>Orders</SortHeader><SortHeader id="last_order_date" sort={sort} onSort={onSort}>Last order</SortHeader><SortHeader id="status" sort={sort} onSort={onSort}>Status</SortHeader></tr></THead><tbody>{data.rows.map(row => <TRow key={row.id} tabIndex={0} aria-selected={id === row.id} className={id === row.id ? 'cursor-pointer bg-paper' : 'cursor-pointer'} onClick={() => update({customer:row.id})} onKeyDown={event => {if(event.key === 'Enter')update({customer:row.id});}}><TD><div className="font-semibold">{row.name || row.company || row.email || row.id}</div>{row.company && row.company !== row.name && <div className="text-xs text-ink-2">{row.company}</div>}</TD><TD className="text-ink-2"><span className="block max-w-[18rem] truncate" title={row.email || ''}>{row.email || '—'}</span></TD><TD className="whitespace-nowrap text-ink-2">{placeOf(row) || '—'}</TD><TD className="text-right tabular-nums">{row.source_order_count || 0}</TD><TD className="whitespace-nowrap text-ink-2">{row.last_order_date ? String(row.last_order_date).slice(0,10) : '—'}</TD><TD><Badge tone={row.status === 'active' ? 'good' : 'neutral'}>{display(row.status)}</Badge></TD></TRow>)}</tbody></Table></div> : !error && <p className="uw-empty">{search ? 'No customers match this search.' : 'No customer records are available.'}</p>}
       {data && <div className="uw-detail-actions uw-directory-pages"><span>{data.total ? `${page*50+1}–${Math.min((page+1)*50,data.total)} of ${data.total}` : '0 customers'}</span><button className="uw-button" disabled={loading || page === 0} onClick={() => update({page:page-1,customer:null})}>Previous</button><button className="uw-button" disabled={loading || (page+1)*50 >= data.total} onClick={() => update({page:page+1,customer:null})}>Next</button></div>}

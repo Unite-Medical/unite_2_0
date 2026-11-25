@@ -26,11 +26,11 @@ export function createCustomerDirectoryHandler({ sqlFactory = neon, authorize = 
       if (!canReadUniteCustomerBook(live.session,env,req.headers?.host)) return sendJson(res,403,{error:'forbidden'});
       if (!await verifyDatabase(sql,env.DATABASE_URL)) return sendJson(res,403,{error:'customer_database_scope_mismatch'});
       const query = req.query || {};
-      if (Object.keys(query).some(key => !['id','q','page','sort','dir'].includes(key)) || Object.values(query).some(value => typeof value !== 'string')) return sendJson(res,400,{error:'invalid_customer_query'});
+      if (Object.keys(query).some(key => !['id','q','page','sort','dir','province'].includes(key)) || Object.values(query).some(value => typeof value !== 'string')) return sendJson(res,400,{error:'invalid_customer_query'});
       const page = query.page == null ? 0 : Number(query.page);
       if (!Number.isSafeInteger(page) || page < 0 || page > 100000 || String(query.q || '').length > 250 || String(query.id || '').length > 200) return sendJson(res,400,{error:'invalid_customer_query'});
       if ((query.sort != null && !DIRECTORY_SORTS.includes(query.sort)) || (query.dir != null && !['asc','desc'].includes(query.dir))) return sendJson(res,400,{error:'invalid_customer_query'});
-      const data = await read(sql,{kind:'customers',id:query.id || undefined,q:query.q || '',page,limit:50,...(query.sort ? {sort:query.sort,dir:query.dir || 'asc'} : {})});
+      const data = await read(sql,{kind:'customers',id:query.id || undefined,q:query.q || '',page,limit:50,...(query.sort ? {sort:query.sort,dir:query.dir || 'asc'} : {}),...(query.province ? {province:String(query.province).slice(0,2)} : {})});
       if (!data) return sendJson(res,404,{error:'customer_not_found'});
       return sendJson(res,200,{ok:true,read_only:true,data:query.id ? customerDirectoryRecord(data) : {...data,rows:data.rows.map(customerDirectoryRecord)}});
     } catch { return sendJson(res,500,{error:'customers_unavailable'}); }

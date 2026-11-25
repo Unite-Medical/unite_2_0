@@ -190,6 +190,35 @@ export function DataTable({
   );
 }
 
+/** Filter menus + removable chips for server-paginated tables. `values` is `{[id]: value}`. */
+export function FilterBar({ filters, values, onChange, onClear, className }) {
+  const active = filters.filter((f) => values[f.id]);
+  const labelFor = (f, v) => (f.type === 'date' ? v : f.options.find((o) => String(o.value) === String(v))?.label || v);
+  return (
+    <div className={cn('flex flex-col gap-2', className)}>
+      <div className="flex flex-wrap items-center gap-2">
+        {filters.map((f) => f.type === 'date' ? (
+          <label key={f.id} className="flex h-10 items-center gap-2 rounded-lg border border-line bg-card px-3 text-sm text-ink-2 shadow-xs">
+            <span className="whitespace-nowrap">{f.label}</span>
+            <input type="date" aria-label={f.label} value={values[f.id] || ''} onChange={(e) => onChange(f.id, e.target.value)} className="min-w-0 bg-transparent text-ink outline-none" />
+          </label>
+        ) : (
+          <select key={f.id} aria-label={f.label} value={values[f.id] || ''} onChange={(e) => onChange(f.id, e.target.value)} className="h-10 max-w-[14rem] rounded-lg border border-line bg-card px-3 text-sm text-ink shadow-xs">
+            <option value="">{f.label}: all</option>
+            {f.options.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+          </select>
+        ))}
+      </div>
+      {active.length > 0 && (
+        <div className="flex flex-wrap items-center gap-2 text-xs">
+          {active.map((f) => <Chip key={f.id} onRemove={() => onChange(f.id, '')}>{f.label}: {labelFor(f, values[f.id])}</Chip>)}
+          <button type="button" className="min-h-9 px-1 font-semibold text-brand" onClick={onClear}>Clear all</button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function Chip({ children, onRemove }) {
   return (
     <span className="inline-flex items-center gap-1 rounded-full border border-line bg-paper py-0.5 pl-2.5 pr-1 font-medium text-ink">

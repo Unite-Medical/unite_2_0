@@ -35,6 +35,9 @@ export function AdminFulfillment() {
   const { isMobile } = useViewport();
   const padX = isMobile ? 18 : 40;
   const orders = db.useTable('orders', { orderBy: 'placed_at', dir: 'desc' });
+  const [statusFilter, setStatusFilter] = useState('');
+  const orderStatuses = [...new Set(orders.map((o) => o.status).filter(Boolean))].sort();
+  const listedOrders = orders.filter((o) => !statusFilter || o.status === statusFilter);
   const shipments = db.useTable('shipments');
   const orderItems = db.useTable('order_items');
   const reservations = db.useTable('reservations');
@@ -266,10 +269,11 @@ export function AdminFulfillment() {
         <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'minmax(0,2fr) minmax(22rem,1fr)', gap: 20 }}>
           {/* Orders + pipeline */}
           <div style={{ background: D.card, border: `1px solid ${D.line}`, borderRadius: 12, overflow: 'auto' }}>
+            <div className="ui-root flex items-center gap-2 border-b border-line p-3 font-sans text-sm"><select aria-label="Status" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="h-10 rounded-lg border border-line bg-card px-3 text-sm text-ink shadow-xs"><option value="">Status: all</option>{orderStatuses.map((s) => <option key={s} value={s}>{s.replaceAll('_', ' ')}</option>)}</select><span className="ml-auto text-ink-2">{listedOrders.length} order{listedOrders.length === 1 ? '' : 's'}</span></div>
             <div className="ui-root font-sans text-sm text-ink"><Table>
               <THead><tr><TH>Order</TH><TH>Customer</TH><TH>Status</TH><TH>Pipeline</TH><TH><span className="sr-only">Run</span></TH></tr></THead>
               <tbody>
-                {orders.slice(0, 40).map((o) => {
+                {listedOrders.slice(0, 40).map((o) => {
                   const { done, total } = progress(o.id);
                   const steps = stepsByOrder.get(o.id) || {};
                   return (
@@ -294,7 +298,7 @@ export function AdminFulfillment() {
                     </TRow>
                   );
                 })}
-                {orders.length === 0 && <tr><TD colSpan={5} className="text-ink-3">No orders yet.</TD></tr>}
+                {listedOrders.length === 0 && <tr><TD colSpan={5} className="text-ink-3">{orders.length ? 'No orders match this status.' : 'No orders yet.'}</TD></tr>}
               </tbody>
             </Table></div>
           </div>

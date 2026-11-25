@@ -3,7 +3,9 @@ import {Button,ButtonLink} from '../../components/ui/button.jsx';
 import {Card as UiCard} from '../../components/ui/card.jsx';
 import {Input} from '../../components/ui/input.jsx';
 import {Table,THead,TRow,TH,TD} from '../../components/ui/table.jsx';
-import {SortHeader} from '../../components/ui/data-table.jsx';
+import {SortHeader,FilterBar} from '../../components/ui/data-table.jsx';
+import {filterOptions} from '../../lib/tableFilters.js';
+import {US_STATES} from '../../lib/usStates.js';
 import {EmptyState} from '../../components/ui/empty-state.jsx';
 import {StatusBadge} from '../../components/ui/status-badge.jsx';
 import {cn} from '../../lib/cn.js';
@@ -21,8 +23,9 @@ import {commerceRequest,money,date,downloadRows} from '../../lib/commerceClient.
 import '../../styles/commerce-workspace.css';
 const contactFields=[{key:'first_name',label:'First name'},{key:'last_name',label:'Last name'},{key:'name',label:'Display name',required:true},{key:'company',label:'Company'},{key:'email',label:'Email',type:'email'},{key:'phone',label:'Phone'},{key:'language',label:'Language',options:[{value:'en',label:'English'},{value:'es',label:'Spanish'}]}];
 export function CommerceCustomers(){const {id}=useParams();return <AdminShell active="customers"><main className={id?'cw-page':'ui-root mx-auto w-full max-w-[1500px] px-4 py-6 font-sans text-sm text-ink md:px-8'} id="main">{id?<CustomerDetail key={id} id={id}/>:<CustomerList/>}</main></AdminShell>;}
+const CUSTOMER_FILTERS=[{id:'subscription',label:'Email subscription',options:filterOptions([['subscribed','Subscribed'],['unsubscribed','Not subscribed']])},{id:'tax',label:'Tax',options:filterOptions([['exempt','Tax exempt'],['taxable','Taxable']])},{id:'province',label:'State',options:filterOptions(US_STATES.map(([c,n])=>[c,n]))}];
 const CUSTOMER_TABS=[['','All'],['active','Active'],['tax_missing','Missing tax certificate'],['archived','Archived']];
-function CustomerList(){const [params]=useSearchParams();const [q,setQ]=useState(''),[filter,setFilter]=useState(''),[page,setPage]=useState(0),[sort,setSort]=useState(null),[add,setAdd]=useState(false),[selected,setSelected]=useAssistantSelection('customers'),[notice,setNotice]=useState('');const nav=useNavigate(),{data,error,loading,reload}=useCommerce({kind:'customers',q,page,filter,sort:sort?.id,dir:sort?.dir,selected_ids:params.get('selected')?selected:undefined});const rows=data?.rows||[];
+function CustomerList(){const [params]=useSearchParams();const [q,setQ]=useState(''),[filter,setFilter]=useState(''),[page,setPage]=useState(0),[sort,setSort]=useState(null),[facets,setFacets]=useState({}),[add,setAdd]=useState(false),[selected,setSelected]=useAssistantSelection('customers'),[notice,setNotice]=useState('');const nav=useNavigate(),{data,error,loading,reload}=useCommerce({kind:'customers',q,page,filter,...Object.fromEntries(Object.entries(facets).filter(([,v])=>v)),sort:sort?.id,dir:sort?.dir,selected_ids:params.get('selected')?selected:undefined});const rows=data?.rows||[];
  async function exportAll(){try{let result=[],p=0;do{const r=(await commerceRequest({kind:'customers',q,filter,page:p++,limit:100})).data;result.push(...r.rows);if(result.length>=r.total)break;}while(p<100);downloadRows(result,'Unite-customers.csv');}catch(e){setNotice(e.message);}}
  const toggle=(id,on)=>setSelected(on?[...selected,id]:selected.filter(i=>i!==id));
  const place=c=>[c.default_address?.city,c.default_address?.province,c.default_address?.country].filter(Boolean).join(', ');
@@ -42,6 +45,7 @@ function CustomerList(){const [params]=useSearchParams();const [q,setQ]=useState
    <div className="flex flex-col gap-3 border-b border-line px-4 pt-3 pb-3">
     <div role="tablist" aria-label="Customer views" className="-mb-px flex gap-1 overflow-x-auto [scrollbar-width:none]">{CUSTOMER_TABS.map(([v,t])=><button key={v} role="tab" aria-selected={filter===v} onClick={()=>{setFilter(v);setPage(0);}} className={cn('min-h-10 rounded-lg px-3 text-sm font-medium whitespace-nowrap',filter===v?'bg-paper text-ink':'text-ink-2 hover:bg-paper/60')}>{t}</button>)}</div>
     <div className="flex flex-wrap items-center gap-2"><div className="min-w-60 flex-1"><Input icon={Search} type="search" aria-label="Search customers" placeholder="Name, company, email or tag" value={q} onChange={e=>{setQ(e.target.value);setPage(0);}}/></div>{selected.length>0&&<Button onClick={()=>downloadRows(rows.filter(r=>selected.includes(r.id)),'Unite-selected-customers.csv')}><Download className="h-4 w-4"/>Export {selected.length} selected</Button>}</div>
+    <FilterBar filters={CUSTOMER_FILTERS} values={facets} onChange={(k,v)=>{setFacets(f=>({...f,[k]:v}));setPage(0);}} onClear={()=>{setFacets({});setPage(0);}}/>
    </div>
    <LoadingError loading={loading} error={error}>
     {rows.length?<>

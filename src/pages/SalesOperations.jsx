@@ -1,4 +1,8 @@
 import {useCallback,useEffect,useState} from 'react';
+import {FilterBar} from '../components/ui/data-table.jsx';
+import {ORDER_FILTERS} from '../lib/tableFilters.js';
+import '../styles/ui.css';
+const SALES_ORDER_FILTERS=ORDER_FILTERS.filter(f=>['payment','fulfillment','created_from','created_to'].includes(f.id));
 import {Link,useParams,useSearchParams} from 'react-router-dom';
 import {AdminShell} from '../components/layout/AdminShell.jsx';
 import {Address,Card,Pager,Status} from '../components/commerce/CommerceUI.jsx';
@@ -17,7 +21,8 @@ function QueueState({loading,error,retry,empty,title,children,action}){
 function Views({options,value,onChange,label}){return <div className="oq-views" aria-label={label}>{options.map(([key,text])=><button key={key} aria-pressed={value===key} onClick={()=>onChange(key)}>{text}</button>)}</div>;}
 export function SalesOrders(){
  const {id}=useParams(),[params,setParams]=useSearchParams(),q=params.get('q')||'',filter=params.get('filter')||'',page=Math.max(0,Number.parseInt(params.get('page'),10)||0);
- const {data,error,loading,reload}=useCommerce({kind:'orders',...(id?{id}:{q,page,filter})});
+ const facets=Object.fromEntries(SALES_ORDER_FILTERS.map(f=>[f.id,params.get(f.id)||'']).filter(([,v])=>v));
+ const {data,error,loading,reload}=useCommerce({kind:'orders',...(id?{id}:{q,page,filter,...facets})});
  const suffix=params.toString()?'?'+params.toString():'',back='/sales/orders'+suffix;
  function update(key,value){const next=new URLSearchParams(window.location.search);next.delete('page');value?next.set(key,value):next.delete(key);setParams(next,{replace:true});}
  const rows=data?.rows||[];
@@ -30,7 +35,8 @@ export function SalesOrders(){
    <aside className="cw-secondary-col"><Card title="Customer"><strong>{data.customer_name||data.email||'Customer not selected'}</strong>{data.customer_name&&<p>{data.email}</p>}<dl className="cw-facts"><div><dt>Created</dt><dd>{date(data.created_at)}</dd></div><div><dt>Customer PO</dt><dd>{data.po_number||'Not provided'}</dd></div><div><dt>Terms</dt><dd>{data.payment_terms||data.payment_method||'Not recorded'}</dd></div></dl></Card><Card title="Ship to"><Address address={data.shipping_address}/></Card><Card title="Bill to"><Address address={data.billing_address}/></Card></aside></div></>}
   </QueueState>:<section className="cw-card oq-queue">
    <Views options={orderViews} value={filter} onChange={value=>update('filter',value)} label="Order views"/>
-   <div className="oq-toolbar"><label className="oq-search"><span>Search customer orders</span><input type="search" value={q} placeholder="Order number, customer email or reference" onChange={e=>update('q',e.target.value)}/></label><span className="oq-result-count" role="status">{loading?'Searching…':`${data?.total||0} matching orders`}</span>{(q||filter)&&<button onClick={()=>setParams({})}>Clear filters</button>}</div>
+   <div className="oq-toolbar"><label className="oq-search"><span>Search customer orders</span><input type="search" value={q} placeholder="Order number, customer email or reference" onChange={e=>update('q',e.target.value)}/></label><span className="oq-result-count" role="status">{loading?'Searching…':`${data?.total||0} matching orders`}</span>{(q||filter||Object.keys(facets).length>0)&&<button onClick={()=>setParams({})}>Clear filters</button>}</div>
+   <FilterBar className="ui-root px-4 pb-3 font-sans text-sm" filters={SALES_ORDER_FILTERS} values={facets} onChange={update} onClear={()=>{const next=new URLSearchParams(window.location.search);SALES_ORDER_FILTERS.forEach(f=>next.delete(f.id));next.delete('page');setParams(next,{replace:true});}}/>
    <QueueState loading={loading} error={error} retry={reload} empty={!rows.length} title={q||filter?'No orders match this view':'No customer orders yet'} action={q||filter?<button onClick={()=>setParams({})}>Show all orders</button>:<Link className="cw-button primary" to="/sales/orders/new">Create your first order</Link>}>
     {rows.length?<div className="cw-table-scroll"><table className="oq-table"><thead><tr><th>Order / date</th><th>Customer</th><th>Payment</th><th>Fulfillment</th><th className="number">Total</th><th>Next step</th></tr></thead><tbody>{rows.map(order=><tr key={order.id}><td><Link className="cw-name" to={'/sales/orders/'+encodeURIComponent(order.id)+suffix}>{order.number||'Untitled draft'}</Link><small>{date(order.created_at)}{order.historical?' · Imported':''}</small></td><td>{order.customer_name||order.email||'Customer not selected'}</td><td><Status value={order.draft?'draft':order.payment_status||order.financial_status||'payment_review_needed'}/></td><td><Status value={order.draft?'not_started':order.fulfillment_status||'not_recorded'}/></td><td className="number">{money(order.total)}</td><td>{order.draft?<Link className="oq-row-action" to={'/sales/orders/new?draft='+encodeURIComponent(order.id)}>Continue draft →</Link>:<Link className="oq-row-action" to={'/sales/orders/'+encodeURIComponent(order.id)+suffix}><Status value={order.workflow_state||'needs_review'}/> <span aria-hidden="true">→</span><span className="oq-sr-only"> Open {order.number}</span></Link>}</td></tr>)}</tbody></table></div>:'Orders are limited to the customers you can access. Search another reference or ask an administrator to check the customer assignment.'}
    </QueueState>{!loading&&!error&&<Pager page={page} total={data?.total||0} onChange={value=>setParams({...Object.fromEntries(params),page:String(value)})}/>}<footer className="oq-footnote">Payment labels reflect accounting evidence. Imported Shopify “paid” flags alone do not establish settlement.</footer>
