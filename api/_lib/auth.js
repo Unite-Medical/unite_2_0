@@ -20,7 +20,7 @@ export function createSessionToken(session, { secret, now = Date.now(), ttlMs = 
   const key = secretOrThrow(secret);
   const payload = {
     user_id: String(session.user_id),
-    email: session.email ? String(session.email).toLowerCase() : null,
+    email: (session.login_email || session.email) ? String(session.login_email || session.email).toLowerCase() : null,
     name: session.name || null,
     role: String(session.role || ''),
     roles: Array.isArray(session.roles)?session.roles:[String(session.role||'')],

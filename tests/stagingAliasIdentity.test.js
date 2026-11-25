@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {authorizeLiveProfile,withPolicyIdentity} from '../api/_lib/auth.js';
+import {authorizeLiveProfile,createSessionToken,verifySessionToken,withPolicyIdentity} from '../api/_lib/auth.js';
 import {isDamon} from '../api/_lib/launchPolicy.js';
 
 const env={UNITE_STAGING_ALIAS_IDENTITIES:'alex+damon@unitemedical.net=damon@unitemedical.net, alex+darren@unitemedical.net=darren@unitemedical.net'};
@@ -21,4 +21,9 @@ test('mapped sessions still check the signed-in profile email', () => {
   const profile={id:'u1',email:'alex+damon@unitemedical.net',role:'admin',status:'active',session_revision:0};
   assert.equal(authorizeLiveProfile(mapped,profile).ok,true);
   assert.equal(authorizeLiveProfile(mapped,{...profile,email:'damon@unitemedical.net'}).reason,'session_identity_stale');
+});
+
+test('reissued tokens keep the sign-in email, not the mapped one', () => {
+  const token=createSessionToken(withPolicyIdentity(session,env),{secret:'x'.repeat(40)});
+  assert.equal(verifySessionToken(token,{secret:'x'.repeat(40)}).email,'alex+damon@unitemedical.net');
 });
