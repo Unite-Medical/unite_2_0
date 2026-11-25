@@ -117,7 +117,7 @@ export function DataTable({
       )}
       {!visible.length ? (
         empty && !rows.length ? empty : <EmptyState icon={Search} title={rows.length ? `No ${label.toLowerCase()} match` : `No ${label.toLowerCase()} yet`} description={rows.length ? 'Try a different search or clear the filters.' : undefined}
-          action={rows.length ? <Button size="sm" onClick={() => { setQ(''); setActive({}); setTab(tabs?.[0]?.id ?? null); }}>Clear filters</Button> : undefined} />
+          action={rows.length ? <Button size="sm" onClick={() => { setQ(''); setActive({}); setTab(defaultTab ?? tabs?.[0]?.id ?? null); }}>Clear filters</Button> : undefined} />
       ) : (
         <>
           <div className="hidden w-full overflow-x-auto md:block">
