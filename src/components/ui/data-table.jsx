@@ -66,6 +66,7 @@ export function DataTable({
     if (onRowClick) onRowClick(row); else if (rowHref) navigate(rowHref(row));
   };
   const clickable = Boolean(rowHref || onRowClick);
+  const rowProps = (r) => clickable ? { tabIndex: 0, onClick: (e) => open(r, e), onKeyDown: (e) => { if ((e.key === 'Enter' || e.key === ' ') && e.target === e.currentTarget) { e.preventDefault(); open(r, e); } } } : {};
   const pick = (id, on) => setPicked((p) => (on ? [...new Set([...p, id])] : p.filter((x) => x !== id)));
 
   if (!rows.length && empty && !toolbar) return <div className={cn('overflow-hidden rounded-xl border border-line bg-card shadow-xs', className)}>{empty}</div>;
@@ -143,7 +144,7 @@ export function DataTable({
                 {shown.map((r) => {
                   const id = getRowId(r);
                   return (
-                    <tr key={id} onClick={clickable ? (e) => open(r, e) : undefined} className={cn('border-b border-line transition-colors last:border-0 hover:bg-paper/60', clickable && 'cursor-pointer', picked.includes(id) && 'bg-paper/80')}>
+                    <tr key={id} {...rowProps(r)} className={cn('border-b border-line transition-colors last:border-0 hover:bg-paper/60', clickable && 'cursor-pointer focus-visible:bg-paper focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand/40', picked.includes(id) && 'bg-paper/80')}>
                       {selectable && <td className="px-4 py-3"><input type="checkbox" aria-label={`Select ${text(r.name || r.number || id)}`} checked={picked.includes(id)} onChange={(e) => pick(id, e.target.checked)} /></td>}
                       {columns.map((c) => <td key={c.id} className={cn('px-4 py-3 align-middle text-ink', c.align === 'right' && 'text-right tabular-nums', c.className)}>{c.cell ? c.cell(r) : text(valueOf(c, r)) || <span className="text-ink-3">—</span>}</td>)}
                     </tr>
@@ -157,7 +158,7 @@ export function DataTable({
               const id = getRowId(r);
               const [first, ...rest] = columns.filter((c) => c.header && c.mobile !== false);
               return (
-                <li key={id} onClick={clickable ? (e) => open(r, e) : undefined} className={cn('flex gap-3 p-4', clickable && 'cursor-pointer')}>
+                <li key={id} {...rowProps(r)} className={cn('flex gap-3 p-4', clickable && 'cursor-pointer focus-visible:bg-paper focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand/40')}>
                   {selectable && <input type="checkbox" className="mt-1 h-5 w-5 shrink-0" aria-label={`Select ${text(r.name || r.number || id)}`} checked={picked.includes(id)} onChange={(e) => pick(id, e.target.checked)} />}
                   <div className="min-w-0 flex-1">
                     {mobileCard ? mobileCard(r) : (
