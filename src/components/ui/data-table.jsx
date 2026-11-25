@@ -196,14 +196,14 @@ export function FilterBar({ filters, values, onChange, onClear, className }) {
   const labelFor = (f, v) => (f.type === 'date' ? v : f.options.find((o) => String(o.value) === String(v))?.label || v);
   return (
     <div className={cn('flex flex-col gap-2', className)}>
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center">
         {filters.map((f) => f.type === 'date' ? (
-          <label key={f.id} className="flex h-10 items-center gap-2 rounded-lg border border-line bg-card px-3 text-sm text-ink-2 shadow-xs">
+          <label key={f.id} className="col-span-2 flex h-10 min-w-0 items-center gap-2 rounded-lg border border-line bg-card px-3 text-sm text-ink-2 shadow-xs sm:col-span-1">
             <span className="whitespace-nowrap">{f.label}</span>
             <input type="date" aria-label={f.label} value={values[f.id] || ''} onChange={(e) => onChange(f.id, e.target.value)} style={{ border: 0, padding: 0, boxShadow: "none", background: "transparent" }} className="min-w-0 text-ink outline-none" />
           </label>
         ) : (
-          <select key={f.id} aria-label={f.label} value={values[f.id] || ''} onChange={(e) => onChange(f.id, e.target.value)} className="h-10 max-w-[14rem] rounded-lg border border-line bg-card px-3 text-sm text-ink shadow-xs">
+          <select key={f.id} aria-label={f.label} value={values[f.id] || ''} onChange={(e) => onChange(f.id, e.target.value)} className="h-10 w-full min-w-0 rounded-lg border border-line bg-card px-3 text-sm text-ink shadow-xs sm:w-auto sm:max-w-[14rem]">
             <option value="">{f.label}: all</option>
             {f.options.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
           </select>
