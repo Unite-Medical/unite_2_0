@@ -23,7 +23,7 @@ const compare = (a, b) => {
  */
 export function DataTable({
   columns, rows, getRowId = (r) => r.id, label = 'Records', searchPlaceholder = 'Search', searchText,
-  tabs, filters = [], defaultSort, selectable = false, bulkActions, rowHref, onRowClick, mobileCard,
+  tabs, filters = [], defaultSort, selectable = false, bulkActions, rowHref, rowState, onRowClick, mobileCard,
   empty, pageSize = 50, toolbar, className,
 }) {
   const navigate = useNavigate();
@@ -63,7 +63,7 @@ export function DataTable({
   const toggleSort = (col) => setSort((s) => { const first = col.align === 'right' ? 'desc' : 'asc'; return s?.id !== col.id ? { id: col.id, dir: first } : s.dir === first ? { id: col.id, dir: first === 'asc' ? 'desc' : 'asc' } : defaultSort ? { id: col.id, dir: first } : null; });
   const open = (row, e) => {
     if (e?.target?.closest('a,button,input,select,textarea,label')) return;
-    if (onRowClick) onRowClick(row); else if (rowHref) navigate(rowHref(row));
+    if (onRowClick) onRowClick(row); else if (rowHref) navigate(rowHref(row), rowState ? { state: rowState } : undefined);
   };
   const clickable = Boolean(rowHref || onRowClick);
   const rowProps = (r) => clickable ? { tabIndex: 0, onClick: (e) => open(r, e), onKeyDown: (e) => { if ((e.key === 'Enter' || e.key === ' ') && e.target === e.currentTarget) { e.preventDefault(); open(r, e); } } } : {};

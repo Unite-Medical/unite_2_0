@@ -29,7 +29,7 @@ export function AdminInventory(){
    tabs={[{id:'all',label:'All'},{id:'low',label:'Low stock',filter:r=>r.loaded&&r.available>0&&r.available<=Number(r.product.reorder_at||5)},{id:'out',label:'Out of stock',filter:r=>r.loaded&&r.available<=0},{id:'unloaded',label:'Not loaded',filter:r=>!r.loaded}]}
    filters={[{id:'category',label:'Category',value:r=>r.product.category},{id:'vendor',label:'Vendor',value:r=>r.product.vendor}]}
    toolbar={<select aria-label="Inventory location" className="h-11 rounded-lg border border-line bg-card px-3 text-sm shadow-xs md:h-10" value={location} onChange={e=>setLocation(e.target.value)}><option value="">All locations</option>{warehouses.filter(w=>w.active!==false).map(w=><option key={w.id} value={w.id}>{w.name}</option>)}</select>}
-   defaultSort={{id:'product',dir:'asc'}} rowHref={editLink}
+   defaultSort={{id:'product',dir:'asc'}} rowHref={editLink} rowState={{from:'/admin/inventory'}}
    empty={<EmptyState icon={Boxes} title="Your inventory starts here" description="Add products first, then receive or count stock to record your opening inventory." action={<ButtonLink variant="primary" to="/admin/products">Go to products</ButtonLink>}/>}
    columns={[
     {id:'product',header:'Product',sortValue:r=>r.product.name,cell:r=><Link className="font-semibold text-ink hover:text-brand" to={editLink(r)} state={{from:'/admin/inventory'}}>{r.product.name}</Link>},
