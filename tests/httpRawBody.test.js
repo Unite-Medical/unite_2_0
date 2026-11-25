@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { Readable } from 'node:stream';
+import { Buffer } from 'node:buffer';
 import crypto from 'node:crypto';
 import { readRawBody, verifyStripeSignature } from '../api/_lib/http.js';
 
