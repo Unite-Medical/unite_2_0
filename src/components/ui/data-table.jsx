@@ -23,11 +23,11 @@ const compare = (a, b) => {
  */
 export function DataTable({
   columns, rows, getRowId = (r) => r.id, label = 'Records', searchPlaceholder = 'Search', searchText,
-  tabs, filters = [], defaultSort, selectable = false, bulkActions, rowHref, rowState, onRowClick, mobileCard,
+  tabs, filters = [], defaultSort, selectable = false, bulkActions, rowHref, rowState, onRowClick, mobileCard, defaultTab,
   empty, pageSize = 50, toolbar, className,
 }) {
   const navigate = useNavigate();
-  const [tab, setTab] = useState(tabs?.[0]?.id ?? null);
+  const [tab, setTab] = useState(defaultTab ?? tabs?.[0]?.id ?? null);
   const [q, setQ] = useState('');
   const [active, setActive] = useState({});
   const [sort, setSort] = useState(defaultSort || null);

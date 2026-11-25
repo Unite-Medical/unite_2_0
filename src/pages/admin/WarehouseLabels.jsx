@@ -63,7 +63,7 @@ export function WarehouseLabels(){
     </header>
     {error&&<p role="alert" className="m-0 rounded-lg border border-warn-soft bg-[#f8ede4] px-4 py-3 text-warn">{error}</p>}
     {!orders&&!error&&<p className="m-0 text-ink-2">Loading orders…</p>}
-    {orders&&<DataTable label="Orders" rows={rows} pageSize={25}
+    {orders&&<DataTable label="Orders" rows={rows} pageSize={25} defaultTab={waiting?'awaiting':'all'}
       searchPlaceholder="Search order, customer, SKU, PO or tracking"
       searchText={o=>`${o.id} ${shortId(o.id)} ${o.customer_name} ${o.po_number} ${o.tracking_number||''} ${o.items.map(i=>`${i.sku} ${i.name||''}`).join(' ')} ${o.ship_to.city} ${o.ship_to.zip}`}
       tabs={[{id:'awaiting',label:'Awaiting label',filter:o=>o.status==='inventory_reserved'},{id:'labelled',label:'Label bought',filter:o=>o.status==='ready_to_ship'},{id:'all',label:'All'}]}
@@ -72,11 +72,11 @@ export function WarehouseLabels(){
       empty={<EmptyState icon={Truck} title="Nothing to ship" description="Orders appear here once they are approved, paid, released and have stock reserved."/>}
       mobileCard={o=><div className="flex flex-col gap-1"><div className="flex items-center justify-between gap-2"><span className="font-mono text-xs font-semibold">{shortId(o.id)}</span>{o.status==='ready_to_ship'?<Badge tone="good" dot>Label bought</Badge>:<Badge tone="warn" dot>Awaiting label</Badge>}</div><div className="font-semibold">{o.customer_name||'Customer'}</div><div className="text-xs text-ink-2">{o.items.map(i=>`${i.qty} × ${i.sku}`).join(', ')||'No lines'}</div><div className="text-xs text-ink-2">{shipTo(o)}{o.po_number?` · PO ${o.po_number}`:''}</div>{o.tracking_number&&<div className="font-mono text-xs">{carrierName(o.carrier)} {o.tracking_number}</div>}</div>}
       columns={[
-        {id:'order',header:'Order',accessor:'id',cell:o=><><div className="font-mono text-xs font-semibold">{shortId(o.id)}</div>{o.po_number&&<div className="text-xs text-ink-2">PO {o.po_number}</div>}</>},
+        {id:'order',header:'Order',accessor:'id',cell:o=><><div className="whitespace-nowrap font-mono text-xs font-semibold">{shortId(o.id)}</div>{o.po_number&&<div className="text-xs text-ink-2">PO {o.po_number}</div>}</>},
         {id:'date',header:'Released',sortValue:o=>o.inventory_reserved_at||o.placed_at||'',cell:o=><span className="whitespace-nowrap text-ink-2">{when(o.inventory_reserved_at||o.placed_at)}</span>},
         {id:'customer',header:'Customer',accessor:'customer_name',cell:o=><span className="font-medium">{o.customer_name||'Customer'}</span>},
-        {id:'items',header:'Items',align:'right',sortValue:units,cell:o=><span title={o.items.map(i=>`${i.qty} × ${i.name||i.sku} (${i.sku})`).join('\n')}>{units(o)} <span className="text-xs text-ink-2">{o.items.length===1?o.items[0].sku:`${o.items.length} SKUs`}</span></span>},
-        {id:'shipto',header:'Ship to',sortValue:o=>`${o.ship_to.state} ${o.ship_to.city}`,cell:o=><span className="text-ink-2">{shipTo(o)}</span>},
+        {id:'items',header:'Items',align:'right',sortValue:units,cell:o=><div title={o.items.map(i=>`${i.qty} × ${i.name||i.sku} (${i.sku})`).join('\n')}><div>{units(o)}</div><div className="whitespace-nowrap text-xs text-ink-2">{o.items.length===1?o.items[0].sku:`${o.items.length} SKUs`}</div></div>},
+        {id:'shipto',header:'Ship to',sortValue:o=>`${o.ship_to.state} ${o.ship_to.city}`,cell:o=><><div className="font-medium">{o.ship_to.name||'—'}</div><div className="whitespace-nowrap text-xs text-ink-2">{[[o.ship_to.city,o.ship_to.state].filter(Boolean).join(', '),o.ship_to.zip].filter(Boolean).join(' ')||'Address missing'}</div></>},
         {id:'status',header:'Status',accessor:'status',cell:o=>o.status==='ready_to_ship'?<Badge tone="good" dot>Label bought</Badge>:<Badge tone="warn" dot>Awaiting label</Badge>},
         {id:'carrier',header:'Carrier · tracking',sortValue:o=>o.tracking_number||'',cell:o=>o.tracking_number?<><div>{carrierName(o.carrier)}{o.service?` · ${serviceName(o.service)}`:''}</div><div className="font-mono text-xs text-ink-2">{o.tracking_number}</div></>:<span className="text-ink-3">—</span>},
         {id:'cost',header:'Postage',align:'right',sortValue:o=>o.label_cost??-1,cell:o=><span className="font-mono">{money(o.label_cost)}</span>},
