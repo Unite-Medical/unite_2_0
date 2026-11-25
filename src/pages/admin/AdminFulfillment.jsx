@@ -246,7 +246,7 @@ export function AdminFulfillment() {
     <AdminShell active="fulfillment">
       <div style={{ padding: `${isMobile ? 28 : 40}px ${padX}px ${isMobile ? 18 : 24}px`, borderBottom: `1px solid ${D.line}` }}>
         <div style={{ fontSize: 12, fontWeight: 600, color: D.ink2, marginBottom: 12 }}>Orders</div>
-        <h1 style={{ fontFamily: D.display, fontSize: 28, fontWeight: 600, letterSpacing: -0.4, lineHeight: 1.02, margin: 0 }}>Fulfillment</h1>
+        <h1 style={{ fontFamily: D.display, fontSize: 28, fontWeight: 600, letterSpacing: -0.4, lineHeight: 1.02, margin: 0 }}>Pick & ship</h1>
         <div style={{ marginTop: 10, fontSize: 13, color: D.ink2, maxWidth: 680 }}>
           Payment or approved credit releases the current in-stock batch. Backordered units remain uncharged until stock arrives and a separately rated suborder is created.
         </div>
@@ -263,7 +263,7 @@ export function AdminFulfillment() {
           ))}
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.4fr 1fr', gap: 20 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'minmax(0,2.2fr) minmax(0,1fr)', gap: 20 }}>
           {/* Orders + pipeline */}
           <div style={{ background: D.card, border: `1px solid ${D.line}`, borderRadius: 12, overflow: 'auto' }}>
             <div className="ui-root font-sans text-sm text-ink"><Table>
@@ -410,7 +410,7 @@ export function AdminFulfillment() {
             </div>
 
             <div style={{ background: D.card, border: `1px solid ${D.line}`, borderRadius: 12, padding: 18, marginTop: 20 }}>
-              <div style={{ fontSize: 12, fontWeight: 600, color: D.ink2 }}>DISTRIBUTOR PICKUPS · 09:00–16:00 ET</div>
+              <div style={{ fontSize: 12, fontWeight: 600, color: D.ink2 }}>Distributor pickups · 09:00–16:00 ET</div>
               {distributorPickups.length === 0 && <div style={{ fontSize: 13, color: D.ink3, marginTop: 10 }}>No pickup requests.</div>}
               <div style={{ marginTop: 10, display: 'grid', gap: 8 }}>
                 {distributorPickups.slice(0, 12).map((pickup) => {
