@@ -1,6 +1,6 @@
 import {useCallback,useEffect,useState} from 'react';
 import {FilterBar} from '../components/ui/data-table.jsx';
-import {ORDER_FILTERS} from '../lib/tableFilters.js';
+import {ORDER_FILTERS,facetQuery} from '../lib/tableFilters.js';
 import '../styles/ui.css';
 const SALES_ORDER_FILTERS=ORDER_FILTERS.filter(f=>['payment','fulfillment','created_from','created_to'].includes(f.id));
 import {Link,useParams,useSearchParams} from 'react-router-dom';
@@ -22,7 +22,7 @@ function Views({options,value,onChange,label}){return <div className="oq-views" 
 export function SalesOrders(){
  const {id}=useParams(),[params,setParams]=useSearchParams(),q=params.get('q')||'',filter=params.get('filter')||'',page=Math.max(0,Number.parseInt(params.get('page'),10)||0);
  const facets=Object.fromEntries(SALES_ORDER_FILTERS.map(f=>[f.id,params.get(f.id)||'']).filter(([,v])=>v));
- const {data,error,loading,reload}=useCommerce({kind:'orders',...(id?{id}:{q,page,filter,...facets})});
+ const {data,error,loading,reload}=useCommerce({kind:'orders',...(id?{id}:{q,page,filter,...facetQuery(facets)})});
  const suffix=params.toString()?'?'+params.toString():'',back='/sales/orders'+suffix;
  function update(key,value){const next=new URLSearchParams(window.location.search);next.delete('page');value?next.set(key,value):next.delete(key);setParams(next,{replace:true});}
  const rows=data?.rows||[];

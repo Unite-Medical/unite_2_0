@@ -5,7 +5,7 @@ import {Card as UiCard} from '../../components/ui/card.jsx';
 import {Input} from '../../components/ui/input.jsx';
 import {Table,THead,TRow,TH,TD} from '../../components/ui/table.jsx';
 import {SortHeader,FilterBar} from '../../components/ui/data-table.jsx';
-import {ORDER_FILTERS} from '../../lib/tableFilters.js';
+import {ORDER_FILTERS,facetQuery} from '../../lib/tableFilters.js';
 import {EmptyState} from '../../components/ui/empty-state.jsx';
 import {StatusBadge} from '../../components/ui/status-badge.jsx';
 import {cn} from '../../lib/cn.js';
@@ -39,12 +39,11 @@ function OrderStatusTracker({order:o}){
 }
 const states=['needs_review','waiting_stock','waiting_payment','waiting_response','ready','complete','archived'];
 export function CommerceOrders(){const {id}=useParams();return <AdminShell active="orders"><main id="main" className={id?'cw-page':'ui-root mx-auto w-full max-w-[1500px] px-4 py-6 font-sans text-sm text-ink md:px-8'}>{id?<OrderDetail key={id} id={id}/>:<OrderList/>}</main></AdminShell>;}
-const setFacets=(values)=>Object.fromEntries(Object.entries(values).filter(([,v])=>v));
 const ORDER_TABS=[['','All'],['needs_review','Needs review'],['waiting_stock','Waiting for stock'],['waiting_payment','Waiting for payment'],['waiting_response','Waiting for response'],['archived','Archived']];
 function OrderList(){
   const [selected,setSelected]=useAssistantSelection('orders');
   const [params]=useSearchParams(),[q,setQ]=useState(params.get('search')||''),[page,setPage]=useState(0),[filter,setFilter]=useState(''),[sort,setSort]=useState(null),[facets,setFacetValues]=useState({});
-  const customer=params.get('customer')||'',{data,error,loading}=useCommerce({kind:'orders',q,page,filter,...setFacets(facets),customer_id:customer,sort:sort?.id,dir:sort?.dir,selected_ids:params.get('selected')?selected:undefined});
+  const customer=params.get('customer')||'',{data,error,loading}=useCommerce({kind:'orders',q,page,filter,...facetQuery(facets),customer_id:customer,sort:sort?.id,dir:sort?.dir,selected_ids:params.get('selected')?selected:undefined});
   const rows=data?.rows||[];
   return <div className="flex flex-col gap-5">
     <div className="flex flex-wrap items-end justify-between gap-4">
