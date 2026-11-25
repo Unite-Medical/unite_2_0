@@ -209,15 +209,17 @@ export async function createOrderLabel(sql, orderId, { actorId = 'system', fetch
 export const LABEL_ROLES = ['admin', 'warehouse_manager', 'warehouse_operator'];
 
 // Released single-shipment parcel orders the warehouse can buy (or has bought) a label for.
-export function readyToShipOrders({ orders = [], items = [], addresses = [] } = {}) {
+export function readyToShipOrders({ orders = [], items = [], addresses = [], shipments = [] } = {}) {
   return orders
     .filter((o) => ['inventory_reserved', 'ready_to_ship'].includes(o.status) && !o.fulfillment_mode && !(o.shipment_plan?.length > 1))
     .map((o) => {
       const a = addresses.find((r) => r.id === o.ship_to_address_id) || {};
+      const shp = shipments.find((r) => r.order_id === o.id && r.tracking_number && r.tracking_number === o.tracking_number) || {};
       return {
         id: o.id, status: o.status, customer_name: o.customer_name || '', po_number: o.po_number || '',
         placed_at: o.placed_at || o.created_at || null, inventory_reserved_at: o.inventory_reserved_at || null,
         carrier: o.carrier || null, tracking_number: o.tracking_number || null, label_created_at: o.label_created_at || null,
+        service: shp.service || null, label_cost: shp.label_cost ?? null, total: Number(o.total) || 0,
         ship_to: { name: a.recipient || a.company || '', city: a.city || '', state: a.state || a.province || '', zip: a.zip || '' },
         items: items.filter((i) => i.order_id === o.id && !i.removed).map((i) => ({ sku: i.sku, name: i.name, qty: Number(i.qty ?? i.quantity) || 0 })),
       };

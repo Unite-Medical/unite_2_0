@@ -31,7 +31,8 @@ export default async function handler(req, res) {
       const ids = orders.map((o) => o.id), addressIds = orders.map((o) => o.ship_to_address_id).filter(Boolean);
       const items = ids.length ? (await sql`SELECT data FROM um_rows WHERE tbl='order_items' AND deleted=false AND data->>'order_id' = ANY(${ids})`).map((r) => r.data) : [];
       const addresses = addressIds.length ? (await sql`SELECT data FROM um_rows WHERE tbl='addresses' AND deleted=false AND id = ANY(${addressIds})`).map((r) => r.data) : [];
-      return sendJson(res, 200, { ok: true, orders: readyToShipOrders({ orders, items, addresses }) });
+      const shipments = ids.length ? (await sql`SELECT data - 'label_data_base64' - 'label_url' AS data FROM um_rows WHERE tbl='shipments' AND deleted=false AND data->>'order_id' = ANY(${ids})`).map((r) => r.data) : [];
+      return sendJson(res, 200, { ok: true, orders: readyToShipOrders({ orders, items, addresses, shipments }) });
     }
     const body = JSON.parse((await readRawBody(req)).toString('utf8') || '{}');
     const orderId = String(body.order_id || '').trim();

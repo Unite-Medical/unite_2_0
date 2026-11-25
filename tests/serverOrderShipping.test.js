@@ -83,4 +83,10 @@ test('ready-to-ship list: released parcel orders only, with ship-to and lines', 
   assert.deepEqual(rows.map((r) => r.id), ['b', 'a']);
   assert.deepEqual(rows[1].ship_to, { name: 'Dock', city: 'Malibu', state: 'CA', zip: '90265' });
   assert.deepEqual(rows[1].items, [{ sku: 'X', name: 'X item', qty: 2 }]);
+  const [labelled] = readyToShipOrders({
+    orders: [{ id: 'b', status: 'ready_to_ship', tracking_number: '1Z', carrier: 'ups' }],
+    shipments: [{ order_id: 'b', tracking_number: 'OLD', service: 'ups_2nd_day', label_cost: 30 }, { order_id: 'b', tracking_number: '1Z', service: 'ups_ground', label_cost: 9.5 }],
+  });
+  assert.equal(labelled.service, 'ups_ground');
+  assert.equal(labelled.label_cost, 9.5);
 });

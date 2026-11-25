@@ -15,8 +15,8 @@ export function staffShortcuts(role, options) {
  if(at>=0)return [...list.slice(0,at+1),{...APPROVALS,group:list[at].group},...list.slice(at+1)];
  return [list[0],{...APPROVALS,group:list[0].group},...list.slice(1)];
 }
-function roleShortcuts(role, {inquiries=false,customerDirectory=false}={}) {
- const base=[{label:'Home',path:'/work',id:'work',group:'Your workspace'},...((role==='admin'||role==='finance'||role?.startsWith('warehouse_')||inquiries)?[{label:'WellLink',path:'/staff/welllink',id:'welllink',group:'Partner programs'}]:[]),...(['admin','finance','warehouse_operator','warehouse_manager'].includes(role)||inquiries?[{label:'Split shipments',path:'/staff/shipments',id:'shipments',group:'Daily work'}]:[])];
+function roleShortcuts(role, {inquiries=false,customerDirectory=false,welllink=true}={}) {
+ const base=[{label:'Home',path:'/work',id:'work',group:'Your workspace'},...((role==='admin'||role==='finance'||(role?.startsWith('warehouse_')&&welllink)||inquiries)?[{label:'WellLink',path:'/staff/welllink',id:'welllink',group:'Partner programs'}]:[]),...(['admin','finance','warehouse_operator','warehouse_manager'].includes(role)||inquiries?[{label:'Split shipments',path:'/staff/shipments',id:'shipments',group:'Daily work'}]:[])];
  if(role==='admin')return [base[0],
   {label:'Chat',path:'/admin/chat',id:'chat',group:'Your workspace'},
   {label:'Orders',path:'/admin/orders',id:'orders',group:'Store'},
