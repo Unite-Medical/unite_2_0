@@ -19,7 +19,7 @@ export default async function handler(req,res){
  }
  const origin=req.headers.origin;const host=req.headers['x-forwarded-host']||req.headers.host;if(!origin||new URL(origin).host!==host)return sendJson(res,403,{error:'Use the workspace to make changes.'});
  const body=JSON.parse((await readRawBody(req)).toString('utf8'));const actor=live.session;
- if(body.action==='list_selected')return sendJson(res,200,{ok:true,data:await readCommerce(sql,{kind:body.query?.kind,page:body.query?.page,sort:body.query?.sort,dir:body.query?.dir,selected_ids:body.query?.selected_ids})});
+ if(body.action==='list_selected')return sendJson(res,200,{ok:true,data:await readCommerce(sql,{...Object.fromEntries(['q','filter','customer_id','payment','fulfillment','origin','tag','created_from','created_to','subscription','tax','province','sku_state','image_state','record_status'].filter(k=>typeof body.query?.[k]==='string').map(k=>[k,body.query[k]])),kind:body.query?.kind,page:body.query?.page,sort:body.query?.sort,dir:body.query?.dir,selected_ids:body.query?.selected_ids})});
  if(body.action==='import'){
   if(process.env.UNITE_ENVIRONMENT!=='staging'&&!String(process.env.PUBLIC_APP_ORIGIN||'').includes('staging.unitemedical.net')&&!String(host).startsWith('staging.unitemedical.net'))return sendJson(res,403,{error:'This import is limited to the staging workspace.'});
   const s=loadSnapshot();if(!s.rows)throw new Error('The source import package is not bundled. Existing imported records remain available.');const start=Math.max(0,Math.floor(Number(body.cursor)||0));const batch=s.rows.slice(start,start+50);if(body.version!==s.version)throw new Error('The import changed. Reload the page.');
