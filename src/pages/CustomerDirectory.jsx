@@ -42,6 +42,8 @@ export function CustomerDirectory() {
     if(id)workspaceRequest('/api/account/customer-directory?'+new URLSearchParams({id}),{signal:controller.signal}).then(result => {if(!controller.signal.aborted)setDetailState({key:detailKey,data:result.data,error:''});}).catch(e => {if(!controller.signal.aborted)setDetailState({key:detailKey,data:null,error:e.message});});
     return () => controller.abort();
   },[id,detailKey]);
+  const [syncedSearch,setSyncedSearch] = useState(search);
+  if (syncedSearch !== search) { setSyncedSearch(search); setDraft(search); }
   // Search as you type (debounced); Enter still searches immediately.
   useEffect(() => { const next = draft.trim(); if (next === search) return undefined;
     const timer = setTimeout(() => update({q:next,page:null,customer:null}), 350); return () => clearTimeout(timer);
