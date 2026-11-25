@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {authorizeLiveProfile,createSessionToken,verifySessionToken,withPolicyIdentity} from '../api/_lib/auth.js';
 import {isDamon} from '../api/_lib/launchPolicy.js';
+import {isUniteCustomerReadIdentity} from '../src/lib/uniteCustomerReadIdentity.js';
 
 const env={UNITE_STAGING_ALIAS_IDENTITIES:'alex+damon@unitemedical.net=damon@unitemedical.net, alex+darren@unitemedical.net=darren@unitemedical.net'};
 const session={user_id:'u1',email:'Alex+Damon@unitemedical.net',role:'admin',org_id:'',session_revision:0,mfa_verified:true};
@@ -32,4 +33,12 @@ test('the alias map is ignored on production deployments other than staging', ()
   assert.equal(withPolicyIdentity(session,{...env,VERCEL_ENV:'production',VERCEL_PROJECT_PRODUCTION_URL:'unitemedical.net'}).email,'Alex+Damon@unitemedical.net');
   assert.equal(withPolicyIdentity(session,{...env,VERCEL_ENV:'production'}).email,'Alex+Damon@unitemedical.net');
   assert.equal(withPolicyIdentity(session,{...env,VERCEL_ENV:'production',VERCEL_PROJECT_PRODUCTION_URL:'staging.unitemedical.net'}).email,'damon@unitemedical.net');
+});
+
+test('a mapped Jacobe alias gets the customer directory; an unmapped one does not', () => {
+  const alias={...session,email:'alex+jacobe@unitemedical.net',role:'sales'};
+  const map={UNITE_STAGING_ALIAS_IDENTITIES:'alex+jacobe@unitemedical.net=jacobe@unitemedical.net'};
+  assert.equal(isUniteCustomerReadIdentity(withPolicyIdentity(alias,map)),true);
+  assert.equal(isUniteCustomerReadIdentity(withPolicyIdentity(alias,{})),false);
+  assert.equal(isUniteCustomerReadIdentity({...alias,email:'jacobe@unitemedical.net'}),false);
 });
