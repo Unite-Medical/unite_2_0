@@ -5,7 +5,7 @@ import {Input} from '../../components/ui/input.jsx';
 import {Table,THead,TRow,TH,TD} from '../../components/ui/table.jsx';
 import {SortHeader,FilterBar} from '../../components/ui/data-table.jsx';
 import {filterOptions} from '../../lib/tableFilters.js';
-const PRICING_FILTERS=[{id:'record_status',label:'Status',options:filterOptions([['active','Active'],['held','Held for review'],['retired','Retired']])}];
+const PRICING_FILTERS=[{id:'record_status',label:'Status',options:filterOptions([['active','Active'],['held','Held for review'],['archived','Archived']])}];
 const PRODUCT_TABS=[['','All'],['active','Active'],['draft','Draft'],['archived','Archived']];
 const PRODUCT_FILTERS=[{id:'sku_state',label:'SKU',options:filterOptions([['missing','Missing SKU'],['present','Has SKU']])},{id:'image_state',label:'Image',options:filterOptions([['missing','No image'],['present','Has image']])}];
 const facetQuery=(values)=>Object.fromEntries(Object.entries(values).filter(([,v])=>v));
