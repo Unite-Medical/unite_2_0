@@ -99,7 +99,7 @@ export const forecast = {
    */
   async getForecastMap(skus) {
     const out = {};
-    await Promise.all(skus.map(async (sku) => {
+    const load = async (sku) => {
       try {
         const resp = await this.getForecast(sku);
         const h60 = (resp.horizons || []).find((h) => h.horizon_days === 60);
@@ -112,7 +112,10 @@ export const forecast = {
       } catch {
         // 404 (no forecast yet) or sidecar down — run-rate covers it.
       }
-    }));
+    };
+    // Probe with one SKU first so an unconfigured sidecar costs one request, not one per SKU.
+    if (skus.length) await load(skus[0]);
+    await Promise.all(skus.slice(1).map(load));
     return out;
   },
 
